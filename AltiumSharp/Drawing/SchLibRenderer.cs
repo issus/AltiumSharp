@@ -140,6 +140,7 @@ namespace AltiumSharp.Drawing
                         RenderRoundedRectPrimitive(graphics, roundedRect);
                         break;
                     case ArcRecord arc:
+                        // this can handle Record11 through inheritance
                         RenderArcPrimitive(graphics, arc);
                         break;
                     case LineRecord line:
@@ -165,6 +166,7 @@ namespace AltiumSharp.Drawing
         private void DrawBar(Graphics g, string text, Font font, Pen pen, float x, float y, StringAlignment horizontalAlignment, StringAlignment verticalAlignment)
         {
             var plainText = text.Replace(@"\", "");
+            text = text.TrimStart('\\'); // remove leading backslashes
             var barRanges = new List<(bool inBar, string text)>();
             bool wasBar = false;
             bool inBar = false;
@@ -266,7 +268,7 @@ namespace AltiumSharp.Drawing
                 if (pin.Flags.HasFlag(PinOptions.DesignatorVisible))
                 {
                     DrawingUtils.DrawString(g, pin.Designator, font, brush,
-                        ScalePixelLength(5.0f) * direction, ScalePixelLength(-1.5f),
+                        ScalePixelLength(8.0f) * direction, ScalePixelLength(-1.5f),
                         designatorHorizontalAlignment, StringAlignment.Far, true);
                 }
             }
@@ -573,7 +575,7 @@ namespace AltiumSharp.Drawing
             {
                 var rect = ScreenFromWorld(arc.CalculateBounds());
                 var startAngle = (float)-arc.StartAngle; // GDI+ uses clockwise angles and Altium counter-clockwise
-                var sweepAngle = (float)(arc.StartAngle - arc.EndAngle);
+                var sweepAngle = -(float)Utils.NormalizeAngle(arc.EndAngle - arc.StartAngle);
                 g.DrawArc(pen, Rectangle.Round(rect), startAngle, sweepAngle);
             }
         }

@@ -289,7 +289,7 @@ namespace AltiumSharp
                     record = new RoundedRectangleRecord();
                     break;
                 case 11:
-                    record = new Record11();
+                    record = new EllipticalArcRecord();
                     break;
                 case 12:
                     record = new ArcRecord();
