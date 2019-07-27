@@ -311,7 +311,7 @@ namespace AltiumSharp.Drawing
                 return path;
             }
 
-            var size = new SizeF(Math.Min(rect.Width, radiusX * 2.0f), Math.Min(rect.Height, radiusY * 2.0f));
+            var size = new SizeF(Math.Min(rect.Width - 1, radiusX * 2.0f), Math.Min(rect.Height - 1, radiusY * 2.0f));
             var arc = new RectangleF(rect.Location, size);
 
             // top left arc  

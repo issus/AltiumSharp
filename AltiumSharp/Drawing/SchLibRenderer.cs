@@ -556,14 +556,21 @@ namespace AltiumSharp.Drawing
 
         private void RenderRoundedRectPrimitive(Graphics g, RoundedRectangleRecord roundedRect)
         {
+            var rect = ScreenFromWorld(roundedRect.CalculateBounds());
+            var radiusX = ScalePixelLength(roundedRect.CornerXRadius);
+            var radiusY = ScalePixelLength(roundedRect.CornerYRadius);
+
+            if (roundedRect.IsSolid)
+            {
+                using (var brush = new SolidBrush(roundedRect.AreaColor))
+                {
+                    DrawingUtils.FillRoundedRect(g, brush, rect, radiusX, radiusY);
+                }
+            }
+
             var penWidth = ScaleLineWidth(roundedRect.LineWidth);
-            using (var brush = new SolidBrush(roundedRect.AreaColor))
             using (var pen = CreatePen(roundedRect.Color, penWidth))
             {
-                var rect = ScreenFromWorld(roundedRect.CalculateBounds());
-                var radiusX = ScaleCoord(roundedRect.CornerXRadius);
-                var radiusY = ScaleCoord(roundedRect.CornerYRadius);
-                DrawingUtils.FillRoundedRect(g, brush, rect, radiusX, radiusY);
                 DrawingUtils.DrawRoundedRect(g, pen, rect, radiusX, radiusY);
             }
         }
