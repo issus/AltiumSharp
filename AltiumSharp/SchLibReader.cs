@@ -99,22 +99,8 @@ namespace AltiumSharp
 
                 while (reader.BaseStream.Position < reader.BaseStream.Length)
                 {
-                    ReadBlock(reader, size =>
-                    {
-                        if (reader.ReadByte() != 0xD0) EmitError("Expected 0xD0 tag");
-                        var filename = ReadPascalShortString(reader);
-
-                        // Images are compressed with zlib format including a two byte header (which we skip)
-                        using (var compressedData = new MemoryStream(ReadBlock(reader).Skip(2).ToArray()))
-                        using (var decompressedData = new MemoryStream())
-                        using (var deflater = new DeflateStream(compressedData, CompressionMode.Decompress))
-                        {
-                            deflater.CopyTo(decompressedData);
-
-                            decompressedData.Position = 0;
-                            EmbeddedImages.Add(filename, Image.FromStream(decompressedData));
-                        }
-                    });
+                    var (filename, image) = ReadCompressedStorage(reader, Image.FromStream);
+                    EmbeddedImages.Add(filename, image);
                 }
             }
 

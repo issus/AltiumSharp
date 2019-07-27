@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -346,6 +347,42 @@ namespace AltiumSharp
             {
                 return default;
             }
+        }
+
+        /// <summary>
+        /// Reads compressed storage (name, data) pair, where data is compressed in zlib format.
+        /// </summary>
+        /// <typeparam name="T">Type of the interpreted data to be returned.</typeparam>
+        /// <param name = "reader" > Binary data reader.</param>
+        /// <param name="interpreter">
+        /// Interpreter callback that receives as parameter the size header of the block, and
+        /// returns an instance of <typeparamref name="T"/> with interpreted results.
+        /// </param>
+        /// <returns></returns>
+        internal (string id, T data) ReadCompressedStorage<T>(BinaryReader reader, Func<MemoryStream, T> interpreter)
+        {
+            return ReadBlock(reader, size =>
+            {
+                if (reader.ReadByte() != 0xD0) EmitError("Expected 0xD0 tag");
+                var id = ReadPascalShortString(reader);
+
+                // Images are compressed with zlib format including a two byte header (which we skip)
+                using (var compressedData = new MemoryStream(ReadBlock(reader).Skip(2).ToArray()))
+                using (var decompressedData = new MemoryStream())
+                using (var deflater = new DeflateStream(compressedData, CompressionMode.Decompress))
+                {
+                    deflater.CopyTo(decompressedData);
+
+                    decompressedData.Position = 0;
+                    var data = interpreter.Invoke(decompressedData);
+                    return (id, data);
+                }
+            });
+        }
+
+        internal (string id, byte[] data) ReadCompressedStorage<T>(BinaryReader reader)
+        {
+            return ReadCompressedStorage(reader, s => s.ToArray());
         }
 
         /// <summary>
