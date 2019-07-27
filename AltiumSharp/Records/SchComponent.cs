@@ -30,7 +30,6 @@ namespace AltiumSharp.Records
         public string SourceLibraryName { get; internal set; }
         public string SheetPartFilename { get; internal set; }
         public string TargetFilename { get; internal set; }
-        public string UniqueId { get; internal set; }
         public Color AreaColor { get; internal set; }
         public Color Color { get; internal set; }
         public bool PartIdLocked { get; internal set; }
@@ -49,7 +48,6 @@ namespace AltiumSharp.Records
             SourceLibraryName = p["SOURCELIBRARYNAME"].AsStringOrDefault();
             SheetPartFilename = p["SHEETPARTFILENAME"].AsStringOrDefault();
             TargetFilename = p["TARGETFILENAME"].AsStringOrDefault();
-            UniqueId = p["UNIQUEID"].AsStringOrDefault();
             AreaColor = p["AREACOLOR"].AsColorOrDefault();
             Color = p["COLOR"].AsColorOrDefault();
             PartIdLocked = p["PARTIDLOCKED"].AsBool();
@@ -69,7 +67,6 @@ namespace AltiumSharp.Records
             p.Add("SOURCELIBRARYNAME", SourceLibraryName);
             p.Add("SHEETPARTFILENAME", SheetPartFilename);
             p.Add("TARGETFILENAME", TargetFilename);
-            p.Add("UNIQUEID", UniqueId);
             p.Add("AREACOLOR", AreaColor);
             p.Add("COLOR", Color);
             p.Add("PARTIDLOCKED", PartIdLocked);
