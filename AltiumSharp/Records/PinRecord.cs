@@ -53,6 +53,7 @@ namespace AltiumSharp.Records
         public PinSymbol SymbolOuterEdge { get; internal set; }
         public PinSymbol SymbolInside { get; internal set; }
         public PinSymbol SymbolOutside { get; internal set; }
+        public LineWidth SymbolLineWidth { get; internal set; }
         public string Description { get; internal set; }
         public PinElectricalType Electrical { get; internal set; }
         public int PinConglomerate { get; internal set; }
