@@ -78,7 +78,7 @@ namespace AltiumSharp.Drawing
                 var center = ScreenFromWorld(arc.Location.X, arc.Location.Y);
                 var radius = ScaleCoord(arc.Radius);
                 var startAngle = (float)-arc.StartAngle; // GDI+ uses clockwise angles and Altium counter-clockwise
-                var sweepAngle = (float)(arc.StartAngle - arc.EndAngle);
+                var sweepAngle = -(float)Utils.NormalizeAngle(arc.EndAngle - arc.StartAngle);
                 g.DrawArc(pen,
                     center.X - radius, center.Y - radius, radius * 2.0f, radius * 2.0f,
                     startAngle, sweepAngle);

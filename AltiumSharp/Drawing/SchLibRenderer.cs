@@ -545,7 +545,7 @@ namespace AltiumSharp.Drawing
             {
                 var rect = ScreenFromWorld(pieChart.CalculateBounds());
                 var startAngle = (float)-pieChart.StartAngle; // GDI+ uses clockwise angles and Altium counter-clockwise
-                var sweepAngle = (float)(pieChart.StartAngle - pieChart.EndAngle);
+                var sweepAngle = -(float)Utils.NormalizeAngle(pieChart.EndAngle - pieChart.StartAngle);
                 if (pieChart.IsSolid)
                 {
                     g.FillPie(brush, Rectangle.Round(rect), startAngle, sweepAngle);
