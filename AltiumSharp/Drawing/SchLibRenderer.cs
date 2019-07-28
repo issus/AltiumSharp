@@ -234,12 +234,12 @@ namespace AltiumSharp.Drawing
             var penWidth = ScaleLineWidth(LineWidth.Small);
             using (var pen = CreatePen(pin.Color, penWidth, LineCap.Flat))
             {
-                if (pin.Flags.HasFlag(PinOptions.Rotated))
+                if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.Rotated))
                 {
                     g.RotateTransform(-90);
                 }
 
-                if (pin.Flags.HasFlag(PinOptions.Flipped))
+                if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.Flipped))
                 {
                     direction = -1.0f;
                     displayNameHorizontalAlignment = StringAlignment.Near;
@@ -253,7 +253,7 @@ namespace AltiumSharp.Drawing
             using (var brush = new SolidBrush(pin.Color))
             using (var font = CreateFont("Times New Roman", 11f, FontStyle.Regular))
             {
-                if (pin.Flags.HasFlag(PinOptions.DisplayNameVisible))
+                if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.DisplayNameVisible))
                 {
                     var x = ScalePixelLength(-5.0f) * direction;
                     var displayName = pin.Name.Replace(@"\", "");
@@ -265,7 +265,7 @@ namespace AltiumSharp.Drawing
                     }
                 }
 
-                if (pin.Flags.HasFlag(PinOptions.DesignatorVisible))
+                if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.DesignatorVisible))
                 {
                     DrawingUtils.DrawString(g, pin.Designator, font, brush,
                         ScalePixelLength(8.0f) * direction, ScalePixelLength(-1.5f),
@@ -281,8 +281,6 @@ namespace AltiumSharp.Drawing
 
         private void RenderTextStringPrimitive(Graphics g, TextStringRecord textString)
         {
-            if (textString.IsHidden || textString.Record != 4) return;
-
             var location = ScreenFromWorld(textString.Location.X, textString.Location.Y);
             using (var brush = new SolidBrush(textString.Color))
             using (var font = CreateFont(textString.FontId))
@@ -334,7 +332,7 @@ namespace AltiumSharp.Drawing
                     verticalAlignment = StringAlignment.Far - (int)verticalAlignment;
                 }
 
-                DrawingUtils.DrawString(g, textString.Text, font, brush,
+                DrawingUtils.DrawString(g, textString.DisplayText, font, brush,
                     0, 0, horizontalAlignment, verticalAlignment, false);
             }
         }

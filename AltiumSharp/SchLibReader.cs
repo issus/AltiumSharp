@@ -239,9 +239,20 @@ namespace AltiumSharp
                 }
             }
 
+            AssignOwners(component);
+
             EndContext();
 
             return component;
+        }
+
+        private static void AssignOwners(SchComponent component)
+        {
+            foreach (var primitive in component.Primitives)
+            {
+                var owner = component.Primitives.ElementAtOrDefault(primitive.OwnerIndex - 1);
+                primitive.Owner = owner;
+            }
         }
 
         /// <summary>
@@ -371,7 +382,7 @@ namespace AltiumSharp
             pin.Description = ReadPascalShortString(reader);
             reader.ReadByte(); // TODO: unknown
             pin.Electrical = (PinElectricalType)reader.ReadByte();
-            pin.Flags = (PinOptions)reader.ReadByte();
+            pin.PinConglomerate = (PinConglomerateFlags)reader.ReadByte();
             pin.PinLength = Utils.DxpFracToCoord(reader.ReadInt16(), 0);
             var locationX = Utils.DxpFracToCoord(reader.ReadInt16(), 0);
             var locationY = Utils.DxpFracToCoord(reader.ReadInt16(), 0);

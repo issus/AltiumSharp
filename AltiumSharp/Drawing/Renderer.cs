@@ -305,7 +305,7 @@ namespace AltiumSharp.Drawing
         private CoordRect CalculateComponentBounds()
         {
             var drawablePrimitives = Component.GetPrimitivesOfType<Primitive>()
-                .Where(p => DoIsPrimitiveDrawable(p));
+                .Where(p => p.IsVisible && DoIsPrimitiveDrawable(p));
             return CoordRect.Union(drawablePrimitives.Select(p => p.CalculateBounds()));
         }
 
@@ -370,7 +370,7 @@ namespace AltiumSharp.Drawing
 
             if (primitive == null) return false;
 
-            if (DoIsPrimitiveDrawable(primitive))
+            if (primitive.IsVisible && DoIsPrimitiveDrawable(primitive))
             {
                 var rect = ScreenFromWorld(primitive.CalculateBounds());
                 if (rect.Width > 0 || rect.Height > 0)

@@ -29,10 +29,10 @@ namespace AltiumSharp.Records
 
             Record = p["RECORD"].AsIntOrDefault();
             IsNotAccesible = p["ISNOTACCESIBLE"].AsBool();
-            OwnerIndex = p["OWNERINDEX"].AsIntOrDefault();
+            OwnerIndex = p["OWNERINDEX"].AsIntOrDefault(-1);
             UniqueId = p["UNIQUEID"].AsStringOrDefault();
-            IndexInSheet = p["INDEXINSHEET"].AsIntOrDefault();
-            OwnerPartId = p["OWNERPARTID"].AsIntOrDefault();
+            IndexInSheet = p["INDEXINSHEET"].AsIntOrDefault(-1);
+            OwnerPartId = p["OWNERPARTID"].AsIntOrDefault(-1);
             GraphicallyLocked = p["GRAPHICALLYLOCKED"].AsBool();
         }
 

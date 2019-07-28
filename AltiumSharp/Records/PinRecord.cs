@@ -37,7 +37,7 @@ namespace AltiumSharp.Records
     }
 
     [Flags]
-    public enum PinOptions
+    public enum PinConglomerateFlags
     {
         Rotated = 0x01,
         Flipped = 0x02,
@@ -56,8 +56,7 @@ namespace AltiumSharp.Records
         public LineWidth SymbolLineWidth { get; internal set; }
         public string Description { get; internal set; }
         public PinElectricalType Electrical { get; internal set; }
-        public int PinConglomerate { get; internal set; }
-        public PinOptions Flags { get; internal set; }
+        public PinConglomerateFlags PinConglomerate { get; internal set; }
         public Coord PinLength { get; internal set; }
         public CoordPoint Location { get; internal set; }
         public Color Color { get; internal set; }
@@ -66,9 +65,9 @@ namespace AltiumSharp.Records
 
         public CoordPoint GetCorner()
         {
-            if (Flags.HasFlag(PinOptions.Rotated))
+            if (PinConglomerate.HasFlag(PinConglomerateFlags.Rotated))
             {
-                if (Flags.HasFlag(PinOptions.Flipped))
+                if (PinConglomerate.HasFlag(PinConglomerateFlags.Flipped))
                 {
                     return new CoordPoint(Location.X, Location.Y - PinLength);
                 }
@@ -79,7 +78,7 @@ namespace AltiumSharp.Records
             }
             else
             {
-                if (Flags.HasFlag(PinOptions.Flipped))
+                if (PinConglomerate.HasFlag(PinConglomerateFlags.Flipped))
                 {
                     return new CoordPoint(Location.X - PinLength, Location.Y);
                 }
@@ -93,6 +92,8 @@ namespace AltiumSharp.Records
         public override CoordRect CalculateBounds() =>
             new CoordRect(Location, GetCorner());
 
+        public override bool IsVisible => base.IsVisible && !PinConglomerate.HasFlag(PinConglomerateFlags.Hide);
+
         public override void ImportFromParameters(ParameterCollection p)
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
@@ -104,8 +105,7 @@ namespace AltiumSharp.Records
             SymbolOutside = (PinSymbol)p["SYMBOL_OUTSIDE"].AsIntOrDefault();
             Description = p["DESCRIPTION"].AsStringOrDefault();
             Electrical = (PinElectricalType)p["ELECTRICAL"].AsIntOrDefault();
-            Flags = (PinOptions)p["FLAGS"].AsIntOrDefault(); // TODO: check this
-            PinConglomerate = p["PINCONGLOMERATE"].AsIntOrDefault();
+            PinConglomerate = (PinConglomerateFlags)p["PINCONGLOMERATE"].AsIntOrDefault(); 
             PinLength = p["PINLENGTH"].AsIntOrDefault();
             Location = new CoordPoint(
                 Utils.DxpFracToCoord(p["LOCATION.X"].AsIntOrDefault(), p["LOCATION.X_FRAC"].AsIntOrDefault()),
@@ -126,8 +126,7 @@ namespace AltiumSharp.Records
             p.Add("SYMBOL_OUTSIDE", (int)SymbolOutside);
             p.Add("DESCRIPTION", Description);
             p.Add("ELECTRICAL", (int)Electrical);
-            p.Add("FLAGS", (int)Flags); // TODO: check this
-            p.Add("PINCONGLOMERATE", PinConglomerate);
+            p.Add("PINCONGLOMERATE", (int)PinConglomerate);
             p.Add("PINLENGTH", PinLength);
             {
                 var (n, f) = Utils.CoordToDxpFrac(Location.X);

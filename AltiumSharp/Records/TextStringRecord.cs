@@ -28,8 +28,10 @@ namespace AltiumSharp.Records
         public bool IsMirrored { get; internal set; }
         public bool IsHidden { get; internal set; }
 
+        internal virtual string DisplayText => Text;
         public override CoordRect CalculateBounds() =>
             new CoordRect(Location.X, Location.Y, 1, 1);
+        public override bool IsVisible => base.IsVisible && !IsHidden;
 
         public override void ImportFromParameters(ParameterCollection p)
         {
