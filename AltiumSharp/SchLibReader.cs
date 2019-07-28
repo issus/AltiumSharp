@@ -214,9 +214,12 @@ namespace AltiumSharp
                         size => ReadAsciiRecord(reader, size),
                         size =>
                         {
-                            pinsWideText.TryGetValue(pinIndex, out var pinWideText);
-                            pinsTextData.TryGetValue(pinIndex, out var pinTextData);
-                            pinsSymbolLineWidth.TryGetValue(pinIndex, out var pinSymbolLineWidth);
+                            ParameterCollection pinWideText = null;
+                            byte[] pinTextData = null;
+                            ParameterCollection pinSymbolLineWidth = null;
+                            pinsWideText?.TryGetValue(pinIndex, out pinWideText);
+                            pinsTextData?.TryGetValue(pinIndex, out pinTextData);
+                            pinsSymbolLineWidth?.TryGetValue(pinIndex, out pinSymbolLineWidth);
                             pinIndex++;
                             return ReadPinRecord(reader, size, pinWideText, pinTextData, pinSymbolLineWidth);
                         });
