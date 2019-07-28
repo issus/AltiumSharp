@@ -335,11 +335,7 @@ namespace AltiumSharp.Drawing
                 Scale = Math.Min(ScreenSize.Width / bounds.Width, ScreenSize.Height / bounds.Height) * 0.95f;
             }
 
-            using (var brush = new SolidBrush(BackgroundColor))
-            {
-                graphics.FillRectangle(brush, 0, 0, width, height);
-            }
-
+            graphics.Clear(BackgroundColor);
 
             DoRender(graphics, fastRendering);
 
