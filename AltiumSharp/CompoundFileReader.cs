@@ -380,7 +380,7 @@ namespace AltiumSharp
             });
         }
 
-        internal (string id, byte[] data) ReadCompressedStorage<T>(BinaryReader reader)
+        internal (string id, byte[] data) ReadCompressedStorage(BinaryReader reader)
         {
             return ReadCompressedStorage(reader, s => s.ToArray());
         }
@@ -407,7 +407,7 @@ namespace AltiumSharp
             size = size == -1 ? data.Length : size;
             if (size != 0)
             {
-                encoding = encoding ?? CodePagesEncodingProvider.Instance.GetEncoding(1252);
+                encoding = encoding ?? Utils.Win1252Encoding;
                 return encoding.GetString(data, index, size);
             }
             else
@@ -557,10 +557,15 @@ namespace AltiumSharp
         /// Binary reader from where to read the data used to populate the <see cref="ParameterCollection"/>.
         /// </param>
         /// <param name="size">Length of the string in bytes.</param>
+        /// <param name="raw">If false the parameter are 0x00 terminated.</param>
+        /// <param name="encoding">
+        /// Encoding to be used when parsing the string. When <c>null</c> this defaults to Windows-1252
+        /// code page encoding.
+        /// </param>
         /// <returns>New instance of <see cref="ParameterCollection"/> containing the read data.</returns>
-        internal static ParameterCollection ReadParameters(BinaryReader reader, int size)
+        internal static ParameterCollection ReadParameters(BinaryReader reader, int size, bool raw = false, Encoding encoding = null)
         {
-            var data = ReadCString(reader, size);
+            var data = raw ? ReadRawString(reader, size, encoding) : ReadCString(reader, size, encoding);
             return ParameterCollection.FromString(data);
         }
 
