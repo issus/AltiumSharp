@@ -25,7 +25,7 @@ namespace AltiumSharp.Drawing
             Part = 1;
         }
 
-        private const double FontScalingAdjust = 0.6; // value obtained empirically
+        private const double FontScalingAdjust = 0.667; // value obtained empirically
 
 
         /// <summary>
