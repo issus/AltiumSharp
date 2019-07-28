@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Globalization;
+using System.Text;
 
 namespace AltiumSharp.BasicTypes
 {
     public static class Utils
     {
+        public static readonly Encoding Win1252Encoding = CodePagesEncodingProvider.Instance.GetEncoding(1252);
+
         public const double InternalUnits = 10000.0;
 
         public static double MilsToMMs(double mils) => mils * 0.0254;
