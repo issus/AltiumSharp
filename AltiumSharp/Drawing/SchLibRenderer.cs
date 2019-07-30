@@ -165,61 +165,22 @@ namespace AltiumSharp.Drawing
         /// </summary>
         private void DrawOverline(Graphics g, string text, Font font, Pen pen, float x, float y, StringAlignment horizontalAlignment, StringAlignment verticalAlignment)
         {
+            var overlineRanges = OverlineHelper.Parse(text);
+            if (overlineRanges.Length == 0) return;
+
             var plainText = text.Replace(@"\", "");
-            text = text.TrimStart('\\'); // remove leading backslashes
-
-            var barRanges = new List<CharacterRange>();
-
-            bool wasBar = false;
-            bool inBar = false;
-            int charIndex = 0;
-            int startIndex = 0;
-            foreach (var c in text)
-            {
-                if (c == '\\')
-                {
-                    if (!inBar)
-                    {
-                        startIndex = charIndex - 1;
-                        inBar = true;
-                    }
-                    wasBar = true;
-                }
-                else 
-                {
-                    if (inBar && !wasBar)
-                    {
-                        var length = charIndex - 1 - startIndex;
-                        barRanges.Add(new CharacterRange(startIndex, length));
-                        startIndex = charIndex;
-                        inBar = false;
-                    }
-                    wasBar = false;
-                    charIndex++;
-                }
-            }
-
-            if (inBar && startIndex < plainText.Length)
-            {
-                barRanges.Add(new CharacterRange(startIndex, plainText.Length - startIndex));
-            }
-            else if (barRanges.Count == 0)
-            {
-                return;
-            }
+            var offsetX = ScalePixelLength(0.5f);
+            var offsetY = DrawingUtils.CalculateFontInternalLeading(g, font);
 
             using (var stringFormat = new StringFormat(StringFormatFlags.NoClip | StringFormatFlags.NoWrap))
                 {
                 stringFormat.Alignment = horizontalAlignment;
                 stringFormat.LineAlignment = verticalAlignment;
                 stringFormat.Trimming = StringTrimming.None;
-                // limit size to 32 as it's the maximum allowed by SetMeasurableCharacterRanges
-                stringFormat.SetMeasurableCharacterRanges(barRanges.Take(32).ToArray());
-                var ranges = g.MeasureCharacterRanges(plainText, font, new RectangleF(x, y, 0, 0), stringFormat);
-                foreach (var region in ranges)
+                stringFormat.SetMeasurableCharacterRanges(overlineRanges);
+                var regions = g.MeasureCharacterRanges(plainText, font, new RectangleF(x, y, 0, 0), stringFormat);
+                foreach (var region in regions)
                 {
-                    var offsetX = ScalePixelLength(0.5f);
-                    var offsetY = DrawingUtils.CalculateFontInternalLeading(g, font);
                     var rangeBounds = region.GetBounds(g).Inflated(-offsetX, -offsetY);
                     g.DrawLine(pen, rangeBounds.X, rangeBounds.Y, rangeBounds.Right, rangeBounds.Y);
                 }
