@@ -163,14 +163,15 @@ namespace AltiumSharp.Drawing
         /// <summary>
         /// Draws a bar over the text of a pin to symbolize negative logic.
         /// </summary>
-        private void DrawBar(Graphics g, string text, Font font, Pen pen, float x, float y, StringAlignment horizontalAlignment, StringAlignment verticalAlignment)
+        private void DrawOverline(Graphics g, string text, Font font, Pen pen, float x, float y, StringAlignment horizontalAlignment, StringAlignment verticalAlignment)
         {
             var plainText = text.Replace(@"\", "");
             text = text.TrimStart('\\'); // remove leading backslashes
-            var barRanges = new List<(bool inBar, string text)>();
+
+            var barRanges = new List<CharacterRange>();
+
             bool wasBar = false;
             bool inBar = false;
-            bool hasBar = false;
             int charIndex = 0;
             int startIndex = 0;
             foreach (var c in text)
@@ -179,11 +180,8 @@ namespace AltiumSharp.Drawing
                 {
                     if (!inBar)
                     {
-                        var length = charIndex - 1 - startIndex;
-                        if (length > 0) barRanges.Add((false, plainText.Substring(startIndex, length)));
                         startIndex = charIndex - 1;
                         inBar = true;
-                        hasBar = true;
                     }
                     wasBar = true;
                 }
@@ -191,7 +189,8 @@ namespace AltiumSharp.Drawing
                 {
                     if (inBar && !wasBar)
                     {
-                        barRanges.Add((true, plainText.Substring(startIndex, charIndex - 1 - startIndex)));
+                        var length = charIndex - 1 - startIndex;
+                        barRanges.Add(new CharacterRange(startIndex, length));
                         startIndex = charIndex;
                         inBar = false;
                     }
@@ -199,27 +198,31 @@ namespace AltiumSharp.Drawing
                     charIndex++;
                 }
             }
-            if (startIndex < plainText.Length && startIndex >= 0) barRanges.Add((inBar, plainText.Substring(startIndex)));
 
-            if (!hasBar) return;
-
-            var direction = 1.0f;
-            var offsetX = ScalePixelLength(2.0f);
-            var offsetY = verticalAlignment == StringAlignment.Near ? 0.0f : verticalAlignment == StringAlignment.Center ? 0.5f : 1.0f;
-            var stringSizes = barRanges.Select(r => (r.inBar, g.MeasureString(r.text, font)));
-            if (horizontalAlignment != StringAlignment.Near)
+            if (inBar && startIndex < plainText.Length)
             {
-                direction = -1.0f;
-                stringSizes = stringSizes.Reverse();
+                barRanges.Add(new CharacterRange(startIndex, plainText.Length - startIndex));
             }
-            foreach (var ss in stringSizes)
+            else if (barRanges.Count == 0)
             {
-                if (ss.inBar)
+                return;
+            }
+
+            using (var stringFormat = new StringFormat(StringFormatFlags.NoClip | StringFormatFlags.NoWrap))
                 {
-                    var barY = y - (font.Size + ScalePixelLength(1.5f)) * offsetY;
-                    g.DrawLine(pen, x + offsetX * direction, barY, x + (ss.Item2.Width - offsetX) * direction, barY);
+                stringFormat.Alignment = horizontalAlignment;
+                stringFormat.LineAlignment = verticalAlignment;
+                stringFormat.Trimming = StringTrimming.None;
+                // limit size to 32 as it's the maximum allowed by SetMeasurableCharacterRanges
+                stringFormat.SetMeasurableCharacterRanges(barRanges.Take(32).ToArray());
+                var ranges = g.MeasureCharacterRanges(plainText, font, new RectangleF(x, y, 0, 0), stringFormat);
+                foreach (var region in ranges)
+                {
+                    var offsetX = ScalePixelLength(0.5f);
+                    var offsetY = DrawingUtils.CalculateFontInternalLeading(g, font);
+                    var rangeBounds = region.GetBounds(g).Inflated(-offsetX, -offsetY);
+                    g.DrawLine(pen, rangeBounds.X, rangeBounds.Y, rangeBounds.Right, rangeBounds.Y);
                 }
-                x += ss.Item2.Width * direction;
             }
         }
 
@@ -261,7 +264,7 @@ namespace AltiumSharp.Drawing
                         x, 0.0f, displayNameHorizontalAlignment, StringAlignment.Center, true);
                     using (var pen = CreatePen(pin.Color, ScaleLineWidth(LineWidth.Small)))
                     {
-                        DrawBar(g, pin.Name, font, pen, x, 0.0f, displayNameHorizontalAlignment, StringAlignment.Center);
+                        DrawOverline(g, pin.Name, font, pen, x, 0.0f, displayNameHorizontalAlignment, StringAlignment.Center);
                     }
                 }
 
