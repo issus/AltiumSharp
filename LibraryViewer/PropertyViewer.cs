@@ -13,6 +13,8 @@ namespace LibraryViewer
 {
     public partial class PropertyViewer : Form
     {
+        private object[] _objects;
+
         public PropertyViewer()
         {
             InitializeComponent();
@@ -25,7 +27,25 @@ namespace LibraryViewer
 
         internal void SetSelectedObjects(object[] objects)
         {
-            propertyGrid.SelectedObjects = objects;
+            _objects = objects;
+            comboBoxObjects.BeginUpdate();
+            comboBoxObjects.Items.Clear();
+            comboBoxObjects.Items.Add("<Common Properties>");
+            comboBoxObjects.Items.AddRange(_objects);
+            comboBoxObjects.SelectedIndex = 0;
+            comboBoxObjects.EndUpdate();
+        }
+
+        private void ComboBoxObjects_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBoxObjects.SelectedIndex < 1)
+            {
+                propertyGrid.SelectedObjects = _objects;
+            }
+            else
+            {
+                propertyGrid.SelectedObject = comboBoxObjects.SelectedItem;
+            }
         }
     }
 }
