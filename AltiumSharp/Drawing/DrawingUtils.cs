@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Drawing.Imaging;
+using System.Linq;
 
 namespace AltiumSharp.Drawing
 {
@@ -159,6 +160,25 @@ namespace AltiumSharp.Drawing
             foreach (var rect in rects)
             {
                 DrawRectangle(g, pen, rect);
+            }
+        }
+
+        internal static RectangleF CalculateTextExtent(Graphics g, string text, Font font, float x, float y, StringAlignment horizontalAlignment, StringAlignment verticalAlignment)
+        {
+            return CalculateTextExtent(g, text, x, y, font, horizontalAlignment, verticalAlignment,
+                new[] { new CharacterRange(0, text.Length) }).Single();
+        }
+
+        internal static IEnumerable<RectangleF> CalculateTextExtent(Graphics g, string text, float x, float y, Font font, StringAlignment horizontalAlignment, StringAlignment verticalAlignment, CharacterRange[] characterRanges)
+        {
+            using (var stringFormat = new StringFormat(StringFormatFlags.NoClip | StringFormatFlags.NoWrap))
+            {
+                stringFormat.Alignment = horizontalAlignment;
+                stringFormat.LineAlignment = verticalAlignment;
+                stringFormat.Trimming = StringTrimming.None;
+                stringFormat.SetMeasurableCharacterRanges(characterRanges);
+                var regions = g.MeasureCharacterRanges(text, font, new RectangleF(x, y, 0, 0), stringFormat);
+                return regions.Select(r => r.GetBounds(g));
             }
         }
 
