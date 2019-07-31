@@ -95,7 +95,7 @@ namespace AltiumSharp.Drawing
 
             var primitives = Component.GetPrimitivesOfType<SchPrimitive>();
             var orderedPrimitives = primitives
-                .Where(p => IsPrimitiveVisible(graphics, p));
+                .Where(p => IsPrimitiveVisibleInScreen(p));
             Debug.WriteLine($"Rendering {orderedPrimitives.Count()} / {primitives.Count()}");
 
             foreach (var primitive in orderedPrimitives)
@@ -172,20 +172,13 @@ namespace AltiumSharp.Drawing
             var offsetX = ScalePixelLength(0.5f);
             var offsetY = DrawingUtils.CalculateFontInternalLeading(g, font);
 
-            using (var stringFormat = new StringFormat(StringFormatFlags.NoClip | StringFormatFlags.NoWrap))
+            var rangeBounds = DrawingUtils.CalculateTextExtent(g, plainText, x, y, font, horizontalAlignment, verticalAlignment, overlineRanges);
+            foreach (var bound in rangeBounds)
                 {
-                stringFormat.Alignment = horizontalAlignment;
-                stringFormat.LineAlignment = verticalAlignment;
-                stringFormat.Trimming = StringTrimming.None;
-                stringFormat.SetMeasurableCharacterRanges(overlineRanges);
-                var regions = g.MeasureCharacterRanges(plainText, font, new RectangleF(x, y, 0, 0), stringFormat);
-                foreach (var region in regions)
-                {
-                    var rangeBounds = region.GetBounds(g).Inflated(-offsetX, -offsetY);
-                    g.DrawLine(pen, rangeBounds.X, rangeBounds.Y, rangeBounds.Right, rangeBounds.Y);
+                var inflatedBound = bound.Inflated(-offsetX, -offsetY);
+                g.DrawLine(pen, inflatedBound.X, inflatedBound.Y, inflatedBound.Right, inflatedBound.Y);
                 }
             }
-        }
 
         private void RenderPinPrimitive(Graphics g, PinRecord pin)
         {
@@ -298,6 +291,9 @@ namespace AltiumSharp.Drawing
 
                 DrawingUtils.DrawString(g, textString.DisplayText, font, brush,
                     0, 0, horizontalAlignment, verticalAlignment, false);
+
+                PrimitiveScreenBounds[textString] = DrawingUtils.CalculateTextExtent(g,
+                    textString.DisplayText, font, location.X, location.Y, horizontalAlignment, verticalAlignment);
             }
         }
 

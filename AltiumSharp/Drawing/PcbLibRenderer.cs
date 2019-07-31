@@ -23,7 +23,7 @@ namespace AltiumSharp.Drawing
 
             var primitives = Component.GetPrimitivesOfType<PcbPrimitive>();
             var orderedPrimitives = primitives
-                .Where(p => IsPrimitiveVisible(graphics, p))
+                .Where(p => IsPrimitiveVisibleInScreen(p))
                 .OrderByDescending(p => p.Layer.DrawPriority)
                 .ThenByDescending(p => p.Layer);
             Debug.WriteLine($"Rendering {orderedPrimitives.Count()} / {primitives.Count()}");
