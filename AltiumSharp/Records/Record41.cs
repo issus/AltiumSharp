@@ -12,6 +12,9 @@ namespace AltiumSharp.Records
         public override CoordRect CalculateBounds() =>
             new CoordRect(Location.X, Location.Y, 1, 1);
 
+        public override bool IsVisible =>
+            base.IsVisible && !Name.Equals("HiddenNetName", StringComparison.InvariantCultureIgnoreCase);
+
         public override void ImportFromParameters(ParameterCollection p)
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
