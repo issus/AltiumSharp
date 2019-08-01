@@ -544,7 +544,8 @@ namespace AltiumSharp.Drawing
             {
                 var rect = ScreenFromWorld(arc.CalculateBounds());
                 var startAngle = (float)-arc.StartAngle; // GDI+ uses clockwise angles and Altium counter-clockwise
-                var sweepAngle = -(float)Utils.NormalizeAngle(arc.EndAngle - arc.StartAngle);
+                var isCircle = Math.Abs(Utils.NormalizeAngle(arc.EndAngle) - Utils.NormalizeAngle(arc.StartAngle)) <= 1e-5;
+                var sweepAngle = isCircle ? 360.0f : -(float)Utils.NormalizeAngle(arc.EndAngle - arc.StartAngle);
                 g.DrawArc(pen, Rectangle.Round(rect), startAngle, sweepAngle);
             }
         }
