@@ -41,7 +41,7 @@ namespace AltiumSharp.Drawing
             if (f.Bold) fontStyle |= FontStyle.Bold;
 
             var emSize = ScalePixelLength(f.Size * FontScalingAdjust);
-            return new Font(f.FontName, emSize, fontStyle);
+            return new Font(f.FontName, emSize, fontStyle, GraphicsUnit.Point);
         }
 
         /// <summary>
@@ -163,16 +163,18 @@ namespace AltiumSharp.Drawing
         /// <summary>
         /// Draws a bar over the text of a pin to symbolize negative logic.
         /// </summary>
-        private void DrawOverline(Graphics g, string text, Font font, Pen pen, float x, float y, StringAlignment horizontalAlignment, StringAlignment verticalAlignment)
+        private void DrawOverline(Graphics g, string text, Font font, Pen pen, float x, float y,
+            StringAlignmentKind alignmentKind, StringAlignment horizontalAlignment, StringAlignment verticalAlignment)
         {
             var overlineRanges = OverlineHelper.Parse(text);
             if (overlineRanges.Length == 0) return;
 
             var plainText = text.Replace(@"\", "");
             var offsetX = ScalePixelLength(0.5f);
-            var offsetY = DrawingUtils.CalculateFontInternalLeading(g, font);
+            var offsetY = 0.0f;
 
-            var rangeBounds = DrawingUtils.CalculateTextExtent(g, plainText, x, y, font, horizontalAlignment, verticalAlignment, overlineRanges);
+            var rangeBounds = DrawingUtils.CalculateTextExtent(g, plainText, x, y, font,
+                alignmentKind, horizontalAlignment, verticalAlignment, overlineRanges);
             foreach (var bound in rangeBounds)
                 {
                 var inflatedBound = bound.Inflated(-offsetX, -offsetY);
@@ -208,25 +210,26 @@ namespace AltiumSharp.Drawing
             }
 
             using (var brush = new SolidBrush(pin.Color))
-            using (var font = CreateFont("Times New Roman", 11f, FontStyle.Regular))
+            using (var font = CreateFont("Times New Roman", 10f, FontStyle.Regular))
             {
                 if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.DisplayNameVisible))
                 {
                     var x = ScalePixelLength(-5.0f) * direction;
                     var displayName = pin.Name.Replace(@"\", "");
-                    DrawingUtils.DrawString(g, displayName, font, brush,
-                        x, 0.0f, displayNameHorizontalAlignment, StringAlignment.Center, true);
+                    DrawingUtils.DrawString(g, displayName, font, brush, x, ScalePixelLength(0.5),
+                        StringAlignmentKind.Default, displayNameHorizontalAlignment, StringAlignment.Center);
                     using (var pen = CreatePen(pin.Color, ScaleLineWidth(LineWidth.Small)))
                     {
-                        DrawOverline(g, pin.Name, font, pen, x, 0.0f, displayNameHorizontalAlignment, StringAlignment.Center);
+                        DrawOverline(g, pin.Name, font, pen, x, ScalePixelLength(0.5),
+                            StringAlignmentKind.Default, displayNameHorizontalAlignment, StringAlignment.Center);
                     }
                 }
 
                 if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.DesignatorVisible))
                 {
                     DrawingUtils.DrawString(g, pin.Designator, font, brush,
-                        ScalePixelLength(8.0f) * direction, ScalePixelLength(-1.5f),
-                        designatorHorizontalAlignment, StringAlignment.Far, true);
+                        ScalePixelLength(8.0f) * direction, 0,
+                        StringAlignmentKind.Extent, designatorHorizontalAlignment, StringAlignment.Far);
                 }
             }
         }
@@ -289,11 +292,12 @@ namespace AltiumSharp.Drawing
                     verticalAlignment = StringAlignment.Far - (int)verticalAlignment;
                 }
 
-                DrawingUtils.DrawString(g, textString.DisplayText, font, brush,
-                    0, 0, horizontalAlignment, verticalAlignment, false);
+                DrawingUtils.DrawString(g, textString.DisplayText, font, brush, 0, 0,
+                    StringAlignmentKind.Extent, horizontalAlignment, verticalAlignment);
 
                 PrimitiveScreenBounds[textString] = DrawingUtils.CalculateTextExtent(g,
-                    textString.DisplayText, font, location.X, location.Y, horizontalAlignment, verticalAlignment);
+                    textString.DisplayText, font, location.X, location.Y,
+                    StringAlignmentKind.Extent, horizontalAlignment, verticalAlignment);
             }
         }
 

@@ -131,7 +131,7 @@ namespace AltiumSharp.Drawing
                 using (var font = new Font("Arial", fontSize))
                 {
                     DrawingUtils.DrawString(g, pad.Designator, font, brush, holeCenter.X, holeCenter.Y,
-                        StringAlignment.Center, StringAlignment.Center, true);
+                        StringAlignmentKind.Tight, StringAlignment.Center, StringAlignment.Center);
                 }
             }
         }
@@ -239,7 +239,8 @@ namespace AltiumSharp.Drawing
                 else
                 {
                     if (@string.Mirrored) g.ScaleTransform(-1.0f, 1.0f);
-                    DrawingUtils.DrawString(g, @string.Text, font, brush, 0, fontWidth * 0.5f, StringAlignment.Near, StringAlignment.Far, true);
+                    DrawingUtils.DrawString(g, @string.Text, font, brush, 0, fontWidth * 0.5f,
+                        StringAlignmentKind.Tight, StringAlignment.Near, StringAlignment.Far);
                 }
             }
 
