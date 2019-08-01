@@ -92,14 +92,14 @@ namespace AltiumSharp.Drawing
         public Color BackgroundColor { get; set; } = Color.White;
 
         /// <summary>
-        /// Color 1 of 2 used for the selected primitives highlight box.
+        /// Color of the foreground used for the selected primitives highlight box.
         /// </summary>
-        public Color SelectionColor1 { get; set; } = Color.FromArgb(200, Color.Fuchsia);
+        public Color SelectionColor { get; set; } = Color.FromArgb(200, Color.Lime);
 
         /// <summary>
-        /// Color 2 of 2 used for the selected primitives highlight box.
+        /// Color of the background for the selected primitives highlight box.
         /// </summary>
-        public Color SelectionColor2 { get; set; } = Color.FromArgb(200, Color.White);
+        public Color SelectionColorBg { get; set; } = Color.FromArgb(200, Color.White);
 
         /// <summary>
         /// Altium Schematic Viewer draws 100 pixels per inch,
@@ -421,15 +421,12 @@ namespace AltiumSharp.Drawing
         /// </param>
         private void RenderSelection(Graphics g, bool individual)
         {
-            var pen1Color = SelectionColor1;
-            var pen2Color = SelectionColor2;
-            using (var pen1 = CreatePen(pen1Color, 2))
-            using (var pen2 = CreatePen(pen2Color, 2))
+            var penFgColor = SelectionColor;
+            var penBgColor = SelectionColorBg;
+            using (var penFg = CreatePen(penFgColor, 1))
+            using (var penBg = CreatePen(penBgColor, 1))
             {
-                pen1.DashStyle = DashStyle.Dot;
-                pen1.DashOffset = 0.0f;
-                pen2.DashStyle = DashStyle.Dot;
-                pen2.DashOffset = 1.0f;
+                penFg.DashStyle = DashStyle.Dash;
                 var rects = SelectedPrimitives.Select(CalculatePrimitiveScreenBounds).ToArray();
                 if (individual)
                 {
@@ -439,8 +436,8 @@ namespace AltiumSharp.Drawing
                 {                   
                     rects = new[] { rects.Aggregate(RectangleF.Union).Inflated(2, 2) };
                 }
-                g.DrawRectangles(pen1, rects);
-                g.DrawRectangles(pen2, rects);
+                g.DrawRectangles(penBg, rects);
+                g.DrawRectangles(penFg, rects);
             }
         }
 
