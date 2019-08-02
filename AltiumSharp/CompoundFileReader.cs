@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -349,6 +350,42 @@ namespace AltiumSharp
         }
 
         /// <summary>
+        /// Reads compressed storage (name, data) pair, where data is compressed in zlib format.
+        /// </summary>
+        /// <typeparam name="T">Type of the interpreted data to be returned.</typeparam>
+        /// <param name = "reader" > Binary data reader.</param>
+        /// <param name="interpreter">
+        /// Interpreter callback that receives as parameter the size header of the block, and
+        /// returns an instance of <typeparamref name="T"/> with interpreted results.
+        /// </param>
+        /// <returns></returns>
+        internal (string id, T data) ReadCompressedStorage<T>(BinaryReader reader, Func<MemoryStream, T> interpreter)
+        {
+            return ReadBlock(reader, size =>
+            {
+                if (reader.ReadByte() != 0xD0) EmitError("Expected 0xD0 tag");
+                var id = ReadPascalShortString(reader);
+
+                // Images are compressed with zlib format including a two byte header (which we skip)
+                using (var compressedData = new MemoryStream(ReadBlock(reader).Skip(2).ToArray()))
+                using (var decompressedData = new MemoryStream())
+                using (var deflater = new DeflateStream(compressedData, CompressionMode.Decompress))
+                {
+                    deflater.CopyTo(decompressedData);
+
+                    decompressedData.Position = 0;
+                    var data = interpreter.Invoke(decompressedData);
+                    return (id, data);
+                }
+            });
+        }
+
+        internal (string id, byte[] data) ReadCompressedStorage(BinaryReader reader)
+        {
+            return ReadCompressedStorage(reader, s => s.ToArray());
+        }
+
+        /// <summary>
         /// Parses an array of bytes as a raw string, that is, a string of known <paramref name="size"/>
         /// valued length, <em>without</em> leading length and <em>without</em> a <c>0x00</c> terminator.
         /// </summary>
@@ -370,7 +407,7 @@ namespace AltiumSharp
             size = size == -1 ? data.Length : size;
             if (size != 0)
             {
-                encoding = encoding ?? CodePagesEncodingProvider.Instance.GetEncoding(1252);
+                encoding = encoding ?? Utils.Win1252Encoding;
                 return encoding.GetString(data, index, size);
             }
             else
@@ -520,10 +557,15 @@ namespace AltiumSharp
         /// Binary reader from where to read the data used to populate the <see cref="ParameterCollection"/>.
         /// </param>
         /// <param name="size">Length of the string in bytes.</param>
+        /// <param name="raw">If false the parameter are 0x00 terminated.</param>
+        /// <param name="encoding">
+        /// Encoding to be used when parsing the string. When <c>null</c> this defaults to Windows-1252
+        /// code page encoding.
+        /// </param>
         /// <returns>New instance of <see cref="ParameterCollection"/> containing the read data.</returns>
-        internal static ParameterCollection ReadParameters(BinaryReader reader, int size)
+        internal static ParameterCollection ReadParameters(BinaryReader reader, int size, bool raw = false, Encoding encoding = null)
         {
-            var data = ReadCString(reader, size);
+            var data = raw ? ReadRawString(reader, size, encoding) : ReadCString(reader, size, encoding);
             return ParameterCollection.FromString(data);
         }
 

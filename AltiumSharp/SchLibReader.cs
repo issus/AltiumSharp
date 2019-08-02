@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -92,30 +93,17 @@ namespace AltiumSharp
             using (var reader = storage.GetBinaryReader())
             {
                 var parameters = ReadBlock(reader, size => ReadParameters(reader, size));
-                if (!parameters["HEADER"].AsStringOrDefault("").Equals("Icon storage", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    EmitError("Expected Icon Storage");
-                }
+                var header = parameters["HEADER"].AsStringOrDefault("");
+                var weight = parameters["WEIGHT"].AsIntOrDefault();
+                AssertValue(nameof(header), header, "Icon storage");
 
+                EmbeddedImages.Clear();
                 while (reader.BaseStream.Position < reader.BaseStream.Length)
                 {
-                    ReadBlock(reader, size =>
-                    {
-                        if (reader.ReadByte() != 0xD0) EmitError("Expected 0xD0 tag");
-                        var filename = ReadPascalShortString(reader);
-
-                        // Images are compressed with zlib format including a two byte header (which we skip)
-                        using (var compressedData = new MemoryStream(ReadBlock(reader).Skip(2).ToArray()))
-                        using (var decompressedData = new MemoryStream())
-                        using (var deflater = new DeflateStream(compressedData, CompressionMode.Decompress))
-                        {
-                            deflater.CopyTo(decompressedData);
-
-                            decompressedData.Position = 0;
-                            EmbeddedImages.Add(filename, Image.FromStream(decompressedData));
-                        }
-                    });
+                    var (filename, image) = ReadCompressedStorage(reader, Image.FromStream);
+                    EmbeddedImages.Add(filename, image);
                 }
+                CheckValue(nameof(weight), weight, EmbeddedImages.Count);
             }
 
             EndContext();
@@ -145,7 +133,7 @@ namespace AltiumSharp
                     refNames.AddRange(Header.Comp.Select(c => c.LibRef));
                 }
                 else
-                {                   
+                {
                     // Otherwise we can read the binary list of components
                     var count = reader.ReadUInt32();
                     for (var i = 0; i < count; ++i)
@@ -206,20 +194,35 @@ namespace AltiumSharp
         /// <returns>Component instance.</returns>
         private SchComponent ReadComponent(string resourceName)
         {
-            var symbolStorage = Cf.TryGetStorage(resourceName) ?? throw new ArgumentException($"Symbol resource not found: {resourceName}");
+            var componentStorage = Cf.TryGetStorage(resourceName) ?? throw new ArgumentException($"Symbol resource not found: {resourceName}");
 
             BeginContext(resourceName);
 
             SchComponent component = null;
 
-            using (var reader = symbolStorage.GetStream("Data").GetBinaryReader())
+            var pinsWideText = ReadPinWideText(componentStorage);
+            var pinsTextData = ReadPinTextData(componentStorage);
+            var pinsSymbolLineWidth = ReadPinSymbolLineWidth(componentStorage);
+            int pinIndex = 0;
+
+            using (var reader = componentStorage.GetStream("Data").GetBinaryReader())
             {
                 while (reader.BaseStream.Position < reader.BaseStream.Length)
                 {
                     var primitiveStartPosition = reader.BaseStream.Position;
                     var primitive = ReadRecord(reader,
                         size => ReadAsciiRecord(reader, size),
-                        size => ReadPinRecord(reader, size));
+                        size =>
+                        {
+                            ParameterCollection pinWideText = null;
+                            byte[] pinTextData = null;
+                            ParameterCollection pinSymbolLineWidth = null;
+                            pinsWideText?.TryGetValue(pinIndex, out pinWideText);
+                            pinsTextData?.TryGetValue(pinIndex, out pinTextData);
+                            pinsSymbolLineWidth?.TryGetValue(pinIndex, out pinSymbolLineWidth);
+                            pinIndex++;
+                            return ReadPinRecord(reader, size, pinWideText, pinTextData, pinSymbolLineWidth);
+                        });
 
                     primitive.SetRawData(ExtractStreamData(reader, primitiveStartPosition, reader.BaseStream.Position));
 
@@ -236,9 +239,20 @@ namespace AltiumSharp
                 }
             }
 
+            AssignOwners(component);
+
             EndContext();
 
             return component;
+        }
+
+        private static void AssignOwners(SchComponent component)
+        {
+            foreach (var primitive in component.Primitives)
+            {
+                var owner = component.Primitives.ElementAtOrDefault(primitive.OwnerIndex - 1);
+                primitive.Owner = owner;
+            }
         }
 
         /// <summary>
@@ -303,7 +317,7 @@ namespace AltiumSharp
                     record = new RoundedRectangleRecord();
                     break;
                 case 11:
-                    record = new Record11();
+                    record = new EllipticalArcRecord();
                     break;
                 case 12:
                     record = new ArcRecord();
@@ -348,7 +362,7 @@ namespace AltiumSharp
             return record;
         }
 
-        private PinRecord ReadPinRecord(BinaryReader reader, int size)
+        private PinRecord ReadPinRecord(BinaryReader reader, int size, ParameterCollection pinWideText, byte[] pinTextData, ParameterCollection pinSymbolLineWidth)
         {
             int recordType = (size >> 24);
 
@@ -364,10 +378,11 @@ namespace AltiumSharp
             pin.SymbolOuterEdge = (PinSymbol)reader.ReadByte();
             pin.SymbolInside = (PinSymbol)reader.ReadByte();
             pin.SymbolOutside = (PinSymbol)reader.ReadByte();
+            pin.SymbolLineWidth = LineWidth.Smallest;
             pin.Description = ReadPascalShortString(reader);
             reader.ReadByte(); // TODO: unknown
             pin.Electrical = (PinElectricalType)reader.ReadByte();
-            pin.Flags = (PinOptions)reader.ReadByte();
+            pin.PinConglomerate = (PinConglomerateFlags)reader.ReadByte();
             pin.PinLength = Utils.DxpFracToCoord(reader.ReadInt16(), 0);
             var locationX = Utils.DxpFracToCoord(reader.ReadInt16(), 0);
             var locationY = Utils.DxpFracToCoord(reader.ReadInt16(), 0);
@@ -379,9 +394,131 @@ namespace AltiumSharp
             reader.ReadByte(); // TODO: unknown
             reader.ReadByte(); // TODO: unknown
 
+            if (pinWideText != null)
+            {
+                pin.Description = pinWideText["DESC"].AsStringOrDefault(pin.Description);
+                pin.Name = pinWideText["NAME"].AsStringOrDefault(pin.Name);
+                pin.Designator = pinWideText["DESIG"].AsStringOrDefault(pin.Designator);
+            }
+
+            if (pinTextData != null)
+            {
+
+            }
+
+            if (pinSymbolLineWidth != null)
+            {
+                pin.SymbolLineWidth = pinSymbolLineWidth["SYMBOL_LINEWIDTH"].AsEnumOrDefault(pin.SymbolLineWidth);
+            }
+
             EndContext();
 
             return pin;
+        }
+
+        /// <summary>
+        /// Reads a pin text data for the component at <paramref name="componentStorage"/>.
+        /// </summary>
+        private Dictionary<int, byte[]> ReadPinTextData(CFStorage componentStorage)
+        {
+            var storage = componentStorage.TryGetStream("PinTextData");
+            if (storage == null) return null;
+
+            BeginContext("PinTextData");
+
+            var result = new Dictionary<int, byte[]>();
+            using (var reader = storage.GetBinaryReader())
+            {
+                var parameters = ReadBlock(reader, size => ReadParameters(reader, size));
+                var header = parameters["HEADER"].AsStringOrDefault();
+                var weight = parameters["WEIGHT"].AsIntOrDefault();
+                AssertValue(nameof(header), header, "PinTextData");
+
+                while (reader.BaseStream.Position < reader.BaseStream.Length)
+                {
+                    var (id, data) = ReadCompressedStorage(reader);
+                    result.Add(int.Parse(id, CultureInfo.InvariantCulture), data);
+                }
+                CheckValue(nameof(weight), weight, result.Count);
+            }
+
+            EndContext();
+
+            return result;
+        }
+
+        /// <summary>
+        /// Reads a pin Unicode text for the component at <paramref name="componentStorage"/>.
+        /// </summary>
+        private Dictionary<int, ParameterCollection> ReadPinWideText(CFStorage componentStorage)
+        {
+            var storage = componentStorage.TryGetStream("PinWideText");
+            if (storage == null) return null;
+
+            BeginContext("PinTextData");
+
+            var result = new Dictionary<int, ParameterCollection>();
+            using (var reader = storage.GetBinaryReader())
+            {
+                var headerParams = ReadBlock(reader, size => ReadParameters(reader, size));
+                var header = headerParams["HEADER"].AsStringOrDefault();
+                var weight = headerParams["WEIGHT"].AsIntOrDefault();
+                AssertValue(nameof(header), header, "PinWideText");
+
+                while (reader.BaseStream.Position < reader.BaseStream.Length)
+                {
+                    var (id, parameters) = ReadCompressedStorage(reader, stream =>
+                    {
+                        using (var r = new BinaryReader(stream))
+                        {
+                            return ReadBlock(r, s => ReadParameters(r, s, true, Encoding.Unicode));
+                        }
+                    });
+                    result.Add(int.Parse(id, CultureInfo.InvariantCulture), parameters);
+                }
+                CheckValue(nameof(weight), weight, result.Count);
+            }
+
+            EndContext();
+
+            return result;
+        }
+
+        /// <summary>
+        /// Reads a pin line widths for the component at <paramref name="componentStorage"/>.
+        /// </summary>
+        private Dictionary<int, ParameterCollection> ReadPinSymbolLineWidth(CFStorage componentStorage)
+        {
+            var storage = componentStorage.TryGetStream("PinSymbolLineWidth");
+            if (storage == null) return null;
+
+            BeginContext("PinTextData");
+
+            var result = new Dictionary<int, ParameterCollection>();
+            using (var reader = storage.GetBinaryReader())
+            {
+                var headerParams = ReadBlock(reader, size => ReadParameters(reader, size));
+                var header = headerParams["HEADER"].AsStringOrDefault();
+                var weight = headerParams["WEIGHT"].AsIntOrDefault();
+                AssertValue(nameof(header), header, "PinSymbolLineWidth");
+
+                while (reader.BaseStream.Position < reader.BaseStream.Length)
+                {
+                    var (id, parameters) = ReadCompressedStorage(reader, stream =>
+                    {
+                        using (var r = new BinaryReader(stream))
+                        {
+                            return ReadBlock(r, s => ReadParameters(r, s, true, Encoding.Unicode));
+                        }
+                    });
+                    result.Add(int.Parse(id, CultureInfo.InvariantCulture), parameters);
+                }
+                CheckValue(nameof(weight), weight, result.Count);
+            }
+
+            EndContext();
+
+            return result;
         }
     }
 }

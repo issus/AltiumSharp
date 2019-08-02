@@ -7,8 +7,11 @@ namespace AltiumSharp.Records
     {
         public string Name { get; internal set; }
         public int ReadOnlyState { get; internal set; }
+
         public override CoordRect CalculateBounds() =>
             new CoordRect(Location.X, Location.Y, 1, 1);
+
+        public override bool IsVisible => base.IsVisible && OwnerIndex != -1;
 
         public override void ImportFromParameters(ParameterCollection p)
         {

@@ -13,8 +13,7 @@ namespace AltiumSharp.Records
         public string ModelType { get; internal set; }
         public List<string> DataFile { get; internal set; }
         public bool IsCurrent { get; internal set; }
-        public string UniqueId { get; internal set; }
-        
+       
         public override void ImportFromParameters(ParameterCollection p)
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
@@ -28,7 +27,6 @@ namespace AltiumSharp.Records
                     p[string.Format(CultureInfo.InvariantCulture, "MODELDATAFILEKIND{0}", i)].AsStringOrDefault())
                 .ToList();
             IsCurrent = p["ISCURRENT"].AsBool();
-            UniqueId = p["UNIQUEID"].AsStringOrDefault();
         }
         
         public override void ExportToParameters(ParameterCollection p)
@@ -44,7 +42,6 @@ namespace AltiumSharp.Records
                 p.Add(string.Format(CultureInfo.InvariantCulture, "MODELDATAFILEKIND{0}", i), DataFile[i]);
             }
             p.Add("ISCURRENT", IsCurrent);
-            p.Add("UNIQUEID", UniqueId);
         }
     }
 }

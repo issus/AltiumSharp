@@ -9,9 +9,11 @@ namespace AltiumSharp.Records
 
         public bool IsNotAccesible { get; internal set; }
 
-        public int IndexInSheet { get; internal set; } = -1;
-
         public int OwnerIndex { get; internal set; } = -1;
+
+        public string UniqueId { get; internal set; }
+
+        public int IndexInSheet { get; internal set; } = -1;
 
         public int CurrentPartId { get; internal set; } = -1;
 
@@ -27,9 +29,10 @@ namespace AltiumSharp.Records
 
             Record = p["RECORD"].AsIntOrDefault();
             IsNotAccesible = p["ISNOTACCESIBLE"].AsBool();
-            OwnerIndex = p["OWNERINDEX"].AsIntOrDefault();
-            IndexInSheet = p["INDEXINSHEET"].AsIntOrDefault();
-            OwnerPartId = p["OWNERPARTID"].AsIntOrDefault();
+            OwnerIndex = p["OWNERINDEX"].AsIntOrDefault(-1);
+            UniqueId = p["UNIQUEID"].AsStringOrDefault();
+            IndexInSheet = p["INDEXINSHEET"].AsIntOrDefault(-1);
+            OwnerPartId = p["OWNERPARTID"].AsIntOrDefault(-1);
             GraphicallyLocked = p["GRAPHICALLYLOCKED"].AsBool();
         }
 
@@ -40,6 +43,7 @@ namespace AltiumSharp.Records
             p.Add("RECORD", Record);
             p.Add("ISNOTACCESIBLE", IsNotAccesible);
             p.Add("OWNERINDEX", OwnerIndex);
+            p.Add("UNIQUEID", UniqueId);
             p.Add("INDEXINSHEET", IndexInSheet);
             p.Add("OWNERPARTID", OwnerPartId);
             p.Add("GRAPHICALLYLOCKED", GraphicallyLocked);

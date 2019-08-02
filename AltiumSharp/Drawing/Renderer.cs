@@ -58,6 +58,12 @@ namespace AltiumSharp.Drawing
         }
 
         /// <summary>
+        /// Allows primitive rendering to override the default bounds using
+        /// bounds calculated when drawing, which is useful for text strings.
+        /// </summary>
+        protected Dictionary<Primitive, RectangleF> PrimitiveScreenBounds { get; } = new Dictionary<Primitive, RectangleF>();
+
+        /// <summary>
         /// Default style for drawing line caps.
         /// </summary>
         protected LineCap DefaultLineCap { get; set; } = LineCap.Round;
@@ -86,14 +92,14 @@ namespace AltiumSharp.Drawing
         public Color BackgroundColor { get; set; } = Color.White;
 
         /// <summary>
-        /// Color 1 of 2 used for the selected primitives highlight box.
+        /// Color of the foreground used for the selected primitives highlight box.
         /// </summary>
-        public Color SelectionColor1 { get; set; } = Color.FromArgb(200, Color.Fuchsia);
+        public Color SelectionColor { get; set; } = Color.FromArgb(200, Color.Lime);
 
         /// <summary>
-        /// Color 2 of 2 used for the selected primitives highlight box.
+        /// Color of the background for the selected primitives highlight box.
         /// </summary>
-        public Color SelectionColor2 { get; set; } = Color.FromArgb(200, Color.White);
+        public Color SelectionColorBg { get; set; } = Color.FromArgb(200, Color.White);
 
         /// <summary>
         /// Altium Schematic Viewer draws 100 pixels per inch,
@@ -270,9 +276,10 @@ namespace AltiumSharp.Drawing
         /// <returns>Primitives that are under the given screen coordinates.</returns>
         public IEnumerable<Primitive> Pick(int screenX, int screenY)
         {
-            var pickRegion = WorldFromScreen(new RectangleF(screenX - 2, screenY - 2, 4, 4));
+            var pickRegion = new RectangleF(screenX - 2, screenY - 2, 4, 4);
             return Component?.GetPrimitivesOfType<Primitive>()
-                .Where(p => p.CalculateBounds().Intersects(pickRegion));
+                .Where(p => IsPrimitiveVisibleInScreen(p))
+                .Where(p => CalculatePrimitiveScreenBounds(p).IntersectsWith(pickRegion));
         }
 
         /// <summary>
@@ -305,7 +312,7 @@ namespace AltiumSharp.Drawing
         private CoordRect CalculateComponentBounds()
         {
             var drawablePrimitives = Component.GetPrimitivesOfType<Primitive>()
-                .Where(p => DoIsPrimitiveDrawable(p));
+                .Where(p => p.IsVisible && DoIsPrimitiveDrawable(p));
             return CoordRect.Union(drawablePrimitives.Select(p => p.CalculateBounds()));
         }
 
@@ -335,11 +342,9 @@ namespace AltiumSharp.Drawing
                 Scale = Math.Min(ScreenSize.Width / bounds.Width, ScreenSize.Height / bounds.Height) * 0.95f;
             }
 
-            using (var brush = new SolidBrush(BackgroundColor))
-            {
-                graphics.FillRectangle(brush, 0, 0, width, height);
-            }
+            PrimitiveScreenBounds.Clear(); // reset calculated primitive screen bounds
 
+            graphics.Clear(BackgroundColor);
 
             DoRender(graphics, fastRendering);
 
@@ -363,29 +368,28 @@ namespace AltiumSharp.Drawing
         /// according to it being drawable, and their screen bounds intersecting
         /// the screen bounds.
         /// </summary>
-        /// <param name="g">Where to draw.</param>
         /// <param name="primitive">
         /// Primitive instance to have its visibility tested.
         /// </param>
         /// <returns></returns>
-        protected bool IsPrimitiveVisible(Graphics g, Primitive primitive)
+        protected bool IsPrimitiveVisibleInScreen(Primitive primitive)
         {
-            if (g == null) throw new ArgumentNullException(nameof(g));
-
             if (primitive == null) return false;
 
-            if (DoIsPrimitiveDrawable(primitive))
+            var screenRect = new RectangleF(0, 0, ScreenSize.Width, ScreenSize.Height);
+            if (primitive.IsVisible && DoIsPrimitiveDrawable(primitive))
             {
                 var rect = ScreenFromWorld(primitive.CalculateBounds());
                 if (rect.Width > 0 || rect.Height > 0)
                 {
-                    return g.IsVisible(rect.Inflated(10, 10)); // inflate primitive screen rect to make sure it's not clipped when on the edge
+                    return screenRect.IntersectsWith(rect.Inflated(10, 10)); // inflate primitive screen rect to make sure it's not clipped when on the edge
                 }
                 else
                 {
                     return false;
                 }
-            } else
+            }
+            else
             {
                 return false;
             }
@@ -417,27 +421,35 @@ namespace AltiumSharp.Drawing
         /// </param>
         private void RenderSelection(Graphics g, bool individual)
         {
-            var pen1Color = SelectionColor1; 
-            var pen2Color = SelectionColor2; 
-            using (var pen1 = CreatePen(pen1Color, 2))
-            using (var pen2 = CreatePen(pen2Color, 2))
+            var penFgColor = SelectionColor;
+            var penBgColor = SelectionColorBg;
+            using (var penFg = CreatePen(penFgColor, 1))
+            using (var penBg = CreatePen(penBgColor, 1))
             {
-                pen1.DashStyle = DashStyle.Dot;
-                pen1.DashOffset = 0.0f;
-                pen2.DashStyle = DashStyle.Dot;
-                pen2.DashOffset = 1.0f;
-                var bounds = SelectedPrimitives.Select(p => p.CalculateBounds());
-                RectangleF[] rects;
+                penFg.DashStyle = DashStyle.Dash;
+                var rects = SelectedPrimitives.Select(CalculatePrimitiveScreenBounds).ToArray();
                 if (individual)
                 {
-                    rects = bounds.Select(b => ScreenFromWorld(b).Inflated(2, 2)).ToArray();
+                    rects = rects.Select(b => b.Inflated(2, 2)).ToArray();
                 }
                 else
-                {
-                    rects = new[] { ScreenFromWorld(CoordRect.Union(bounds)).Inflated(2, 2) };
+                {                   
+                    rects = new[] { rects.Aggregate(RectangleF.Union).Inflated(2, 2) };
                 }
-                g.DrawRectangles(pen1, rects);
-                g.DrawRectangles(pen2, rects);
+                g.DrawRectangles(penBg, rects);
+                g.DrawRectangles(penFg, rects);
+            }
+        }
+
+        private RectangleF CalculatePrimitiveScreenBounds(Primitive primitive)
+        {
+            if (PrimitiveScreenBounds.TryGetValue(primitive, out var rect))
+            {
+                return rect;
+            }
+            else
+            {
+                return ScreenFromWorld(primitive.CalculateBounds());
             }
         }
 
@@ -459,8 +471,8 @@ namespace AltiumSharp.Drawing
 
         ~Renderer()
         {
-           // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-           Dispose(false);
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(false);
         }
 
         // This code added to correctly implement the disposable pattern.

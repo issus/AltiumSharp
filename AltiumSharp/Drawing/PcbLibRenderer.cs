@@ -23,7 +23,7 @@ namespace AltiumSharp.Drawing
 
             var primitives = Component.GetPrimitivesOfType<PcbPrimitive>();
             var orderedPrimitives = primitives
-                .Where(p => IsPrimitiveVisible(graphics, p))
+                .Where(p => IsPrimitiveVisibleInScreen(p))
                 .OrderByDescending(p => p.Layer.DrawPriority)
                 .ThenByDescending(p => p.Layer);
             Debug.WriteLine($"Rendering {orderedPrimitives.Count()} / {primitives.Count()}");
@@ -78,7 +78,7 @@ namespace AltiumSharp.Drawing
                 var center = ScreenFromWorld(arc.Location.X, arc.Location.Y);
                 var radius = ScaleCoord(arc.Radius);
                 var startAngle = (float)-arc.StartAngle; // GDI+ uses clockwise angles and Altium counter-clockwise
-                var sweepAngle = (float)(arc.StartAngle - arc.EndAngle);
+                var sweepAngle = -(float)Utils.NormalizeAngle(arc.EndAngle - arc.StartAngle);
                 g.DrawArc(pen,
                     center.X - radius, center.Y - radius, radius * 2.0f, radius * 2.0f,
                     startAngle, sweepAngle);
@@ -131,7 +131,7 @@ namespace AltiumSharp.Drawing
                 using (var font = new Font("Arial", fontSize))
                 {
                     DrawingUtils.DrawString(g, pad.Designator, font, brush, holeCenter.X, holeCenter.Y,
-                        StringAlignment.Center, StringAlignment.Center, true);
+                        StringAlignmentKind.Tight, StringAlignment.Center, StringAlignment.Center);
                 }
             }
         }
@@ -239,7 +239,8 @@ namespace AltiumSharp.Drawing
                 else
                 {
                     if (@string.Mirrored) g.ScaleTransform(-1.0f, 1.0f);
-                    DrawingUtils.DrawString(g, @string.Text, font, brush, 0, fontWidth * 0.5f, StringAlignment.Near, StringAlignment.Far, true);
+                    DrawingUtils.DrawString(g, @string.Text, font, brush, 0, fontWidth * 0.5f,
+                        StringAlignmentKind.Tight, StringAlignment.Near, StringAlignment.Far);
                 }
             }
 

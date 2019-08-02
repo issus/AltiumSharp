@@ -9,8 +9,12 @@ namespace AltiumSharp
     {
         public IEnumerable<byte> RawData { get; internal set; }
 
+        public Primitive Owner { get; internal set; }
+
         internal void SetRawData(in byte[] rawData) => RawData = rawData;
 
         public abstract CoordRect CalculateBounds();
+
+        public virtual bool IsVisible => Owner?.IsVisible ?? true;
     }
 }
