@@ -26,7 +26,8 @@ namespace LibraryViewer
         private Renderer _renderer;
         private bool _autoZoom;
         private Point _mouseLocation;
-        private Image _pictureBoxImage;
+        private BufferedGraphics _graphicsBuffer;
+        private bool _fastRendering;
 
         private List<IComponent> _components;
         private IComponent _activeComponent;
@@ -134,31 +135,37 @@ namespace LibraryViewer
             SetActivePrimitives((activateFirst && defaultPrimitive != null) ? new[] { defaultPrimitive } : null);
         }
 
-        private void Draw(bool fastRendering)
+        private void RequestRedraw(bool fastRendering)
+        {
+            _fastRendering = fastRendering;
+            pictureBox.Invalidate();
+            if (_fastRendering) pictureBox.Update();
+        }
+
+        private void Draw(Graphics target)
         {
             if (_activeComponent == null)
             {
                 _renderer = null;
             }
 
-            if (_renderer != null)
+            if (_renderer == null)
             {
-                _renderer.Component = _activeComponent;
-                if (_pictureBoxImage == null) _pictureBoxImage = new Bitmap(pictureBox.Width, pictureBox.Height);
-                using (var g = Graphics.FromImage(_pictureBoxImage))
-                {
-                    _renderer.Render(g, pictureBox.Width, pictureBox.Height, _autoZoom, fastRendering);
-                }
-                _autoZoom = false;
+                target.Clear(SystemColors.Control);
+                return;
             }
 
-            if (fastRendering)
+            _renderer.Component = _activeComponent;
+            if (_graphicsBuffer == null) _graphicsBuffer = BufferedGraphicsManager.Current.Allocate(CreateGraphics(), new Rectangle(0, 0, pictureBox.Width, pictureBox.Height));
+            _renderer.Render(_graphicsBuffer.Graphics, pictureBox.Width, pictureBox.Height, _autoZoom, _fastRendering);
+            _autoZoom = false;
+            _graphicsBuffer.Render(target);
+
+            if (_fastRendering)
             {
                 redrawTimer.Stop();
                 redrawTimer.Start();
             }
-
-            pictureBox.Invalidate();
         }
 
         public void ExportStream(string inputFileName, string streamPath, string outputFileName)
@@ -211,7 +218,7 @@ namespace LibraryViewer
             {
                 SetActivePrimitives(null);
             }
-            Draw(false);
+            RequestRedraw(false);
         }
 
         private void SetActivePrimitives(IEnumerable<Primitive> primitives)
@@ -223,7 +230,7 @@ namespace LibraryViewer
             if (_renderer != null)
             {
                 _renderer.SelectedPrimitives = primitives;
-                Draw(false);
+                RequestRedraw(false);
             }
         }
 
@@ -288,7 +295,7 @@ namespace LibraryViewer
             {
                 schLibRenderer.Part = (int)editPart.Value;
                 _autoZoom = true;
-                Draw(false);
+                RequestRedraw(false);
             }
         }
 
@@ -311,7 +318,7 @@ namespace LibraryViewer
         private void CenterToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _autoZoom = true;
-            Draw(false);
+            RequestRedraw(false);
         }
 
         private void ZoomToolStripMenuItem_Click(object sender, EventArgs e)
@@ -322,7 +329,7 @@ namespace LibraryViewer
             _renderer.Zoom = zoom;
             
             _autoZoom = false;
-            Draw(false);
+            RequestRedraw(false);
         }
 
         private void ExportFootprintToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -369,7 +376,7 @@ namespace LibraryViewer
 
         private void ExportImageToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_pictureBoxImage == null) return;
+            if (_activeComponent == null || _graphicsBuffer == null) return;
 
             var component = _activeComponent;
             var streamPath = $"{component.Name.Replace('/', '_')}/Data";
@@ -377,18 +384,23 @@ namespace LibraryViewer
 
             if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
             {
-                _pictureBoxImage.Save(saveFileDialog.FileName);
+                using (var bitmap = new Bitmap(pictureBox.ClientSize.Width, pictureBox.ClientSize.Height))
+                using (var target = Graphics.FromImage(bitmap))
+                {
+                    Draw(target);
+                    bitmap.Save(saveFileDialog.FileName);
+                }
             }
         }
 
         private void PictureBox_Resize(object sender, EventArgs e)
         {
-            _pictureBoxImage?.Dispose();
-            _pictureBoxImage = null;
+            _graphicsBuffer?.Dispose();
+            _graphicsBuffer = null;
 
             if (_activeComponent != null)
             {
-                Draw(false);
+                RequestRedraw(false);
             }
         }
 
@@ -420,7 +432,7 @@ namespace LibraryViewer
                 if (dX != 0 || dY != 0)
                 {
                     _renderer.Pan(dX, dY);
-                    Draw(true);
+                    RequestRedraw(true);
                 }
             }
             else
@@ -441,27 +453,20 @@ namespace LibraryViewer
             {
                 var scaleFactor = ModifierKeys.HasFlag(Keys.Control) ? 1e-4 : 1e-3;
                 _renderer.Scale *= 1.0f + (e.Delta * scaleFactor);
-                Draw(true);
+                RequestRedraw(true);
             }
         }
 
         private void PictureBox_Paint(object sender, PaintEventArgs e)
         {
-            if (_pictureBoxImage != null)
-            {
-                e.Graphics.DrawImageUnscaled(_pictureBoxImage, 0, 0);
-            }
-            else
-            {
-                e.Graphics.Clear(SystemColors.Control);
-            }
+            Draw(e.Graphics);
         }
 
         private void RedrawTimer_Tick(object sender, EventArgs e)
         {
             if (_activeComponent != null)
             {
-                Draw(false);
+                RequestRedraw(false);
             }
             redrawTimer.Enabled = false;
         }

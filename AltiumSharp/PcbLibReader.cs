@@ -162,14 +162,14 @@ namespace AltiumSharp
         /// <summary>
         /// Reads the component parameter information.
         /// </summary>
-        /// <param name="footprintStorage">Component footprint storage key.</param>
+        /// <param name="componentStorage">Component footprint storage key.</param>
         /// <param name="component">Component instance where the parameters will be imported into.</param>
-        private void ReadFootprintParameters(CFStorage footprintStorage, PcbComponent component)
+        private void ReadFootprintParameters(CFStorage componentStorage, PcbComponent component)
         {
             BeginContext("Parameters");
             try
             {
-                using (var reader = footprintStorage.GetStream("Parameters").GetBinaryReader())
+                using (var reader = componentStorage.GetStream("Parameters").GetBinaryReader())
                 {
                     var parameters = ReadBlock(reader, size => ReadParameters(reader, size));
                     component.ImportFromParameters(parameters);

@@ -25,7 +25,7 @@ namespace AltiumSharp.Drawing
             Part = 1;
         }
 
-        private const double FontScalingAdjust = 0.6; // value obtained empirically
+        private const double FontScalingAdjust = 0.667; // value obtained empirically
 
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace AltiumSharp.Drawing
             if (f.Bold) fontStyle |= FontStyle.Bold;
 
             var emSize = ScalePixelLength(f.Size * FontScalingAdjust);
-            return new Font(f.FontName, emSize, fontStyle);
+            return new Font(f.FontName, emSize, fontStyle, GraphicsUnit.Point);
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace AltiumSharp.Drawing
 
             var primitives = Component.GetPrimitivesOfType<SchPrimitive>();
             var orderedPrimitives = primitives
-                .Where(p => IsPrimitiveVisible(graphics, p));
+                .Where(p => IsPrimitiveVisibleInScreen(p));
             Debug.WriteLine($"Rendering {orderedPrimitives.Count()} / {primitives.Count()}");
 
             foreach (var primitive in orderedPrimitives)
@@ -140,6 +140,7 @@ namespace AltiumSharp.Drawing
                         RenderRoundedRectPrimitive(graphics, roundedRect);
                         break;
                     case ArcRecord arc:
+                        // this can handle Record11 through inheritance
                         RenderArcPrimitive(graphics, arc);
                         break;
                     case LineRecord line:
@@ -162,64 +163,24 @@ namespace AltiumSharp.Drawing
         /// <summary>
         /// Draws a bar over the text of a pin to symbolize negative logic.
         /// </summary>
-        private void DrawBar(Graphics g, string text, Font font, Pen pen, float x, float y, StringAlignment horizontalAlignment, StringAlignment verticalAlignment)
+        private void DrawOverline(Graphics g, string text, Font font, Pen pen, float x, float y,
+            StringAlignmentKind alignmentKind, StringAlignment horizontalAlignment, StringAlignment verticalAlignment)
         {
+            var overlineRanges = OverlineHelper.Parse(text);
+            if (overlineRanges.Length == 0) return;
+
             var plainText = text.Replace(@"\", "");
-            var barRanges = new List<(bool inBar, string text)>();
-            bool wasBar = false;
-            bool inBar = false;
-            bool hasBar = false;
-            int charIndex = 0;
-            int startIndex = 0;
-            foreach (var c in text)
-            {
-                if (c == '\\')
-                {
-                    if (!inBar)
-                    {
-                        var length = charIndex - 1 - startIndex;
-                        if (length > 0) barRanges.Add((false, plainText.Substring(startIndex, length)));
-                        startIndex = charIndex - 1;
-                        inBar = true;
-                        hasBar = true;
-                    }
-                    wasBar = true;
-                }
-                else 
-                {
-                    if (inBar && !wasBar)
-                    {
-                        barRanges.Add((true, plainText.Substring(startIndex, charIndex - 1 - startIndex)));
-                        startIndex = charIndex;
-                        inBar = false;
-                    }
-                    wasBar = false;
-                    charIndex++;
-                }
-            }
-            if (startIndex < plainText.Length && startIndex >= 0) barRanges.Add((inBar, plainText.Substring(startIndex)));
+            var offsetX = ScalePixelLength(0.5f);
+            var offsetY = 0.0f;
 
-            if (!hasBar) return;
-
-            var direction = 1.0f;
-            var offsetX = ScalePixelLength(2.0f);
-            var offsetY = verticalAlignment == StringAlignment.Near ? 0.0f : verticalAlignment == StringAlignment.Center ? 0.5f : 1.0f;
-            var stringSizes = barRanges.Select(r => (r.inBar, g.MeasureString(r.text, font)));
-            if (horizontalAlignment != StringAlignment.Near)
-            {
-                direction = -1.0f;
-                stringSizes = stringSizes.Reverse();
-            }
-            foreach (var ss in stringSizes)
-            {
-                if (ss.inBar)
+            var rangeBounds = DrawingUtils.CalculateTextExtent(g, plainText, x, y, font,
+                alignmentKind, horizontalAlignment, verticalAlignment, overlineRanges);
+            foreach (var bound in rangeBounds)
                 {
-                    var barY = y - (font.Size + ScalePixelLength(1.5f)) * offsetY;
-                    g.DrawLine(pen, x + offsetX * direction, barY, x + (ss.Item2.Width - offsetX) * direction, barY);
+                var inflatedBound = bound.Inflated(-offsetX, -offsetY);
+                g.DrawLine(pen, inflatedBound.X, inflatedBound.Y, inflatedBound.Right, inflatedBound.Y);
                 }
-                x += ss.Item2.Width * direction;
             }
-        }
 
         private void RenderPinPrimitive(Graphics g, PinRecord pin)
         {
@@ -232,12 +193,12 @@ namespace AltiumSharp.Drawing
             var penWidth = ScaleLineWidth(LineWidth.Small);
             using (var pen = CreatePen(pin.Color, penWidth, LineCap.Flat))
             {
-                if (pin.Flags.HasFlag(PinOptions.Rotated))
+                if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.Rotated))
                 {
                     g.RotateTransform(-90);
                 }
 
-                if (pin.Flags.HasFlag(PinOptions.Flipped))
+                if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.Flipped))
                 {
                     direction = -1.0f;
                     displayNameHorizontalAlignment = StringAlignment.Near;
@@ -249,25 +210,26 @@ namespace AltiumSharp.Drawing
             }
 
             using (var brush = new SolidBrush(pin.Color))
-            using (var font = CreateFont("Times New Roman", 11f, FontStyle.Regular))
+            using (var font = CreateFont("Times New Roman", 10f, FontStyle.Regular))
             {
-                if (pin.Flags.HasFlag(PinOptions.DisplayNameVisible))
+                if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.DisplayNameVisible))
                 {
                     var x = ScalePixelLength(-5.0f) * direction;
                     var displayName = pin.Name.Replace(@"\", "");
-                    DrawingUtils.DrawString(g, displayName, font, brush,
-                        x, 0.0f, displayNameHorizontalAlignment, StringAlignment.Center, true);
+                    DrawingUtils.DrawString(g, displayName, font, brush, x, ScalePixelLength(0.5),
+                        StringAlignmentKind.Default, displayNameHorizontalAlignment, StringAlignment.Center);
                     using (var pen = CreatePen(pin.Color, ScaleLineWidth(LineWidth.Small)))
                     {
-                        DrawBar(g, pin.Name, font, pen, x, 0.0f, displayNameHorizontalAlignment, StringAlignment.Center);
+                        DrawOverline(g, pin.Name, font, pen, x, ScalePixelLength(0.5),
+                            StringAlignmentKind.Default, displayNameHorizontalAlignment, StringAlignment.Center);
                     }
                 }
 
-                if (pin.Flags.HasFlag(PinOptions.DesignatorVisible))
+                if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.DesignatorVisible))
                 {
                     DrawingUtils.DrawString(g, pin.Designator, font, brush,
-                        ScalePixelLength(5.0f) * direction, ScalePixelLength(-1.5f),
-                        designatorHorizontalAlignment, StringAlignment.Far, true);
+                        ScalePixelLength(8.0f) * direction, 0,
+                        StringAlignmentKind.Extent, designatorHorizontalAlignment, StringAlignment.Far);
                 }
             }
         }
@@ -279,8 +241,6 @@ namespace AltiumSharp.Drawing
 
         private void RenderTextStringPrimitive(Graphics g, TextStringRecord textString)
         {
-            if (textString.IsHidden || textString.Record != 4) return;
-
             var location = ScreenFromWorld(textString.Location.X, textString.Location.Y);
             using (var brush = new SolidBrush(textString.Color))
             using (var font = CreateFont(textString.FontId))
@@ -332,8 +292,12 @@ namespace AltiumSharp.Drawing
                     verticalAlignment = StringAlignment.Far - (int)verticalAlignment;
                 }
 
-                DrawingUtils.DrawString(g, textString.Text, font, brush,
-                    0, 0, horizontalAlignment, verticalAlignment, false);
+                DrawingUtils.DrawString(g, textString.DisplayText, font, brush, 0, 0,
+                    StringAlignmentKind.Extent, horizontalAlignment, verticalAlignment);
+
+                PrimitiveScreenBounds[textString] = DrawingUtils.CalculateTextExtent(g,
+                    textString.DisplayText, font, location.X, location.Y,
+                    StringAlignmentKind.Extent, horizontalAlignment, verticalAlignment);
             }
         }
 
@@ -543,7 +507,7 @@ namespace AltiumSharp.Drawing
             {
                 var rect = ScreenFromWorld(pieChart.CalculateBounds());
                 var startAngle = (float)-pieChart.StartAngle; // GDI+ uses clockwise angles and Altium counter-clockwise
-                var sweepAngle = (float)(pieChart.StartAngle - pieChart.EndAngle);
+                var sweepAngle = -(float)Utils.NormalizeAngle(pieChart.EndAngle - pieChart.StartAngle);
                 if (pieChart.IsSolid)
                 {
                     g.FillPie(brush, Rectangle.Round(rect), startAngle, sweepAngle);
@@ -554,14 +518,21 @@ namespace AltiumSharp.Drawing
 
         private void RenderRoundedRectPrimitive(Graphics g, RoundedRectangleRecord roundedRect)
         {
+            var rect = ScreenFromWorld(roundedRect.CalculateBounds());
+            var radiusX = ScalePixelLength(roundedRect.CornerXRadius);
+            var radiusY = ScalePixelLength(roundedRect.CornerYRadius);
+
+            if (roundedRect.IsSolid)
+            {
+                using (var brush = new SolidBrush(roundedRect.AreaColor))
+                {
+                    DrawingUtils.FillRoundedRect(g, brush, rect, radiusX, radiusY);
+                }
+            }
+
             var penWidth = ScaleLineWidth(roundedRect.LineWidth);
-            using (var brush = new SolidBrush(roundedRect.AreaColor))
             using (var pen = CreatePen(roundedRect.Color, penWidth))
             {
-                var rect = ScreenFromWorld(roundedRect.CalculateBounds());
-                var radiusX = ScaleCoord(roundedRect.CornerXRadius);
-                var radiusY = ScaleCoord(roundedRect.CornerYRadius);
-                DrawingUtils.FillRoundedRect(g, brush, rect, radiusX, radiusY);
                 DrawingUtils.DrawRoundedRect(g, pen, rect, radiusX, radiusY);
             }
         }
@@ -573,7 +544,8 @@ namespace AltiumSharp.Drawing
             {
                 var rect = ScreenFromWorld(arc.CalculateBounds());
                 var startAngle = (float)-arc.StartAngle; // GDI+ uses clockwise angles and Altium counter-clockwise
-                var sweepAngle = (float)(arc.StartAngle - arc.EndAngle);
+                var isCircle = Math.Abs(Utils.NormalizeAngle(arc.EndAngle) - Utils.NormalizeAngle(arc.StartAngle)) <= 1e-5;
+                var sweepAngle = isCircle ? 360.0f : -(float)Utils.NormalizeAngle(arc.EndAngle - arc.StartAngle);
                 g.DrawArc(pen, Rectangle.Round(rect), startAngle, sweepAngle);
             }
         }

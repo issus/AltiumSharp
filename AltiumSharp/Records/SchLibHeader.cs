@@ -12,6 +12,7 @@ namespace AltiumSharp.Records
         public string Header { get; internal set; }
         public int Weight { get; internal set; }
         public int MinorVersion { get; internal set; }
+        public string UniqueId { get; internal set; }
         public List<(int Size, string FontName, int Rotation, bool Italic, bool Bold, bool Underline)> FontId { get; internal set; }
         public bool UseMbcs { get; internal set; }
         public bool IsBoc { get; internal set; }
@@ -37,6 +38,7 @@ namespace AltiumSharp.Records
             Header = p["HEADER"].AsStringOrDefault();
             Weight = p["WEIGHT"].AsIntOrDefault();
             MinorVersion = p["MINORVERSION"].AsIntOrDefault();
+            UniqueId = p["UNIQUEID"].AsStringOrDefault();
             FontId = Enumerable.Range(1, p["FONTIDCOUNT"].AsIntOrDefault())
                 .Select(i => (
                     p[string.Format(CultureInfo.InvariantCulture, "SIZE{0}", i)].AsIntOrDefault(),
@@ -76,6 +78,7 @@ namespace AltiumSharp.Records
             p.Add("HEADER", Header);
             p.Add("WEIGHT", Weight);
             p.Add("MINORVERSION", MinorVersion);
+            p.Add("UNIQUEID", UniqueId);
             p.Add("FONTIDCOUNT", FontId.Count);
             for (var i = 0; i < FontId.Count; i++)
             {

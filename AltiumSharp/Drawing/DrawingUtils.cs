@@ -5,9 +5,12 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Drawing.Imaging;
+using System.Linq;
 
 namespace AltiumSharp.Drawing
 {
+    internal enum StringAlignmentKind { Default, Tight, Extent }
+
     internal static class DrawingUtils
     {
         /// <summary>
@@ -28,7 +31,7 @@ namespace AltiumSharp.Drawing
             {
                 graphics.SmoothingMode = SmoothingMode.HighQuality;
                 graphics.InterpolationMode = InterpolationMode.HighQualityBilinear;
-                graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
+                graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
                 graphics.PixelOffsetMode = PixelOffsetMode.None;
             }
         }
@@ -162,17 +165,49 @@ namespace AltiumSharp.Drawing
             }
         }
 
-        /// <summary>
-        /// Draws a string to the given <paramref name="g"/> using narrower margins for text drawing.
-        /// </summary>
-        internal static void DrawString(Graphics g, string text, Font font, Brush brush, float x, float y,
-            StringAlignment horizontalAlignment, StringAlignment verticalAlignment, bool useTightAlignment)
+        internal static RectangleF CalculateTextExtent(Graphics g, string text, Font font, float x, float y, StringAlignmentKind alignmentKind, StringAlignment horizontalAlignment, StringAlignment verticalAlignment)
         {
-            using (var stringFormat = new StringFormat())
+            return CalculateTextExtent(g, text, x, y, font, alignmentKind, horizontalAlignment, verticalAlignment,
+                new[] { new CharacterRange(0, text.Length) }).Single();
+        }
+
+        internal static IEnumerable<RectangleF> CalculateTextExtent(Graphics g, string text, float x, float y, Font font, StringAlignmentKind alignmentKind, StringAlignment horizontalAlignment, StringAlignment verticalAlignment, CharacterRange[] characterRanges)
+        {
+            using (var stringFormat = AlignString(g, text, font, ref x, ref y, alignmentKind, horizontalAlignment, verticalAlignment))
+            {
+                stringFormat.FormatFlags = StringFormatFlags.NoClip | StringFormatFlags.NoWrap;
+                stringFormat.Trimming = StringTrimming.None;
+                stringFormat.SetMeasurableCharacterRanges(characterRanges);
+                var regions = g.MeasureCharacterRanges(text, font, new RectangleF(x, y, 0, 0), stringFormat);
+                return regions.Select(r => r.GetBounds(g));
+            }
+        }
+
+        private static StringFormat AlignString(Graphics g, string text, Font font, ref float x, ref float y, StringAlignmentKind alignmentKind, StringAlignment horizontalAlignment, StringAlignment verticalAlignment)
+        {
+            var stringFormat = new StringFormat();
+            if (alignmentKind == StringAlignmentKind.Default)
             {
                 stringFormat.Alignment = horizontalAlignment;
-                if (useTightAlignment)
+                stringFormat.LineAlignment = verticalAlignment;
+            }
+            else
+            {
+                var extent = CalculateTextExtent(g, text, font, 0, 0, StringAlignmentKind.Default, StringAlignment.Near, StringAlignment.Near);
+                switch (horizontalAlignment)
                 {
+                    case StringAlignment.Center:
+                        break;
+                    case StringAlignment.Far:
+                        x += extent.Left;
+                        break;
+                    case StringAlignment.Near:
+                        x -= extent.Left;
+                        break;
+                }
+                if (alignmentKind == StringAlignmentKind.Tight)
+                {
+                    stringFormat.Alignment = horizontalAlignment;
                     stringFormat.LineAlignment = StringAlignment.Near;
                     var fontInternalLeading = CalculateFontInternalLeading(g, font);
                     y -= fontInternalLeading;
@@ -188,10 +223,36 @@ namespace AltiumSharp.Drawing
                             break;
                     }
                 }
-                else
+                else if (alignmentKind == StringAlignmentKind.Extent)
                 {
-                    stringFormat.LineAlignment = verticalAlignment;
+                    stringFormat.Alignment = horizontalAlignment;
+                    stringFormat.LineAlignment = StringAlignment.Near;
+                    y -= extent.Top;
+                    switch (verticalAlignment)
+                    {
+                        case StringAlignment.Center:
+                            y -= extent.Height * 0.5f;
+                            break;
+                        case StringAlignment.Far:
+                            y -= extent.Height;
+                            break;
+                        case StringAlignment.Near:
+                            break;
+                    }
                 }
+            }
+
+            return stringFormat;
+        }
+
+        /// <summary>
+        /// Draws a string to the given <paramref name="g"/> using narrower margins for text drawing.
+        /// </summary>
+        internal static void DrawString(Graphics g, string text, Font font, Brush brush, float x, float y,
+             StringAlignmentKind alignmentKind = default, StringAlignment horizontalAlignment = default, StringAlignment verticalAlignment = default)
+        {
+            using (var stringFormat = AlignString(g, text, font, ref x, ref y, alignmentKind, horizontalAlignment, verticalAlignment))
+            {
                 g.DrawString(text, font, brush, x, y, stringFormat);
             }
         }
@@ -199,31 +260,21 @@ namespace AltiumSharp.Drawing
         internal static void DrawString(Graphics g, string text, Font font, Brush brush, RectangleF layoutRectangle,
             StringAlignment horizontalAlignment, StringAlignment verticalAlignment, bool clip = false, bool wrap = false)
         {
-            using (var stringFormat = new StringFormat())
+            float x = layoutRectangle.Left;
+            float y = layoutRectangle.Top;
+            using (var stringFormat = AlignString(g, text, font, ref x, ref y, StringAlignmentKind.Extent, horizontalAlignment, verticalAlignment))
             {
-                stringFormat.Alignment = horizontalAlignment;
-                stringFormat.LineAlignment = StringAlignment.Near;
+                var leadingSpace = x - layoutRectangle.X;
+                layoutRectangle.X = x;
+                layoutRectangle.Y = y;
+                layoutRectangle.Width += leadingSpace;
+
                 stringFormat.FormatFlags = StringFormatFlags.NoClip; // clipping will be done manually
                 if (!wrap)
                 {
                     stringFormat.FormatFlags |= StringFormatFlags.NoWrap;
                 }
                 stringFormat.Trimming = StringTrimming.None;
-                switch (verticalAlignment)
-                {
-                    case StringAlignment.Center:
-                        layoutRectangle.Y -= font.Size * 0.5f;
-                        break;
-                    case StringAlignment.Far:
-                        layoutRectangle.Y -= font.Size;
-                        break;
-                    case StringAlignment.Near:
-                        break;
-                }
-
-                var leadingSpace = font.Size * 0.15f;
-                layoutRectangle.X -= leadingSpace; // remove leading space in text
-                layoutRectangle.Width += leadingSpace;
 
                 var savedClip = g.Clip;
                 if (clip)
@@ -311,7 +362,7 @@ namespace AltiumSharp.Drawing
                 return path;
             }
 
-            var size = new SizeF(Math.Min(rect.Width, radiusX * 2.0f), Math.Min(rect.Height, radiusY * 2.0f));
+            var size = new SizeF(Math.Min(rect.Width - 1, radiusX * 2.0f), Math.Min(rect.Height - 1, radiusY * 2.0f));
             var arc = new RectangleF(rect.Location, size);
 
             // top left arc  

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 
 namespace AltiumSharp.BasicTypes
 {
@@ -26,6 +27,17 @@ namespace AltiumSharp.BasicTypes
 
         internal ParameterValue(string data, int level) =>
             (_data, _level) = (data, level);
+
+        /// <summary>
+        /// Checks if the parameter value can be represented as ASCII
+        /// </summary>
+        internal bool IsAscii() => Encoding.UTF8.GetByteCount(_data) == _data.Length;
+
+        /// <summary>
+        /// Gets the string representation of the UTF8 data that represents the value of this parameter.
+        /// <seealso cref="Parameter.ToString"/>
+        /// </summary>
+        internal string AsUtf8Data() => Utils.Win1252Encoding.GetString(Encoding.UTF8.GetBytes(_data));
 
         /// <summary>
         /// Gets the string representation of this parameter value.
@@ -53,6 +65,12 @@ namespace AltiumSharp.BasicTypes
         /// </summary>
         public int AsIntOrDefault(int defaultValue = default) =>
             int.TryParse(_data, Ns, Fp, out var result) ? result : defaultValue;
+
+        /// <summary>
+        /// Gets the enum value of this parameter, or a default value.
+        /// </summary>
+        public T AsEnumOrDefault<T>(T defaultValue = default) where T : Enum =>
+            (T)Enum.ToObject(typeof(T), AsIntOrDefault(Convert.ToInt32(defaultValue, CultureInfo.InvariantCulture)));
 
         /// <summary>
         /// Gets the double precision floating point value of this parameter.
@@ -216,6 +234,8 @@ namespace AltiumSharp.BasicTypes
     /// </summary>
     public readonly struct Parameter : IEquatable<Parameter>
     {
+        internal const string Utf8Prefix = "%UTF8%";
+
         public string Name { get; }
         public ParameterValue Value { get; }
 
@@ -226,8 +246,8 @@ namespace AltiumSharp.BasicTypes
         /// Returns the string representation of this parameter key, value pair.
         /// </summary>
         /// <returns></returns>
-        public override string ToString() => $"{Name}={Value}";
-
+        public override string ToString() =>
+            Value.IsAscii() ? $"{Name}={Value}" : $"{Utf8Prefix}{Name}={Value.AsUtf8Data()}|||{Name}={Value}";
 
         #region 'boilerplate'
         public override bool Equals(object obj) => obj is Parameter other && this.Equals(other);
@@ -272,10 +292,12 @@ namespace AltiumSharp.BasicTypes
         }
 
         /// <summary>
-        /// Parses the input <see cref="_data"/> and creates (key, value) pairs accordinly.
+        /// Parses the input <see cref="_data"/> and creates (key, value) pairs accordingly.
         /// </summary>
         private void ParseData()
         {
+            var ignored = new HashSet<string>();
+
             // splits data into pipe-separated properties, and then each one into key=value pairs
             var sepKeyValue = new char[] { KeyValueSeparator };
 
@@ -285,7 +307,18 @@ namespace AltiumSharp.BasicTypes
             {
                 var key = (entryKeyValue.Length > 1) ? entryKeyValue[0] : "";
                 var value = entryKeyValue.Last();
-                if (key.ToUpperInvariant() == "RECORD")
+                if (ignored.Contains(key))
+                {
+                    continue;
+                }
+                else if (key.StartsWith(Parameter.Utf8Prefix, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    key = key.Substring(Parameter.Utf8Prefix.Length);
+                    value = Encoding.UTF8.GetString(Utils.Win1252Encoding.GetBytes(value));
+                    ignored.Add(key); // ignore non-UTF8 key so this doesn't get overwritten
+                    AddData(key, value);
+                }
+                else if (key.ToUpperInvariant() == "RECORD")
                 {
                     if (string.IsNullOrEmpty(_record))
                     {
@@ -353,7 +386,13 @@ namespace AltiumSharp.BasicTypes
         /// </summary>
         public void Add(string key, int value) =>
             AddData(key, value.ToString(CultureInfo.InvariantCulture));
-                                              
+
+        /// <summary>
+        /// Adds a key with an enum value.
+        /// </summary>
+        public void Add<T>(string key, T value) where T : Enum =>
+            Add(key, Convert.ToInt32(value, CultureInfo.InvariantCulture));
+
         /// <summary>
         /// Adds a key with a double floating point value.
         /// </summary>
@@ -383,8 +422,8 @@ namespace AltiumSharp.BasicTypes
         /// </summary>
         public void Remove(string key)
         {
-            _parameters.Remove(key);
-            _keys.Remove(key);
+            _parameters.Remove(key?.ToUpperInvariant());
+            _keys.Remove(key?.ToUpperInvariant());
         }
 
         /// <summary>
@@ -395,7 +434,7 @@ namespace AltiumSharp.BasicTypes
         /// <summary>
         /// Returns the numeric index of the given <paramref name="key"/>.
         /// </summary>
-        public int IndexOf(string key) => _keys.IndexOf(key);
+        public int IndexOf(string key) => _keys.IndexOf(key?.ToUpperInvariant());
 
         /// <summary>
         /// Looks up a key from the index of it in the parameters list.
@@ -410,7 +449,7 @@ namespace AltiumSharp.BasicTypes
         {
             get
             {
-                if (TryGetValue(key?.ToUpperInvariant(), out var result))
+                if (TryGetValue(key, out var result))
                 {
                     return result.Value;
                 }
