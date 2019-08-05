@@ -117,7 +117,7 @@ namespace LibraryViewer
                 foreach (var primitive in primitives)
                 {
                     var info = primitive.GetDisplayInfo();
-                    var i = gridPcbLibPrimitives.Rows.Add(primitive.Type, info.Name, info.SizeX?.ToString(_displayUnit), info.SizeY?.ToString(_displayUnit), primitive.Layer.Name);
+                    var i = gridPcbLibPrimitives.Rows.Add(primitive.ObjectId, info.Name, info.SizeX?.ToString(_displayUnit), info.SizeY?.ToString(_displayUnit), primitive.Layer.Name);
                     gridPcbLibPrimitives.Rows[i].Tag = primitive;
                 }
                 defaultPrimitive = pcbComponent.Primitives.FirstOrDefault();
@@ -355,7 +355,7 @@ namespace LibraryViewer
             {
                 var pcbPrimitive = primitive as PcbPrimitive;
                 var primitiveIndex = pcbComponent.Primitives.IndexOf(pcbPrimitive);
-                saveFileDialog.FileName = $"pcb_{component.Name}_{primitiveIndex}_{pcbPrimitive.Type}_{pcbPrimitive.GetDisplayInfo().Name}.bin".Replace('/', '_');
+                saveFileDialog.FileName = $"pcb_{component.Name}_{primitiveIndex}_{pcbPrimitive.ObjectId}_{pcbPrimitive.GetDisplayInfo().Name}.bin".Replace('/', '_');
             }
             else if (component is SchComponent schComponent)
             {

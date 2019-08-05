@@ -228,11 +228,16 @@ namespace AltiumSharp
         /// <param name="expected">
         /// List of expected possible values that are allowed for the <paramref name="actual"/> value.
         /// </param>
-        protected void CheckValue<T>(string name, T actual, params T[] expected) where T : IEquatable<T>
+        protected bool CheckValue<T>(string name, T actual, params T[] expected) where T : IEquatable<T>
         {
             if (!expected.Any(s => EqualityComparer<T>.Default.Equals(s, actual)))
             {
                 EmitWarning($"Expected {name ?? "value"} to be {string.Join(", ", expected)}, actual value is {actual}");
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
 

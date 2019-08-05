@@ -107,36 +107,36 @@ namespace AltiumSharp
                     var primitiveStartPosition = reader.BaseStream.Position;
 
                     PcbPrimitive element = null;
-                    var type = (PcbPrimitiveType)reader.ReadByte();
-                    BeginContext(type.ToString());
-                    switch (type)
+                    var objectId = (PcbPrimitiveObjectId)reader.ReadByte();
+                    BeginContext(objectId.ToString());
+                    switch (objectId)
                     {
-                        case PcbPrimitiveType.Arc:
+                        case PcbPrimitiveObjectId.Arc:
                             element = ReadFootprintArc(reader);
                             break;
 
-                        case PcbPrimitiveType.Pad:
+                        case PcbPrimitiveObjectId.Pad:
                             element = ReadFootprintPad(reader);
                             break;
 
-                        case PcbPrimitiveType.Track:
+                        case PcbPrimitiveObjectId.Track:
                             element = ReadFootprintTrack(reader);
                             break;
 
-                        case PcbPrimitiveType.TextString:
+                        case PcbPrimitiveObjectId.Text:
                             element = ReadFootprintString(reader, unicodeText[ndxUnicodeText++]);
                             break;
 
-                        case PcbPrimitiveType.Fill:
+                        case PcbPrimitiveObjectId.Fill:
                             element = ReadFootprintRectangle(reader);
                             break;
 
-                        case PcbPrimitiveType.PolyRegion:
+                        case PcbPrimitiveObjectId.Region:
                             element = ReadFootprintPolygon(reader);
                             break;
 
-                        case PcbPrimitiveType.Unknown3:
-                        case PcbPrimitiveType.Model:
+                        case PcbPrimitiveObjectId.Via:
+                        case PcbPrimitiveObjectId.ComponentBody:
                         default:
                             // otherwise we attempt to skip the actual primitive data but still
                             // create a basic instance with just the raw data for debugging
@@ -145,7 +145,7 @@ namespace AltiumSharp
                     }
 
                     element.SetRawData(ExtractStreamData(reader, primitiveStartPosition, reader.BaseStream.Position));
-                    element.Type = type;
+                    element.ObjectId = objectId;
 
                     component.Primitives.Add(element);
 
@@ -153,6 +153,8 @@ namespace AltiumSharp
                     ndxRecord++;
                 }
             }
+
+            ReadUniqueIdPrimitiveInformation(footprintStorage, component);
 
             EndContext();
 
@@ -180,6 +182,51 @@ namespace AltiumSharp
                 EndContext();
             }
         }
+
+        private void ReadUniqueIdPrimitiveInformation(CFStorage componentStorage, PcbComponent component)
+        {
+            var uniqueIdPrimitiveInformation = componentStorage.TryGetStorage("UniqueIdPrimitiveInformation");
+            if (uniqueIdPrimitiveInformation == null) return;
+
+            BeginContext("UniqueIdPrimitiveInformation");
+            try
+            {
+                var recordCount = ReadHeader(uniqueIdPrimitiveInformation);
+
+                using (var reader = uniqueIdPrimitiveInformation.GetStream("Data").GetBinaryReader())
+                {
+                    uint actualRecordCount = 0;
+                    while (reader.BaseStream.Position < reader.BaseStream.Length)
+                    {
+                        var parameters = ReadBlock(reader, size => ReadParameters(reader, size));
+                        var primitiveIndex = parameters["PRIMITIVEINDEX"].AsIntOrDefault();
+                        var primitiveObjectId = parameters["PRIMITIVEOBJECTID"].AsStringOrDefault();
+                        var uniqueId = parameters["UNIQUEID"].AsStringOrDefault();
+
+                        if (!CheckValue("PRIMITIVEINDEX < Primitives.Count", primitiveIndex < component.Primitives.Count, true))
+                        {
+                            return;
+                        }
+
+                        var primitive = component.Primitives[primitiveIndex];
+
+                        if (!CheckValue(nameof(primitiveObjectId), primitiveObjectId, primitive.ObjectId.ToString()))
+                        {
+                            return;
+                        }
+
+                        primitive.UniqueId = uniqueId;
+                        actualRecordCount++;
+                    }
+                    AssertValue(nameof(actualRecordCount), actualRecordCount, recordCount);
+                }
+            }
+            finally
+            {
+                EndContext();
+            }
+        }
+
 
         /// <summary>
         /// Asserts that the next bytes are a sequence of 10 bytes with the <c>0xFF</c> value.
