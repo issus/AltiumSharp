@@ -30,7 +30,7 @@ namespace AltiumSharp
         /// List of model information read from the library, including positioning parameters
         /// and the raw model data.
         /// </summary>
-        public Dictionary<string, (ParameterCollection, byte[])> Models { get; private set; }
+        public Dictionary<string, (ParameterCollection positioning, string step)> Models { get; private set; }
 
         public PcbLibReader(string fileName) : base(fileName)
         {
@@ -510,11 +510,11 @@ namespace AltiumSharp
         /// </summary>
         /// <param name="library">Storage where to look for the models data.</param>
         /// <returns>Returns model positioning parameters and its raw binary data.</returns>
-        private Dictionary<string, (ParameterCollection, byte[])> ReadLibraryModels(CFStorage library)
+        private Dictionary<string, (ParameterCollection, string)> ReadLibraryModels(CFStorage library)
         {
             BeginContext("Models");
 
-            var result = new Dictionary<string, (ParameterCollection, byte[])>();
+            var result = new Dictionary<string, (ParameterCollection, string)>();
             var models = library.GetStorage("Models");
             var recordCount = ReadHeader(models);
             using (var reader = models.GetStream("Data").GetBinaryReader())
@@ -522,13 +522,22 @@ namespace AltiumSharp
                 for (var i = 0; i < recordCount; ++i)
                 {
                     var parameters = ReadBlock(reader, size => ReadParameters(reader, size));
-
                     var modelName = parameters["NAME"].AsString();
-                    var modelData = models.GetStream($"{i}").GetData();
-                    // TODO: parse and store models
+                    var modelCompressedData = models.GetStream($"{i}").GetData();
+
+                    // models are stored as ASCII STEP files but using zlib compression
+                    var stepModel = ParseCompressedZlibData(modelCompressedData, stream =>
+                    {
+                        using (var modelReader = new StreamReader(stream, Encoding.ASCII))
+                        {
+                            return modelReader.ReadToEnd();
+                        }
+                    });
+
+                    // TODO: parse STEP models
                     if (!result.ContainsKey(modelName))
                     {
-                        result.Add(parameters["NAME"].AsString(), (parameters, modelData));
+                        result.Add(parameters["NAME"].AsString(), (parameters, stepModel));
                     }
                     else
                     {
