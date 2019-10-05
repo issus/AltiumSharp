@@ -7,14 +7,13 @@ using AltiumSharp.BasicTypes;
 
 namespace AltiumSharp.Records
 {
-    public class Record31 : SchPrimitive
+    public class SheetRecord : SchPrimitive
     {
-        public int Weight { get; internal set; }
-        public int MinorVersion { get; internal set; }
         public List<(int Size, string FontName, int Rotation, bool Italic, bool Bold, bool Underline)> FontId { get; internal set; }
         public bool UseMbcs { get; internal set; }
         public bool IsBoc { get; internal set; }
         public int SheetStyle { get; internal set; }
+        public int SystemFont { get; internal set; }
         public bool BorderOn { get; internal set; }
         public int SheetNumberSpaceSize { get; internal set; }
         public Color AreaColor { get; internal set; }
@@ -33,8 +32,6 @@ namespace AltiumSharp.Records
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             base.ImportFromParameters(p);
-            Weight = p["WEIGHT"].AsIntOrDefault();
-            MinorVersion = p["MINORVERSION"].AsIntOrDefault();
             FontId = Enumerable.Range(1, p["FONTIDCOUNT"].AsIntOrDefault())
                 .Select(i => (
                     p[string.Format(CultureInfo.InvariantCulture, "SIZE{0}", i)].AsIntOrDefault(),
@@ -47,6 +44,7 @@ namespace AltiumSharp.Records
             UseMbcs = p["USEMBCS"].AsBool();
             IsBoc = p["ISBOC"].AsBool();
             SheetStyle = p["SHEETSTYLE"].AsIntOrDefault();
+            SystemFont = p["SYSTEMFONT"].AsIntOrDefault(1);
             BorderOn = p["BORDERON"].AsBool();
             SheetNumberSpaceSize = p["SHEETNUMBERSPACESIZE"].AsIntOrDefault();
             AreaColor = p["AREACOLOR"].AsColorOrDefault();
@@ -66,8 +64,6 @@ namespace AltiumSharp.Records
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             base.ExportToParameters(p);
-            p.Add("WEIGHT", Weight);
-            p.Add("MINORVERSION", MinorVersion);
             p.Add("FONTIDCOUNT", FontId.Count);
             for (var i = 0; i < FontId.Count; i++)
             {
@@ -81,6 +77,7 @@ namespace AltiumSharp.Records
             p.Add("USEMBCS", UseMbcs);
             p.Add("ISBOC", IsBoc);
             p.Add("SHEETSTYLE", SheetStyle);
+            p.Add("SYSTEMFONT", SystemFont);
             p.Add("BORDERON", BorderOn);
             p.Add("SHEETNUMBERSPACESIZE", SheetNumberSpaceSize);
             p.Add("AREACOLOR", AreaColor);

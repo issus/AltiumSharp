@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using AltiumSharp.BasicTypes;
 using AltiumSharp.Records;
+using IContainer = AltiumSharp.IContainer;
 using IComponent = AltiumSharp.IComponent;
 
 namespace LibraryViewer
@@ -29,8 +30,8 @@ namespace LibraryViewer
         private BufferedGraphics _graphicsBuffer;
         private bool _fastRendering;
 
-        private List<IComponent> _components;
-        private IComponent _activeComponent;
+        private List<IContainer> _containers;
+        private IContainer _activeContainer;
         private IEnumerable<Primitive> _activePrimitives;
         private Unit _displayUnit;
         private Coord _snapGridSize;
@@ -45,12 +46,12 @@ namespace LibraryViewer
                 null, pictureBox, new object[] { true });
         }
 
-        private void LoadComponents(string fileName)
+        private void LoadFromFile(string fileName)
         {
             _loading = true;
             try
             {
-                SetActiveComponent(null);
+                SetActiveContainer(null);
                 if (_propertyViewer != null)
                 {
                     _propertyViewer.Close();
@@ -76,7 +77,7 @@ namespace LibraryViewer
 
                         _displayUnit = reader.Header.DisplayUnit;
                         _snapGridSize = reader.Header.SnapGridSize;
-                        _components = reader.Components.Cast<IComponent>().ToList();
+                        _containers = reader.Components.Cast<IContainer>().ToList();
                         _renderer = new PcbLibRenderer();
                     }
                 }
@@ -95,12 +96,39 @@ namespace LibraryViewer
 
                         _displayUnit = reader.Header.DisplayUnit;
                         _snapGridSize = reader.Header.SnapGridSize;
-                        _components = reader.Components.Cast<IComponent>().ToList();
-                        _renderer = new SchLibRenderer(reader.Header, reader.EmbeddedImages);
+                        _containers = reader.Components.Cast<IContainer>().ToList();
+
+                        using (var assetsReader = new SchLibReader("assets.schlib"))
+                        {
+                            assetsReader.Read();
+                            _renderer = new SchLibRenderer(reader.Header, reader.EmbeddedImages, assetsReader.Components);
+                        }
+                    }
+                }
+                else if (Path.GetExtension(fileName).Equals(".schdoc", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    tabComponents.SelectTab(tabSchLib);
+                    using (var reader = new SchDocReader(fileName))
+                    {
+                        reader.Read();
+
+                        var index = gridSchLibComponents.Rows.Add(fileName);
+                        gridSchLibComponents.Rows[index].Tag = reader.Root;
+
+                        var sheet = reader.Root.GetPrimitivesOfType<SheetRecord>().Single();
+                        _displayUnit = sheet.DisplayUnit;
+                        _snapGridSize = sheet.SnapGridSize;
+                        _containers = new List<IContainer> { reader.Root };
+
+                        using (var assetsReader = new SchLibReader("e:/Shared/assets.schlib"))
+                        {
+                            assetsReader.Read();
+                            _renderer = new SchLibRenderer(sheet, reader.EmbeddedImages, assetsReader.Components);
+                        }
                     }
                 }
 
-                SetActiveComponent(_components.FirstOrDefault());
+                SetActiveContainer(_containers.FirstOrDefault());
             }
             finally
             {
@@ -108,7 +136,7 @@ namespace LibraryViewer
             }
         }
 
-        private void LoadPrimitives(IComponent component, bool activateFirst = false)
+        private void LoadPrimitives(IContainer component, bool activateFirst = false)
         {
             Primitive defaultPrimitive = null;
             if (component is PcbComponent pcbComponent)
@@ -144,7 +172,7 @@ namespace LibraryViewer
 
         private void Draw(Graphics target)
         {
-            if (_activeComponent == null)
+            if (_activeContainer == null)
             {
                 _renderer = null;
             }
@@ -155,7 +183,7 @@ namespace LibraryViewer
                 return;
             }
 
-            _renderer.Component = _activeComponent;
+            _renderer.Component = _activeContainer;
             if (_graphicsBuffer == null) _graphicsBuffer = BufferedGraphicsManager.Current.Allocate(CreateGraphics(), new Rectangle(0, 0, pictureBox.Width, pictureBox.Height));
             _renderer.Render(_graphicsBuffer.Graphics, pictureBox.Width, pictureBox.Height, _autoZoom, _fastRendering);
             _autoZoom = false;
@@ -193,25 +221,28 @@ namespace LibraryViewer
             _propertyViewer.Focus();
         }
 
-        private void SetActiveComponent(IComponent component)
+        private void SetActiveContainer(IContainer component)
         {
-            _activeComponent = component;
+            _activeContainer = component;
             _autoZoom = true;
 
             panelPart.Visible = false;
             gridPcbLibPrimitives.Rows.Clear();
             gridSchLibPrimitives.Rows.Clear();
 
-            if (_activeComponent != null)
+            if (_activeContainer != null)
             {
-                LoadPrimitives(_activeComponent);
+                LoadPrimitives(_activeContainer);
 
-                if (_activeComponent is SchComponent schComponent)
+                if (_activeContainer is SchComponent schComponent)
                 {
                     panelPart.Visible = schComponent.PartCount > 1;
-                    editPart.Maximum = schComponent.PartCount;
-                    editPart.Value = 1;
-                    labelPartTotal.Text = $"of {editPart.Maximum}";
+                    if (panelPart.Visible)
+                    {
+                        editPart.Maximum = schComponent.PartCount;
+                        editPart.Value = 1;
+                        labelPartTotal.Text = $"of {editPart.Maximum}";
+                    }
                 }
             }
             else
@@ -238,7 +269,7 @@ namespace LibraryViewer
         {
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                LoadComponents(openFileDialog.FileName);
+                LoadFromFile(openFileDialog.FileName);
             }
         }
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -251,7 +282,7 @@ namespace LibraryViewer
             if (_loading || gridPcbLibComponents.SelectedRows.Count == 0) return;
 
             var component = (PcbComponent)gridPcbLibComponents.Rows[gridPcbLibComponents.SelectedRows[0].Index].Tag;
-            SetActiveComponent(component);
+            SetActiveContainer(component);
         }
 
         private void GridSchLibComponents_RowEnter(object sender, DataGridViewCellEventArgs e)
@@ -259,7 +290,7 @@ namespace LibraryViewer
             if (_loading || gridSchLibComponents.SelectedRows.Count == 0) return;
 
             var component = (SchComponent)gridSchLibComponents.Rows[gridSchLibComponents.SelectedRows[0].Index].Tag;
-            SetActiveComponent(component);
+            SetActiveContainer(component);
         }
 
         private void GridPcbLibPrimitives_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
@@ -334,10 +365,18 @@ namespace LibraryViewer
 
         private void ExportFootprintToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            if (_activeComponent == null) return;
+            if (_activeContainer == null) return;
 
-            var component = _activeComponent;
-            var streamPath = $"{component.Name.Replace('/', '_')}/Data";
+            var container = _activeContainer;
+            string streamPath;
+            if (container is IComponent component)
+            {
+                streamPath = $"{component.Name.Replace('/', '_')}/Data";
+            }
+            else
+            {
+                streamPath = "FileHeader";
+            }
             saveFileDialog.FileName = streamPath.Replace('/', '_') + ".bin";
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -347,21 +386,21 @@ namespace LibraryViewer
 
         private void ExportPrimitiveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_activeComponent == null || (_activePrimitives?.Count() != 1)) return;
+            if (_activeContainer == null || (_activePrimitives?.Count() != 1)) return;
 
-            var component = _activeComponent;
+            var container = _activeContainer;
             var primitive = _activePrimitives.First();
-            if (component is PcbComponent pcbComponent)
+            if (container is PcbComponent pcbComponent)
             {
                 var pcbPrimitive = primitive as PcbPrimitive;
                 var primitiveIndex = pcbComponent.Primitives.IndexOf(pcbPrimitive);
-                saveFileDialog.FileName = $"pcb_{component.Name}_{primitiveIndex}_{pcbPrimitive.ObjectId}_{pcbPrimitive.GetDisplayInfo().Name}.bin".Replace('/', '_');
+                saveFileDialog.FileName = $"pcb_{pcbComponent.Name}_{primitiveIndex}_{pcbPrimitive.ObjectId}_{pcbPrimitive.GetDisplayInfo().Name}.bin".Replace('/', '_');
             }
-            else if (component is SchComponent schComponent)
+            else if (container is SchComponent schComponent)
             {
                 var schPrimitive = primitive as SchPrimitive;
                 var primitiveIndex = schComponent.Primitives.IndexOf(schPrimitive);
-                saveFileDialog.FileName = $"sch_{component.Name}_{primitiveIndex}_{schPrimitive.Record}.bin".Replace('/', '_');
+                saveFileDialog.FileName = $"sch_{schComponent.Name}_{primitiveIndex}_{schPrimitive.Record}.bin".Replace('/', '_');
             }
             else
             {
@@ -376,11 +415,11 @@ namespace LibraryViewer
 
         private void ExportImageToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_activeComponent == null || _graphicsBuffer == null) return;
+            if (_activeContainer == null || _graphicsBuffer == null) return;
 
-            var component = _activeComponent;
-            var streamPath = $"{component.Name.Replace('/', '_')}/Data";
-            saveFileDialog.FileName = streamPath.Replace('/', '_') + ".jpg";
+            var container = _activeContainer;
+
+            saveFileDialog.FileName = Path.ChangeExtension(openFileDialog.FileName, ".png");
 
             if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
             {
@@ -398,7 +437,7 @@ namespace LibraryViewer
             _graphicsBuffer?.Dispose();
             _graphicsBuffer = null;
 
-            if (_activeComponent != null)
+            if (_activeContainer != null)
             {
                 RequestRedraw(false);
             }
@@ -422,7 +461,7 @@ namespace LibraryViewer
 
         private void PictureBox_MouseMove(object sender, MouseEventArgs e)
         {
-            if (_activeComponent == null) return;
+            if (_activeContainer == null) return;
 
             if (e.Button == MouseButtons.Right && !_mouseLocation.IsEmpty)
             {
@@ -449,7 +488,7 @@ namespace LibraryViewer
 
         private void PictureBox_MouseWheel(object sender, MouseEventArgs e)
         {
-            if (_activeComponent != null)
+            if (_activeContainer != null)
             {
                 var scaleFactor = ModifierKeys.HasFlag(Keys.Control) ? 1e-4 : 1e-3;
                 _renderer.Scale *= 1.0f + (e.Delta * scaleFactor);
@@ -464,7 +503,7 @@ namespace LibraryViewer
 
         private void RedrawTimer_Tick(object sender, EventArgs e)
         {
-            if (_activeComponent != null)
+            if (_activeContainer != null)
             {
                 RequestRedraw(false);
             }
