@@ -120,7 +120,7 @@ namespace LibraryViewer
                         _snapGridSize = sheet.SnapGridSize;
                         _containers = new List<IContainer> { reader.Root };
 
-                        using (var assetsReader = new SchLibReader("e:/Shared/assets.schlib"))
+                        using (var assetsReader = new SchLibReader("assets.schlib"))
                         {
                             assetsReader.Read();
                             _renderer = new SchLibRenderer(sheet, reader.EmbeddedImages, assetsReader.Components);
