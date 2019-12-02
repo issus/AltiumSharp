@@ -2,16 +2,17 @@
 
 namespace AltiumSharp.Records
 {
-    public enum PcbPrimitiveType
+    public enum PcbPrimitiveObjectId
     {
+        NoObject,
         Arc = 1,
         Pad,
-        Unknown3,
+        Via,
         Track,
-        TextString,
+        Text,
         Fill,
-        PolyRegion = 11,
-        Model
+        Region = 11,
+        ComponentBody
     }
 
     public class PcbPrimitiveDisplayInfo
@@ -28,13 +29,15 @@ namespace AltiumSharp.Records
     {
         public virtual PcbPrimitiveDisplayInfo GetDisplayInfo() => new PcbPrimitiveDisplayInfo();
 
-        public PcbPrimitiveType Type { get; internal set; }
+        public PcbPrimitiveObjectId ObjectId { get; internal set; }
 
         public Layer Layer { get; internal set; }
 
         public ushort Flags { get; internal set; }
 
         public bool IsLocked => (Flags & 0x0004) != 0x0004; // TODO: add constant
+
+        public string UniqueId { get; internal set; }
 
         public override CoordRect CalculateBounds() => CoordRect.Empty;
     }

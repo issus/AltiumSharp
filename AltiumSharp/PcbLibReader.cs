@@ -22,6 +22,11 @@ namespace AltiumSharp
         public PcbLibHeader Header { get; private set; }
 
         /// <summary>
+        /// UniqueId from the binary FileHeader entry
+        /// </summary>
+        public string UniqueId { get; private set; }
+
+        /// <summary>
         /// List of components read from the library.
         /// </summary>
         public List<PcbComponent> Components { get; }
@@ -30,7 +35,7 @@ namespace AltiumSharp
         /// List of model information read from the library, including positioning parameters
         /// and the raw model data.
         /// </summary>
-        public Dictionary<string, (ParameterCollection, byte[])> Models { get; private set; }
+        public Dictionary<string, (ParameterCollection positioning, string step)> Models { get; private set; }
 
         public PcbLibReader(string fileName) : base(fileName)
         {
@@ -67,6 +72,7 @@ namespace AltiumSharp
 
         protected override void DoRead()
         {
+            ReadFileHeader();
             ReadLibrary();
         }
 
@@ -107,36 +113,36 @@ namespace AltiumSharp
                     var primitiveStartPosition = reader.BaseStream.Position;
 
                     PcbPrimitive element = null;
-                    var type = (PcbPrimitiveType)reader.ReadByte();
-                    BeginContext(type.ToString());
-                    switch (type)
+                    var objectId = (PcbPrimitiveObjectId)reader.ReadByte();
+                    BeginContext(objectId.ToString());
+                    switch (objectId)
                     {
-                        case PcbPrimitiveType.Arc:
+                        case PcbPrimitiveObjectId.Arc:
                             element = ReadFootprintArc(reader);
                             break;
 
-                        case PcbPrimitiveType.Pad:
+                        case PcbPrimitiveObjectId.Pad:
                             element = ReadFootprintPad(reader);
                             break;
 
-                        case PcbPrimitiveType.Track:
+                        case PcbPrimitiveObjectId.Track:
                             element = ReadFootprintTrack(reader);
                             break;
 
-                        case PcbPrimitiveType.TextString:
+                        case PcbPrimitiveObjectId.Text:
                             element = ReadFootprintString(reader, unicodeText[ndxUnicodeText++]);
                             break;
 
-                        case PcbPrimitiveType.Fill:
+                        case PcbPrimitiveObjectId.Fill:
                             element = ReadFootprintRectangle(reader);
                             break;
 
-                        case PcbPrimitiveType.PolyRegion:
+                        case PcbPrimitiveObjectId.Region:
                             element = ReadFootprintPolygon(reader);
                             break;
 
-                        case PcbPrimitiveType.Unknown3:
-                        case PcbPrimitiveType.Model:
+                        case PcbPrimitiveObjectId.Via:
+                        case PcbPrimitiveObjectId.ComponentBody:
                         default:
                             // otherwise we attempt to skip the actual primitive data but still
                             // create a basic instance with just the raw data for debugging
@@ -145,7 +151,7 @@ namespace AltiumSharp
                     }
 
                     element.SetRawData(ExtractStreamData(reader, primitiveStartPosition, reader.BaseStream.Position));
-                    element.Type = type;
+                    element.ObjectId = objectId;
 
                     component.Primitives.Add(element);
 
@@ -153,6 +159,8 @@ namespace AltiumSharp
                     ndxRecord++;
                 }
             }
+
+            ReadUniqueIdPrimitiveInformation(footprintStorage, component);
 
             EndContext();
 
@@ -180,6 +188,51 @@ namespace AltiumSharp
                 EndContext();
             }
         }
+
+        private void ReadUniqueIdPrimitiveInformation(CFStorage componentStorage, PcbComponent component)
+        {
+            var uniqueIdPrimitiveInformation = componentStorage.TryGetStorage("UniqueIdPrimitiveInformation");
+            if (uniqueIdPrimitiveInformation == null) return;
+
+            BeginContext("UniqueIdPrimitiveInformation");
+            try
+            {
+                var recordCount = ReadHeader(uniqueIdPrimitiveInformation);
+
+                using (var reader = uniqueIdPrimitiveInformation.GetStream("Data").GetBinaryReader())
+                {
+                    uint actualRecordCount = 0;
+                    while (reader.BaseStream.Position < reader.BaseStream.Length)
+                    {
+                        var parameters = ReadBlock(reader, size => ReadParameters(reader, size));
+                        var primitiveIndex = parameters["PRIMITIVEINDEX"].AsIntOrDefault();
+                        var primitiveObjectId = parameters["PRIMITIVEOBJECTID"].AsStringOrDefault();
+                        var uniqueId = parameters["UNIQUEID"].AsStringOrDefault();
+
+                        if (!CheckValue("PRIMITIVEINDEX < Primitives.Count", primitiveIndex < component.Primitives.Count, true))
+                        {
+                            return;
+                        }
+
+                        var primitive = component.Primitives[primitiveIndex];
+
+                        if (!CheckValue(nameof(primitiveObjectId), primitiveObjectId, primitive.ObjectId.ToString()))
+                        {
+                            return;
+                        }
+
+                        primitive.UniqueId = uniqueId;
+                        actualRecordCount++;
+                    }
+                    AssertValue(nameof(actualRecordCount), actualRecordCount, recordCount);
+                }
+            }
+            finally
+            {
+                EndContext();
+            }
+        }
+
 
         /// <summary>
         /// Asserts that the next bytes are a sequence of 10 bytes with the <c>0xFF</c> value.
@@ -463,11 +516,11 @@ namespace AltiumSharp
         /// </summary>
         /// <param name="library">Storage where to look for the models data.</param>
         /// <returns>Returns model positioning parameters and its raw binary data.</returns>
-        private Dictionary<string, (ParameterCollection, byte[])> ReadLibraryModels(CFStorage library)
+        private Dictionary<string, (ParameterCollection, string)> ReadLibraryModels(CFStorage library)
         {
             BeginContext("Models");
 
-            var result = new Dictionary<string, (ParameterCollection, byte[])>();
+            var result = new Dictionary<string, (ParameterCollection, string)>();
             var models = library.GetStorage("Models");
             var recordCount = ReadHeader(models);
             using (var reader = models.GetStream("Data").GetBinaryReader())
@@ -475,13 +528,22 @@ namespace AltiumSharp
                 for (var i = 0; i < recordCount; ++i)
                 {
                     var parameters = ReadBlock(reader, size => ReadParameters(reader, size));
-
                     var modelName = parameters["NAME"].AsString();
-                    var modelData = models.GetStream($"{i}").GetData();
-                    // TODO: parse and store models
+                    var modelCompressedData = models.GetStream($"{i}").GetData();
+
+                    // models are stored as ASCII STEP files but using zlib compression
+                    var stepModel = ParseCompressedZlibData(modelCompressedData, stream =>
+                    {
+                        using (var modelReader = new StreamReader(stream, Encoding.ASCII))
+                        {
+                            return modelReader.ReadToEnd();
+                        }
+                    });
+
+                    // TODO: parse STEP models
                     if (!result.ContainsKey(modelName))
                     {
-                        result.Add(parameters["NAME"].AsString(), (parameters, modelData));
+                        result.Add(parameters["NAME"].AsString(), (parameters, stepModel));
                     }
                     else
                     {
@@ -516,6 +578,23 @@ namespace AltiumSharp
                     var sectionKey = GetSectionKeyFromRefName(refName);
                     Components.Add(ReadFootprint(sectionKey));
                 }
+            }
+        }
+
+        private void ReadFileHeader()
+        {
+            var data = Cf.TryGetStream("FileHeader");
+            if (data == null) return;
+
+            using (var header = data.GetBinaryReader())
+            {
+                // for some reason this is different than a StringBlock as the
+                // initial block length is the same as the short string length
+                var pcbBinaryFileVersionTextLength = header.ReadInt32();
+                var pcbBinaryFileVersionText = ReadPascalShortString(header);
+                ReadPascalShortString(header); // TODO: Unknown
+                ReadPascalShortString(header); // TODO: Unknown
+                UniqueId = ReadPascalShortString(header);
             }
         }
 

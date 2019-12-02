@@ -13,20 +13,21 @@ namespace AltiumSharp.Drawing
 {
     public sealed class SchLibRenderer : Renderer
     {
-        private SchLibHeader _header;
+        private SheetRecord _sheet;
         private Dictionary<string, Image> _embeddedImages;
+        private List<SchComponent> _assets;
 
         public int Part { get; set; }
 
-        public SchLibRenderer(SchLibHeader header, Dictionary<string, Image> embeddedImages)
+        public SchLibRenderer(SheetRecord sheet, Dictionary<string, Image> embeddedImages, List<SchComponent> assets)
         {
-            _header = header;
+            _sheet = sheet;
             _embeddedImages = embeddedImages;
+            _assets = assets;
             Part = 1;
         }
 
         private const double FontScalingAdjust = 0.667; // value obtained empirically
-
 
         /// <summary>
         /// Creates a font from a <paramref name="fontId"/> value.
@@ -35,7 +36,8 @@ namespace AltiumSharp.Drawing
         /// <returns></returns>
         private Font CreateFont(int fontId)
         {
-            var f = _header.FontId[fontId - 1];
+            if (fontId == 0) fontId = _sheet.SystemFont;
+            var f = _sheet.FontId[fontId - 1];
             var fontStyle = FontStyle.Regular;
             if (f.Italic) fontStyle |= FontStyle.Italic;
             if (f.Bold) fontStyle |= FontStyle.Bold;
@@ -44,17 +46,9 @@ namespace AltiumSharp.Drawing
             return new Font(f.FontName, emSize, fontStyle, GraphicsUnit.Point);
         }
 
-        /// <summary>
-        /// Creates a font from the given parameters.
-        /// </summary>
-        /// <param name="familyName">Font family name.</param>
-        /// <param name="fontSize">Font size.</param>
-        /// <param name="fontStyle">Font style.</param>
-        /// <returns></returns>
-        private Font CreateFont(string familyName, float fontSize, FontStyle fontStyle)
+        private IEnumerable<SchPrimitive> GetAsset(string name)
         {
-            var emSize = ScalePixelLength(fontSize * FontScalingAdjust);
-            return new Font(familyName, emSize, fontStyle);
+            return _assets.SingleOrDefault(c => c.Name == name)?.Primitives.Where(p => p.IsVisible);
         }
 
         /// <summary>
@@ -74,6 +68,22 @@ namespace AltiumSharp.Drawing
                 default:
                     return 0.0f;
             }
+        }
+
+        private static RectangleF CalculateScreenBounds(Graphics g, in RectangleF bounds)
+        {
+            var points = new PointF[] {
+                new PointF(bounds.Left, bounds.Top),
+                new PointF(bounds.Right, bounds.Top),
+                new PointF(bounds.Right, bounds.Bottom),
+                new PointF(bounds.Left, bounds.Bottom),
+            };
+            g.Transform.TransformPoints(points);
+            var minX = points.Min(p => p.X);
+            var minY = points.Min(p => p.Y);
+            var maxX = points.Max(p => p.X);
+            var maxY = points.Max(p => p.Y);
+            return new RectangleF(minX, minY, maxX - minX, maxY - minY);
         }
 
         /// <summary>
@@ -98,7 +108,14 @@ namespace AltiumSharp.Drawing
                 .Where(p => IsPrimitiveVisibleInScreen(p));
             Debug.WriteLine($"Rendering {orderedPrimitives.Count()} / {primitives.Count()}");
 
-            foreach (var primitive in orderedPrimitives)
+            RenderPrimitives(graphics, fastRendering, orderedPrimitives);
+        }
+
+        private void RenderPrimitives(Graphics graphics, bool fastRendering, IEnumerable<SchPrimitive> primitives)
+        {
+            if (primitives == null) return;
+
+            foreach (var primitive in primitives)
             {
                 // using Graphics.BeginContainer() instead of Graphics.Save() because
                 // the former saves the previous transform as the default, and we
@@ -149,8 +166,14 @@ namespace AltiumSharp.Drawing
                     case RectangleRecord rectangle:
                         RenderRectanglePrimitive(graphics, rectangle);
                         break;
+                    case PowerPortRecord powerPort:
+                        RenderPowerPortPrimitive(graphics, powerPort);
+                        break;
                     case TextFrameRecord textFrame:
                         RenderTextFramePrimitive(graphics, textFrame);
+                        break;
+                    case JunctionRecord junction:
+                        RenderJunctionPrimitive(graphics, junction);
                         break;
                     case ImageRecord image:
                         RenderImagePrimitive(graphics, image);
@@ -158,6 +181,40 @@ namespace AltiumSharp.Drawing
                 }
                 graphics.EndContainer(graphicsContainer);
             }
+        }
+
+        private void RenderAt(Graphics graphics, bool fastRendering, CoordPoint location, float angle, Action callback)
+        {
+            var center = Center;
+            try
+            {
+                Center = new CoordPoint(center.X - location.X, center.Y - location.Y);
+
+                var graphicsContainer = graphics.BeginContainer();
+                DrawingUtils.SetupGraphics(graphics, fastRendering);
+
+                using (var matrix = new Matrix())
+                {
+                    matrix.RotateAt(angle, ScreenFromWorld(0, 0));
+                    graphics.MultiplyTransform(matrix);
+                }
+
+                callback();
+
+                graphics.EndContainer(graphicsContainer);
+            }
+            finally
+            {
+                Center = center;
+            }
+        }
+
+        private void RenderPrimitivesAt(Graphics graphics, bool fastRendering, CoordPoint location, float angle, IEnumerable<SchPrimitive> primitives)
+        {
+            RenderAt(graphics, fastRendering, location, angle, () =>
+            {
+                RenderPrimitives(graphics, fastRendering, primitives);
+            });
         }
 
         /// <summary>
@@ -176,11 +233,11 @@ namespace AltiumSharp.Drawing
             var rangeBounds = DrawingUtils.CalculateTextExtent(g, plainText, x, y, font,
                 alignmentKind, horizontalAlignment, verticalAlignment, overlineRanges);
             foreach (var bound in rangeBounds)
-                {
+            {
                 var inflatedBound = bound.Inflated(-offsetX, -offsetY);
                 g.DrawLine(pen, inflatedBound.X, inflatedBound.Y, inflatedBound.Right, inflatedBound.Y);
-                }
             }
+        }
 
         private void RenderPinPrimitive(Graphics g, PinRecord pin)
         {
@@ -210,7 +267,7 @@ namespace AltiumSharp.Drawing
             }
 
             using (var brush = new SolidBrush(pin.Color))
-            using (var font = CreateFont("Times New Roman", 10f, FontStyle.Regular))
+            using (var font = CreateFont(0))
             {
                 if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.DisplayNameVisible))
                 {
@@ -292,13 +349,52 @@ namespace AltiumSharp.Drawing
                     verticalAlignment = StringAlignment.Far - (int)verticalAlignment;
                 }
 
-                DrawingUtils.DrawString(g, textString.DisplayText, font, brush, 0, 0,
-                    StringAlignmentKind.Extent, horizontalAlignment, verticalAlignment);
+                var displayText = ProcessStringIndirection(textString, textString.DisplayText);
 
-                PrimitiveScreenBounds[textString] = DrawingUtils.CalculateTextExtent(g,
-                    textString.DisplayText, font, location.X, location.Y,
+                DrawingUtils.DrawString(g, displayText, font, brush, 0, 0,
                     StringAlignmentKind.Extent, horizontalAlignment, verticalAlignment);
+                              
+                PrimitiveScreenBounds[textString] = CalculateScreenBounds(g,
+                    DrawingUtils.CalculateTextExtent(g, displayText, font, 0, 0,
+                        StringAlignmentKind.Extent, horizontalAlignment, verticalAlignment)); ;
             }
+        }
+
+        private string ProcessStringIndirection(SchPrimitive primitive, string displayText)
+        {
+            if (!displayText.StartsWith("=", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return displayText;
+            }
+
+            // TODO: support predefined special strings like =CurrentDate, =CurrentTime, =DocumentFullPathAndName, etc
+            // https://www.altium.com/documentation/18.0/display/ADES/Sch_Obj-Parameter((Parameter))_AD#!Parameter-SchematicPredefinedSpecialStrings
+            var parameterName = displayText.Substring(1);
+            var parameter = FindParameter(primitive, parameterName);
+
+            // if no parameter was found then display the string indirection parameter name
+            return parameter?.DisplayText ?? parameterName;
+        }
+
+        private Record41 FindParameter(SchPrimitive primitive, string parameterName)
+        {
+            Record41 parameterRecord = null;
+            while (parameterRecord == null && primitive != null)
+            {
+                parameterRecord = FindParameterInContainer(primitive, parameterName);
+                primitive = primitive.Owner as SchPrimitive;
+            }
+
+            // fallback to document parameters
+            if (primitive == null) parameterRecord = FindParameterInContainer(Component, parameterName);
+
+            return parameterRecord;
+        }
+
+        private static Record41 FindParameterInContainer(IContainer container, string parameterName)
+        {
+            return container.GetPrimitivesOfType<Record41>(false)
+                .FirstOrDefault(p => p.Name.ToUpperInvariant() == parameterName.ToUpperInvariant());
         }
 
         private void RenderBezierPrimitive(Graphics g, BezierRecord bezier)
@@ -490,11 +586,16 @@ namespace AltiumSharp.Drawing
         private void RenderEllipsePrimitive(Graphics g, EllipseRecord ellipse)
         {
             var penWidth = ScaleLineWidth(ellipse.LineWidth);
-            using (var brush = new SolidBrush(ellipse.AreaColor))
             using (var pen = CreatePen(ellipse.Color, penWidth))
             {
-                var rect = ScaleRect(ellipse.CalculateBounds());
-                g.FillEllipse(brush, rect);
+                var rect = ScreenFromWorld(ellipse.CalculateBounds());
+                if (ellipse.IsSolid)
+                {
+                    using (var brush = new SolidBrush(ellipse.AreaColor))
+                    {
+                        g.FillEllipse(brush, rect);
+                    }
+                }
                 g.DrawEllipse(pen, rect);
             }
         }
@@ -579,6 +680,93 @@ namespace AltiumSharp.Drawing
             }
         }
 
+        private void RenderPowerPortPrimitive(Graphics g, PowerPortRecord powerPort)
+        {
+            var location = ScreenFromWorld(powerPort.Location.X, powerPort.Location.Y);
+
+            var assetName = $"PowerPort_{powerPort.Style}";
+            var symbolPrimitives = GetAsset(assetName);
+
+            if (symbolPrimitives == null) return;
+
+            var netNameAnchor = symbolPrimitives?.OfType<TextStringRecord>()
+                .SingleOrDefault(t => t.Text == "=NET");
+
+            float angle = 0.0f;
+            if (powerPort.Orientation.HasFlag(TextOrientations.Rotated))
+            {
+                angle -= 90.0f;
+            }
+
+            if (powerPort.Orientation.HasFlag(TextOrientations.Flipped))
+            {
+                angle -= 180.0f;
+            }
+
+            RenderPrimitivesAt(g, false, powerPort.Location, angle, symbolPrimitives.Where(p => p != netNameAnchor));
+
+            if (powerPort.ShowNetName && netNameAnchor != null)
+            {
+                g.TranslateTransform(location.X, location.Y);
+
+                var netNameLocation = ScalePoint(netNameAnchor.Location);
+                if (powerPort.Orientation.HasFlag(TextOrientations.Rotated))
+                {
+                    netNameLocation = new PointF(netNameLocation.Y, -netNameLocation.X);
+                }
+
+                if (powerPort.Orientation.HasFlag(TextOrientations.Flipped))
+                {
+                    netNameLocation = new PointF(-netNameLocation.X, -netNameLocation.Y);
+                }
+
+                using (var brush = new SolidBrush(powerPort.Color))
+                using (var font = CreateFont(powerPort.FontId))
+                {
+                    var justification = DrawingUtils.RotateAnchorJustification(powerPort.Orientation, netNameAnchor.Justification);
+                    StringAlignment horizontalAlignment, verticalAlignment;
+                    switch (justification.Horizontal)
+                    {
+                        case TextJustification.HorizontalValue.Center:
+                            horizontalAlignment = StringAlignment.Center;
+                            break;
+                        case TextJustification.HorizontalValue.Right:
+                            horizontalAlignment = StringAlignment.Far;
+                            break;
+                        case TextJustification.HorizontalValue.Left:
+                        default:
+                            horizontalAlignment = StringAlignment.Near;
+                            break;
+                    }
+                    switch (justification.Vertical)
+                    {
+                        case TextJustification.VerticalValue.Middle:
+                            verticalAlignment = StringAlignment.Center;
+                            break;
+                        case TextJustification.VerticalValue.Bottom:
+                            verticalAlignment = StringAlignment.Far;
+                            break;
+                        case TextJustification.VerticalValue.Top:
+                        default:
+                            verticalAlignment = StringAlignment.Near;
+                            break;
+                    }
+
+                    var displayText = ProcessStringIndirection(powerPort, powerPort.Text);
+
+                    DrawingUtils.DrawString(g, displayText, font, brush,
+                            netNameLocation.X, netNameLocation.Y,
+                            StringAlignmentKind.Extent, horizontalAlignment, verticalAlignment);
+
+                    var screenBounds = CalculateScreenBounds(g,
+                        DrawingUtils.CalculateTextExtent(g, displayText, font,
+                            netNameLocation.X, netNameLocation.Y,
+                            StringAlignmentKind.Extent, horizontalAlignment, verticalAlignment));
+                    PrimitiveScreenBounds[powerPort] = screenBounds;
+                }
+            }
+        }
+
         private void RenderTextFramePrimitive(Graphics g, TextFrameRecord textFrame)
         {
             var penWidth = ScaleLineWidth(textFrame.LineWidth);
@@ -606,6 +794,17 @@ namespace AltiumSharp.Drawing
             using (var font = CreateFont(textFrame.FontId))
             {
                 DrawingUtils.DrawString(g, textFrame.Text, font, brush, rect, StringAlignment.Near, StringAlignment.Near, textFrame.ClipToRect, textFrame.WordWrap);
+            }
+        }
+
+        private void RenderJunctionPrimitive(Graphics g, JunctionRecord junction)
+        {
+            var color = junction.IsManualJunction ? junction.Color : Color.Navy;
+            using (var brush = new SolidBrush(color))
+            {
+                var location = ScreenFromWorld(junction.Location);
+                var radius = ScalePixelLength(2);
+                g.FillEllipse(brush, location.X - radius, location.Y - radius, 2 * radius, 2 * radius);
             }
         }
 

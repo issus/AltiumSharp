@@ -41,7 +41,7 @@ namespace AltiumSharp.Drawing
         /// <summary>
         /// Component instance to be rendered.
         /// </summary>
-        public IComponent Component { get; set; }
+        public IContainer Component { get; set; }
 
         /// <summary>
         /// List of primitives of the <see cref="Component"/> to be highlighted as selected.

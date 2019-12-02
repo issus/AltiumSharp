@@ -106,7 +106,7 @@ namespace AltiumSharp.Records
             Description = p["DESCRIPTION"].AsStringOrDefault();
             Electrical = (PinElectricalType)p["ELECTRICAL"].AsIntOrDefault();
             PinConglomerate = (PinConglomerateFlags)p["PINCONGLOMERATE"].AsIntOrDefault(); 
-            PinLength = p["PINLENGTH"].AsIntOrDefault();
+            PinLength = Utils.DxpFracToCoord(p["PINLENGTH"].AsIntOrDefault(), p["PINLENGTH_FRAC"].AsIntOrDefault());
             Location = new CoordPoint(
                 Utils.DxpFracToCoord(p["LOCATION.X"].AsIntOrDefault(), p["LOCATION.X_FRAC"].AsIntOrDefault()),
                 Utils.DxpFracToCoord(p["LOCATION.Y"].AsIntOrDefault(), p["LOCATION.Y_FRAC"].AsIntOrDefault()));
@@ -127,7 +127,11 @@ namespace AltiumSharp.Records
             p.Add("DESCRIPTION", Description);
             p.Add("ELECTRICAL", (int)Electrical);
             p.Add("PINCONGLOMERATE", (int)PinConglomerate);
-            p.Add("PINLENGTH", PinLength);
+            {
+                var (n, f) = Utils.CoordToDxpFrac(PinLength);
+                if (n != 0 || f != 0) p.Add("PINLENGTH", n);
+                if (f != 0) p.Add("PINLENGTH" + "_FRAC", f);
+            }
             {
                 var (n, f) = Utils.CoordToDxpFrac(Location.X);
                 if (n != 0 || f != 0) p.Add("LOCATION.X", n);

@@ -22,7 +22,7 @@ namespace AltiumSharp.Records
             Description = p["DESCRIPTION"].AsStringOrDefault();
             ModelName = p["MODELNAME"].AsStringOrDefault();
             ModelType = p["MODELTYPE"].AsStringOrDefault();
-            DataFile = Enumerable.Range(1, p["DATAFILECOUNT"].AsInt())
+            DataFile = Enumerable.Range(1, p["DATAFILECOUNT"].AsIntOrDefault())
                 .Select(i => 
                     p[string.Format(CultureInfo.InvariantCulture, "MODELDATAFILEKIND{0}", i)].AsStringOrDefault())
                 .ToList();
