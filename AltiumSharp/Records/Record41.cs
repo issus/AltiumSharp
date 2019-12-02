@@ -8,7 +8,7 @@ namespace AltiumSharp.Records
         public int ParamType { get; internal set; }
         public string Description { get; internal set; }
 
-        internal override string DisplayText => !string.IsNullOrEmpty(Description) ? Description : Text;
+        internal override string DisplayText => !string.IsNullOrEmpty(Description) ? Description : base.DisplayText;
         public override CoordRect CalculateBounds() =>
             new CoordRect(Location.X, Location.Y, 1, 1);
 

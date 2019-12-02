@@ -228,11 +228,16 @@ namespace AltiumSharp
         /// <param name="expected">
         /// List of expected possible values that are allowed for the <paramref name="actual"/> value.
         /// </param>
-        protected void CheckValue<T>(string name, T actual, params T[] expected) where T : IEquatable<T>
+        protected bool CheckValue<T>(string name, T actual, params T[] expected) where T : IEquatable<T>
         {
             if (!expected.Any(s => EqualityComparer<T>.Default.Equals(s, actual)))
             {
                 EmitWarning($"Expected {name ?? "value"} to be {string.Join(", ", expected)}, actual value is {actual}");
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
 
@@ -350,6 +355,32 @@ namespace AltiumSharp
         }
 
         /// <summary>
+        /// Decompresses zlib compressed data and returns the interpreted value.
+        /// </summary>
+        /// <typeparam name="T">
+        /// Type of the interpreted result of the block contents to be returned.
+        /// </typeparam>
+        /// <param name="data">Byte data to be decompressed and interpreted.</param>
+        /// <param name="interpreter">
+        /// Interpreter callback that receives as parameter the size header of the block, and
+        /// returns an instance of <typeparamref name="T"/> with interpreted results.
+        /// </param>
+        /// <returns>Value of type <typeparamref name="T"/> with the interpreted results.</returns>
+        internal T ParseCompressedZlibData<T>(byte[] data, Func<MemoryStream, T> interpreter)
+        {
+            const int ZlibHeaderSize = 2; // skip zlib two byte header
+            using (var compressedData = new MemoryStream(data, ZlibHeaderSize, data.Length - ZlibHeaderSize))
+            using (var decompressedData = new MemoryStream())
+            using (var deflater = new DeflateStream(compressedData, CompressionMode.Decompress))
+            {
+                deflater.CopyTo(decompressedData);
+
+                decompressedData.Position = 0;
+                return interpreter.Invoke(decompressedData);
+            }
+        }
+
+        /// <summary>
         /// Reads compressed storage (name, data) pair, where data is compressed in zlib format.
         /// </summary>
         /// <typeparam name="T">Type of the interpreted data to be returned.</typeparam>
@@ -366,17 +397,9 @@ namespace AltiumSharp
                 if (reader.ReadByte() != 0xD0) EmitError("Expected 0xD0 tag");
                 var id = ReadPascalShortString(reader);
 
-                // Images are compressed with zlib format including a two byte header (which we skip)
-                using (var compressedData = new MemoryStream(ReadBlock(reader).Skip(2).ToArray()))
-                using (var decompressedData = new MemoryStream())
-                using (var deflater = new DeflateStream(compressedData, CompressionMode.Decompress))
-                {
-                    deflater.CopyTo(decompressedData);
-
-                    decompressedData.Position = 0;
-                    var data = interpreter.Invoke(decompressedData);
-                    return (id, data);
-                }
+                // Images are compressed with zlib format including a two byte header
+                var zlibData = ReadBlock(reader);
+                return ParseCompressedZlibData(zlibData, stream => (id, interpreter(stream)));
             });
         }
 

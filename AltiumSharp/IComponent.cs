@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using AltiumSharp.BasicTypes;
-
-namespace AltiumSharp
+﻿namespace AltiumSharp
 {
-    public interface IComponent
+    public interface IComponent : IContainer
     {
         string Name { get; }
 
         string Description { get; }
-
-        IEnumerable<T> GetPrimitivesOfType<T>() where T : Primitive;
-
-        CoordRect CalculateBounds();
     }
 }

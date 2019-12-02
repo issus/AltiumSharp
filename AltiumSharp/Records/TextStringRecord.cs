@@ -1,14 +1,51 @@
 using System;
 using System.Drawing;
+using System.Linq;
 using AltiumSharp.BasicTypes;
 
 namespace AltiumSharp.Records
 {
-    public enum TextJustification
+    public struct TextJustification: IEquatable<TextJustification>
     {
-        BottomLeft, BottomCenter, BottomRight,
-        MiddleLeft, MiddleCenter, MiddleRight,
-        TopLeft, TopCenter, TopRight
+        public static readonly TextJustification BottomLeft = new TextJustification(0);
+        public static readonly TextJustification BottomCenter = new TextJustification(1);
+        public static readonly TextJustification BottomRight = new TextJustification(2);
+        public static readonly TextJustification MiddleLeft = new TextJustification(3);
+        public static readonly TextJustification MiddleCenter = new TextJustification(4);
+        public static readonly TextJustification MiddleRight = new TextJustification(5);
+        public static readonly TextJustification TopLeft = new TextJustification(6);
+        public static readonly TextJustification TopCenter = new TextJustification(7);
+        public static readonly TextJustification TopRight = new TextJustification(8);
+
+        public enum HorizontalValue { Left, Center, Right }
+        public enum VerticalValue { Bottom, Middle, Top }
+
+        private readonly int _value;
+
+        public TextJustification(int value) => _value = value;
+
+        public TextJustification(HorizontalValue horizontal, VerticalValue vertical) =>
+            _value = ((int)vertical * 3) + (int)horizontal;
+
+        public HorizontalValue Horizontal =>  (HorizontalValue)(_value % 3);
+
+        public VerticalValue Vertical => (VerticalValue)(_value / 3);
+
+        public int ToInt32() => _value;
+
+        public static TextJustification FromInt32(int value) => new TextJustification(value);
+
+        static public explicit operator TextJustification(int value) => FromInt32(value);
+
+        static public explicit operator int(TextJustification textJustification) => textJustification.ToInt32();
+
+        #region 'boilerplate'
+        public override bool Equals(object obj) => obj is TextJustification other && Equals(other);
+        public bool Equals(TextJustification other) => _value == other._value;
+        public override int GetHashCode() => _value.GetHashCode();
+        public static bool operator ==(TextJustification left, TextJustification right) => left.Equals(right);
+        public static bool operator !=(TextJustification left, TextJustification right) => !left.Equals(right);
+        #endregion
     }
 
     [Flags]
@@ -28,7 +65,7 @@ namespace AltiumSharp.Records
         public bool IsMirrored { get; internal set; }
         public bool IsHidden { get; internal set; }
 
-        internal virtual string DisplayText => Text;
+        internal virtual string DisplayText => Text ?? "";
         public override CoordRect CalculateBounds() =>
             new CoordRect(Location.X, Location.Y, 1, 1);
         public override bool IsVisible => base.IsVisible && !IsHidden;

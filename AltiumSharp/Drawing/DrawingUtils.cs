@@ -6,6 +6,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Drawing.Imaging;
 using System.Linq;
+using AltiumSharp.Records;
 
 namespace AltiumSharp.Drawing
 {
@@ -167,8 +168,15 @@ namespace AltiumSharp.Drawing
 
         internal static RectangleF CalculateTextExtent(Graphics g, string text, Font font, float x, float y, StringAlignmentKind alignmentKind, StringAlignment horizontalAlignment, StringAlignment verticalAlignment)
         {
-            return CalculateTextExtent(g, text, x, y, font, alignmentKind, horizontalAlignment, verticalAlignment,
-                new[] { new CharacterRange(0, text.Length) }).Single();
+            if (string.IsNullOrEmpty(text))
+            {
+                return new RectangleF(x, y, 0, 0);
+            }
+            else
+            {
+                return CalculateTextExtent(g, text, x, y, font, alignmentKind, horizontalAlignment, verticalAlignment,
+                    new[] { new CharacterRange(0, text.Length) }).Single();
+            }
         }
 
         internal static IEnumerable<RectangleF> CalculateTextExtent(Graphics g, string text, float x, float y, Font font, StringAlignmentKind alignmentKind, StringAlignment horizontalAlignment, StringAlignment verticalAlignment, CharacterRange[] characterRanges)
@@ -433,6 +441,45 @@ namespace AltiumSharp.Drawing
             });
             path.CloseFigure();
             return path;
+        }
+
+        internal static TextJustification RotateAnchorJustification(TextOrientations textOrientation, TextJustification textJustification)
+        {
+            var horizontalJustification = textJustification.Horizontal;
+            var verticalJustification = textJustification.Vertical;
+            if (textOrientation.HasFlag(TextOrientations.Rotated))
+            {
+                switch (textJustification.Horizontal)
+                {
+                    case TextJustification.HorizontalValue.Left:
+                        verticalJustification = TextJustification.VerticalValue.Bottom;
+                        break;
+                    case TextJustification.HorizontalValue.Center:
+                        verticalJustification = TextJustification.VerticalValue.Middle;
+                        break;
+                    case TextJustification.HorizontalValue.Right:
+                        verticalJustification = TextJustification.VerticalValue.Top;
+                        break;
+                }
+                switch (textJustification.Vertical)
+                {
+                    case TextJustification.VerticalValue.Top:
+                        horizontalJustification = TextJustification.HorizontalValue.Left;
+                        break;
+                    case TextJustification.VerticalValue.Middle:
+                        horizontalJustification = TextJustification.HorizontalValue.Center;
+                        break;
+                    case TextJustification.VerticalValue.Bottom:
+                        horizontalJustification = TextJustification.HorizontalValue.Right;
+                        break;
+                }
+            }
+            if (textOrientation.HasFlag(TextOrientations.Flipped))
+            {
+                horizontalJustification = TextJustification.HorizontalValue.Right - (int)horizontalJustification;
+                verticalJustification = TextJustification.VerticalValue.Top - (int)verticalJustification;
+            }
+            return new TextJustification(horizontalJustification, verticalJustification);
         }
     }
 }

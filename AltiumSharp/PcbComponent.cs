@@ -7,7 +7,7 @@ using AltiumSharp.Records;
 
 namespace AltiumSharp
 {
-    public class PcbComponent : IComponent
+    public class PcbComponent : IContainer
     {
         public string Name => Pattern;
 
@@ -21,11 +21,11 @@ namespace AltiumSharp
 
         public List<PcbPrimitive> Primitives { get; } = new List<PcbPrimitive>();
 
-        public IEnumerable<T> GetPrimitivesOfType<T>() where T : Primitive =>
+        public IEnumerable<T> GetPrimitivesOfType<T>(bool flatten) where T : Primitive =>
             Primitives.OfType<T>();
 
         public CoordRect CalculateBounds() =>
-            CoordRect.Union(GetPrimitivesOfType<Primitive>().Select(p => p.CalculateBounds()));
+            CoordRect.Union(GetPrimitivesOfType<Primitive>(true).Select(p => p.CalculateBounds()));
 
         public void ImportFromParameters(ParameterCollection p)
         {
