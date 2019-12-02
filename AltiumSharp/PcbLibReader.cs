@@ -22,6 +22,11 @@ namespace AltiumSharp
         public PcbLibHeader Header { get; private set; }
 
         /// <summary>
+        /// UniqueId from the binary FileHeader entry
+        /// </summary>
+        public string UniqueId { get; private set; }
+
+        /// <summary>
         /// List of components read from the library.
         /// </summary>
         public List<PcbComponent> Components { get; }
@@ -67,6 +72,7 @@ namespace AltiumSharp
 
         protected override void DoRead()
         {
+            ReadFileHeader();
             ReadLibrary();
         }
 
@@ -572,6 +578,23 @@ namespace AltiumSharp
                     var sectionKey = GetSectionKeyFromRefName(refName);
                     Components.Add(ReadFootprint(sectionKey));
                 }
+            }
+        }
+
+        private void ReadFileHeader()
+        {
+            var data = Cf.TryGetStream("FileHeader");
+            if (data == null) return;
+
+            using (var header = data.GetBinaryReader())
+            {
+                // for some reason this is different than a StringBlock as the
+                // initial block length is the same as the short string length
+                var pcbBinaryFileVersionTextLength = header.ReadInt32();
+                var pcbBinaryFileVersionText = ReadPascalShortString(header);
+                ReadPascalShortString(header); // TODO: Unknown
+                ReadPascalShortString(header); // TODO: Unknown
+                UniqueId = ReadPascalShortString(header);
             }
         }
 
