@@ -5,7 +5,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using AltiumSharp.BasicTypes;
 
 namespace AltiumSharp
@@ -366,7 +365,7 @@ namespace AltiumSharp
         /// returns an instance of <typeparamref name="T"/> with interpreted results.
         /// </param>
         /// <returns>Value of type <typeparamref name="T"/> with the interpreted results.</returns>
-        internal T ParseCompressedZlibData<T>(byte[] data, Func<MemoryStream, T> interpreter)
+        internal static T ParseCompressedZlibData<T>(byte[] data, Func<MemoryStream, T> interpreter)
         {
             const int ZlibHeaderSize = 2; // skip zlib two byte header
             using (var compressedData = new MemoryStream(data, ZlibHeaderSize, data.Length - ZlibHeaderSize))
