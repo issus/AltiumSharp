@@ -113,17 +113,22 @@ namespace LibraryViewer
                         reader.Read();
 
                         var index = gridSchLibComponents.Rows.Add(fileName);
-                        gridSchLibComponents.Rows[index].Tag = reader.Root;
+                        gridSchLibComponents.Rows[index].Tag = reader.Header;
+                        foreach (var component in reader.Primitives.OfType<SchComponent>())
+                        {
+                            index = gridSchLibComponents.Rows.Add(component.Name, component.Description);
+                            gridSchLibComponents.Rows[index].Tag = component;
+                        }
 
-                        var sheet = reader.Root.GetPrimitivesOfType<SheetRecord>().Single();
+                        var sheet = reader.Header;
                         _displayUnit = sheet.DisplayUnit;
                         _snapGridSize = sheet.SnapGridSize;
-                        _containers = new List<IContainer> { reader.Root };
+                        _containers = new List<IContainer> { reader.Header };
 
                         using (var assetsReader = new SchLibReader("assets.schlib"))
                         {
                             assetsReader.Read();
-                            _renderer = new SchLibRenderer(sheet, reader.EmbeddedImages, assetsReader.Components);
+                            _renderer = new SchLibRenderer(reader.Header, reader.EmbeddedImages, assetsReader.Components);
                         }
                     }
                 }
@@ -152,7 +157,7 @@ namespace LibraryViewer
             }
             else if (component is SchComponent schComponent)
             {
-                var pins = schComponent.Primitives.OfType<PinRecord>();
+                var pins = schComponent.Primitives.OfType<SchPin>();
                 foreach (var pin in pins)
                 {
                     var i = gridSchLibPrimitives.Rows.Add(pin.Designator, pin.Name, pin.Electrical.ToString());
@@ -281,16 +286,16 @@ namespace LibraryViewer
         {
             if (_loading || gridPcbLibComponents.SelectedRows.Count == 0) return;
 
-            var component = (PcbComponent)gridPcbLibComponents.Rows[gridPcbLibComponents.SelectedRows[0].Index].Tag;
-            SetActiveContainer(component);
+            var container = (IContainer)gridPcbLibComponents.Rows[gridPcbLibComponents.SelectedRows[0].Index].Tag;
+            SetActiveContainer(container);
         }
 
         private void GridSchLibComponents_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
             if (_loading || gridSchLibComponents.SelectedRows.Count == 0) return;
 
-            var component = (SchComponent)gridSchLibComponents.Rows[gridSchLibComponents.SelectedRows[0].Index].Tag;
-            SetActiveContainer(component);
+            var container = (IContainer)gridSchLibComponents.Rows[gridSchLibComponents.SelectedRows[0].Index].Tag;
+            SetActiveContainer(container);
         }
 
         private void GridPcbLibPrimitives_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
