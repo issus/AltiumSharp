@@ -31,7 +31,7 @@ namespace AltiumSharp.BasicTypes
         /// <summary>
         /// Checks if the parameter value can be represented as ASCII
         /// </summary>
-        internal bool IsAscii() => Encoding.UTF8.GetByteCount(_data) == _data.Length;
+        internal bool IsAscii() => _data == null || Encoding.UTF8.GetByteCount(_data) == _data.Length;
 
         /// <summary>
         /// Gets the string representation of the UTF8 data that represents the value of this parameter.
@@ -268,13 +268,14 @@ namespace AltiumSharp.BasicTypes
         private const char KeyValueSeparator = '=';
         private const char ListSeparator = ',';
 
-        private string _data;
-        private int _level;
+        public string Data { get; private set; }
+        public int Level { get; private set; }
+
         private string _record;
         private List<string> _keys;
         private Dictionary<string, Parameter> _parameters;
 
-        private char EntrySeparator => EntrySeparators.ElementAtOrDefault(_level);
+        private char EntrySeparator => EntrySeparators.ElementAtOrDefault(Level);
 
         public ParameterCollection()
         {
@@ -286,13 +287,13 @@ namespace AltiumSharp.BasicTypes
         {
             _keys = new List<string>();
             _parameters = new Dictionary<string, Parameter>();
-            _data = data;
-            _level = level;
+            Data = data;
+            Level = level;
             ParseData();
         }
 
         /// <summary>
-        /// Parses the input <see cref="_data"/> and creates (key, value) pairs accordingly.
+        /// Parses the input <see cref="Data"/> and creates (key, value) pairs accordingly.
         /// </summary>
         private void ParseData()
         {
@@ -301,7 +302,7 @@ namespace AltiumSharp.BasicTypes
             // splits data into pipe-separated properties, and then each one into key=value pairs
             var sepKeyValue = new char[] { KeyValueSeparator };
 
-            var entries = _data.Split(new char[] { EntrySeparator }, StringSplitOptions.RemoveEmptyEntries)
+            var entries = Data.Split(new char[] { EntrySeparator }, StringSplitOptions.RemoveEmptyEntries)
                 .Select((line, index) => (index, line.Split(sepKeyValue, 2)));
             foreach (var (i, entryKeyValue) in entries)
             {
@@ -363,7 +364,7 @@ namespace AltiumSharp.BasicTypes
         private void AddData(string key, string data)
         {
             key = key?.ToUpperInvariant();
-            var parameterValue = new Parameter(key, data, _level);
+            var parameterValue = new Parameter(key, data, Level);
             if (_parameters.ContainsKey(key))
             {
                 _parameters[key] = parameterValue;
@@ -376,46 +377,74 @@ namespace AltiumSharp.BasicTypes
         }
 
         /// <summary>
+        /// Adds a key with some value, ignoring it if the value is default.
+        /// </summary>
+        private void AddData<T>(string key, T value, bool ignoreDefaultValue)
+        {
+            if (!(ignoreDefaultValue && EqualityComparer<T>.Default.Equals(value, default)))
+            {
+                if (value is IConvertible convertible)
+                {
+                    AddData(key, convertible.ToString(CultureInfo.InvariantCulture));
+                }
+                else
+                {
+                    AddData(key, value.ToString());
+                }
+            }
+        }
+
+        /// <summary>
         /// Adds a key with a string value.
         /// </summary>
-        public void Add(string key, string value) =>
-            AddData(key, value);
+        public void Add(string key, string value, bool ignoreDefaultValue = true) =>
+            AddData(key, value, ignoreDefaultValue);
 
         /// <summary>
         /// Adds a key with a integer value.
         /// </summary>
-        public void Add(string key, int value) =>
-            AddData(key, value.ToString(CultureInfo.InvariantCulture));
+        public void Add(string key, int value, bool ignoreDefaultValue = true) =>
+            AddData(key, value, ignoreDefaultValue);
 
         /// <summary>
         /// Adds a key with an enum value.
         /// </summary>
-        public void Add<T>(string key, T value) where T : Enum =>
-            Add(key, Convert.ToInt32(value, CultureInfo.InvariantCulture));
+        public void Add<T>(string key, T value, bool ignoreDefaultValue = true) where T : Enum =>
+            AddData(key, Convert.ToInt32(value, CultureInfo.InvariantCulture), ignoreDefaultValue);
 
         /// <summary>
         /// Adds a key with a double floating point value.
         /// </summary>
-        public void Add(string key, double value) =>
-            AddData(key, value.ToString(CultureInfo.InvariantCulture));
+        public void Add(string key, double value, bool ignoreDefaultValue = true) =>
+            AddData(key, value, ignoreDefaultValue);
 
         /// <summary>
         /// Adds a key with a boolean value.
         /// </summary>
-        public void Add(string key, bool value) =>
-            AddData(key, value ? ParameterValue.TrueValues.First() : ParameterValue.FalseValues.First());
+        public void Add(string key, bool value, bool ignoreDefaultValue = true)
+        {
+            if (!ignoreDefaultValue || value)
+            {
+                AddData(key, value ? ParameterValue.TrueValues.First() : ParameterValue.FalseValues.First());
+            }
+        }
 
         /// <summary>
         /// Adds a key with a coordinate value.
         /// </summary>
-        public void Add(string key, Coord value) =>
-            AddData(key, Utils.CoordUnitToString(value, Unit.Mil));
+        public void Add(string key, Coord value, bool ignoreDefaultValue = true)
+        {
+            if (!ignoreDefaultValue || (int)value != 0)
+            {
+                AddData(key, Utils.CoordUnitToString(value, Unit.Mil));
+            }
+        }
 
         /// <summary>
         /// Adds a key with a color value.
         /// </summary>
-        public void Add(string key, Color value) =>
-            AddData(key, ColorTranslator.ToWin32(value).ToString(CultureInfo.InvariantCulture));
+        public void Add(string key, Color value, bool ignoreDefaultValue = true) =>
+            AddData(key, ColorTranslator.ToWin32(value), ignoreDefaultValue);
 
         /// <summary>
         /// Removes a key entry from the parameters list collection.
