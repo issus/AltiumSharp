@@ -40,7 +40,7 @@ namespace AltiumSharp.BasicTypes
             num * 10.0 + frac / 10000.0;
 
         public static (int num, int frac) MilsToDxpFrac(double mils) =>
-            ((int)mils / 10, (int)Math.Round((mils - Math.Truncate(mils)) * 10000));
+            ((int)mils / 10, (int)Math.Round((mils / 10.0 - Math.Truncate(mils / 10.0)) * 100000));
 
         public static (int num, int frac) CoordToDxpFrac(Coord coord) =>
             MilsToDxpFrac(CoordToMils(coord));
