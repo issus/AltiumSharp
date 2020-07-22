@@ -592,9 +592,12 @@ namespace AltiumSharp
                 // initial block length is the same as the short string length
                 var pcbBinaryFileVersionTextLength = header.ReadInt32();
                 var pcbBinaryFileVersionText = ReadPascalShortString(header);
-                ReadPascalShortString(header); // TODO: Unknown
-                ReadPascalShortString(header); // TODO: Unknown
-                UniqueId = ReadPascalShortString(header);
+                if (header.BaseStream.Position < header.BaseStream.Length)
+                {
+                    ReadPascalShortString(header); // TODO: Unknown
+                    ReadPascalShortString(header); // TODO: Unknown
+                    UniqueId = ReadPascalShortString(header);
+                }
             }
         }
 
