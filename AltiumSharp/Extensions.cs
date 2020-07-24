@@ -46,6 +46,23 @@ namespace AltiumSharp
         }
     }
 
+    public static class CFStorageExtensions
+    {
+        public static CFStream GetOrAddStream(this CFStorage storage, string streamName)
+        {
+            if (storage == null) throw new ArgumentNullException(nameof(storage));
+
+            return storage.TryGetStream(streamName, out var childStream) ? childStream : storage.AddStream(streamName);
+        }
+
+        public static CFStorage GetOrAddStorage(this CFStorage storage, string storageName)
+        {
+            if (storage == null) throw new ArgumentNullException(nameof(storage));
+
+            return storage.TryGetStorage(storageName, out var childStorage) ? childStorage : storage.AddStorage(storageName);
+        }
+    }
+
     public static class CFStreamExtensions
     {
         public static MemoryStream GetMemoryStream(this CFStream stream)
@@ -63,6 +80,21 @@ namespace AltiumSharp
         public static BinaryReader GetBinaryReader(this CFStream stream)
         {
             return GetBinaryReader(stream, Encoding.UTF8);
+        }
+
+        public static void Write(this CFStream stream, Action<BinaryWriter> action, Encoding encoding)
+        {
+            using (var memoryStream = new MemoryStream())
+            using (var writer = new BinaryWriter(memoryStream, encoding))
+            {
+                action?.Invoke(writer);
+                stream.SetData(memoryStream.ToArray());
+            }
+        }
+
+        public static void Write(this CFStream stream, Action<BinaryWriter> action)
+        {
+            stream.Write(action, Encoding.UTF8);
         }
     }
 
