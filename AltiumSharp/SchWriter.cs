@@ -35,6 +35,18 @@ namespace AltiumSharp
         /// </summary>
         protected void WriteStorageEmbeddedImages()
         {
+            byte[] ImageToBytes(Image image)
+            {
+                // we need to make a copy of the image because otherwise Save() fails with a generic GDI+ error
+                // Source: https://social.microsoft.com/Forums/en-US/b15357f1-ad9d-4c80-9ec1-92c786cca4e6/bitmapsave-a-generic-error-occurred-in-gdi#c780991d-50c3-4bdc-8c90-a5474f4739a2
+                using (var stream = new MemoryStream())
+                using (var bitmap = new Bitmap(image))
+                {
+                    bitmap.Save(stream, image.RawFormat);
+                    return stream.ToArray();
+                }
+            }
+
             Cf.RootStorage.GetOrAddStream("Storage").Write(writer =>
             {
                 var parameters = new ParameterCollection
@@ -46,11 +58,7 @@ namespace AltiumSharp
 
                 foreach (var ei in EmbeddedImages)
                 {
-                    using (var imageData = new MemoryStream())
-                    {
-                        ei.Value.Save(imageData, ei.Value.RawFormat);
-                        WriteCompressedStorage(writer, ei.Key, imageData.ToArray());
-                    }
+                    WriteCompressedStorage(writer, ei.Key, ImageToBytes(ei.Value));
                 }
             });
         }
