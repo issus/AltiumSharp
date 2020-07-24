@@ -249,6 +249,8 @@ namespace AltiumSharp.BasicTypes
         public override string ToString() =>
             Value.IsAscii() ? $"{Name}={Value}" : $"{Utf8Prefix}{Name}={Value.AsUtf8Data()}|||{Name}={Value}";
 
+        public string ToUnicodeString() => $"{Name}={Value}";
+
         #region 'boilerplate'
         public override bool Equals(object obj) => obj is Parameter other && this.Equals(other);
         public bool Equals(Parameter other) => Name == other.Name && Value == other.Value;
@@ -354,6 +356,17 @@ namespace AltiumSharp.BasicTypes
         {
             return EntrySeparator + string.Join(EntrySeparator.ToString(CultureInfo.InvariantCulture),
                 _keys.Select(k => _parameters[k]).Select(p => p.ToString()));
+        }
+
+        /// <summary>
+        /// Generates a string version that doesn't include special UTF8 versions of the values
+        /// of the data contained in this <see cref="ParameterCollection"/>.
+        /// </summary>
+        /// <returns>String representaton of the current parameters.</returns>
+        public string ToUnicodeString()
+        {
+            return EntrySeparator + string.Join(EntrySeparator.ToString(CultureInfo.InvariantCulture),
+                _keys.Select(k => _parameters[k]).Select(p => p.ToUnicodeString()));
         }
 
         /// <summary>
