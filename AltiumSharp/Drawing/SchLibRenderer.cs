@@ -348,8 +348,7 @@ namespace AltiumSharp.Drawing
                 }
                 if (textString.Orientation.HasFlag(TextOrientations.Flipped))
                 {
-                    horizontalAlignment = StringAlignment.Far - (int)horizontalAlignment;
-                    verticalAlignment = StringAlignment.Far - (int)verticalAlignment;
+                    g.RotateTransform(-180);
                 }
 
                 var displayText = ProcessStringIndirection(textString, textString.DisplayText);
