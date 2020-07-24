@@ -184,7 +184,7 @@ namespace AltiumSharp
             var storage = componentStorage.TryGetStream("PinWideText");
             if (storage == null) return null;
 
-            BeginContext("PinTextData");
+            BeginContext("PinWideText");
 
             var result = new Dictionary<int, ParameterCollection>();
             using (var reader = storage.GetBinaryReader())
@@ -221,7 +221,7 @@ namespace AltiumSharp
             var storage = componentStorage.TryGetStream("PinSymbolLineWidth");
             if (storage == null) return null;
 
-            BeginContext("PinTextData");
+            BeginContext("PinSymbolLineWidth");
 
             var result = new Dictionary<int, ParameterCollection>();
             using (var reader = storage.GetBinaryReader())
