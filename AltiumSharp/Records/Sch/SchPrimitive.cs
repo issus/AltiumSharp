@@ -66,5 +66,12 @@ namespace AltiumSharp.Records
             p.Add("OWNERPARTDISPLAYMODE", OwnerPartDisplayMode);
             p.Add("GRAPHICALLYLOCKED", GraphicallyLocked);
         }
+
+        public ParameterCollection ExportToParameters()
+        {
+            var parameters = new ParameterCollection();
+            ExportToParameters(parameters);
+            return parameters;
+        }
     }
 }
