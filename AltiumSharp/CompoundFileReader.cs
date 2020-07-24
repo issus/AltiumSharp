@@ -107,6 +107,8 @@ namespace AltiumSharp
                 DoReadSectionKeys(_sectionKeys);
                 DoRead();
             }
+
+            Cf = null;
         }
 
         /// <summary>
