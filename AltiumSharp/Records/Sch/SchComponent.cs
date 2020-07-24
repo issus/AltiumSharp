@@ -31,6 +31,7 @@ namespace AltiumSharp.Records
         public string DesignItemId { get; internal set; }
         public int ComponentKind { get; internal set; }
         public string AliasList { get; internal set; }
+        public int AllPinCount { get; internal set; }
 
         public override void ImportFromParameters(ParameterCollection p)
         {
@@ -53,6 +54,7 @@ namespace AltiumSharp.Records
             DesignItemId = p["DESIGNITEMID"].AsStringOrDefault();
             ComponentKind = p["COMPONENTKIND"].AsIntOrDefault();
             AliasList = p["ALIASLIST"].AsStringOrDefault();
+            AllPinCount = p["ALLPINCOUNT"].AsIntOrDefault();
         }
         
         public override void ExportToParameters(ParameterCollection p)
@@ -80,6 +82,7 @@ namespace AltiumSharp.Records
             p.Add("ALIASLIST", AliasList);
             p.Add("DESIGNITEMID", DesignItemId);
             p.Add("COMPONENTKIND", ComponentKind);
+            p.Add("ALLPINCOUNT", AllPinCount);
 
             base.ExportToParameters(p); // call base last so the parameter order is overriden
         }

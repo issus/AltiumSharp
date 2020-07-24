@@ -7,7 +7,6 @@ namespace AltiumSharp.Records
     {
         public int ParamType { get; internal set; }
         public string Description { get; internal set; }
-        public string UniqueId { get; internal set; }
 
         internal override string DisplayText => !string.IsNullOrEmpty(Description) ? Description : base.DisplayText;
         public override CoordRect CalculateBounds() =>
@@ -23,7 +22,6 @@ namespace AltiumSharp.Records
             base.ImportFromParameters(p);
             ParamType = p["PARAMTYPE"].AsIntOrDefault();
             Description = p["DESCRIPTION"].AsStringOrDefault();
-            UniqueId = p["UNIQUEID"].AsStringOrDefault();
         }
 
         public override void ExportToParameters(ParameterCollection p)
@@ -33,7 +31,6 @@ namespace AltiumSharp.Records
             base.ExportToParameters(p);
             p.Add("PARAMTYPE", ParamType);
             p.Add("DESCRIPTION", Description);
-            p.Add("UNIQUEID", UniqueId);
         }
     }
 }

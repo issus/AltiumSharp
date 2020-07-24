@@ -80,7 +80,7 @@ namespace AltiumSharp.Records
             p.Add("USEMBCS", UseMbcs);
             p.Add("ISBOC", IsBoc);
             p.Add("SHEETSTYLE", SheetStyle);
-            p.Add("SYSTEMFONT", SystemFont);
+            if (SystemFont > 1) p.Add("SYSTEMFONT", SystemFont);
             p.Add("BORDERON", BorderOn);
             p.Add("SHEETNUMBERSPACESIZE", SheetNumberSpaceSize);
             p.Add("AREACOLOR", AreaColor);
@@ -100,7 +100,7 @@ namespace AltiumSharp.Records
             p.Add("CUSTOMY", CustomY);
             p.Add("USECUSTOMSHEET", UseCustomSheet);
             p.Add("REFERENCEZONESON", ReferenceZonesOn);
-            p.Add("DISPLAY_UNIT", (int)DisplayUnit);
+            p.Add("DISPLAY_UNIT", (int)DisplayUnit, false);
         }
     }
 }
