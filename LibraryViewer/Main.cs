@@ -65,70 +65,83 @@ namespace LibraryViewer
                 if (Path.GetExtension(fileName).Equals(".pcblib", StringComparison.InvariantCultureIgnoreCase))
                 {
                     tabComponents.SelectTab(tabPcbLib);
-                    using (var reader = new PcbLibReader(fileName))
+                    using (var reader = new PcbLibReader())
                     {
-                        reader.Read();
+                        var data = reader.Read(fileName);
 
-                        foreach (var component in reader.Components)
+                        foreach (var component in data.Items)
                         {
                             var index = gridPcbLibComponents.Rows.Add(component.Name, component.Pads, component.Primitives.Count());
                             gridPcbLibComponents.Rows[index].Tag = component;
                         }
 
-                        _displayUnit = reader.Header.DisplayUnit;
-                        _snapGridSize = reader.Header.SnapGridSize;
-                        _containers = reader.Components.Cast<IContainer>().ToList();
+                        _displayUnit = data.Header.DisplayUnit;
+                        _snapGridSize = data.Header.SnapGridSize;
+                        _containers = data.Items.Cast<IContainer>().ToList();
                         _renderer = new PcbLibRenderer();
                     }
                 }
                 else if (Path.GetExtension(fileName).Equals(".schlib", StringComparison.InvariantCultureIgnoreCase))
                 {
                     tabComponents.SelectTab(tabSchLib);
-                    using (var reader = new SchLibReader(fileName))
+                    using (var reader = new SchLibReader())
                     {
-                        reader.Read();
+                        var data = reader.Read(fileName);
 
-                        foreach (var component in reader.Components)
+                        foreach (var component in data.Items)
                         {
                             var index = gridSchLibComponents.Rows.Add(component.Name, component.Description);
                             gridSchLibComponents.Rows[index].Tag = component;
                         }
 
-                        _displayUnit = reader.Header.DisplayUnit;
-                        _snapGridSize = reader.Header.SnapGridSize;
-                        _containers = reader.Components.Cast<IContainer>().ToList();
+                        _displayUnit = data.Header.DisplayUnit;
+                        _snapGridSize = data.Header.SnapGridSize;
+                        _containers = data.Items.Cast<IContainer>().ToList();
 
-                        using (var assetsReader = new SchLibReader("assets.schlib"))
+                        var assetsData = reader.Read("assets.schlib");
+                        _renderer = new SchLibRenderer(data.Header, data.EmbeddedImages, assetsData.Items);
+
+                        if (!fileName.Contains(".export."))
                         {
-                            assetsReader.Read();
-                            _renderer = new SchLibRenderer(reader.Header, reader.EmbeddedImages, assetsReader.Components);
+                            using (var writer = new SchLibWriter())
+                            {
+                                writer.Write(data, $"{fileName}.export.schlib", true);
+                            }
                         }
                     }
                 }
                 else if (Path.GetExtension(fileName).Equals(".schdoc", StringComparison.InvariantCultureIgnoreCase))
                 {
                     tabComponents.SelectTab(tabSchLib);
-                    using (var reader = new SchDocReader(fileName))
+                    using (var reader = new SchDocReader())
                     {
-                        reader.Read();
+                        var data = reader.Read(fileName);
 
                         var index = gridSchLibComponents.Rows.Add(fileName);
-                        gridSchLibComponents.Rows[index].Tag = reader.Header;
-                        foreach (var component in reader.Primitives.OfType<SchComponent>())
+                        gridSchLibComponents.Rows[index].Tag = data.Header;
+                        foreach (var component in data.Items.OfType<SchComponent>())
                         {
                             index = gridSchLibComponents.Rows.Add(component.Name, component.Description);
                             gridSchLibComponents.Rows[index].Tag = component;
                         }
 
-                        var sheet = reader.Header;
+                        var sheet = data.Header;
                         _displayUnit = sheet.DisplayUnit;
                         _snapGridSize = sheet.SnapGridSize;
-                        _containers = new List<IContainer> { reader.Header };
+                        _containers = new List<IContainer> { data.Header };
 
-                        using (var assetsReader = new SchLibReader("assets.schlib"))
+                        using (var assetsReader = new SchLibReader())
                         {
-                            assetsReader.Read();
-                            _renderer = new SchLibRenderer(reader.Header, reader.EmbeddedImages, assetsReader.Components);
+                            var assetsData = assetsReader.Read("assets.schlib");
+                            _renderer = new SchLibRenderer(data.Header, data.EmbeddedImages, assetsData.Items);
+                        }
+
+                        if (!fileName.Contains(".export."))
+                        {
+                            using (var writer = new SchDocWriter())
+                            {
+                                writer.Write(data, $"{fileName}.export.schdoc", true);
+                            }
                         }
                     }
                 }
@@ -421,8 +434,6 @@ namespace LibraryViewer
         private void ExportImageToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_activeContainer == null || _graphicsBuffer == null) return;
-
-            var container = _activeContainer;
 
             saveFileDialog.FileName = Path.ChangeExtension(openFileDialog.FileName, ".png");
 
