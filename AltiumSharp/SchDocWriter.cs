@@ -27,6 +27,7 @@ namespace AltiumSharp
         protected override void DoWriteSch()
         {
             WriteFileHeader();
+            WriteAdditional();
         }
 
         /// <summary>
@@ -53,6 +54,18 @@ namespace AltiumSharp
             var index = 0;
             var pinIndex = 0;
             WritePrimitive(writer, Data.Header, false, 0, ref index, ref pinIndex, null, null, null);
+        }
+
+        private void WriteAdditional()
+        {
+            Cf.RootStorage.GetOrAddStream("Additional").Write(writer =>
+            {
+                var parameters = new ParameterCollection
+                {
+                    { "HEADER", "Protel for Windows - Schematic Capture Binary File Version 5.0" }
+                };
+                WriteBlock(writer, w => WriteParameters(w, parameters));
+            });
         }
     }
 }
