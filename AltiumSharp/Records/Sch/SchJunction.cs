@@ -5,6 +5,7 @@ namespace AltiumSharp.Records
 {
     internal class SchJunction : SchGraphicalObject
     {
+        public override int Record => 29;
         public LineWidth Size { get; internal set; }
         public bool Locked { get; internal set; }
 

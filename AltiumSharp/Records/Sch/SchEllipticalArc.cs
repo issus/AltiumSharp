@@ -5,6 +5,7 @@ namespace AltiumSharp.Records
 {
     public class SchEllipticalArc : SchArc
     {
+        public override int Record => 11;
         public Coord SecondaryRadius { get; internal set; }
 
         public override CoordRect CalculateBounds() =>
@@ -23,11 +24,13 @@ namespace AltiumSharp.Records
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             base.ExportToParameters(p);
+            p.SetBookmark();
             {
                 var (n, f) = Utils.CoordToDxpFrac(SecondaryRadius);
                 if (n != 0 || f != 0) p.Add("SECONDARYRADIUS", n);
                 if (f != 0) p.Add("SECONDARYRADIUS"+"_FRAC", f);
             }
+            p.MoveKeys("LINEWIDTH");
         }
     }
 }

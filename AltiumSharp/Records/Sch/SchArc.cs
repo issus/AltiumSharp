@@ -5,6 +5,7 @@ namespace AltiumSharp.Records
 {
     public class SchArc : SchGraphicalObject
     {
+        public override int Record => 12;
         public Coord Radius { get; internal set; }
         public LineWidth LineWidth { get; internal set; }
         public double StartAngle { get; internal set; }
@@ -22,7 +23,7 @@ namespace AltiumSharp.Records
                 Utils.DxpFracToCoord(p["LOCATION.X"].AsIntOrDefault(), p["LOCATION.X_FRAC"].AsIntOrDefault()),
                 Utils.DxpFracToCoord(p["LOCATION.Y"].AsIntOrDefault(), p["LOCATION.Y_FRAC"].AsIntOrDefault()));
             Radius = Utils.DxpFracToCoord(p["RADIUS"].AsIntOrDefault(), p["RADIUS_FRAC"].AsIntOrDefault());
-            LineWidth = (LineWidth)p["LINEWIDTH"].AsIntOrDefault();
+            LineWidth = p["LINEWIDTH"].AsEnumOrDefault<LineWidth>();
             StartAngle = p["STARTANGLE"].AsDoubleOrDefault();
             EndAngle = p["ENDANGLE"].AsDoubleOrDefault();
         }
@@ -32,24 +33,16 @@ namespace AltiumSharp.Records
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             base.ExportToParameters(p);
-            {
-                var (n, f) = Utils.CoordToDxpFrac(Location.X);
-                if (n != 0 || f != 0) p.Add("LOCATION.X", n);
-                if (f != 0) p.Add("LOCATION.X" + "_FRAC", f);
-            }
-            {
-                var (n, f) = Utils.CoordToDxpFrac(Location.Y);
-                if (n != 0 || f != 0) p.Add("LOCATION.Y", n);
-                if (f != 0) p.Add("LOCATION.Y" + "_FRAC", f);
-            }
+            p.SetBookmark();
             {
                 var (n, f) = Utils.CoordToDxpFrac(Radius);
-                if (n != 0 || f != 0) p.Add("RADIUS", n);
-                if (f != 0) p.Add("RADIUS" + "_FRAC", f);
+                p.Add("RADIUS", n);
+                p.Add("RADIUS_FRAC", f);
             }
-            p.Add("LINEWIDTH", (int)LineWidth);
+            p.Add("LINEWIDTH", LineWidth);
             p.Add("STARTANGLE", StartAngle);
             p.Add("ENDANGLE", EndAngle);
+            p.MoveKeys("COLOR");
         }
     }
 }

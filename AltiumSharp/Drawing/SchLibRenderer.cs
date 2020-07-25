@@ -624,8 +624,8 @@ namespace AltiumSharp.Drawing
         private void RenderRoundedRectPrimitive(Graphics g, SchRoundedRectangle roundedRect)
         {
             var rect = ScreenFromWorld(roundedRect.CalculateBounds());
-            var radiusX = ScalePixelLength(roundedRect.CornerXRadius);
-            var radiusY = ScalePixelLength(roundedRect.CornerYRadius);
+            var radiusX = ScaleCoord(roundedRect.CornerXRadius);
+            var radiusY = ScaleCoord(roundedRect.CornerYRadius);
 
             if (roundedRect.IsSolid)
             {

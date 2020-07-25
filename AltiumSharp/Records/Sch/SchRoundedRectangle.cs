@@ -5,16 +5,17 @@ namespace AltiumSharp.Records
 {
     public class SchRoundedRectangle : SchRectangle
     {
-        public int CornerXRadius { get; internal set; }
-        public int CornerYRadius { get; internal set; }
+        public override int Record => 10;
+        public Coord CornerXRadius { get; internal set; }
+        public Coord CornerYRadius { get; internal set; }
 
         public override void ImportFromParameters(ParameterCollection p)
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             base.ImportFromParameters(p);
-            CornerXRadius = p["CORNERXRADIUS"].AsIntOrDefault();
-            CornerYRadius = p["CORNERYRADIUS"].AsIntOrDefault();
+            CornerXRadius = Utils.DxpFracToCoord(p["CORNERXRADIUS"].AsIntOrDefault(), p["CORNERXRADIUS_FRAC"].AsIntOrDefault());
+            CornerYRadius = Utils.DxpFracToCoord(p["CORNERYRADIUS"].AsIntOrDefault(), p["CORNERYRADIUS_FRAC"].AsIntOrDefault());
         }
 
         public override void ExportToParameters(ParameterCollection p)
@@ -22,8 +23,18 @@ namespace AltiumSharp.Records
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             base.ExportToParameters(p);
-            p.Add("CORNERXRADIUS", CornerXRadius);
-            p.Add("CORNERYRADIUS", CornerYRadius);
+            p.SetBookmark();
+            {
+                var (n, f) = Utils.CoordToDxpFrac(CornerXRadius);
+                p.Add("CORNERXRADIUS", n);
+                p.Add("CORNERXRADIUS_FRAC", f);
+            }
+            {
+                var (n, f) = Utils.CoordToDxpFrac(CornerYRadius);
+                p.Add("CORNERYRADIUS", n);
+                p.Add("CORNERYRADIUS_FRAC", f);
+            }
+            p.MoveKeys("LINEWIDTH");
         }
     }
 }

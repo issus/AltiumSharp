@@ -5,6 +5,7 @@ namespace AltiumSharp.Records
 {
     public class SchRectangle : SchGraphicalObject
     {
+        public override int Record => 14;
         public CoordPoint Corner { get; internal set; }
         public LineWidth LineWidth { get; internal set; }
         public bool IsSolid { get; internal set; }
@@ -31,17 +32,19 @@ namespace AltiumSharp.Records
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             base.ExportToParameters(p);
+            p.SetBookmark();
             {
                 var (n, f) = Utils.CoordToDxpFrac(Corner.X);
-                if (n != 0 || f != 0) p.Add("CORNER.X", n);
-                if (f != 0) p.Add("CORNER.X"+"_FRAC", f);
+                p.Add("CORNER.X", n);
+                p.Add("CORNER.X_FRAC", f);
             }
             {
                 var (n, f) = Utils.CoordToDxpFrac(Corner.Y);
-                if (n != 0 || f != 0) p.Add("CORNER.Y", n);
-                if (f != 0) p.Add("CORNER.Y"+"_FRAC", f);
+                p.Add("CORNER.Y", n);
+                p.Add("CORNER.Y_FRAC", f);
             }
             p.Add("LINEWIDTH", LineWidth);
+            p.MoveKeys("COLOR");
             p.Add("ISSOLID", IsSolid);
             p.Add("TRANSPARENT", Transparent);
         }

@@ -47,6 +47,7 @@ namespace AltiumSharp.Records
 
     public class SchPin : SchGraphicalObject
     {
+        public override int Record => 2;
         public PinSymbol SymbolInnerEdge { get; internal set; }
         public PinSymbol SymbolOuterEdge { get; internal set; }
         public PinSymbol SymbolInside { get; internal set; }
@@ -108,10 +109,6 @@ namespace AltiumSharp.Records
             Electrical = p["ELECTRICAL"].AsEnumOrDefault<PinElectricalType>();
             PinConglomerate = (PinConglomerateFlags)p["PINCONGLOMERATE"].AsIntOrDefault(); 
             PinLength = Utils.DxpFracToCoord(p["PINLENGTH"].AsIntOrDefault(), p["PINLENGTH_FRAC"].AsIntOrDefault());
-            Location = new CoordPoint(
-                Utils.DxpFracToCoord(p["LOCATION.X"].AsIntOrDefault(), p["LOCATION.X_FRAC"].AsIntOrDefault()),
-                Utils.DxpFracToCoord(p["LOCATION.Y"].AsIntOrDefault(), p["LOCATION.Y_FRAC"].AsIntOrDefault()));
-            Color = p["COLOR"].AsColorOrDefault();
             Name = p["NAME"].AsStringOrDefault();
             Designator = p["DESIGNATOR"].AsStringOrDefault();
             SwapIdPart = p["SWAPIDPART"].AsIntOrDefault();
@@ -123,6 +120,7 @@ namespace AltiumSharp.Records
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             base.ExportToParameters(p);
+            p.SetBookmark();
             p.Add("SYMBOL_INNEREDGE", SymbolInnerEdge);
             p.Add("SYMBOL_OUTEREDGE", SymbolOuterEdge);
             p.Add("SYMBOL_INSIDE", (int)SymbolInside);
@@ -137,17 +135,7 @@ namespace AltiumSharp.Records
                 if (n != 0 || f != 0) p.Add("PINLENGTH", n);
                 if (f != 0) p.Add("PINLENGTH" + "_FRAC", f);
             }
-            {
-                var (n, f) = Utils.CoordToDxpFrac(Location.X);
-                if (n != 0 || f != 0) p.Add("LOCATION.X", n);
-                if (f != 0) p.Add("LOCATION.X" + "_FRAC", f);
-            }
-            {
-                var (n, f) = Utils.CoordToDxpFrac(Location.Y);
-                if (n != 0 || f != 0) p.Add("LOCATION.Y", n);
-                if (f != 0) p.Add("LOCATION.Y" + "_FRAC", f);
-            }
-            p.Add("COLOR", Color);
+            p.MoveKeys("LOCATION.X");
             p.Add("NAME", Name);
             p.Add("DESIGNATOR", Designator);
             p.Add("SWAPIDPART", SwapIdPart);

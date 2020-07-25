@@ -25,6 +25,7 @@ namespace AltiumSharp.Records
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             base.ExportToParameters(p);
+            p.SetBookmark();
             p.Add("LINESTYLE", LineStyle);
         }
     }

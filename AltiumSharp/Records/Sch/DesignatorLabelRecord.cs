@@ -6,6 +6,7 @@ namespace AltiumSharp.Records
 {
     public class DesignatorLabelRecord : SchLabel // TODO: figure out what schematic API interface maps to this record
     {
+        public override int Record => 34;
         public string Name { get; internal set; }
         public int ReadOnlyState { get; internal set; }
         public string UniqueId { get; internal set; }
@@ -17,7 +18,6 @@ namespace AltiumSharp.Records
 
         public DesignatorLabelRecord()
         {
-            Record = 34;
             Location = new CoordPoint(-5, 5);
             Color = ColorTranslator.FromWin32(8388608);
             Text = "*";

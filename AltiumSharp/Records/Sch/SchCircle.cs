@@ -29,12 +29,14 @@ namespace AltiumSharp.Records
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             base.ExportToParameters(p);
+            p.SetBookmark();
             {
                 var (n, f) = Utils.CoordToDxpFrac(Radius);
                 if (n != 0 || f != 0) p.Add("RADIUS", n);
                 if (f != 0) p.Add("RADIUS" + "_FRAC", f);
             }
             p.Add("LINEWIDTH", LineWidth);
+            p.MoveKeys("COLOR");
             p.Add("ISSOLID", IsSolid);
             p.Add("TRANSPARENT", Transparent);
         }

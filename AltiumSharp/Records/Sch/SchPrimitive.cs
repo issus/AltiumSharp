@@ -7,7 +7,7 @@ namespace AltiumSharp.Records
 {
     public class SchPrimitive : Primitive, IContainer
     {
-        public int Record { get; internal set; }
+        public virtual int Record { get; }
 
         public bool IsNotAccesible { get; internal set; }
 
@@ -45,7 +45,9 @@ namespace AltiumSharp.Records
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
 
-            Record = p["RECORD"].AsIntOrDefault();
+            var recordType = p["RECORD"].AsIntOrDefault();
+            if (recordType != Record) throw new ArgumentException($"Record type mismatch when deserializing. Expected {Record} but got {recordType}", nameof(p));
+
             OwnerIndex = p["OWNERINDEX"].AsIntOrDefault();
             IsNotAccesible = p["ISNOTACCESIBLE"].AsBool();
             IndexInSheet = p["INDEXINSHEET"].AsIntOrDefault();

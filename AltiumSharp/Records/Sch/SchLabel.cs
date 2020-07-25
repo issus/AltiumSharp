@@ -13,6 +13,7 @@ namespace AltiumSharp.Records
 
     public class SchLabel : SchGraphicalObject
     {
+        public override int Record => 4;
         public int FontId { get; internal set; }
         public string Text { get; internal set; }
         public bool IsMirrored { get; internal set; }
@@ -25,7 +26,6 @@ namespace AltiumSharp.Records
 
         public SchLabel()
         {
-            Record = 4;
             IndexInSheet = -1;
             OwnerPartId = -1;
             FontId = 1;
@@ -47,11 +47,10 @@ namespace AltiumSharp.Records
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             base.ExportToParameters(p);
-            p.Add("ORIENTATION", (int)Orientation);
             p.Add("FONTID", FontId);
+            p.Add("ISHIDDEN", IsHidden);
             p.Add("TEXT", Text);
             p.Add("ISMIRRORED", IsMirrored);
-            p.Add("ISHIDDEN", IsHidden);
         }
     }
 }

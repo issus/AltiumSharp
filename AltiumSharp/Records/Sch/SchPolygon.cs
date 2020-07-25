@@ -7,6 +7,7 @@ namespace AltiumSharp.Records
 {
     public class SchPolygon : SchGraphicalObject
     {
+        public override int Record => 7;
         public bool IsSolid { get; internal set; }
         public LineWidth LineWidth { get; internal set; }
         public List<CoordPoint> Vertices { get; internal set; }
@@ -37,9 +38,11 @@ namespace AltiumSharp.Records
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             base.ExportToParameters(p);
+            p.SetBookmark();
+            p.Add("LINEWIDTH", LineWidth);
+            p.MoveKeys("COLOR");
             p.Add("ISSOLID", IsSolid);
             p.Add("TRANSPARENT", Transparent);
-            p.Add("LINEWIDTH", LineWidth);
             p.Add("LOCATIONCOUNT", Vertices.Count);
             for (var i = 0; i < Vertices.Count; i++)
             {

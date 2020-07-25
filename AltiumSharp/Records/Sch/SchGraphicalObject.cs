@@ -50,8 +50,8 @@ namespace AltiumSharp.Records
     public abstract class SchGraphicalObject : SchPrimitive
     {
         public CoordPoint Location { get; internal set; }
-        public TextJustification Justification { get; internal set; }
         public TextOrientations Orientation { get; internal set; }
+        public TextJustification Justification { get; internal set; }
         public Color Color { get; internal set; }
         public Color AreaColor { get; internal set; }
 
@@ -63,8 +63,8 @@ namespace AltiumSharp.Records
             Location = new CoordPoint(
                 Utils.DxpFracToCoord(p["LOCATION.X"].AsIntOrDefault(), p["LOCATION.X_FRAC"].AsIntOrDefault()),
                 Utils.DxpFracToCoord(p["LOCATION.Y"].AsIntOrDefault(), p["LOCATION.Y_FRAC"].AsIntOrDefault()));
-            Justification = (TextJustification)p["JUSTIFICATION"].AsIntOrDefault();
             Orientation = p["ORIENTATION"].AsEnumOrDefault<TextOrientations>();
+            Justification = (TextJustification)p["JUSTIFICATION"].AsIntOrDefault();
             Color = p["COLOR"].AsColorOrDefault();
             AreaColor = p["AREACOLOR"].AsColorOrDefault();
         }
@@ -76,16 +76,16 @@ namespace AltiumSharp.Records
             base.ExportToParameters(p);
             {
                 var (n, f) = Utils.CoordToDxpFrac(Location.X);
-                if (n != 0 || f != 0) p.Add("LOCATION.X", n);
-                if (f != 0) p.Add("LOCATION.X"+"_FRAC", f);
+                p.Add("LOCATION.X", n);
+                p.Add("LOCATION.X_FRAC", f);
             }
             {
                 var (n, f) = Utils.CoordToDxpFrac(Location.Y);
-                if (n != 0 || f != 0) p.Add("LOCATION.Y", n);
-                if (f != 0) p.Add("LOCATION.Y"+"_FRAC", f);
+                p.Add("LOCATION.Y", n);
+                p.Add("LOCATION.Y_FRAC", f);
             }
-            p.Add("JUSTIFICATION", (int)Justification);
             p.Add("ORIENTATION", Orientation);
+            p.Add("JUSTIFICATION", (int)Justification);
             p.Add("COLOR", Color);
             p.Add("AREACOLOR", AreaColor);
         }

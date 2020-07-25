@@ -10,6 +10,7 @@ namespace AltiumSharp.Records
 
     public class SchPolyline : SchBasicPolyline
     {
+        public override int Record => 6;
         public LineShape StartLineShape { get; internal set; }
         public LineShape EndLineShape { get; internal set; }
         public int LineShapeSize { get; internal set; }
@@ -32,6 +33,7 @@ namespace AltiumSharp.Records
             p.Add("STARTLINESHAPE", StartLineShape);
             p.Add("ENDLINESHAPE", EndLineShape);
             p.Add("LINESHAPESIZE", LineShapeSize);
+            p.MoveKeys("COLOR");
         }
     }
 }

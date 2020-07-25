@@ -8,6 +8,7 @@ namespace AltiumSharp.Records
 {
     public class Record45 : SchPrimitive // TODO: figure out what schematic API interface maps to this record
     {
+        public override int Record => 45;
         public string Description { get; internal set; }
         public string ModelName { get; internal set; }
         public string ModelType { get; internal set; }

@@ -20,6 +20,7 @@ namespace AltiumSharp.Records
 
     public class SchPowerObject : SchLabel
     {
+        public override int Record => 17;
         public PowerPortStyle Style { get; internal set; }
         public bool ShowNetName { get; internal set; }
         public bool IsCrossSheetConnector { get; internal set; }
@@ -42,8 +43,11 @@ namespace AltiumSharp.Records
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             base.ExportToParameters(p);
+            p.SetBookmark();
             p.Add("STYLE", Style);
             p.Add("SHOWNETNAME", ShowNetName, false);
+            p.MoveKeys("LOCATION.X");
+            p.MoveKeys("TEXT");
             p.Add("ISCROSSSHEETCONNECTOR", IsCrossSheetConnector);
         }
     }

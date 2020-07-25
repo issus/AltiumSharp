@@ -253,8 +253,8 @@ namespace AltiumSharp
             BeginContext($"Binary Record {recordType}");
 
             var pin = new SchPin();
-            pin.Record = reader.ReadInt32();
-            AssertValue(nameof(pin.Record), pin.Record, 2);
+            var pinRecord = reader.ReadInt32();
+            AssertValue(nameof(pinRecord), pinRecord, 2);
             reader.ReadByte(); // TODO: unknown
             pin.OwnerPartId = reader.ReadInt16();
             reader.ReadByte(); // TODO: unknown

@@ -6,6 +6,7 @@ namespace AltiumSharp.Records
 {
     public class SchPie : SchArc
     {
+        public override int Record => 9;
         public Color AreaColor { get; internal set; }
         public bool IsSolid { get; internal set; }
 

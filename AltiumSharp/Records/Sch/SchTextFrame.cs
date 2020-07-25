@@ -6,6 +6,7 @@ namespace AltiumSharp.Records
 {
     public class SchTextFrame : SchRectangle
     {
+        public override int Record => 28;
         public Color TextColor { get; internal set; }
         public int FontId { get; internal set; }
         public bool ShowBorder { get; internal set; }
@@ -33,8 +34,10 @@ namespace AltiumSharp.Records
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             base.ExportToParameters(p);
+            p.SetBookmark();
             p.Add("TEXTCOLOR", TextColor);
             p.Add("FONTID", FontId);
+            p.MoveKeys("ISSOLID");
             p.Add("SHOWBORDER", ShowBorder);
             p.Add("ALIGNMENT", Alignment);
             p.Add("WORDWRAP", WordWrap);

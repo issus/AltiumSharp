@@ -5,6 +5,7 @@ namespace AltiumSharp.Records
 {
     public class SchLine : SchGraphicalObject
     {
+        public override int Record => 13;
         public CoordPoint Corner { get; internal set; }
         public LineWidth LineWidth { get; internal set; }
         public LineStyle LineStyle { get; internal set; }
@@ -40,6 +41,7 @@ namespace AltiumSharp.Records
                 if (f != 0) p.Add("CORNER.Y"+"_FRAC", f);
             }
             p.Add("LINEWIDTH", LineWidth);
+            p.MoveKey("COLOR");
             p.Add("LINESTYLE", LineStyle);
         }
     }

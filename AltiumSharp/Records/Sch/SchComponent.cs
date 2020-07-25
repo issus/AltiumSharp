@@ -7,6 +7,8 @@ namespace AltiumSharp.Records
 {
     public class SchComponent : SchGraphicalObject, IComponent
     {
+        public override int Record => 1;
+
         public string Name => LibReference;
 
         public string Description => ComponentDescription;
@@ -22,10 +24,12 @@ namespace AltiumSharp.Records
         public int PartCount { get; internal set; }
         public int DisplayModeCount { get; internal set; }
         public int DisplayMode { get; internal set; }
+        public bool ShowHiddenPins { get; internal set; }
         public string LibraryPath { get; internal set; }
         public string SourceLibraryName { get; internal set; }
         public string SheetPartFilename { get; internal set; }
         public string TargetFilename { get; internal set; }
+        public bool OverrideColors { get; internal set; }
         public bool DesignatorLocked { get; internal set; }
         public bool PartIdLocked { get; internal set; }
         public string DesignItemId { get; internal set; }
@@ -35,7 +39,6 @@ namespace AltiumSharp.Records
 
         public SchComponent()
         {
-            Record = 1;
             DisplayModeCount = 1;
             IndexInSheet = -1;
             OwnerPartId = -1;
@@ -67,10 +70,12 @@ namespace AltiumSharp.Records
             PartCount = p["PARTCOUNT"].AsIntOrDefault() - 1; // for some reason this number is one more than the actual number of parts
             DisplayModeCount = p["DISPLAYMODECOUNT"].AsIntOrDefault();
             DisplayMode = p["DISPLAYMODE"].AsIntOrDefault();
+            ShowHiddenPins = p["SHOWHIDDENPINS"].AsBool();
             LibraryPath = p["LIBRARYPATH"].AsStringOrDefault("*");
             SourceLibraryName = p["SOURCELIBRARYNAME"].AsStringOrDefault("*");
             SheetPartFilename = p["SHEETPARTFILENAME"].AsStringOrDefault("*");
             TargetFilename = p["TARGETFILENAME"].AsStringOrDefault("*");
+            OverrideColors = p["OVERIDECOLORS"].AsBool();
             DesignatorLocked = p["DESIGNATORLOCKED"].AsBool();
             PartIdLocked = p["PARTIDLOCKED"].AsBool();
             DesignItemId = p["DESIGNITEMID"].AsStringOrDefault();
@@ -83,40 +88,30 @@ namespace AltiumSharp.Records
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
 
-            p.Add("RECORD", Record);
+            base.ExportToParameters(p);
+            p.SetBookmark();
             p.Add("LIBREFERENCE", LibReference);
             p.Add("COMPONENTDESCRIPTION", ComponentDescription);
             p.Add("PARTCOUNT", PartCount + 1);
             p.Add("DISPLAYMODECOUNT", DisplayModeCount);
-            p.Add("INDEXINSHEET", IndexInSheet);
-            p.Add("OWNERPARTID", OwnerPartId);
-            {
-                var (n, f) = Utils.CoordToDxpFrac(Location.X);
-                if (n != 0 || f != 0) p.Add("LOCATION.X", n);
-                if (f != 0) p.Add("LOCATION.X" + "_FRAC", f);
-            }
-            {
-                var (n, f) = Utils.CoordToDxpFrac(Location.Y);
-                if (n != 0 || f != 0) p.Add("LOCATION.Y", n);
-                if (f != 0) p.Add("LOCATION.Y" + "_FRAC", f);
-            }
+            p.MoveKeys("INDEXINSHEET");
             p.Add("CURRENTPARTID", CurrentPartId);
+            p.Add("SHOWHIDDENPINS", ShowHiddenPins);
             p.Add("LIBRARYPATH", LibraryPath);
             p.Add("SOURCELIBRARYNAME", SourceLibraryName);
             p.Add("SHEETPARTFILENAME", SheetPartFilename);
             p.Add("TARGETFILENAME", TargetFilename);
             p.Add("UNIQUEID", UniqueId);
-            p.Add("AREACOLOR", AreaColor);
-            p.Add("COLOR", Color);
+            p.MoveKey("AREACOLOR");
+            p.MoveKey("COLOR");
             p.Add("DISPLAYMODE", DisplayMode);
+            p.Add("OVERIDECOLORS", OverrideColors);
             p.Add("DESIGNATORLOCKED", DesignatorLocked);
             p.Add("PARTIDLOCKED", PartIdLocked, false);
             p.Add("ALIASLIST", AliasList);
             p.Add("DESIGNITEMID", DesignItemId);
             p.Add("COMPONENTKIND", ComponentKind);
             p.Add("ALLPINCOUNT", AllPinCount);
-
-            base.ExportToParameters(p); // call base last so the parameter order is overriden
         }
     }
 }

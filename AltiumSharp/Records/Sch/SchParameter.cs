@@ -5,6 +5,7 @@ namespace AltiumSharp.Records
 {
     public class SchParameter : DesignatorLabelRecord
     {
+        public override int Record => 41;
         public int ParamType { get; internal set; }
         public string Description { get; internal set; }
 
@@ -17,7 +18,6 @@ namespace AltiumSharp.Records
 
         public SchParameter()
         {
-            Record = 41;
             Location = new CoordPoint(-5, -15);
         }
 
@@ -35,7 +35,9 @@ namespace AltiumSharp.Records
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             base.ExportToParameters(p);
+            p.SetBookmark();
             p.Add("PARAMTYPE", ParamType);
+            p.MoveKeys("NAME");
             p.Add("DESCRIPTION", Description);
         }
     }
