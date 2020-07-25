@@ -13,7 +13,13 @@ namespace AltiumSharp.Records
             new CoordRect(Location.X, Location.Y, 1, 1);
 
         public override bool IsVisible =>
-            base.IsVisible && !Name.Equals("HiddenNetName", StringComparison.InvariantCultureIgnoreCase);
+            base.IsVisible && Name?.Equals("HiddenNetName", StringComparison.InvariantCultureIgnoreCase) == false;
+
+        public SchParameter()
+        {
+            Record = 41;
+            Location = new CoordPoint(-5, -15);
+        }
 
         public override void ImportFromParameters(ParameterCollection p)
         {

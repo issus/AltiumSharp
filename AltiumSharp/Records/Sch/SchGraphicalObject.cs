@@ -51,6 +51,7 @@ namespace AltiumSharp.Records
     {
         public CoordPoint Location { get; internal set; }
         public TextJustification Justification { get; internal set; }
+        public TextOrientations Orientation { get; internal set; }
         public Color Color { get; internal set; }
         public Color AreaColor { get; internal set; }
 
@@ -63,6 +64,7 @@ namespace AltiumSharp.Records
                 Utils.DxpFracToCoord(p["LOCATION.X"].AsIntOrDefault(), p["LOCATION.X_FRAC"].AsIntOrDefault()),
                 Utils.DxpFracToCoord(p["LOCATION.Y"].AsIntOrDefault(), p["LOCATION.Y_FRAC"].AsIntOrDefault()));
             Justification = (TextJustification)p["JUSTIFICATION"].AsIntOrDefault();
+            Orientation = p["ORIENTATION"].AsEnumOrDefault<TextOrientations>();
             Color = p["COLOR"].AsColorOrDefault();
             AreaColor = p["AREACOLOR"].AsColorOrDefault();
         }
@@ -83,6 +85,7 @@ namespace AltiumSharp.Records
                 if (f != 0) p.Add("LOCATION.Y"+"_FRAC", f);
             }
             p.Add("JUSTIFICATION", (int)Justification);
+            p.Add("ORIENTATION", Orientation);
             p.Add("COLOR", Color);
             p.Add("AREACOLOR", AreaColor);
         }

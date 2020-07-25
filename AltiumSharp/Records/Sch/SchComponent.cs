@@ -16,7 +16,7 @@ namespace AltiumSharp.Records
                 .Select(p => p.CalculateBounds()));
 
         public string UniqueId { get; internal set; }
-        public int CurrentPartId { get; internal set; } = -1;
+        public int CurrentPartId { get; internal set; }
         public string LibReference { get; internal set; }
         public string ComponentDescription { get; internal set; }
         public int PartCount { get; internal set; }
@@ -32,6 +32,28 @@ namespace AltiumSharp.Records
         public int ComponentKind { get; internal set; }
         public string AliasList { get; internal set; }
         public int AllPinCount { get; internal set; }
+
+        public SchComponent()
+        {
+            Record = 1;
+            DisplayModeCount = 1;
+            IndexInSheet = -1;
+            OwnerPartId = -1;
+            CurrentPartId = 1;
+            LibraryPath = "*";
+            SourceLibraryName = "*";
+            SheetPartFilename = "*";
+            TargetFilename = "*";
+            UniqueId = Utils.GenerateUniqueId();
+            AreaColor = ColorTranslator.FromWin32(11599871);
+            Color = ColorTranslator.FromWin32(128);
+            PartIdLocked = true;
+        }
+
+        public void Add(SchPrimitive primitive)
+        {
+            Primitives.Add(primitive);
+        }
 
         public override void ImportFromParameters(ParameterCollection p)
         {
@@ -63,10 +85,21 @@ namespace AltiumSharp.Records
 
             p.Add("RECORD", Record);
             p.Add("LIBREFERENCE", LibReference);
+            p.Add("COMPONENTDESCRIPTION", ComponentDescription);
             p.Add("PARTCOUNT", PartCount + 1);
             p.Add("DISPLAYMODECOUNT", DisplayModeCount);
             p.Add("INDEXINSHEET", IndexInSheet);
             p.Add("OWNERPARTID", OwnerPartId);
+            {
+                var (n, f) = Utils.CoordToDxpFrac(Location.X);
+                if (n != 0 || f != 0) p.Add("LOCATION.X", n);
+                if (f != 0) p.Add("LOCATION.X" + "_FRAC", f);
+            }
+            {
+                var (n, f) = Utils.CoordToDxpFrac(Location.Y);
+                if (n != 0 || f != 0) p.Add("LOCATION.Y", n);
+                if (f != 0) p.Add("LOCATION.Y" + "_FRAC", f);
+            }
             p.Add("CURRENTPARTID", CurrentPartId);
             p.Add("LIBRARYPATH", LibraryPath);
             p.Add("SOURCELIBRARYNAME", SourceLibraryName);
@@ -75,7 +108,6 @@ namespace AltiumSharp.Records
             p.Add("UNIQUEID", UniqueId);
             p.Add("AREACOLOR", AreaColor);
             p.Add("COLOR", Color);
-            p.Add("COMPONENTDESCRIPTION", ComponentDescription);
             p.Add("DISPLAYMODE", DisplayMode);
             p.Add("DESIGNATORLOCKED", DesignatorLocked);
             p.Add("PARTIDLOCKED", PartIdLocked, false);

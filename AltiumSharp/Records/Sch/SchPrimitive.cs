@@ -46,10 +46,10 @@ namespace AltiumSharp.Records
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             Record = p["RECORD"].AsIntOrDefault();
-            OwnerIndex = p["OWNERINDEX"].AsIntOrDefault(OwnerIndex);
+            OwnerIndex = p["OWNERINDEX"].AsIntOrDefault();
             IsNotAccesible = p["ISNOTACCESIBLE"].AsBool();
-            IndexInSheet = p["INDEXINSHEET"].AsIntOrDefault(IndexInSheet);
-            OwnerPartId = p["OWNERPARTID"].AsIntOrDefault(OwnerPartId);
+            IndexInSheet = p["INDEXINSHEET"].AsIntOrDefault();
+            OwnerPartId = p["OWNERPARTID"].AsIntOrDefault();
             OwnerPartDisplayMode = p["OWNERPARTDISPLAYMODE"].AsIntOrDefault();
             GraphicallyLocked = p["GRAPHICALLYLOCKED"].AsBool();
         }

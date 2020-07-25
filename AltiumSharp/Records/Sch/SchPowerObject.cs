@@ -43,7 +43,7 @@ namespace AltiumSharp.Records
 
             base.ExportToParameters(p);
             p.Add("STYLE", Style);
-            p.Add("SHOWNETNAME", ShowNetName);
+            p.Add("SHOWNETNAME", ShowNetName, false);
             p.Add("ISCROSSSHEETCONNECTOR", IsCrossSheetConnector);
         }
     }

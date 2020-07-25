@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using AltiumSharp.BasicTypes;
 
 namespace AltiumSharp.Records
@@ -13,6 +14,15 @@ namespace AltiumSharp.Records
             new CoordRect(Location.X, Location.Y, 1, 1);
 
         public override bool IsVisible => base.IsVisible && OwnerIndex > 0;
+
+        public DesignatorLabelRecord()
+        {
+            Record = 34;
+            Location = new CoordPoint(-5, 5);
+            Color = ColorTranslator.FromWin32(8388608);
+            Text = "*";
+            UniqueId = Utils.GenerateUniqueId();
+        }
 
         public override void ImportFromParameters(ParameterCollection p)
         {
