@@ -12,7 +12,19 @@ namespace AltiumSharp
     {
         public static CFItem TryGetChild(this CFItem item, string name)
         {
-            return (CFItem)(item as CFStorage)?.TryGetStorage(name) ?? (item as CFStorage)?.TryGetStream(name);
+            if (item is CFStorage storage)
+            {
+                if (storage.TryGetStorage(name, out var resultStorage))
+                {
+                    return resultStorage;
+                }
+                else if (storage.TryGetStream(name, out var resultStream))
+                {
+                    return resultStream;
+                }
+            }
+
+            return null;
         }
 
         public static CFItem GetChild(this CFItem item, string name)
