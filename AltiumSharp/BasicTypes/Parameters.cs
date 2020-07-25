@@ -276,6 +276,7 @@ namespace AltiumSharp.BasicTypes
         private string _record;
         private List<string> _keys;
         private Dictionary<string, Parameter> _parameters;
+        private string _bookmark;
 
         private char EntrySeparator => EntrySeparators.ElementAtOrDefault(Level);
 
@@ -349,13 +350,22 @@ namespace AltiumSharp.BasicTypes
             new ParameterCollection(data);
 
         /// <summary>
+        /// Gets the parameters that are actually with values.
+        /// </summary>
+        /// <returns>
+        /// Enumerable of the parameters with values.
+        /// </returns>
+        private IEnumerable<Parameter> GetParametersWithValues() =>
+            _keys.Where(k => _parameters.ContainsKey(k)).Select(k => _parameters[k]);
+
+        /// <summary>
         /// Generates a string version of the data contained in this <see cref="ParameterCollection"/>.
         /// </summary>
         /// <returns>String representaton of the current parameters.</returns>
         public override string ToString()
         {
             return EntrySeparator + string.Join(EntrySeparator.ToString(CultureInfo.InvariantCulture),
-                _keys.Select(k => _parameters[k]).Select(p => p.ToString()));
+                GetParametersWithValues().Select(p => p.ToString()));
         }
 
         /// <summary>
@@ -366,7 +376,7 @@ namespace AltiumSharp.BasicTypes
         public string ToUnicodeString()
         {
             return EntrySeparator + string.Join(EntrySeparator.ToString(CultureInfo.InvariantCulture),
-                _keys.Select(k => _parameters[k]).Select(p => p.ToUnicodeString()));
+                GetParametersWithValues().Select(p => p.ToUnicodeString()));
         }
 
         /// <summary>
@@ -376,8 +386,9 @@ namespace AltiumSharp.BasicTypes
         /// <param name="data">String representation of the value to be added.</param>
         private void AddData(string key, string data)
         {
-            key = key?.ToUpperInvariant();
             var parameterValue = new Parameter(key, data, Level);
+            
+            key = key?.ToUpperInvariant();
             if (_parameters.ContainsKey(key))
             {
                 _parameters[key] = parameterValue;
@@ -385,6 +396,20 @@ namespace AltiumSharp.BasicTypes
             else
             {
                 _parameters.Add(key, parameterValue);
+                _keys.Add(key);
+            }
+        }
+
+        /// <summary>
+        /// Internal method used for adding a new key as placeholder without any value,
+        /// but only if the key doesn't already exist.
+        /// </summary>
+        /// <param name="key">Key to be added.</param>
+        private void AddKey(string key)
+        {
+            key = key?.ToUpperInvariant();
+            if (!_parameters.ContainsKey(key))
+            { 
                 _keys.Add(key);
             }
         }
@@ -404,6 +429,10 @@ namespace AltiumSharp.BasicTypes
                 {
                     AddData(key, value.ToString());
                 }
+            }
+            else
+            {
+                AddKey(key);
             }
         }
 
@@ -440,6 +469,10 @@ namespace AltiumSharp.BasicTypes
             {
                 AddData(key, value ? ParameterValue.TrueValues.First() : ParameterValue.FalseValues.First());
             }
+            else
+            {
+                AddKey(key);
+            }
         }
 
         /// <summary>
@@ -450,6 +483,10 @@ namespace AltiumSharp.BasicTypes
             if (!ignoreDefaultValue || (int)value != 0)
             {
                 AddData(key, Utils.CoordUnitToString(value, Unit.Mil));
+            }
+            else
+            {
+                AddKey(key);
             }
         }
 
@@ -485,6 +522,49 @@ namespace AltiumSharp.BasicTypes
         public string GetKey(int index) => _keys[index];
 
         /// <summary>
+        /// Moves a key to the end of the list of keys,
+        /// when <paramref name="updateExisting"/> is true if the key already exists,
+        /// then it is moved to the end of the list of keys, allowing to reposition
+        /// parameters.
+        /// </summary>
+        public void MoveKey(string key, bool updateExisting = true)
+        {
+            if (updateExisting)
+            {
+                _keys.RemoveAll(k => key?.ToUpperInvariant() == k);
+            }
+            _keys.Add(key?.ToUpperInvariant());
+        }
+
+        /// <summary>
+        /// Moves a sequence of consecutive keys, begining with <paramref name="startKey"/>
+        /// up until the bookmark ,to the end of the list of keys.
+        /// When <paramref name="updateExisting"/> is true if the key already exists,
+        /// then it is moved to the end of the list of keys, allowing to reposition
+        /// parameters.
+        /// </summary>
+        public void MoveKeys(string startKey, bool updateExisting = true)
+        {
+            var startIndex = IndexOf(startKey);
+            if (startIndex < 0) return;
+
+            for (int i = startIndex; i < KeyCount; ++i)
+            {
+                var key = _keys[i];
+                MoveKey(key, false);
+                if (updateExisting) _keys[i] = null; // tag for removal
+
+                if (key == _bookmark) break;
+            }
+            if (updateExisting)
+            {
+                _keys.RemoveAll(k => k == null);
+            }
+        }
+
+        public void SetBookmark() => _bookmark = _keys.LastOrDefault();
+
+        /// <summary>
         /// Gets a parameter value from its key.
         /// </summary>
         public ParameterValue this[string key]
@@ -505,7 +585,7 @@ namespace AltiumSharp.BasicTypes
         /// <summary>
         /// Gets a <see cref="Parameter"/> (key, value) descriptor for a given parameter index.
         /// </summary>
-        public Parameter this[int index] => _parameters[_keys[index]];
+        public Parameter this[int index] => _parameters.TryGetValue(_keys[index], out var parameter) ? parameter : default;
 
         /// <summary>
         /// Tries to get a <paramref name="key"/> value, and returns it if it exists.
@@ -543,9 +623,9 @@ namespace AltiumSharp.BasicTypes
         /// <returns></returns>
         public IEnumerator<(string key, ParameterValue value)> GetEnumerator()
         {
-            foreach (var key in _keys)
+            foreach (var p in GetParametersWithValues())
             {
-                yield return (key, _parameters[key].Value);
+                yield return (p.Name, p.Value);
             }
         }
 
@@ -555,6 +635,11 @@ namespace AltiumSharp.BasicTypes
         /// </summary>
         /// <returns></returns>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        /// <summary>
+        /// Returns the number of defined keys even if they have no value.
+        /// </summary>
+        public int KeyCount => _keys.Count;
 
         /// <summary>
         /// Returns the number of existing parameters.
