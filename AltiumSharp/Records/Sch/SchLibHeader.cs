@@ -11,7 +11,7 @@ namespace AltiumSharp.Records
         public string Header { get; internal set; }
         public int Weight { get; internal set; }
         public int MinorVersion { get; internal set; }
-        public List<(string LibRef, string CompDescr, int PartCount)> Comp { get; internal set; }
+        public List<(string LibRef, string CompDescr, int PartCount)> Comp { get; private set; }
 
         public override void ImportFromParameters(ParameterCollection p)
         {

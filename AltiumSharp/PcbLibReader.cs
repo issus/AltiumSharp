@@ -14,22 +14,12 @@ namespace AltiumSharp
     /// <summary>
     /// PCB footprint library file reader.
     /// </summary>
-    public sealed class PcbLibReader : CompoundFileReader
+    public sealed class PcbLibReader : CompoundFileReader<PcbLib>
     {
-        /// <summary>
-        /// Contents of the PcbLib Header.
-        /// </summary>
-        public PcbLibHeader Header { get; private set; }
-
         /// <summary>
         /// UniqueId from the binary FileHeader entry
         /// </summary>
         public string UniqueId { get; private set; }
-
-        /// <summary>
-        /// List of components read from the library.
-        /// </summary>
-        public List<PcbComponent> Components { get; }
 
         /// <summary>
         /// List of model information read from the library, including positioning parameters
@@ -37,19 +27,28 @@ namespace AltiumSharp
         /// </summary>
         public Dictionary<string, (ParameterCollection positioning, string step)> Models { get; private set; }
 
-        public PcbLibReader(string fileName) : base(fileName)
+        public PcbLibReader() : base()
         {
-            Components = new List<PcbComponent>();
+
         }
 
-        protected override void DoClear()
+        protected override void DoRead()
         {
-            Components.Clear();
+            ReadFileHeader();
+            ReadSectionKeys();
+            ReadLibrary();
         }
 
-        protected override void DoReadSectionKeys(Dictionary<string, string> sectionKeys)
+        /// <summary>
+        /// Reads section keys information which can be used to match "ref lib" component names into
+        /// usable compound storage section names.
+        /// <para>
+        /// Data read can be accessed through the <see cref="GetSectionKeyFromRefName"/> method.
+        /// </para>
+        /// </summary>
+        private void ReadSectionKeys()
         {
-            if (sectionKeys == null) throw new ArgumentNullException(nameof(sectionKeys));
+            SectionKeys.Clear();
 
             var data = Cf.TryGetStream("SectionKeys");
             if (data == null) return;
@@ -63,17 +62,11 @@ namespace AltiumSharp
                 {
                     var libRef = ReadPascalString(reader);
                     var sectionKey = ReadStringBlock(reader);
-                    sectionKeys.Add(libRef, sectionKey);
+                    SectionKeys.Add(libRef, sectionKey);
                 }
             }
 
             EndContext();
-        }
-
-        protected override void DoRead()
-        {
-            ReadFileHeader();
-            ReadLibrary();
         }
 
         /// <summary>
@@ -191,8 +184,7 @@ namespace AltiumSharp
 
         private void ReadUniqueIdPrimitiveInformation(CFStorage componentStorage, PcbComponent component)
         {
-            var uniqueIdPrimitiveInformation = componentStorage.TryGetStorage("UniqueIdPrimitiveInformation");
-            if (uniqueIdPrimitiveInformation == null) return;
+            if (!componentStorage.TryGetStorage("UniqueIdPrimitiveInformation", out var uniqueIdPrimitiveInformation)) return;
 
             BeginContext("UniqueIdPrimitiveInformation");
             try
@@ -568,15 +560,14 @@ namespace AltiumSharp
             using (var reader = library.GetStream("Data").GetBinaryReader())
             {
                 var parameters = ReadBlock(reader, size => ReadParameters(reader, size));
-                Header = new PcbLibHeader();
-                Header.ImportFromParameters(parameters);
+                Data.Header.ImportFromParameters(parameters);
 
                 var footprintCount = reader.ReadUInt32();
                 for (var i = 0; i < footprintCount; ++i)
                 {
                     var refName = ReadStringBlock(reader);
                     var sectionKey = GetSectionKeyFromRefName(refName);
-                    Components.Add(ReadFootprint(sectionKey));
+                    Data.Items.Add(ReadFootprint(sectionKey));
                 }
             }
         }

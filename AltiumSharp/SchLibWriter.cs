@@ -15,23 +15,13 @@ using OpenMcdf;
 namespace AltiumSharp
 {
     /// <summary>
-    /// Schematic library reader.
+    /// Schematic library writer.
     /// </summary>
-    public sealed class SchLibWriter : SchWriter
+    public sealed class SchLibWriter : SchWriter<SchLib>
     {
-        /// <summary>
-        /// Header information for the schematic library file.
-        /// </summary>
-        public SchLibHeader Header { get; set; }
-
-        /// <summary>
-        /// List of component to be serialized to the file.
-        /// </summary>
-        public List<SchComponent> Components { get; }
-
-        public SchLibWriter(string fileName) : base(fileName)
+        public SchLibWriter() : base()
         {
-            Components = new List<SchComponent>();
+
         }
 
         protected override void DoWriteSch()
@@ -39,7 +29,7 @@ namespace AltiumSharp
             WriteFileHeader();
             WriteSectionKeys();
 
-            foreach (var component in Components)
+            foreach (var component in Data.Items)
             {
                 WriteComponent(component);
             }
@@ -48,7 +38,7 @@ namespace AltiumSharp
         private void WriteSectionKeys()
         {
             // only write section keys for components that need them
-            var components = Components.Where(c => GetSectionKeyFromRefName(c.Name) != c.Name).ToList();
+            var components = Data.Items.Where(c => GetSectionKeyFromRefName(c.Name) != c.Name).ToList();
             if (components.Count == 0) return;
 
             var parameters = new ParameterCollection
@@ -82,16 +72,16 @@ namespace AltiumSharp
             Cf.RootStorage.GetOrAddStream("FileHeader").Write(writer =>
             {
                 // add the components to the header
-                Header.Comp.Clear();
-                Header.Comp.AddRange(Components.Select(c => (c.Name, c.Description, c.PartCount + 1)));
+                Data.Header.Comp.Clear();
+                Data.Header.Comp.AddRange(Data.Items.Select(c => (c.Name, c.Description, c.PartCount + 1)));
 
                 // write header
-                var parameters = Header.ExportToParameters();
+                var parameters = Data.Header.ExportToParameters();
                 WriteBlock(writer, w => WriteParameters(w, parameters));
 
                 // write the binary list of component ref names
-                writer.Write(Components.Count);
-                foreach (var component in Components)
+                writer.Write(Data.Items.Count);
+                foreach (var component in Data.Items)
                 {
                     WriteStringBlock(writer, component.Name);
                 }
@@ -121,6 +111,15 @@ namespace AltiumSharp
             WritePinTextData(componentStorage, pinsTextData);
             WriteComponentExtendedParameters(componentStorage, "PinWideText", pinsWideText);
             WriteComponentExtendedParameters(componentStorage, "PinSymbolLineWidth", pinsSymbolLineWidth);
+        }
+
+        private static void WriteComponentPrimitives(BinaryWriter writer, SchComponent component,
+            Dictionary<int, ParameterCollection> pinsWideText, Dictionary<int, byte[]> pinsTextData,
+            Dictionary<int, ParameterCollection> pinsSymbolLineWidth)
+        {
+            var index = 0;
+            var pinIndex = 0;
+            WritePrimitive(writer, component, true, 0, ref index, ref pinIndex, pinsWideText, pinsTextData, pinsSymbolLineWidth);
         }
 
         /// <summary>

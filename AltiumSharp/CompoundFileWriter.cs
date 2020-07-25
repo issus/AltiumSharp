@@ -13,25 +13,24 @@ namespace AltiumSharp
     /// <summary>
     /// Base class for implementing writers for COM/OLE Structured Storage based formats.
     /// </summary>
-    public abstract class CompoundFileWriter : IDisposable
+    public abstract class CompoundFileWriter<TData> : IDisposable
     {
-        /// <summary>
-        /// Name of the file currently being writen.
-        /// </summary>
-        internal string FileName { get; private set; }
-
         /// <summary>
         /// Instance of the compound storage file class.
         /// </summary>
         internal CompoundFile Cf { get; private set; }
 
         /// <summary>
+        /// Data to be written to the file.
+        /// </summary>
+        protected TData Data { get; private set; }
+
+        /// <summary>
         /// Creates a CompoundFileWriter instance for accessing the provided file name.
         /// </summary>
-        /// <param name="fileName">Name of the compound storage file to be processed.</param>
-        public CompoundFileWriter(string fileName)
+        public CompoundFileWriter()
         {
-            FileName = fileName;
+
         }
 
         /// <summary>
@@ -43,13 +42,17 @@ namespace AltiumSharp
         /// <summary>
         /// Writes the content of the compound file.
         /// </summary>
-        public void Write(bool overwrite = false)
+        /// <param name="data">Data to be saved to file.</param>
+        /// <param name="fileName">Name of the compound storage file to be written to.</param>
+        public void Write(TData data, string fileName, bool overwrite = false)
         {
+            Data = data;
+
             using (Cf = new CompoundFile())
             {
                 DoWrite();
 
-                using (var stream = new FileStream(FileName, overwrite ? FileMode.Create : FileMode.CreateNew))
+                using (var stream = new FileStream(fileName, overwrite ? FileMode.Create : FileMode.CreateNew))
                 {
                     Cf.Save(stream);
                 }
@@ -80,7 +83,7 @@ namespace AltiumSharp
         internal static void WriteBlock(BinaryWriter writer, byte[] data, byte flags = 0)
         {
             writer.Write((flags << 24) | data.Length); // flags + size
-            writer.Write(data); // data
+            writer.Write(data ?? Array.Empty<byte>()); // data
         }
 
         /// <summary>
@@ -148,7 +151,7 @@ namespace AltiumSharp
         /// <param name="data">Data to be stored.</param>
         internal static void WriteCompressedStorage(BinaryWriter writer, string id, byte[] data)
         {
-            WriteCompressedStorage(writer, id, w => w.Write(data));
+            WriteCompressedStorage(writer, id, w => w.Write(data ?? Array.Empty<byte>()));
         }
 
         /// <summary>
@@ -186,11 +189,7 @@ namespace AltiumSharp
         /// <returns>Serialized bytes of the string according to the specified encoding.</returns>
         internal static byte[] SerializeRawString(string data, Encoding encoding = null)
         {
-            if (data == null)
-            {
-                return Array.Empty<byte>();
-            }
-
+            data = data ?? string.Empty;
             encoding = encoding ?? Utils.Win1252Encoding;
             return encoding.GetBytes(data);
         }
@@ -285,6 +284,7 @@ namespace AltiumSharp
         /// </param>
         internal static void WritePascalShortString(BinaryWriter writer, string data, Encoding encoding = null)
         {
+            data = data ?? string.Empty;
             encoding = encoding ?? Utils.Win1252Encoding;
             writer.Write((byte)encoding.GetByteCount(data)); // size
             WriteRawString(writer, data, encoding: encoding);
@@ -361,7 +361,7 @@ namespace AltiumSharp
         /// <param name="data">
         /// List of strings to be serialized.
         /// </param>
-        internal void WriteWideStrings(CFStorage storage, IList<string> data)
+        internal static void WriteWideStrings(CFStorage storage, IList<string> data)
         {
             storage.GetOrAddStream("WideStrings").Write(writer =>
             {

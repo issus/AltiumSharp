@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using AltiumSharp.BasicTypes;
 using AltiumSharp.Records;
 using OpenMcdf;
@@ -16,25 +13,36 @@ namespace AltiumSharp
     /// <summary>
     /// Schematic library reader.
     /// </summary>
-    public sealed class SchLibReader : SchReader
+    public sealed class SchLibReader : SchReader<SchLib>
     {
-        /// <summary>
-        /// Header information for the schematic library file.
-        /// </summary>
-        public SchLibHeader Header { get; private set; }
-
-        /// <summary>
-        /// List of component symbols read from the file.
-        /// </summary>
-        public List<SchComponent> Components { get; }
-
-        public SchLibReader(string fileName) : base(fileName)
+        public SchLibReader() : base()
         {
-            Components = new List<SchComponent>();
+
         }
 
-        protected override void DoReadSectionKeys(Dictionary<string, string> sectionKeys)
+        protected override void DoReadSch()
         {
+            ReadSectionKeys();
+            var refNames = ReadFileHeader();
+
+            foreach (var componentRefName in refNames)
+            {
+                var sectionKey = GetSectionKeyFromRefName(componentRefName);
+                Data.Items.Add(ReadComponent(sectionKey));
+            }
+        }
+
+        /// <summary>
+        /// Reads section keys information which can be used to match "ref lib" component names into
+        /// usable compound storage section names.
+        /// <para>
+        /// Data read can be accessed through the <see cref="GetSectionKeyFromRefName"/> method.
+        /// </para>
+        /// </summary>
+        private void ReadSectionKeys()
+        {
+            SectionKeys.Clear();
+
             var data = Cf.TryGetStream("SectionKeys");
             if (data == null) return;
 
@@ -48,28 +56,11 @@ namespace AltiumSharp
                 {
                     var libRef = parameters[$"LIBREF{i}"].AsString();
                     var sectionKey = parameters[$"SECTIONKEY{i}"].AsString();
-                    sectionKeys.Add(libRef, sectionKey);
+                    SectionKeys.Add(libRef, sectionKey);
                 }
             }
 
             EndContext();
-        }
-
-        protected override void DoClearSch()
-        {
-            Header = null;
-            Components.Clear();
-        }
-
-        protected override void DoReadSch()
-        {
-            var refNames = ReadFileHeader();
-
-            foreach (var componentRefName in refNames)
-            {
-                var sectionKey = GetSectionKeyFromRefName(componentRefName);
-                Components.Add(ReadComponent(sectionKey));
-            }
         }
 
         /// <summary>
@@ -86,14 +77,13 @@ namespace AltiumSharp
             using (var reader = Cf.GetStream("FileHeader").GetBinaryReader())
             {
                 var parameters = ReadBlock(reader, size => ReadParameters(reader, size));
-                Header = new SchLibHeader();
-                Header.ImportFromParameters(parameters);
+                Data.Header.ImportFromParameters(parameters);
 
                 if (reader.BaseStream.Position == reader.BaseStream.Length)
                 {
                     // If we're at the end of the stream then read components
                     // from the parameters list
-                    refNames.AddRange(Header.Comp.Select(c => c.LibRef));
+                    refNames.AddRange(Data.Header.Comp.Select(c => c.LibRef));
                 }
                 else
                 {
@@ -150,8 +140,7 @@ namespace AltiumSharp
         /// </summary>
         private Dictionary<int, byte[]> ReadPinTextData(CFStorage componentStorage)
         {
-            var storage = componentStorage.TryGetStream("PinTextData");
-            if (storage == null) return null;
+            if (!componentStorage.TryGetStream("PinTextData", out var storage)) return null;
 
             BeginContext("PinTextData");
 
@@ -181,8 +170,7 @@ namespace AltiumSharp
         /// </summary>
         private Dictionary<int, ParameterCollection> ReadPinWideText(CFStorage componentStorage)
         {
-            var storage = componentStorage.TryGetStream("PinWideText");
-            if (storage == null) return null;
+            if (!componentStorage.TryGetStream("PinWideText", out var storage)) return null;
 
             BeginContext("PinWideText");
 
@@ -218,8 +206,7 @@ namespace AltiumSharp
         /// </summary>
         private Dictionary<int, ParameterCollection> ReadPinSymbolLineWidth(CFStorage componentStorage)
         {
-            var storage = componentStorage.TryGetStream("PinSymbolLineWidth");
-            if (storage == null) return null;
+            if (!componentStorage.TryGetStream("PinSymbolLineWidth", out var storage)) return null;
 
             BeginContext("PinSymbolLineWidth");
 

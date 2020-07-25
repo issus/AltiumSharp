@@ -9,18 +9,13 @@ using AltiumSharp.Records;
 
 namespace AltiumSharp
 {
-    public abstract class SchWriter : CompoundFileWriter
+    public abstract class SchWriter<TData> : CompoundFileWriter<TData>
+        where TData : SchData, new()
     {
-        protected SchWriter(string fileName) : base(fileName)
+        protected SchWriter() : base()
         {
-            EmbeddedImages = new Dictionary<string, Image>();
-        }
 
-        /// <summary>
-        /// Mapping of image file names to the actual image data for
-        /// embedded images.
-        /// </summary>
-        public Dictionary<string, Image> EmbeddedImages { get; }
+        }
 
         protected sealed override void DoWrite()
         {
@@ -52,25 +47,25 @@ namespace AltiumSharp
                 var parameters = new ParameterCollection
                 {
                     { "HEADER", "Icon storage" },
-                    { "WEIGHT", EmbeddedImages.Count }
+                    { "WEIGHT", Data.EmbeddedImages.Count }
                 };
                 WriteBlock(writer, w => WriteParameters(w, parameters));
 
-                foreach (var ei in EmbeddedImages)
+                foreach (var ei in Data.EmbeddedImages)
                 {
                     WriteCompressedStorage(writer, ei.Key, ImageToBytes(ei.Value));
                 }
             });
         }
 
-        private static void WritePrimitive(BinaryWriter writer, SchPrimitive primitive,
+        protected static void WritePrimitive(BinaryWriter writer, SchPrimitive primitive, bool pinAsBinary,
             int ownerIndex, ref int index, ref int pinIndex,
             Dictionary<int, ParameterCollection> pinsWideText, Dictionary<int, byte[]> pinsTextData,
             Dictionary<int, ParameterCollection> pinsSymbolLineWidth)
         {
             primitive.OwnerIndex = ownerIndex;
 
-            if (primitive is SchPin pin)
+            if (pinAsBinary && primitive is SchPin pin)
             {
                 WritePinRecord(writer, pin, out var pinWideText, out var pinTextData, out var pinSymbolLineWidth);
 
@@ -98,18 +93,9 @@ namespace AltiumSharp
 
             foreach (var child in primitive.Primitives)
             {
-                WritePrimitive(writer, child, currentIndex, ref index, ref pinIndex,
+                WritePrimitive(writer, child, pinAsBinary, currentIndex, ref index, ref pinIndex,
                     pinsWideText, pinsTextData, pinsSymbolLineWidth);
             }
-        }
-
-        protected static void WriteComponentPrimitives(BinaryWriter writer, SchComponent component,
-            Dictionary<int, ParameterCollection> pinsWideText, Dictionary<int, byte[]> pinsTextData,
-            Dictionary<int, ParameterCollection> pinsSymbolLineWidth)
-        {
-            var index = 0;
-            var pinIndex = 0;
-            WritePrimitive(writer, component, 0, ref index, ref pinIndex, pinsWideText, pinsTextData, pinsSymbolLineWidth);
         }
 
         /// <summary>
@@ -164,7 +150,7 @@ namespace AltiumSharp
             if (!IsAscii(pin.Description)) pinWideText.Add("DESC", pin.Description);
             if (!IsAscii(pin.Name)) pinWideText.Add("NAME", pin.Name);
             if (!IsAscii(pin.Designator)) pinWideText.Add("DESIG", pin.Designator);
-            
+
             pinTextData = new byte[0];
 
             pinSymbolLineWidth = new ParameterCollection

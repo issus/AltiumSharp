@@ -3,32 +3,17 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using AltiumSharp.BasicTypes;
 using AltiumSharp.Records;
 
 namespace AltiumSharp
 {
-    public abstract class SchReader : CompoundFileReader
+    public abstract class SchReader<TData> : CompoundFileReader<TData>
+        where TData : SchData, new()
     {
-        protected SchReader(string fileName) : base(fileName)
+        protected SchReader() : base()
         {
-            EmbeddedImages = new Dictionary<string, Image>();
         }
-
-        /// <summary>
-        /// Mapping of image file names to the actual image data for
-        /// embedded images.
-        /// </summary>
-        public Dictionary<string, Image> EmbeddedImages { get; }
-
-        protected sealed override void DoClear()
-        {
-            EmbeddedImages.Clear();
-            DoClearSch();
-        }
-
-        protected abstract void DoClearSch();
 
         protected sealed override void DoRead()
         {
@@ -55,13 +40,13 @@ namespace AltiumSharp
                 var weight = parameters["WEIGHT"].AsIntOrDefault();
                 AssertValue(nameof(header), header, "Icon storage");
 
-                EmbeddedImages.Clear();
+                Data.EmbeddedImages.Clear();
                 while (reader.BaseStream.Position < reader.BaseStream.Length)
                 {
                     var (filename, image) = ReadCompressedStorage(reader, Image.FromStream);
-                    EmbeddedImages.Add(filename, image);
+                    Data.EmbeddedImages.Add(filename, image);
                 }
-                CheckValue(nameof(weight), weight, EmbeddedImages.Count);
+                CheckValue(nameof(weight), weight, Data.EmbeddedImages.Count);
             }
 
             EndContext();

@@ -12,7 +12,8 @@ namespace AltiumSharp
     /// <summary>
     /// Base class for implementing parsers that read COM/OLE Structured Storage based formats.
     /// </summary>
-    public abstract class CompoundFileReader : IDisposable
+    public abstract class CompoundFileReader<TData> : IDisposable
+        where TData : new()
     {
         /// <summary>
         /// Debug helper information for keeping track of the current operation context
@@ -23,17 +24,17 @@ namespace AltiumSharp
         /// <summary>
         /// Mapping of "ref lib" component names to sections in the structured storage file.
         /// </summary>
-        private Dictionary<string, string> _sectionKeys { get; }
-
-        /// <summary>
-        /// Name of the file currently being read.
-        /// </summary>
-        internal string FileName { get; private set; }
+        protected Dictionary<string, string> SectionKeys { get; } = new Dictionary<string, string>();
 
         /// <summary>
         /// Instance of the compound storage file reader class.
         /// </summary>
         internal CompoundFile Cf { get; private set; }
+
+        /// <summary>
+        /// Data read from the file.
+        /// </summary>
+        protected TData Data { get; private set; }
 
         /// <summary>
         /// List of warnings produced during the reading of the current file.
@@ -49,33 +50,12 @@ namespace AltiumSharp
         /// Creates a CompoundFileReader instance for accessing the provided file name.
         /// </summary>
         /// <param name="fileName">Name of the compound storage file to be processed.</param>
-        public CompoundFileReader(string fileName)
+        public CompoundFileReader()
         {
             _context = new List<string>();
-            _sectionKeys = new Dictionary<string, string>();
-            FileName = fileName;
             Warnings = new List<string>();
             Errors = new List<string>();
         }
-
-
-        /// <summary>
-        /// Framework hook method to be implemented by derived classes to clear all previously read data.
-        /// </summary>
-        protected abstract void DoClear();
-
-        /// <summary>
-        /// Framework hook method to be implemented by derived classes in order to read section keys
-        /// information which can be used to match "ref lib" component names into usable compound storage
-        /// section names.
-        /// <para>Data read can be accessed through the <see cref="GetSectionKeyFromRefName"/> method.
-        /// </para>
-        /// </summary>
-        /// <param name="sectionKeys">
-        /// Dictionary to be filled by the implementor mapping "ref lib" component names to compound file
-        /// section storage keys.
-        /// </param>
-        protected abstract void DoReadSectionKeys(Dictionary<string, string> sectionKeys);
 
         /// <summary>
         /// Framework hook method to be implemented by derived classes in order to perform the actual
@@ -88,27 +68,57 @@ namespace AltiumSharp
         /// </summary>
         private void Clear()
         {
-            _sectionKeys.Clear();
+            Data = new TData();
             Warnings.Clear();
             Errors.Clear();
-            DoClear();
         }
 
         /// <summary>
         /// Reads the content of the compound file.
         /// </summary>
-        public void Read()
+        /// <param name="fileName">Name of the compound storage file to be read.</param>
+        public TData Read(string fileName)
         {
             Clear();
 
-            using (var stream = new FileStream(FileName, FileMode.Open))
+            using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             using (Cf = new CompoundFile(stream))
             {
-                DoReadSectionKeys(_sectionKeys);
                 DoRead();
             }
 
             Cf = null;
+
+            return Data;
+        }
+
+        /// <summary>
+        /// Get the name of the section storage key to be used to read a component "ref name".
+        /// <para>
+        /// This allows for giving an alias for reading a component that has a name that is
+        /// not supported by the compound file storage format because of its limitations.
+        /// </para>
+        /// <para>
+        /// In case the <see cref="DoReadSectionKeys(Dictionary{string, string})"/> didn't
+        /// properly provide a relevant list of "ref name" to section keys, we attempt the
+        /// to guess the possible way the component name can be mangled to fit the compound
+        /// storage format naming limitations.
+        /// </para>
+        /// </summary>
+        /// <param name="refName">Component reference name.</param>
+        /// <returns>
+        /// A storage section key where to access the data for the given <paramref name="refName"/>.
+        /// </returns>
+        protected string GetSectionKeyFromRefName(string refName)
+        {
+            if (SectionKeys.TryGetValue(refName, out var result))
+            {
+                return result;
+            }
+            else
+            {
+                return refName?.Substring(0, refName.Length > 31 ? 31 : refName.Length).Replace('/', '_');
+            }
         }
 
         /// <summary>
@@ -382,7 +392,7 @@ namespace AltiumSharp
         }
 
         /// <summary>
-        /// Reads compressed storage (name, data) pair, where data is compressed in zlib format.
+        /// Reads compressed storage (id, data) pair, where data is compressed in zlib format.
         /// </summary>
         /// <typeparam name="T">Type of the interpreted data to be returned.</typeparam>
         /// <param name = "reader" > Binary data reader.</param>
@@ -643,35 +653,6 @@ namespace AltiumSharp
             EndContext();
 
             return result;
-        }
-
-        /// <summary>
-        /// Get the name of the section storage key to be used to read a component "ref name".
-        /// <para>
-        /// This allows for giving an alias for reading a component that has a name that is
-        /// not supported by the compound file storage format because of its limitations.
-        /// </para>
-        /// <para>
-        /// In case the <see cref="DoReadSectionKeys(Dictionary{string, string})"/> didn't
-        /// properly provide a relevant list of "ref name" to section keys, we attempt the
-        /// to guess the possible way the component name can be mangled to fit the compound
-        /// storage format naming limitations.
-        /// </para>
-        /// </summary>
-        /// <param name="refName">Component reference name.</param>
-        /// <returns>
-        /// A storage section key where to access the data for the given <paramref name="refName"/>.
-        /// </returns>
-        protected string GetSectionKeyFromRefName(string refName)
-        {
-            if (_sectionKeys.TryGetValue(refName, out var result))
-            {
-                return result;
-            }
-            else
-            {
-                return refName?.Substring(0, refName.Length > 31 ? 31 : refName.Length).Replace('/', '_');
-            }
         }
 
         /// <summary>
