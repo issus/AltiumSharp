@@ -102,5 +102,17 @@ namespace AltiumSharp.BasicTypes
             }
             return ref points;
         }
+
+        private static Random rng = new Random();
+
+        public static string GenerateUniqueId()
+        {
+            var result = new char[8];
+            for (int i = 0; i < 8; ++i)
+            {
+                result[i] = (char)rng.Next('A', 'Z'+1);
+            }
+            return new string(result);
+        }
     }
 }
