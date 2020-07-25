@@ -119,7 +119,7 @@ namespace LibraryViewer
 
                         var index = gridSchLibComponents.Rows.Add(fileName);
                         gridSchLibComponents.Rows[index].Tag = data.Header;
-                        foreach (var component in data.Items.OfType<SchComponent>())
+                        foreach (var component in data.Header.GetPrimitivesOfType<SchComponent>())
                         {
                             index = gridSchLibComponents.Rows.Add(component.Name, component.Description);
                             gridSchLibComponents.Rows[index].Tag = component;
@@ -179,6 +179,28 @@ namespace LibraryViewer
                 defaultPrimitive = pins.FirstOrDefault();
             }
             SetActivePrimitives((activateFirst && defaultPrimitive != null) ? new[] { defaultPrimitive } : null);
+        }
+
+        private void LoadTreeViewStructure(IContainer container)
+        {
+            void processContainer(TreeNodeCollection tnc, IContainer c)
+            {
+                foreach (var primitive in c.GetPrimitivesOfType<Primitive>(false))
+                {
+                    var node = tnc.Add(primitive.ToString());
+                    node.Tag = primitive;
+
+                    if (primitive is IContainer c2)
+                    {
+                        processContainer(node.Nodes, c2);
+                    }
+                }
+            }
+
+            treeViewStructure.BeginUpdate();
+            processContainer(treeViewStructure.Nodes, container);
+            treeViewStructure.EndUpdate();
+            treeViewStructure.Refresh();
         }
 
         private void RequestRedraw(bool fastRendering)
@@ -247,6 +269,7 @@ namespace LibraryViewer
             panelPart.Visible = false;
             gridPcbLibPrimitives.Rows.Clear();
             gridSchLibPrimitives.Rows.Clear();
+            treeViewStructure.Nodes.Clear();
 
             if (_activeContainer != null)
             {
@@ -262,6 +285,8 @@ namespace LibraryViewer
                         labelPartTotal.Text = $"of {editPart.Maximum}";
                     }
                 }
+
+                LoadTreeViewStructure(_activeContainer);
             }
             else
             {
@@ -376,7 +401,7 @@ namespace LibraryViewer
 
             var zoom = Convert.ToDouble(((ToolStripMenuItem)sender).Tag) / 100.0;
             _renderer.Zoom = zoom;
-            
+
             _autoZoom = false;
             RequestRedraw(false);
         }
@@ -524,6 +549,17 @@ namespace LibraryViewer
                 RequestRedraw(false);
             }
             redrawTimer.Enabled = false;
+        }
+
+        private void treeViewStructure_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            var primitive = (Primitive)e.Node.Tag;
+            IEnumerable<Primitive> primitives = new[] { primitive };
+            if (primitive is IContainer container)
+            {
+                primitives = Enumerable.Concat(primitives, container.GetPrimitivesOfType<Primitive>());
+            }
+            SetActivePrimitives(primitives);
         }
     }
 }

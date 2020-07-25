@@ -58,6 +58,8 @@
             this.labelPartTotal = new System.Windows.Forms.Label();
             this.editPart = new System.Windows.Forms.NumericUpDown();
             this.labelPart = new System.Windows.Forms.Label();
+            this.tabTree = new System.Windows.Forms.TabPage();
+            this.treeViewStructure = new System.Windows.Forms.TreeView();
             this.pictureBox = new System.Windows.Forms.Panel();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusLocation = new System.Windows.Forms.ToolStripStatusLabel();
@@ -101,6 +103,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.gridSchLibPrimitives)).BeginInit();
             this.panelPart.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.editPart)).BeginInit();
+            this.tabTree.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -127,6 +130,7 @@
             this.tabComponents.Alignment = System.Windows.Forms.TabAlignment.Bottom;
             this.tabComponents.Controls.Add(this.tabPcbLib);
             this.tabComponents.Controls.Add(this.tabSchLib);
+            this.tabComponents.Controls.Add(this.tabTree);
             this.tabComponents.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabComponents.Location = new System.Drawing.Point(0, 0);
             this.tabComponents.Name = "tabComponents";
@@ -446,6 +450,26 @@
             this.labelPart.TabIndex = 0;
             this.labelPart.Text = "Part";
             // 
+            // tabTree
+            // 
+            this.tabTree.Controls.Add(this.treeViewStructure);
+            this.tabTree.Location = new System.Drawing.Point(4, 4);
+            this.tabTree.Name = "tabTree";
+            this.tabTree.Padding = new System.Windows.Forms.Padding(3);
+            this.tabTree.Size = new System.Drawing.Size(321, 487);
+            this.tabTree.TabIndex = 3;
+            this.tabTree.Text = "Tree";
+            this.tabTree.UseVisualStyleBackColor = true;
+            // 
+            // treeViewStructure
+            // 
+            this.treeViewStructure.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeViewStructure.Location = new System.Drawing.Point(3, 3);
+            this.treeViewStructure.Name = "treeViewStructure";
+            this.treeViewStructure.Size = new System.Drawing.Size(315, 481);
+            this.treeViewStructure.TabIndex = 0;
+            this.treeViewStructure.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewStructure_AfterSelect);
+            // 
             // pictureBox
             // 
             this.pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -498,19 +522,19 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(100, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
@@ -585,21 +609,21 @@
             // exportFootprintToolStripMenuItem1
             // 
             this.exportFootprintToolStripMenuItem1.Name = "exportFootprintToolStripMenuItem1";
-            this.exportFootprintToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.exportFootprintToolStripMenuItem1.Size = new System.Drawing.Size(157, 22);
             this.exportFootprintToolStripMenuItem1.Text = "Export footprint";
             this.exportFootprintToolStripMenuItem1.Click += new System.EventHandler(this.ExportFootprintToolStripMenuItem1_Click);
             // 
             // exportPrimitiveToolStripMenuItem
             // 
             this.exportPrimitiveToolStripMenuItem.Name = "exportPrimitiveToolStripMenuItem";
-            this.exportPrimitiveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportPrimitiveToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.exportPrimitiveToolStripMenuItem.Text = "Export primitive";
             this.exportPrimitiveToolStripMenuItem.Click += new System.EventHandler(this.ExportPrimitiveToolStripMenuItem_Click);
             // 
             // exportImageToolStripMenuItem
             // 
             this.exportImageToolStripMenuItem.Name = "exportImageToolStripMenuItem";
-            this.exportImageToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportImageToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.exportImageToolStripMenuItem.Text = "Export image";
             this.exportImageToolStripMenuItem.Click += new System.EventHandler(this.ExportImageToolStripMenuItem_Click);
             // 
@@ -646,6 +670,7 @@
             this.panelPart.ResumeLayout(false);
             this.panelPart.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.editPart)).EndInit();
+            this.tabTree.ResumeLayout(false);
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
             this.menuStrip.ResumeLayout(false);
@@ -706,6 +731,8 @@
         private System.Windows.Forms.NumericUpDown editPart;
         private System.Windows.Forms.Label labelPart;
         private System.Windows.Forms.Label labelPartTotal;
+        private System.Windows.Forms.TabPage tabTree;
+        private System.Windows.Forms.TreeView treeViewStructure;
     }
 }
 
