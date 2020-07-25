@@ -1,11 +1,13 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using AltiumSharp.BasicTypes;
 using AltiumSharp.Records;
 
 namespace AltiumSharp
 {
-    public class SchDoc : SchData<SheetRecord, SchPrimitive>
+    public class SchDoc : SchData<SchSheetHeader, SchPrimitive>
     {
-        public override SheetRecord Header => Items.OfType<SheetRecord>().SingleOrDefault();
+        public override SchSheetHeader Header => Items.OfType<SchSheetHeader>().SingleOrDefault();
 
         public SchDoc() : base()
         {

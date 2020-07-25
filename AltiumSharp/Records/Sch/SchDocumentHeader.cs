@@ -7,12 +7,14 @@ using AltiumSharp.BasicTypes;
 
 namespace AltiumSharp.Records
 {
-    public class SheetRecord : SchPrimitive // TODO: figure out what schematic API interface maps to this record
+    public abstract class SchDocumentHeader : SchPrimitive
     {
         public string UniqueId { get; internal set; }
         public List<(int Size, string FontName, int Rotation, bool Italic, bool Bold, bool Underline)> FontId { get; internal set; }
         public bool UseMbcs { get; internal set; }
         public bool IsBoc { get; internal set; }
+        public bool HotSpotGridOn { get; internal set; }
+        public int HotSpotGridSize { get; internal set; }
         public int SheetStyle { get; internal set; }
         public int SystemFont { get; internal set; }
         public bool BorderOn { get; internal set; }
@@ -26,6 +28,7 @@ namespace AltiumSharp.Records
         public int CustomY { get; internal set; }
         public bool UseCustomSheet { get; internal set; }
         public bool ReferenceZonesOn { get; internal set; }
+        public bool ShowTemplateGraphics { get; internal set; }
         public Unit DisplayUnit { get; internal set; }
 
         public override void ImportFromParameters(ParameterCollection p)
@@ -45,6 +48,8 @@ namespace AltiumSharp.Records
                 .ToList();
             UseMbcs = p["USEMBCS"].AsBool();
             IsBoc = p["ISBOC"].AsBool();
+            HotSpotGridOn = p["HOTSPOTGRIDON"].AsBool();
+            HotSpotGridSize = p["HOTSPOTGRIDSIZE"].AsIntOrDefault();
             SheetStyle = p["SHEETSTYLE"].AsIntOrDefault();
             SystemFont = p["SYSTEMFONT"].AsIntOrDefault(1);
             BorderOn = p["BORDERON"].AsBool();
@@ -58,6 +63,7 @@ namespace AltiumSharp.Records
             CustomY = p["CUSTOMY"].AsIntOrDefault();
             UseCustomSheet = p["USECUSTOMSHEET"].AsBool();
             ReferenceZonesOn = p["REFERENCEZONESON"].AsBool();
+            ShowTemplateGraphics = p["SHOWTEMPLATEGRAPHICS"].AsBool();
             DisplayUnit = (Unit)p["DISPLAY_UNIT"].AsIntOrDefault();
         }
         
@@ -71,16 +77,18 @@ namespace AltiumSharp.Records
             for (var i = 0; i < FontId.Count; i++)
             {
                 p.Add(string.Format(CultureInfo.InvariantCulture, "SIZE{0}", i+1), FontId[i].Size);
-                p.Add(string.Format(CultureInfo.InvariantCulture, "FONTNAME{0}", i+1), FontId[i].FontName);
                 p.Add(string.Format(CultureInfo.InvariantCulture, "ROTATION{0}", i+1), FontId[i].Rotation);
                 p.Add(string.Format(CultureInfo.InvariantCulture, "ITALIC{0}", i+1), FontId[i].Italic);
                 p.Add(string.Format(CultureInfo.InvariantCulture, "BOLD{0}", i+1), FontId[i].Bold);
                 p.Add(string.Format(CultureInfo.InvariantCulture, "UNDERLINE{0}", i + 1), FontId[i].Underline);
+                p.Add(string.Format(CultureInfo.InvariantCulture, "FONTNAME{0}", i + 1), FontId[i].FontName);
             }
             p.Add("USEMBCS", UseMbcs);
             p.Add("ISBOC", IsBoc);
+            p.Add("HOTSPOTGRIDON", HotSpotGridOn);
+            p.Add("HOTSPOTGRIDSIZE", HotSpotGridSize);
             p.Add("SHEETSTYLE", SheetStyle);
-            if (SystemFont > 1) p.Add("SYSTEMFONT", SystemFont);
+            p.Add("SYSTEMFONT", SystemFont);
             p.Add("BORDERON", BorderOn);
             p.Add("SHEETNUMBERSPACESIZE", SheetNumberSpaceSize);
             p.Add("AREACOLOR", AreaColor);
@@ -100,6 +108,7 @@ namespace AltiumSharp.Records
             p.Add("CUSTOMY", CustomY);
             p.Add("USECUSTOMSHEET", UseCustomSheet);
             p.Add("REFERENCEZONESON", ReferenceZonesOn);
+            p.Add("SHOWTEMPLATEGRAPHICS", ShowTemplateGraphics);
             p.Add("DISPLAY_UNIT", (int)DisplayUnit, false);
         }
     }

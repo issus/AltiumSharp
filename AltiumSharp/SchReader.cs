@@ -179,7 +179,7 @@ namespace AltiumSharp
                     record = new SchImage();
                     break;
                 case 31:
-                    record = new SheetRecord();
+                    record = new SchSheetHeader();
                     break;
                 case 34:
                     record = new DesignatorLabelRecord();

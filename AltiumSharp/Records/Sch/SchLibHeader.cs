@@ -6,7 +6,7 @@ using AltiumSharp.BasicTypes;
 
 namespace AltiumSharp.Records
 {
-    public class SchLibHeader : SheetRecord
+    public class SchLibHeader : SchDocumentHeader
     {
         public string Header { get; internal set; }
         public int Weight { get; internal set; }

@@ -13,15 +13,15 @@ namespace AltiumSharp.Drawing
 {
     public sealed class SchLibRenderer : Renderer
     {
-        private SheetRecord _sheet;
+        private SchDocumentHeader _header;
         private Dictionary<string, Image> _embeddedImages;
         private List<SchComponent> _assets;
 
         public int Part { get; set; }
 
-        public SchLibRenderer(SheetRecord sheet, Dictionary<string, Image> embeddedImages, List<SchComponent> assets)
+        public SchLibRenderer(SchDocumentHeader header, Dictionary<string, Image> embeddedImages, List<SchComponent> assets)
         {
-            _sheet = sheet;
+            _header = header;
             _embeddedImages = embeddedImages;
             _assets = assets;
             Part = 1;
@@ -36,8 +36,8 @@ namespace AltiumSharp.Drawing
         /// <returns></returns>
         private Font CreateFont(int fontId)
         {
-            if (fontId == 0) fontId = _sheet.SystemFont;
-            var f = _sheet.FontId[fontId - 1];
+            if (fontId == 0) fontId = _header.SystemFont;
+            var f = _header.FontId[fontId - 1];
             var fontStyle = FontStyle.Regular;
             if (f.Italic) fontStyle |= FontStyle.Italic;
             if (f.Bold) fontStyle |= FontStyle.Bold;

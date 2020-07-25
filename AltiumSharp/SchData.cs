@@ -19,7 +19,7 @@ namespace AltiumSharp
     }
 
     public abstract class SchData<THeader, TItem> : SchData
-        where THeader : SheetRecord, new()
+        where THeader : SchDocumentHeader, new()
         where TItem :  SchPrimitive, new()
     {
         /// <summary>
