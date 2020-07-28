@@ -7,12 +7,12 @@ namespace AltiumSharp.Records
     public class SchLabel : SchGraphicalObject
     {
         public override int Record => 4;
-        public TextOrientations Orientation { get; internal set; }
-        public TextJustification Justification { get; internal set; }
-        public int FontId { get; internal set; }
-        public string Text { get; internal set; }
-        public bool IsMirrored { get; internal set; }
-        public bool IsHidden { get; internal set; }
+        public TextOrientations Orientation { get; set; }
+        public TextJustification Justification { get; set; }
+        public int FontId { get; set; }
+        public string Text { get; set; }
+        public bool IsMirrored { get; set; }
+        public bool IsHidden { get; set; }
 
         internal virtual string DisplayText => Text ?? "";
         public override bool IsVisible => base.IsVisible && !IsHidden;

@@ -6,8 +6,8 @@ namespace AltiumSharp.Records
     internal class SchJunction : SchGraphicalObject
     {
         public override int Record => 29;
-        public LineWidth Size { get; internal set; }
-        public bool IsManualJunction { get; internal set; }
+        public LineWidth Size { get; set; }
+        public bool IsManualJunction { get; set; }
 
         public override CoordRect CalculateBounds() =>
             new CoordRect(Location.X - Utils.DxpToCoord(2), Location.Y - Utils.DxpToCoord(2), Utils.DxpToCoord(4), Utils.DxpToCoord(4));

@@ -12,29 +12,30 @@ namespace AltiumSharp.Records
         public string UniqueId { get; internal set; }
         public List<(string FontName, int Size, int Rotation, bool Italic, bool Bold, bool Underline)> FontId { get; } =
             new List<(string FontName, int Size, int Rotation, bool Italic, bool Bold, bool Underline)>();
-        public bool UseMbcs { get; internal set; }
-        public bool IsBoc { get; internal set; }
+        public bool UseMbcs { get; set; }
+        public bool IsBoc { get; set; }
         public bool HotSpotGridOn { get; internal set; }
         public int HotSpotGridSize { get; internal set; }
-        public int SheetStyle { get; internal set; }
-        public int SystemFont { get; internal set; }
-        public bool BorderOn { get; internal set; }
+        public int SheetStyle { get; set; }
+        public int SystemFont { get; set; }
+        public bool BorderOn { get; set; }
         public int SheetNumberSpaceSize { get; internal set; }
-        public Color AreaColor { get; internal set; }
-        public bool SnapGridOn { get; internal set; }
-        public Coord SnapGridSize { get; internal set; }
-        public bool VisibleGridOn { get; internal set; }
-        public Coord VisibleGridSize { get; internal set; }
+        public Color AreaColor { get; set; }
+        public bool SnapGridOn { get; set; }
+        public Coord SnapGridSize { get; set; }
+        public bool VisibleGridOn { get; set; }
+        public Coord VisibleGridSize { get; set; }
         public int CustomX { get; internal set; }
         public int CustomY { get; internal set; }
         public bool UseCustomSheet { get; internal set; }
         public bool ReferenceZonesOn { get; internal set; }
         public bool ShowTemplateGraphics { get; internal set; }
-        public Unit DisplayUnit { get; internal set; }
+        public Unit DisplayUnit { get; set; }
 
         public SchDocumentHeader() : base()
         {
             FontId.Add(("Times New Roman", 10, 0, false, false, false));
+            SystemFont = 1;
             UseMbcs = true;
             IsBoc = true;
             BorderOn = true;

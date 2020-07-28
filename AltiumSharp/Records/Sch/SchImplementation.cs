@@ -12,11 +12,11 @@ namespace AltiumSharp.Records
     public class SchImplementation : SchPrimitive
     {
         public override int Record => 45;
-        public string Description { get; internal set; }
-        public string ModelName { get; internal set; }
-        public string ModelType { get; internal set; }
+        public string Description { get; set; }
+        public string ModelName { get; set; }
+        public string ModelType { get; set; }
         public List<string> DataFile { get; internal set; }
-        public bool IsCurrent { get; internal set; }
+        public bool IsCurrent { get; set; }
        
         public override void ImportFromParameters(ParameterCollection p)
         {

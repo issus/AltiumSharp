@@ -14,11 +14,11 @@ namespace AltiumSharp.Drawing
     public sealed class SchLibRenderer : Renderer
     {
         private SchDocumentHeader _header;
-        private List<SchComponent> _assets;
+        private SchLib _assets;
 
         public int Part { get; set; }
 
-        public SchLibRenderer(SchDocumentHeader header, List<SchComponent> assets)
+        public SchLibRenderer(SchDocumentHeader header, SchLib assets)
         {
             _header = header;
             _assets = assets;
@@ -46,7 +46,7 @@ namespace AltiumSharp.Drawing
 
         private IEnumerable<SchPrimitive> GetAsset(string name)
         {
-            return _assets.SingleOrDefault(c => c.LibReference == name)?.Primitives.Where(p => p.IsVisible);
+            return _assets.Items.SingleOrDefault(c => c.LibReference == name)?.GetAllPrimitives().Where(p => p.IsVisible);
         }
 
         /// <summary>

@@ -9,20 +9,21 @@ namespace AltiumSharp.Records
     {
         public virtual int Record { get; }
 
-        public bool IsNotAccesible { get; internal set; }
+        public bool IsNotAccesible { get; set; }
 
         public int IndexInSheet => (Owner as SchComponent)?.GetPrimitiveIndexOf(this) ?? -1;
 
         internal int OwnerIndex { get; set; }
 
-        public int OwnerPartId { get; internal set; }
+        public int OwnerPartId { get; set; }
 
-        public int OwnerPartDisplayMode { get; internal set; }
+        public int OwnerPartDisplayMode { get; set; }
 
-        public bool GraphicallyLocked { get; internal set; }
+        public bool GraphicallyLocked { get; set; }
 
         private List<SchPrimitive> _primitives = new List<SchPrimitive>();
-        public IReadOnlyList<SchPrimitive> Primitives => _primitives;
+        internal IReadOnlyList<SchPrimitive> Primitives => _primitives;
+
         public override bool IsVisible =>
             base.IsVisible && ((Owner as SchComponent)?.DisplayMode ?? 0) == OwnerPartDisplayMode;
 
@@ -54,17 +55,6 @@ namespace AltiumSharp.Records
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
 
-            //var exportedParametersData = ExportToParameters().ToString();
-            //if (exportedParametersData != p.Data)
-            {
-                Console.WriteLine($" -= {GetType().Name} =-");
-                Console.WriteLine(p.Data);
-                //Console.WriteLine("------");
-                //Console.WriteLine(exportedParametersData);
-                //Console.WriteLine("------");
-                Console.WriteLine();
-            }
-
             var recordType = p["RECORD"].AsIntOrDefault();
             if (recordType != Record) throw new ArgumentException($"Record type mismatch when deserializing. Expected {Record} but got {recordType}", nameof(p));
 
@@ -95,6 +85,16 @@ namespace AltiumSharp.Records
             return parameters;
         }
 
+        public IEnumerable<SchPrimitive> GetAllPrimitives()
+        {
+            return Enumerable.Concat(Primitives, DoGetParameters());
+        }
+
+        protected virtual IEnumerable<SchPrimitive> DoGetParameters()
+        {
+            return Enumerable.Empty<SchPrimitive>();
+        }
+
         public void Add(SchPrimitive primitive)
         {
             if (primitive == null) throw new ArgumentNullException(nameof(primitive));
@@ -112,14 +112,12 @@ namespace AltiumSharp.Records
             return true;
         }
 
-        internal IEnumerable<SchPrimitive> GetAllPrimitives()
+        public void Remove(SchPrimitive primitive)
         {
-            return Enumerable.Concat(Primitives, DoGetParameters());
-        }
+            if (primitive == null) throw new ArgumentNullException(nameof(primitive));
 
-        protected virtual IEnumerable<SchPrimitive> DoGetParameters()
-        {
-            return Enumerable.Empty<SchPrimitive>();
+            primitive.Owner = null;
+            _primitives.Remove(primitive);
         }
     }
 }

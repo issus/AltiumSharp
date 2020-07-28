@@ -7,10 +7,10 @@ namespace AltiumSharp.Records
     public class SchRectangle : SchGraphicalObject
     {
         public override int Record => 14;
-        public CoordPoint Corner { get; internal set; }
-        public LineWidth LineWidth { get; internal set; }
-        public bool IsSolid { get; internal set; }
-        public bool Transparent { get; internal set; }
+        public CoordPoint Corner { get; set; }
+        public LineWidth LineWidth { get; set; }
+        public bool IsSolid { get; set; }
+        public bool Transparent { get; set; }
 
         public override CoordRect CalculateBounds() =>
             new CoordRect(Location, Corner);

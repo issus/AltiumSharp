@@ -8,20 +8,20 @@ namespace AltiumSharp.Records
     public class SchPolygon : SchGraphicalObject
     {
         public override int Record => 7;
-        public bool IsSolid { get; internal set; }
-        public LineWidth LineWidth { get; internal set; }
-        public List<CoordPoint> Vertices { get; internal set; }
-        public bool Transparent { get; internal set; }
-
-        public override CoordRect CalculateBounds() =>
-            new CoordRect(
-                new CoordPoint(Vertices.Min(p => p.X), Vertices.Min(p => p.Y)),
-                new CoordPoint(Vertices.Max(p => p.X), Vertices.Max(p => p.Y)));
+        public bool IsSolid { get; set; }
+        public LineWidth LineWidth { get; set; }
+        public List<CoordPoint> Vertices { get; private set; }
+        public bool Transparent { get; set; }
 
         public SchPolygon() : base()
         {
             LineWidth = LineWidth.Small;
         }
+
+        public override CoordRect CalculateBounds() =>
+            new CoordRect(
+                new CoordPoint(Vertices.Min(p => p.X), Vertices.Min(p => p.Y)),
+                new CoordPoint(Vertices.Max(p => p.X), Vertices.Max(p => p.Y)));
 
         public override void ImportFromParameters(ParameterCollection p)
         {
@@ -53,13 +53,13 @@ namespace AltiumSharp.Records
             {
                 {
                     var (n, f) = Utils.CoordToDxpFrac(Vertices[i].X);
-                    if (n != 0 || f != 0) p.Add($"X{i+1}", n);
-                    if (f != 0) p.Add($"X{i+1}"+"_FRAC", f);
+                    p.Add($"X{i+1}", n);
+                    p.Add($"X{i+1}_FRAC", f);
                 }
                 {
                     var (n, f) = Utils.CoordToDxpFrac(Vertices[i].Y);
-                    if (n != 0 || f != 0) p.Add($"Y{i+1}", n);
-                    if (f != 0) p.Add($"Y{i+1}"+"_FRAC", f);
+                    p.Add($"Y{i+1}", n);
+                    p.Add($"Y{i+1}_FRAC", f);
                 }
             }
         }

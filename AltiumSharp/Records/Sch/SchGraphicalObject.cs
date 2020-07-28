@@ -57,9 +57,9 @@ namespace AltiumSharp.Records
 
     public abstract class SchGraphicalObject : SchPrimitive
     {
-        public CoordPoint Location { get; internal set; }
-        public Color Color { get; internal set; }
-        public Color AreaColor { get; internal set; }
+        public CoordPoint Location { get; set; }
+        public Color Color { get; set; }
+        public Color AreaColor { get; set; }
 
         #region Transient values
         public bool EnableDraw { get; set; }

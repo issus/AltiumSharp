@@ -6,10 +6,10 @@ namespace AltiumSharp.Records
     public class SchSymbol : SchGraphicalObject
     {
         public override int Record => 3;
-        public int Symbol { get; internal set; }
-        public bool IsMirrored { get; internal set; }
-        public LineWidth LineWidth { get; internal set; }
-        public int ScaleFactor { get; internal set; }
+        public int Symbol { get; set; }
+        public bool IsMirrored { get; set; }
+        public LineWidth LineWidth { get; set; }
+        public int ScaleFactor { get; set; }
         
         public override void ImportFromParameters(ParameterCollection p)
         {

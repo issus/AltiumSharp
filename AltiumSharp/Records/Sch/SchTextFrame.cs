@@ -7,14 +7,14 @@ namespace AltiumSharp.Records
     public class SchTextFrame : SchRectangle
     {
         public override int Record => 28;
-        public Color TextColor { get; internal set; }
-        public int FontId { get; internal set; }
-        public bool ShowBorder { get; internal set; }
-        public int Alignment { get; internal set; }
-        public bool WordWrap { get; internal set; }
-        public bool ClipToRect { get; internal set; }
-        public string Text { get; internal set; }
-        public Coord TextMargin { get; internal set; }
+        public Color TextColor { get; set; }
+        public int FontId { get; set; }
+        public bool ShowBorder { get; set; }
+        public int Alignment { get; set; }
+        public bool WordWrap { get; set; }
+        public bool ClipToRect { get; set; }
+        public string Text { get; set; }
+        public Coord TextMargin { get; set; }
 
         public SchTextFrame() : base()
         {
@@ -41,7 +41,7 @@ namespace AltiumSharp.Records
             WordWrap = p["WORDWRAP"].AsBool();
             ClipToRect = p["CLIPTORECT"].AsBool();
             Text = p["TEXT"].AsStringOrDefault();
-            TextMargin = Utils.DxpFracToCoord(p["TEXTMARGIN"].AsIntOrDefault(), p["TEXTMARGIN_FRAC"].AsIntOrDefault());
+            TextMargin = Utils.DxpFracToCoord(p["TEXTMARGIN"].AsIntOrDefault(), p["TEXTMARGIN_FRAC"].AsIntOrDefault(5));
         }
         
         public override void ExportToParameters(ParameterCollection p)

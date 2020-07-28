@@ -7,10 +7,10 @@ namespace AltiumSharp.Records
     public class SchArc : SchGraphicalObject
     {
         public override int Record => 12;
-        public Coord Radius { get; internal set; }
-        public LineWidth LineWidth { get; internal set; }
-        public double StartAngle { get; internal set; }
-        public double EndAngle { get; internal set; }
+        public Coord Radius { get; set; }
+        public LineWidth LineWidth { get; set; }
+        public double StartAngle { get; set; }
+        public double EndAngle { get; set; }
 
         public override CoordRect CalculateBounds() =>
             new CoordRect(Location.X - Radius, Location.Y - Radius, Radius * 2, Radius * 2);

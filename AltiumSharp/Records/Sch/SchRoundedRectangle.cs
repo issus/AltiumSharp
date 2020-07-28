@@ -6,8 +6,8 @@ namespace AltiumSharp.Records
     public class SchRoundedRectangle : SchRectangle
     {
         public override int Record => 10;
-        public Coord CornerXRadius { get; internal set; }
-        public Coord CornerYRadius { get; internal set; }
+        public Coord CornerXRadius { get; set; }
+        public Coord CornerYRadius { get; set; }
 
         public override void ImportFromParameters(ParameterCollection p)
         {

@@ -6,9 +6,9 @@ namespace AltiumSharp.Records
     public class SchLine : SchGraphicalObject
     {
         public override int Record => 13;
-        public CoordPoint Corner { get; internal set; }
-        public LineWidth LineWidth { get; internal set; }
-        public LineStyle LineStyle { get; internal set; }
+        public CoordPoint Corner { get; set; }
+        public LineWidth LineWidth { get; set; }
+        public LineStyle LineStyle { get; set; }
         
         public override CoordRect CalculateBounds() =>
             new CoordRect(Location, Corner);

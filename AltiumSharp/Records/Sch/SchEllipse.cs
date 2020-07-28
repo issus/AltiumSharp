@@ -6,7 +6,7 @@ namespace AltiumSharp.Records
     public class SchEllipse : SchCircle
     {
         public override int Record => 8;
-        public Coord SecondaryRadius { get; internal set; }
+        public Coord SecondaryRadius { get; set; }
 
         public SchEllipse() : base()
         {

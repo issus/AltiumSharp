@@ -11,9 +11,9 @@ namespace AltiumSharp.Records
     public class SchPolyline : SchBasicPolyline
     {
         public override int Record => 6;
-        public LineShape StartLineShape { get; internal set; }
-        public LineShape EndLineShape { get; internal set; }
-        public int LineShapeSize { get; internal set; }
+        public LineShape StartLineShape { get; set; }
+        public LineShape EndLineShape { get; set; }
+        public int LineShapeSize { get; set; }
 
         public override void ImportFromParameters(ParameterCollection p)
         {

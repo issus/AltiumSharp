@@ -6,10 +6,10 @@ namespace AltiumSharp.Records
     public class SchParameter : SchLabel
     {
         public override int Record => 41;
-        public int ParamType { get; internal set; }
-        public string Name { get; internal set; }
-        public string Description { get; internal set; }
-        public int ReadOnlyState { get; internal set; }
+        public int ParamType { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public int ReadOnlyState { get; set; }
         public string UniqueId { get; internal set; }
 
         internal override string DisplayText =>

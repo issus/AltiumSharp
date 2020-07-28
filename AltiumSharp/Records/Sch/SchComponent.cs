@@ -170,10 +170,7 @@ namespace AltiumSharp.Records
 
             // remove the part primitives
             var partPrimitives = Primitives.Where(p => p.OwnerPartId == partId);
-            foreach (var p in partPrimitives)
-            {
-
-            }
+            foreach (var p in partPrimitives) Remove(p);
             
             // decrease part id for primitives belonging to parts of higher value than the one removed
             foreach (var p in Primitives.Where(p => p.OwnerPartId > partId))

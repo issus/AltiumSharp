@@ -21,9 +21,9 @@ namespace AltiumSharp.Records
     public class SchPowerObject : SchLabel
     {
         public override int Record => 17;
-        public PowerPortStyle Style { get; internal set; }
-        public bool ShowNetName { get; internal set; }
-        public bool IsCrossSheetConnector { get; internal set; }
+        public PowerPortStyle Style { get; set; }
+        public bool ShowNetName { get; set; }
+        public bool IsCrossSheetConnector { get; set; }
 
         public override CoordRect CalculateBounds() =>
             new CoordRect(Location.X - Utils.DxpToCoord(2), Location.Y - Utils.DxpToCoord(2), Utils.DxpToCoord(4), Utils.DxpToCoord(4));

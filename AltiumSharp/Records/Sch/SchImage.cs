@@ -7,10 +7,10 @@ namespace AltiumSharp.Records
     public class SchImage : SchRectangle
     {
         public override int Record => 30;
-        public bool KeepAspect { get; internal set; }
-        public bool EmbedImage { get; internal set; }
-        public string Filename { get; internal set; }
-        public Image Image { get; internal set; }
+        public bool KeepAspect { get; set; }
+        public bool EmbedImage { get; set; }
+        public string Filename { get; set; }
+        public Image Image { get; set; }
 
         public SchImage() : base()
         {

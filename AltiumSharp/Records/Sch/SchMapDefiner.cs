@@ -8,9 +8,9 @@ namespace AltiumSharp.Records
     public class SchMapDefiner : SchPrimitive
     {
         public override int Record => 47;
-        public string DesignatorInterface { get; internal set; }
-        public List<string> DesignatorImplementation { get; internal set; }
-        public bool IsTrivial { get; internal set; }
+        public string DesignatorInterface { get; set; }
+        public List<string> DesignatorImplementation { get; private set; }
+        public bool IsTrivial { get; set; }
 
         public override void ImportFromParameters(ParameterCollection p)
         {

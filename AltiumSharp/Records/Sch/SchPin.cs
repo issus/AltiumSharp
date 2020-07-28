@@ -54,20 +54,20 @@ namespace AltiumSharp.Records
     public class SchPin : SchGraphicalObject
     {
         public override int Record => 2;
-        public PinSymbol SymbolInnerEdge { get; internal set; }
-        public PinSymbol SymbolOuterEdge { get; internal set; }
-        public PinSymbol SymbolInside { get; internal set; }
-        public PinSymbol SymbolOutside { get; internal set; }
-        public LineWidth SymbolLineWidth { get; internal set; }
-        public string Description { get; internal set; }
-        public int FormalType { get; internal set; }
-        public PinElectricalType Electrical { get; internal set; }
-        public PinConglomerateFlags PinConglomerate { get; internal set; }
-        public Coord PinLength { get; internal set; }
-        public string Name { get; internal set; }
-        public string Designator { get; internal set; }
-        public int SwapIdPart { get; internal set; }
-        public double PinPropagationDelay { get; internal set; }
+        public PinSymbol SymbolInnerEdge { get; set; }
+        public PinSymbol SymbolOuterEdge { get; set; }
+        public PinSymbol SymbolInside { get; set; }
+        public PinSymbol SymbolOutside { get; set; }
+        public LineWidth SymbolLineWidth { get; set; }
+        public string Description { get; set; }
+        public int FormalType { get; set; }
+        public PinElectricalType Electrical { get; set; }
+        public PinConglomerateFlags PinConglomerate { get; set; }
+        public Coord PinLength { get; set; }
+        public string Name { get; set; }
+        public string Designator { get; set; }
+        public int SwapIdPart { get; set; }
+        public double PinPropagationDelay { get; set; }
         public string UniqueId { get; internal set; }
 
         public override bool IsVisible => base.IsVisible && !PinConglomerate.HasFlag(PinConglomerateFlags.Hide);
