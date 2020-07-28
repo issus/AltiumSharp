@@ -66,6 +66,7 @@
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -79,6 +80,7 @@
             this.exportFootprintToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.exportPrimitiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.redrawTimer = new System.Windows.Forms.Timer(this.components);
@@ -469,6 +471,7 @@
             this.treeViewStructure.Size = new System.Drawing.Size(315, 481);
             this.treeViewStructure.TabIndex = 0;
             this.treeViewStructure.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewStructure_AfterSelect);
+            this.treeViewStructure.DoubleClick += new System.EventHandler(this.GridPrimitives_DoubleClick);
             // 
             // pictureBox
             // 
@@ -513,6 +516,7 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripMenuItem,
+            this.saveAsToolStripMenuItem,
             this.toolStripMenuItem1,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -522,19 +526,26 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenToolStripMenuItem_Click);
+            // 
+            // saveAsToolStripMenuItem
+            // 
+            this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.saveAsToolStripMenuItem.Text = "Save As...";
+            this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.SaveAsToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(100, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(120, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
@@ -601,7 +612,8 @@
             this.exportToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exportFootprintToolStripMenuItem1,
             this.exportPrimitiveToolStripMenuItem,
-            this.exportImageToolStripMenuItem});
+            this.exportImageToolStripMenuItem,
+            this.testToolStripMenuItem});
             this.exportToolStripMenuItem1.Name = "exportToolStripMenuItem1";
             this.exportToolStripMenuItem1.Size = new System.Drawing.Size(52, 20);
             this.exportToolStripMenuItem1.Text = "Export";
@@ -609,27 +621,39 @@
             // exportFootprintToolStripMenuItem1
             // 
             this.exportFootprintToolStripMenuItem1.Name = "exportFootprintToolStripMenuItem1";
-            this.exportFootprintToolStripMenuItem1.Size = new System.Drawing.Size(157, 22);
+            this.exportFootprintToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.exportFootprintToolStripMenuItem1.Text = "Export footprint";
             this.exportFootprintToolStripMenuItem1.Click += new System.EventHandler(this.ExportFootprintToolStripMenuItem1_Click);
             // 
             // exportPrimitiveToolStripMenuItem
             // 
             this.exportPrimitiveToolStripMenuItem.Name = "exportPrimitiveToolStripMenuItem";
-            this.exportPrimitiveToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.exportPrimitiveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exportPrimitiveToolStripMenuItem.Text = "Export primitive";
             this.exportPrimitiveToolStripMenuItem.Click += new System.EventHandler(this.ExportPrimitiveToolStripMenuItem_Click);
             // 
             // exportImageToolStripMenuItem
             // 
             this.exportImageToolStripMenuItem.Name = "exportImageToolStripMenuItem";
-            this.exportImageToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.exportImageToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exportImageToolStripMenuItem.Text = "Export image";
             this.exportImageToolStripMenuItem.Click += new System.EventHandler(this.ExportImageToolStripMenuItem_Click);
+            // 
+            // testToolStripMenuItem
+            // 
+            this.testToolStripMenuItem.Name = "testToolStripMenuItem";
+            this.testToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.testToolStripMenuItem.Text = "Test SchLib creation";
+            this.testToolStripMenuItem.Click += new System.EventHandler(this.testToolStripMenuItem_Click);
+            // 
+            // openFileDialog
+            // 
+            this.openFileDialog.Filter = "PcbLib files|*.pcblib|SchLib files|*.schlib|SchDoc files|*.schdoc|All files|*.*";
             // 
             // saveFileDialog
             // 
             this.saveFileDialog.DefaultExt = "bin";
+            this.saveFileDialog.Filter = "PcbLib files|*.pcblib|SchLib files|*.schlib|SchDoc files|*.schdoc|All files|*.*";
             // 
             // redrawTimer
             // 
@@ -733,6 +757,8 @@
         private System.Windows.Forms.Label labelPartTotal;
         private System.Windows.Forms.TabPage tabTree;
         private System.Windows.Forms.TreeView treeViewStructure;
+        private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
     }
 }
 

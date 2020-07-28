@@ -24,6 +24,7 @@ namespace LibraryViewer
     {
         private bool _loading;
         private PropertyViewer _propertyViewer;
+        private object _fileData;
         private Renderer _renderer;
         private bool _autoZoom;
         private Point _mouseLocation;
@@ -46,8 +47,9 @@ namespace LibraryViewer
                 null, pictureBox, new object[] { true });
         }
 
-        private void LoadFromFile(string fileName)
+        private void SetData(object fileData)
         {
+            var saveLoading = _loading;
             _loading = true;
             try
             {
@@ -60,93 +62,134 @@ namespace LibraryViewer
 
                 gridPcbLibComponents.Rows.Clear();
                 gridSchLibComponents.Rows.Clear();
+                treeViewStructure.Nodes.Clear();
                 Application.DoEvents();
 
-                if (Path.GetExtension(fileName).Equals(".pcblib", StringComparison.InvariantCultureIgnoreCase))
+                if (fileData is PcbLib pcbLib)
                 {
                     tabComponents.SelectTab(tabPcbLib);
-                    using (var reader = new PcbLibReader())
+                    foreach (var component in pcbLib.Items)
                     {
-                        var data = reader.Read(fileName);
-
-                        foreach (var component in data.Items)
-                        {
-                            var index = gridPcbLibComponents.Rows.Add(component.Name, component.Pads, component.Primitives.Count());
-                            gridPcbLibComponents.Rows[index].Tag = component;
-                        }
-
-                        _displayUnit = data.Header.DisplayUnit;
-                        _snapGridSize = data.Header.SnapGridSize;
-                        _containers = data.Items.Cast<IContainer>().ToList();
-                        _renderer = new PcbLibRenderer();
+                        var index = gridPcbLibComponents.Rows.Add(component.Name, component.Pads, component.Primitives.Count());
+                        gridPcbLibComponents.Rows[index].Tag = component;
                     }
+
+                    _displayUnit = pcbLib.Header.DisplayUnit;
+                    _snapGridSize = pcbLib.Header.SnapGridSize;
+                    _containers = pcbLib.Items.Cast<IContainer>().ToList();
+                    _renderer = new PcbLibRenderer();
                 }
-                else if (Path.GetExtension(fileName).Equals(".schlib", StringComparison.InvariantCultureIgnoreCase))
+                else if (fileData is SchLib schLib)
                 {
                     tabComponents.SelectTab(tabSchLib);
+
+                    foreach (var component in schLib.Items)
+                    {
+                        var index = gridSchLibComponents.Rows.Add(component.LibReference, component.ComponentDescription);
+                        gridSchLibComponents.Rows[index].Tag = component;
+                    }
+
+                    _displayUnit = schLib.Header.DisplayUnit;
+                    _snapGridSize = schLib.Header.SnapGridSize;
+                    _containers = schLib.Items.Cast<IContainer>().ToList();
+
                     using (var reader = new SchLibReader())
                     {
-                        var data = reader.Read(fileName);
-
-                        foreach (var component in data.Items)
-                        {
-                            var index = gridSchLibComponents.Rows.Add(component.Name, component.Description);
-                            gridSchLibComponents.Rows[index].Tag = component;
-                        }
-
-                        _displayUnit = data.Header.DisplayUnit;
-                        _snapGridSize = data.Header.SnapGridSize;
-                        _containers = data.Items.Cast<IContainer>().ToList();
-
                         var assetsData = reader.Read("assets.schlib");
-                        _renderer = new SchLibRenderer(data.Header, data.EmbeddedImages, assetsData.Items);
-
-                        if (!fileName.Contains(".export."))
-                        {
-                            using (var writer = new SchLibWriter())
-                            {
-                                writer.Write(data, $"{fileName}.export.schlib", true);
-                            }
-                        }
+                        _renderer = new SchLibRenderer(schLib.Header, assetsData);
                     }
                 }
-                else if (Path.GetExtension(fileName).Equals(".schdoc", StringComparison.InvariantCultureIgnoreCase))
+                else if (fileData is SchDoc schDoc)
                 {
                     tabComponents.SelectTab(tabSchLib);
-                    using (var reader = new SchDocReader())
+
+                    var index = gridSchLibComponents.Rows.Add("SchDoc");
+                    gridSchLibComponents.Rows[index].Tag = schDoc.Header;
+                    foreach (var component in schDoc.Header.GetPrimitivesOfType<SchComponent>())
                     {
-                        var data = reader.Read(fileName);
+                        index = gridSchLibComponents.Rows.Add(component.LibReference, component.ComponentDescription);
+                        gridSchLibComponents.Rows[index].Tag = component;
+                    }
 
-                        var index = gridSchLibComponents.Rows.Add(fileName);
-                        gridSchLibComponents.Rows[index].Tag = data.Header;
-                        foreach (var component in data.Header.GetPrimitivesOfType<SchComponent>())
-                        {
-                            index = gridSchLibComponents.Rows.Add(component.Name, component.Description);
-                            gridSchLibComponents.Rows[index].Tag = component;
-                        }
+                    var sheet = schDoc.Header;
+                    _displayUnit = sheet.DisplayUnit;
+                    _snapGridSize = sheet.SnapGridSize;
+                    _containers = new List<IContainer> { schDoc.Header };
 
-                        var sheet = data.Header;
-                        _displayUnit = sheet.DisplayUnit;
-                        _snapGridSize = sheet.SnapGridSize;
-                        _containers = new List<IContainer> { data.Header };
-
-                        using (var assetsReader = new SchLibReader())
-                        {
-                            var assetsData = assetsReader.Read("assets.schlib");
-                            _renderer = new SchLibRenderer(data.Header, data.EmbeddedImages, assetsData.Items);
-                        }
-
-                        if (!fileName.Contains(".export."))
-                        {
-                            using (var writer = new SchDocWriter())
-                            {
-                                writer.Write(data, $"{fileName}.export.schdoc", true);
-                            }
-                        }
+                    using (var assetsReader = new SchLibReader())
+                    {
+                        var assetsData = assetsReader.Read("assets.schlib");
+                        _renderer = new SchLibRenderer(schDoc.Header, assetsData);
                     }
                 }
 
+                _fileData = fileData;
                 SetActiveContainer(_containers.FirstOrDefault());
+            }
+            finally
+            {
+                _loading = saveLoading;
+            }
+        }
+
+        private void LoadFromFile(string fileName)
+        {
+            if (Path.GetExtension(fileName).Equals(".pcblib", StringComparison.InvariantCultureIgnoreCase))
+            {
+                using (var reader = new PcbLibReader())
+                {
+                    var data = reader.Read(fileName);
+                    SetData(data);
+                }
+            }
+            else if (Path.GetExtension(fileName).Equals(".schlib", StringComparison.InvariantCultureIgnoreCase))
+            {
+                using (var reader = new SchLibReader())
+                {
+                    var data = reader.Read(fileName);
+                    SetData(data);
+                }
+            }
+            else if (Path.GetExtension(fileName).Equals(".schdoc", StringComparison.InvariantCultureIgnoreCase))
+            {
+                using (var reader = new SchDocReader())
+                {
+                    var data = reader.Read(fileName);
+                    SetData(data);
+                }
+            }
+        }
+
+        private void SaveToFile(string fileName)
+        {
+            _loading = true;
+            try
+            {
+                if (_fileData == null) return;
+
+                if (_fileData is PcbLib pcbLib)
+                {
+                    /*
+                    using (var writer = new PcbLibWriter())
+                    {
+                        writer.Write(pcbLib, fileName, true);
+                    }
+                    */
+                }
+                else if (_fileData is SchLib schLib)
+                {
+                    using (var writer = new SchLibWriter())
+                    {
+                        writer.Write(schLib, fileName, true);
+                    }
+                }
+                else if (_fileData is SchDoc schDoc)
+                {
+                    using (var writer = new SchDocWriter())
+                    {
+                        writer.Write(schDoc, fileName, true);
+                    }
+                }
             }
             finally
             {
@@ -170,7 +213,7 @@ namespace LibraryViewer
             }
             else if (component is SchComponent schComponent)
             {
-                var pins = schComponent.Primitives.OfType<SchPin>();
+                var pins = schComponent.GetPrimitivesOfType<SchPin>();
                 foreach (var pin in pins)
                 {
                     var i = gridSchLibPrimitives.Rows.Add(pin.Designator, pin.Name, pin.Electrical.ToString());
@@ -256,7 +299,7 @@ namespace LibraryViewer
                 _propertyViewer.FormClosed += (s, a) => _propertyViewer = null;
                 _propertyViewer.Show(this);
             }
-            _propertyViewer.SetSelectedObjects(_activePrimitives.ToArray());
+            _propertyViewer.SetSelectedObjects(_activePrimitives?.ToArray());
             _propertyViewer.BringToFront();
             _propertyViewer.Focus();
         }
@@ -315,6 +358,15 @@ namespace LibraryViewer
                 LoadFromFile(openFileDialog.FileName);
             }
         }
+
+        private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                SaveToFile(saveFileDialog.FileName);
+            }
+        }
+
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
@@ -442,8 +494,8 @@ namespace LibraryViewer
             else if (container is SchComponent schComponent)
             {
                 var schPrimitive = primitive as SchPrimitive;
-                var primitiveIndex = schComponent.Primitives.IndexOf(schPrimitive);
-                saveFileDialog.FileName = $"sch_{schComponent.Name}_{primitiveIndex}_{schPrimitive.Record}.bin".Replace('/', '_');
+                var primitiveId = schPrimitive.GetHashCode();
+                saveFileDialog.FileName = $"sch_{schComponent.LibReference}_{primitiveId}_{schPrimitive.Record}.bin".Replace('/', '_');
             }
             else
             {
@@ -560,6 +612,87 @@ namespace LibraryViewer
                 primitives = Enumerable.Concat(primitives, container.GetPrimitivesOfType<Primitive>());
             }
             SetActivePrimitives(primitives);
+        }
+
+        private void testToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetActiveContainer(null);
+
+            var schLib = new SchLib
+            {
+                new SchComponent
+                {
+                    new SchRectangle
+                    {
+                        Corner = CoordPoint.FromMils(500, 1100)
+                    },
+                    new SchPin
+                    {
+                        Location = CoordPoint.FromMils(500, 100)
+                    },
+                    new SchPin
+                    {
+                        Location = CoordPoint.FromMils(500, 250)
+                    },
+                    new SchPin
+                    {
+                        Location = CoordPoint.FromMils(500, 400)
+                    },
+                    new SchPin
+                    {
+                        Location = CoordPoint.FromMils(500, 550)
+                    },
+                    new SchPin
+                    {
+                        Location = CoordPoint.FromMils(500, 700)
+                    },
+                    new SchPin
+                    {
+                        Location = CoordPoint.FromMils(500, 850)
+                    },
+                    new SchPin
+                    {
+                        Location = CoordPoint.FromMils(500, 1000)
+                    },
+                    new SchPin
+                    {
+                        Designator = "P8",
+                        Location = CoordPoint.FromMils(0, 1000),
+                        Orientation = TextOrientations.Flipped
+                    },
+                    new SchPin
+                    {
+                        Location = CoordPoint.FromMils(0, 850),
+                        Orientation = TextOrientations.Flipped
+                    },
+                    new SchPin
+                    {
+                        Location = CoordPoint.FromMils(0, 700),
+                        Orientation = TextOrientations.Flipped
+                    },
+                    new SchPin
+                    {
+                        Location = CoordPoint.FromMils(0, 550),
+                        Orientation = TextOrientations.Flipped
+                    },
+                    new SchPin
+                    {
+                        Location = CoordPoint.FromMils(0, 400),
+                        Orientation = TextOrientations.Flipped
+                    },
+                    new SchPin
+                    {
+                        Location = CoordPoint.FromMils(0, 250),
+                        Orientation = TextOrientations.Flipped
+                    },
+                    new SchPin
+                    {
+                        Location = CoordPoint.FromMils(0, 100),
+                        Orientation = TextOrientations.Flipped
+                    }
+                }
+            };
+            SetData(schLib);
         }
     }
 }
