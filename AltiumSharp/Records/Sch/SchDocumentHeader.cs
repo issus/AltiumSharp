@@ -41,9 +41,9 @@ namespace AltiumSharp.Records
             BorderOn = true;
             AreaColor = ColorTranslator.FromWin32(16317695);
             SnapGridOn = true;
-            SnapGridSize = 10;
+            SnapGridSize = Utils.DxpToCoord(10);
             VisibleGridOn = true;
-            VisibleGridSize = 10;
+            VisibleGridSize = Utils.DxpToCoord(10);
         }
 
         public override void ImportFromParameters(ParameterCollection p)
