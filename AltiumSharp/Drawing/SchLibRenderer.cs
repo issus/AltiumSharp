@@ -273,7 +273,7 @@ namespace AltiumSharp.Drawing
             using (var brush = new SolidBrush(pin.Color))
             using (var font = CreateFont(0))
             {
-                if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.DisplayNameVisible))
+                if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.DisplayNameVisible) && !string.IsNullOrEmpty(pin.Name))
                 {
                     var x = ScalePixelLength(-5.0f) * direction;
                     var displayName = pin.Name.Replace(@"\", "");
@@ -286,7 +286,7 @@ namespace AltiumSharp.Drawing
                     }
                 }
 
-                if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.DesignatorVisible))
+                if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.DesignatorVisible) && !string.IsNullOrEmpty(pin.Designator))
                 {
                     DrawingUtils.DrawString(g, pin.Designator, font, brush,
                         ScalePixelLength(8.0f) * direction, 0,
