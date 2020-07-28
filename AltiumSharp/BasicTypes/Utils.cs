@@ -110,7 +110,7 @@ namespace AltiumSharp.BasicTypes
             var result = new char[8];
             for (int i = 0; i < 8; ++i)
             {
-                result[i] = (char)rng.Next('A', 'Z'+1);
+                result[i] = (char)rng.Next('A', 'Y' + 1);
             }
             return new string(result);
         }
