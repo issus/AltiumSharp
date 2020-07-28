@@ -14,7 +14,20 @@ namespace AltiumSharp.BasicTypes
         public static readonly Coord OneInch = Utils.MilsToCoord(1000);
 
         private readonly int _value;
-        public Coord(int value) => _value = value;
+        private Coord(int value) => _value = value;
+
+        public static Coord FromMils(double mils) => Utils.MilsToCoord(mils);
+        public double ToMils() => Utils.CoordToMils(this);
+
+        public static Coord FromMMs(double mms) => Utils.MMsToCoord(mms);
+        public double ToMMs() => Utils.CoordToMMs(this);
+
+        /// <summary>
+        /// Creates a coordinate value from an integer.
+        /// </summary>
+        /// <param name="value">Value to be used as coordenate</param>
+        /// <returns></returns>
+        public static Coord FromInt32(int value) => new Coord(value);
 
         /// <summary>
         /// Gets the integer value of this coordinate.
@@ -37,13 +50,6 @@ namespace AltiumSharp.BasicTypes
         /// and snapping the coordinate to the <paramref name="grid"/> size .
         /// </summary>
         public string ToString(Unit unit, Coord grid) => Utils.CoordUnitToString(_value, unit, grid);
-
-        /// <summary>
-        /// Creates a coordinate value from an integer.
-        /// </summary>
-        /// <param name="value">Value to be used as coordenate</param>
-        /// <returns></returns>
-        public static Coord FromInt32(int value) => new Coord(value);
 
         /// <summary>
         /// Implicit conversion operator so we can use integers and coordinates transparently.

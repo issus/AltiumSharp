@@ -161,7 +161,7 @@ namespace AltiumSharp.Records
             {
                 var (n, f) = Utils.CoordToDxpFrac(PinLength);
                 p.Add("PINLENGTH", n);
-                p.Add("PINLENGTH" + "_FRAC", f);
+                p.Add("PINLENGTH_FRAC", f);
             }
             p.MoveKeys("LOCATION.X");
             p.Add("NAME", Name);

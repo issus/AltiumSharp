@@ -10,6 +10,12 @@ namespace AltiumSharp.BasicTypes
         public Coord Y { get; }
         public CoordPoint(Coord x, Coord y) => (X, Y) = (x, y);
         public void Deconstruct(out Coord x, out Coord y) => (x, y) = (X, Y);
+
+        public static CoordPoint FromMils(double milsX, double milsY) =>
+            new CoordPoint(Coord.FromMils(milsX), Coord.FromMils(milsY));
+        public static CoordPoint FromMMs(double mmsX, double mmsY) =>
+            new CoordPoint(Coord.FromMMs(mmsX), Coord.FromMMs(mmsY));
+
         public override string ToString() => $"X:{X} Y:{Y}";
         public string ToString(Unit unit) => $"X:{X.ToString(unit)} Y:{Y.ToString(unit)}";
         public string ToString(Unit unit, Coord grid) => $"X:{X.ToString(unit, grid)} Y:{Y.ToString(unit, grid)}";

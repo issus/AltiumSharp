@@ -151,8 +151,8 @@ namespace AltiumSharp.BasicTypes
         /// <param name="grid">
         /// Grid spacing. If <paramref name="grid"/> &gt; 1 then snaps
         /// coordinate values to the nearest coordinate according to the grid spacing.</param>
-        /// /// <returns></returns>
-        public static string CoordUnitToString(Coord coord, Unit unit, int grid)
+        /// <returns></returns>
+        public static string CoordUnitToString(Coord coord, Unit unit, Coord grid)
         {
             if (unit._value < 0 || unit._value >= _metadata.Length)
             {
