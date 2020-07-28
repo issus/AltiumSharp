@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.IO;
 using AltiumSharp.BasicTypes;
-using AltiumSharp.Records;
-using OpenMcdf;
 
 namespace AltiumSharp
 {
@@ -24,10 +13,13 @@ namespace AltiumSharp
 
         }
 
-        protected override void DoWriteSch()
+        protected override void DoWrite()
         {
             WriteFileHeader();
             WriteAdditional();
+
+            var embeddedImages = GetEmbeddedImages(Data.Items);
+            WriteStorageEmbeddedImages(embeddedImages);
         }
 
         /// <summary>

@@ -14,15 +14,13 @@ namespace AltiumSharp.Drawing
     public sealed class SchLibRenderer : Renderer
     {
         private SchDocumentHeader _header;
-        private Dictionary<string, Image> _embeddedImages;
         private List<SchComponent> _assets;
 
         public int Part { get; set; }
 
-        public SchLibRenderer(SchDocumentHeader header, Dictionary<string, Image> embeddedImages, List<SchComponent> assets)
+        public SchLibRenderer(SchDocumentHeader header, List<SchComponent> assets)
         {
             _header = header;
-            _embeddedImages = embeddedImages;
             _assets = assets;
             Part = 1;
         }
@@ -138,7 +136,7 @@ namespace AltiumSharp.Drawing
                         RenderPowerPortPrimitive(graphics, powerPort);
                         break;
                     case SchLabel textString:
-                        // this can handle DesignatorLabelRecord and SchParameter through inheritance
+                        // this can handle SchDesignator and SchParameter through inheritance
                         RenderTextStringPrimitive(graphics, textString);
                         break;
                     case SchBezier bezier:
@@ -299,7 +297,7 @@ namespace AltiumSharp.Drawing
 
         private void RenderSymbolPrimitive(Graphics graphics, SchSymbol symbol)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         private void RenderTextStringPrimitive(Graphics g, SchLabel textString)
@@ -819,10 +817,7 @@ namespace AltiumSharp.Drawing
         {
             var rect = ScreenFromWorld(image.CalculateBounds());
 
-            if (_embeddedImages.TryGetValue(image.Filename, out var img))
-            {
-                g.DrawImage(img, rect);
-            }
+            g.DrawImage(image.Image, rect);
 
             if (image.IsSolid)
             {

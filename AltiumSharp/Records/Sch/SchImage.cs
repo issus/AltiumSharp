@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using AltiumSharp.BasicTypes;
 
 namespace AltiumSharp.Records
@@ -9,6 +10,13 @@ namespace AltiumSharp.Records
         public bool KeepAspect { get; internal set; }
         public bool EmbedImage { get; internal set; }
         public string Filename { get; internal set; }
+        public Image Image { get; internal set; }
+
+        public SchImage() : base()
+        {
+            KeepAspect = true;
+            EmbedImage = true;
+        }
 
         public override void ImportFromParameters(ParameterCollection p)
         {

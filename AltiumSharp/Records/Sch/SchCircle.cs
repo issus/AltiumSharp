@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using AltiumSharp.BasicTypes;
 
 namespace AltiumSharp.Records
@@ -9,6 +10,14 @@ namespace AltiumSharp.Records
         public LineWidth LineWidth { get; internal set; }
         public bool IsSolid { get; internal set; }
         public bool Transparent { get; internal set; }
+
+        public SchCircle() : base()
+        {
+            Radius = 10;
+            Color = ColorTranslator.FromWin32(16711680);
+            AreaColor = ColorTranslator.FromWin32(12632256);
+            IsSolid = true;
+        }
 
         public override CoordRect CalculateBounds() =>
             new CoordRect(Location.X - Radius, Location.Y - Radius, Radius * 2, Radius * 2);

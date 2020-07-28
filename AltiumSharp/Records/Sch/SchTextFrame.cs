@@ -14,6 +14,20 @@ namespace AltiumSharp.Records
         public bool WordWrap { get; internal set; }
         public bool ClipToRect { get; internal set; }
         public string Text { get; internal set; }
+        public Coord TextMargin { get; internal set; }
+
+        public SchTextFrame() : base()
+        {
+            Color = ColorTranslator.FromWin32(0);
+            AreaColor = ColorTranslator.FromWin32(16777215);
+            FontId = 1;
+            IsSolid = true;
+            Alignment = 1;
+            WordWrap = true;
+            ClipToRect = true;
+            Text = "Text";
+            TextMargin = Utils.DxpFracToCoord(0, 5);
+        }
 
         public override void ImportFromParameters(ParameterCollection p)
         {
@@ -27,6 +41,7 @@ namespace AltiumSharp.Records
             WordWrap = p["WORDWRAP"].AsBool();
             ClipToRect = p["CLIPTORECT"].AsBool();
             Text = p["TEXT"].AsStringOrDefault();
+            TextMargin = Utils.DxpFracToCoord(p["TEXTMARGIN"].AsIntOrDefault(), p["TEXTMARGIN_FRAC"].AsIntOrDefault());
         }
         
         public override void ExportToParameters(ParameterCollection p)
@@ -43,6 +58,11 @@ namespace AltiumSharp.Records
             p.Add("WORDWRAP", WordWrap);
             p.Add("CLIPTORECT", ClipToRect);
             p.Add("TEXT", Text);
+            {
+                var (n, f) = Utils.CoordToDxpFrac(TextMargin);
+                p.Add("TEXTMARGIN.Y", n);
+                p.Add("TEXTMARGIN_FRAC", f);
+            }
         }
     }
 }

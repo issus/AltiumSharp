@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using AltiumSharp.BasicTypes;
 
 namespace AltiumSharp.Records
@@ -13,6 +14,14 @@ namespace AltiumSharp.Records
 
         public override CoordRect CalculateBounds() =>
             new CoordRect(Location, Corner);
+
+        public SchRectangle() : base()
+        {
+            Corner = new CoordPoint(Utils.DxpFracToCoord(50, 0), Utils.DxpFracToCoord(50, 0));
+            Color = ColorTranslator.FromWin32(128);
+            AreaColor = ColorTranslator.FromWin32(11599871);
+            IsSolid = true;
+        }
 
         public override void ImportFromParameters(ParameterCollection p)
         {

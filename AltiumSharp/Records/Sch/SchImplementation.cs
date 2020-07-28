@@ -6,7 +6,10 @@ using AltiumSharp.BasicTypes;
 
 namespace AltiumSharp.Records
 {
-    public class Record45 : SchPrimitive // TODO: figure out what schematic API interface maps to this record
+    /// <summary>
+    /// Model of a component.
+    /// </summary>
+    public class SchImplementation : SchPrimitive
     {
         public override int Record => 45;
         public string Description { get; internal set; }
@@ -38,6 +41,7 @@ namespace AltiumSharp.Records
             p.Add("DESCRIPTION", Description);
             p.Add("MODELNAME", ModelName);
             p.Add("MODELTYPE", ModelType);
+            p.Add("DATAFILECOUNT", DataFile.Count);
             for (var i = 0; i < DataFile.Count; i++)
             {
                 p.Add(string.Format(CultureInfo.InvariantCulture, "MODELDATAFILEKIND{0}", i), DataFile[i]);

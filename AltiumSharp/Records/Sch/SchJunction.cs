@@ -7,9 +7,7 @@ namespace AltiumSharp.Records
     {
         public override int Record => 29;
         public LineWidth Size { get; internal set; }
-        public bool Locked { get; internal set; }
-
-        public bool IsManualJunction => IndexInSheet != -1;
+        public bool IsManualJunction { get; internal set; }
 
         public override CoordRect CalculateBounds() =>
             new CoordRect(Location.X - Utils.DxpToCoord(2), Location.Y - Utils.DxpToCoord(2), Utils.DxpToCoord(4), Utils.DxpToCoord(4));
@@ -20,7 +18,7 @@ namespace AltiumSharp.Records
 
             base.ImportFromParameters(p);
             Size = p["SIZE"].AsEnumOrDefault<LineWidth>();
-            Locked = p["LOCKED"].AsBool();
+            IsManualJunction = p["LOCKED"].AsBool();
         }
 
         public override void ExportToParameters(ParameterCollection p)
@@ -29,7 +27,7 @@ namespace AltiumSharp.Records
 
             base.ExportToParameters(p);
             p.Add("SIZE", Size);
-            p.Add("LOCKED", Locked);
+            p.Add("LOCKED", IsManualJunction);
         }
     }
 }

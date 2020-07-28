@@ -13,6 +13,11 @@ namespace AltiumSharp.Records
         public override CoordRect CalculateBounds() =>
             new CoordRect(Location, Corner);
 
+        public SchLine() : base()
+        {
+            LineWidth = LineWidth.Small;
+        }
+
         public override void ImportFromParameters(ParameterCollection p)
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
@@ -32,13 +37,13 @@ namespace AltiumSharp.Records
             base.ExportToParameters(p);
             {
                 var (n, f) = Utils.CoordToDxpFrac(Corner.X);
-                if (n != 0 || f != 0) p.Add("CORNER.X", n);
-                if (f != 0) p.Add("CORNER.X"+"_FRAC", f);
+                p.Add("CORNER.X", n);
+                p.Add("CORNER.X_FRAC", f);
             }
             {
                 var (n, f) = Utils.CoordToDxpFrac(Corner.Y);
-                if (n != 0 || f != 0) p.Add("CORNER.Y", n);
-                if (f != 0) p.Add("CORNER.Y"+"_FRAC", f);
+                p.Add("CORNER.Y", n);
+                p.Add("CORNER.Y_FRAC", f);
             }
             p.Add("LINEWIDTH", LineWidth);
             p.MoveKey("COLOR");

@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
 using AltiumSharp.BasicTypes;
 
 namespace AltiumSharp.Records
@@ -37,11 +41,13 @@ namespace AltiumSharp.Records
     [Flags]
     public enum PinConglomerateFlags
     {
+        None = 0x00,
         Rotated = 0x01,
         Flipped = 0x02,
         Hide = 0x04,
         DisplayNameVisible = 0x08,
         DesignatorVisible = 0x10,
+        Unknown = 0x20,
         GraphicallyLocked = 0x40,
     }
 
@@ -61,7 +67,60 @@ namespace AltiumSharp.Records
         public string Name { get; internal set; }
         public string Designator { get; internal set; }
         public int SwapIdPart { get; internal set; }
+        public double PinPropagationDelay { get; internal set; }
         public string UniqueId { get; internal set; }
+
+        public override bool IsVisible => base.IsVisible && !PinConglomerate.HasFlag(PinConglomerateFlags.Hide);
+
+        public TextOrientations Orientation
+        {
+            get => TextOrientations.None
+                .WithFlag(TextOrientations.Rotated, PinConglomerate.HasFlag(PinConglomerateFlags.Rotated))
+                .WithFlag(TextOrientations.Flipped, PinConglomerate.HasFlag(PinConglomerateFlags.Flipped));
+            set => PinConglomerate = PinConglomerate
+                .WithFlag(PinConglomerateFlags.Rotated, value.HasFlag(TextOrientations.Rotated))
+                .WithFlag(PinConglomerateFlags.Flipped, value.HasFlag(TextOrientations.Flipped));
+        }
+
+        private Regex _designatorParser = new Regex(@"^(.*?)(\d+)\s*$");
+
+        public SchPin() : base()
+        {
+            Electrical = PinElectricalType.Passive;
+            PinConglomerate =
+                PinConglomerateFlags.DisplayNameVisible |
+                PinConglomerateFlags.DesignatorVisible |
+                PinConglomerateFlags.Unknown;
+            PinLength = Utils.DxpFracToCoord(30, 0);
+            UniqueId = Utils.GenerateUniqueId();
+            Designator = GenerateDesignator();
+            Name = Designator;
+        }
+
+        /// <summary>
+        /// Generates a new designator by taking the last designator in lexicographical order
+        /// and then incrementing any ending integer.
+        /// </summary>
+        /// <remarks>
+        /// This mimicks the behavior of AD's context menu "Place > Pin", which works very differently
+        /// from AD's Properties pin list "Add" button, and the context menu behavior was chosen as it
+        /// seemed more intuitive.
+        /// </remarks>
+        private string GenerateDesignator()
+        {
+            var largestDesignator = (Owner as IContainer)?.GetPrimitivesOfType<SchPin>(false)
+                .OrderBy(p => p.Designator ?? "")
+                .LastOrDefault()?.Designator;
+            if (largestDesignator != null)
+            {
+                return _designatorParser.Replace(largestDesignator, match =>
+                        $"{match.Captures[1]}{int.Parse(match.Captures[2].Value, CultureInfo.InvariantCulture) + 1}");
+            }
+            else
+            {
+                return "1";
+            }
+        }
 
         public CoordPoint GetCorner()
         {
@@ -92,8 +151,6 @@ namespace AltiumSharp.Records
         public override CoordRect CalculateBounds() =>
             new CoordRect(Location, GetCorner());
 
-        public override bool IsVisible => base.IsVisible && !PinConglomerate.HasFlag(PinConglomerateFlags.Hide);
-
         public override void ImportFromParameters(ParameterCollection p)
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
@@ -107,11 +164,12 @@ namespace AltiumSharp.Records
             Description = p["DESCRIPTION"].AsStringOrDefault();
             FormalType = p["FORMALTYPE"].AsIntOrDefault();
             Electrical = p["ELECTRICAL"].AsEnumOrDefault<PinElectricalType>();
-            PinConglomerate = (PinConglomerateFlags)p["PINCONGLOMERATE"].AsIntOrDefault(); 
+            PinConglomerate = (PinConglomerateFlags)p["PINCONGLOMERATE"].AsIntOrDefault();
             PinLength = Utils.DxpFracToCoord(p["PINLENGTH"].AsIntOrDefault(), p["PINLENGTH_FRAC"].AsIntOrDefault());
             Name = p["NAME"].AsStringOrDefault();
             Designator = p["DESIGNATOR"].AsStringOrDefault();
             SwapIdPart = p["SWAPIDPART"].AsIntOrDefault();
+            PinPropagationDelay = p["PINPROPAGATIONDELAY"].AsDoubleOrDefault();
             UniqueId = p["UNIQUEID"].AsStringOrDefault();
         }
 
@@ -132,16 +190,37 @@ namespace AltiumSharp.Records
             p.Add("PINCONGLOMERATE", (int)PinConglomerate);
             {
                 var (n, f) = Utils.CoordToDxpFrac(PinLength);
-                if (n != 0 || f != 0) p.Add("PINLENGTH", n);
-                if (f != 0) p.Add("PINLENGTH" + "_FRAC", f);
+                p.Add("PINLENGTH", n);
+                p.Add("PINLENGTH" + "_FRAC", f);
             }
             p.MoveKeys("LOCATION.X");
             p.Add("NAME", Name);
             p.Add("DESIGNATOR", Designator);
             p.Add("SWAPIDPART", SwapIdPart);
+            p.Add("PINPROPAGATIONDELAY", PinPropagationDelay);
             p.Add("UNIQUEID", UniqueId);
         }
 
+        protected override bool DoAdd(SchPrimitive primitive)
+        {
+            if (primitive == null) return false;
+
+            if (primitive is SchParameter parameter)
+            {
+                if (parameter.Name == "PinUniqueId")
+                {
+                    UniqueId = parameter.Text;
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        protected override IEnumerable<SchPrimitive> DoGetParameters()
+        {
+            return new SchPrimitive[] {
+                new SchParameter{ Name = "PinUniqueId", Text = UniqueId }
+            };
+        }
     }
 }
- 

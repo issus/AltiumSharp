@@ -7,15 +7,20 @@ namespace AltiumSharp.Records
     public class SchPie : SchArc
     {
         public override int Record => 9;
-        public Color AreaColor { get; internal set; }
         public bool IsSolid { get; internal set; }
+
+        public SchPie() : base()
+        {
+            Color = ColorTranslator.FromWin32(16711680);
+            AreaColor = ColorTranslator.FromWin32(12632256);
+            IsSolid = true;
+        }
 
         public override void ImportFromParameters(ParameterCollection p)
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             base.ImportFromParameters(p);
-            AreaColor = p["AREACOLOR"].AsColorOrDefault();
             IsSolid = p["ISSOLID"].AsBool();
         }
 
@@ -24,7 +29,6 @@ namespace AltiumSharp.Records
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             base.ExportToParameters(p);
-            p.Add("AREACOLOR", AreaColor);
             p.Add("ISSOLID", IsSolid);
         }
     }

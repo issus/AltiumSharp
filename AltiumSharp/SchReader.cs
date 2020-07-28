@@ -15,24 +15,30 @@ namespace AltiumSharp
         {
         }
 
-        protected sealed override void DoRead()
+        protected void SetEmbeddedImages(IEnumerable<SchPrimitive> dataItems, IDictionary<string, Image> embeddedImages)
         {
-            ReadStorageEmbeddedImages();
-            DoReadSch();
+            var primitives = dataItems.SelectMany(item =>
+                    item.GetPrimitivesOfType<SchImage>().Where(p => p.EmbedImage));
+            foreach (var p in primitives)
+            {
+                if (embeddedImages.TryGetValue(p.Filename, out var image))
+                {
+                    p.Image = image;
+                }
+            }
         }
-
-        protected abstract void DoReadSch();
 
         /// <summary>
         /// Reads embedded images from the "Storage" section of the file.
         /// </summary>
-        protected void ReadStorageEmbeddedImages()
+        protected IDictionary<string, Image> ReadStorageEmbeddedImages()
         {
             var storage = Cf.TryGetStream("Storage");
-            if (storage == null) return;
+            if (storage == null) return null;
 
             BeginContext("Storage");
 
+            var embeddedImages = new Dictionary<string, Image>();
             using (var reader = storage.GetBinaryReader())
             {
                 var parameters = ReadBlock(reader, size => ReadParameters(reader, size));
@@ -40,16 +46,16 @@ namespace AltiumSharp
                 var weight = parameters["WEIGHT"].AsIntOrDefault();
                 AssertValue(nameof(header), header, "Icon storage");
 
-                Data.EmbeddedImages.Clear();
                 while (reader.BaseStream.Position < reader.BaseStream.Length)
                 {
                     var (filename, image) = ReadCompressedStorage(reader, Image.FromStream);
-                    Data.EmbeddedImages.Add(filename, image);
+                    embeddedImages.Add(filename, image);
                 }
-                CheckValue(nameof(weight), weight, Data.EmbeddedImages.Count);
+                CheckValue(nameof(weight), weight, embeddedImages.Count);
             }
-
             EndContext();
+
+            return embeddedImages;
         }
 
         protected List<SchPrimitive> ReadPrimitives(BinaryReader reader, Dictionary<int, ParameterCollection> pinsWideText,
@@ -182,7 +188,7 @@ namespace AltiumSharp
                     record = new SchSheetHeader();
                     break;
                 case 34:
-                    record = new DesignatorLabelRecord();
+                    record = new SchDesignator();
                     break;
                 case 39:
                     record = new SchTemplate();
@@ -191,16 +197,19 @@ namespace AltiumSharp
                     record = new SchParameter();
                     break;
                 case 44:
-                    record = new Record44();
+                    record = new SchImplementationList();
                     break;
                 case 45:
-                    record = new Record45();
+                    record = new SchImplementation();
                     break;
                 case 46:
-                    record = new Record46();
+                    record = new SchMapDefinerList();
+                    break;
+                case 47:
+                    record = new SchMapDefiner();
                     break;
                 case 48:
-                    record = new Record48();
+                    record = new SchImplementationParameters();
                     break;
                 default:
                     EmitWarning($"Record {recordType} not supported");
@@ -300,21 +309,14 @@ namespace AltiumSharp
             return pin;
         }
 
-        protected static void AssignOwners(IList<SchPrimitive> primitives, IList<SchPrimitive> rootList)
+        protected static void AssignOwners(IList<SchPrimitive> primitives)
         {
             if (primitives == null) return;
 
             foreach (var primitive in primitives)
             {
                 var owner = primitives.ElementAtOrDefault(primitive.OwnerIndex);
-                if (owner == primitive) owner = null;
-                primitive.Owner = owner;
-
-                var containingList = owner?.Primitives ?? rootList;
-                if (containingList != primitive.Primitives)
-                {
-                    containingList?.Add(primitive);
-                }
+                owner?.Add(primitive);
             }
         }
     }

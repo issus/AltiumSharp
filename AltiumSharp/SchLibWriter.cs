@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using AltiumSharp.BasicTypes;
 using AltiumSharp.Records;
 using OpenMcdf;
@@ -24,7 +19,7 @@ namespace AltiumSharp
 
         }
 
-        protected override void DoWriteSch()
+        protected override void DoWrite()
         {
             WriteFileHeader();
             WriteSectionKeys();
@@ -33,12 +28,15 @@ namespace AltiumSharp
             {
                 WriteComponent(component);
             }
+
+            var embeddedImages = GetEmbeddedImages(Data.Items);
+            WriteStorageEmbeddedImages(embeddedImages);
         }
 
         private void WriteSectionKeys()
         {
             // only write section keys for components that need them
-            var components = Data.Items.Where(c => GetSectionKeyFromRefName(c.Name) != c.Name).ToList();
+            var components = Data.Items.Where(c => GetSectionKeyFromRefName(c.LibReference) != c.LibReference).ToList();
             if (components.Count == 0) return;
 
             var parameters = new ParameterCollection
@@ -49,7 +47,7 @@ namespace AltiumSharp
             for (int i = 0; i < components.Count; ++i)
             {
                 var component = components[i];
-                var componentRefName = component.Name;
+                var componentRefName = component.LibReference;
                 var sectionKey = GetSectionKeyFromRefName(componentRefName);
 
                 parameters.Add($"LIBREF{i}", componentRefName);
@@ -71,10 +69,6 @@ namespace AltiumSharp
         {
             Cf.RootStorage.GetOrAddStream("FileHeader").Write(writer =>
             {
-                // add the components to the header
-                Data.Header.Comp.Clear();
-                Data.Header.Comp.AddRange(Data.Items.Select(c => (c.Name, c.Description, c.PartCount + 1)));
-
                 // write header
                 var parameters = Data.Header.ExportToParameters();
                 WriteBlock(writer, w => WriteParameters(w, parameters));
@@ -83,7 +77,7 @@ namespace AltiumSharp
                 writer.Write(Data.Items.Count);
                 foreach (var component in Data.Items)
                 {
-                    WriteStringBlock(writer, component.Name);
+                    WriteStringBlock(writer, component.LibReference);
                 }
             });
         }
@@ -94,7 +88,7 @@ namespace AltiumSharp
         /// <param name="component">Component to be serialized.</param>
         private void WriteComponent(SchComponent component)
         {
-            var resourceName = GetSectionKeyFromRefName(component.Name);
+            var resourceName = GetSectionKeyFromRefName(component.LibReference);
             var componentStorage = Cf.RootStorage.GetOrAddStorage(resourceName);
 
             var pinsWideText = new Dictionary<int, ParameterCollection>();
@@ -125,7 +119,7 @@ namespace AltiumSharp
         /// <summary>
         /// Writes a pin text data for the component at <paramref name="componentStorage"/>.
         /// </summary>
-        private void WritePinTextData(CFStorage componentStorage, Dictionary<int, byte[]> data)
+        private static void WritePinTextData(CFStorage componentStorage, Dictionary<int, byte[]> data)
         {
             if (data.Count == 0) return;
 
@@ -140,7 +134,7 @@ namespace AltiumSharp
 
                 foreach (var kv in data)
                 {
-                    WriteCompressedStorage(writer, kv.Key.ToString(), kv.Value);
+                    WriteCompressedStorage(writer, kv.Key.ToString(CultureInfo.InvariantCulture), kv.Value);
                 }
             });
         }
@@ -151,7 +145,8 @@ namespace AltiumSharp
         /// <param name="componentStorage">Component storage.</param>
         /// <param name="streamName">Name of the stream inside the component storage.</param>
         /// <param name="data">Key, value set of parameters to store.</param>
-        private void WriteComponentExtendedParameters(CFStorage componentStorage, string streamName, Dictionary<int, ParameterCollection> data)
+        private static void WriteComponentExtendedParameters(CFStorage componentStorage, string streamName,
+            Dictionary<int, ParameterCollection> data)
         {
             if (data.Count == 0) return;
 
@@ -166,7 +161,7 @@ namespace AltiumSharp
 
                 foreach (var kv in data)
                 {
-                    WriteCompressedStorage(writer, kv.Key.ToString(), ws =>
+                    WriteCompressedStorage(writer, kv.Key.ToString(CultureInfo.InvariantCulture), ws =>
                         WriteBlock(ws, wb => WriteParameters(wb, kv.Value, true, Encoding.Unicode, false)));
                 }
             });

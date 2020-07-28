@@ -4,6 +4,14 @@ using AltiumSharp.BasicTypes;
 
 namespace AltiumSharp.Records
 {
+    [Flags]
+    public enum TextOrientations
+    {
+        None = 0,
+        Rotated = 1,
+        Flipped = 2
+    }
+
     public struct TextJustification : IEquatable<TextJustification>
     {
         public static readonly TextJustification BottomLeft = new TextJustification(0);
@@ -50,10 +58,24 @@ namespace AltiumSharp.Records
     public abstract class SchGraphicalObject : SchPrimitive
     {
         public CoordPoint Location { get; internal set; }
-        public TextOrientations Orientation { get; internal set; }
-        public TextJustification Justification { get; internal set; }
         public Color Color { get; internal set; }
         public Color AreaColor { get; internal set; }
+
+        #region Transient values
+        public bool EnableDraw { get; set; }
+        public bool Selection { get; set; }
+        #endregion
+
+        public override bool IsVisible => base.IsVisible && EnableDraw;
+
+        public SchGraphicalObject()
+        {
+            IsNotAccesible = true;
+            EnableDraw = true;
+        }
+
+        public override CoordRect CalculateBounds() =>
+            new CoordRect(Location.X, Location.Y, 1, 1);
 
         public override void ImportFromParameters(ParameterCollection p)
         {
@@ -63,12 +85,10 @@ namespace AltiumSharp.Records
             Location = new CoordPoint(
                 Utils.DxpFracToCoord(p["LOCATION.X"].AsIntOrDefault(), p["LOCATION.X_FRAC"].AsIntOrDefault()),
                 Utils.DxpFracToCoord(p["LOCATION.Y"].AsIntOrDefault(), p["LOCATION.Y_FRAC"].AsIntOrDefault()));
-            Orientation = p["ORIENTATION"].AsEnumOrDefault<TextOrientations>();
-            Justification = (TextJustification)p["JUSTIFICATION"].AsIntOrDefault();
             Color = p["COLOR"].AsColorOrDefault();
             AreaColor = p["AREACOLOR"].AsColorOrDefault();
         }
-        
+
         public override void ExportToParameters(ParameterCollection p)
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
@@ -84,10 +104,11 @@ namespace AltiumSharp.Records
                 p.Add("LOCATION.Y", n);
                 p.Add("LOCATION.Y_FRAC", f);
             }
-            p.Add("ORIENTATION", Orientation);
-            p.Add("JUSTIFICATION", (int)Justification);
             p.Add("COLOR", Color);
             p.Add("AREACOLOR", AreaColor);
         }
+
+        // MoveTo(coord, rot)
+        // MoveBy(coord)
     }
 }

@@ -8,6 +8,12 @@ namespace AltiumSharp.Records
         public override int Record => 8;
         public Coord SecondaryRadius { get; internal set; }
 
+        public SchEllipse() : base()
+        {
+            Radius = 20;
+            SecondaryRadius = 10;
+        }
+
         public override CoordRect CalculateBounds() =>
             new CoordRect(Location.X - Radius, Location.Y - SecondaryRadius, Radius * 2, SecondaryRadius * 2);
 
@@ -27,8 +33,8 @@ namespace AltiumSharp.Records
             p.SetBookmark();
             {
                 var (n, f) = Utils.CoordToDxpFrac(SecondaryRadius);
-                if (n != 0 || f != 0) p.Add("SECONDARYRADIUS", n);
-                if (f != 0) p.Add("SECONDARYRADIUS" + "_FRAC", f);
+                p.Add("SECONDARYRADIUS", n);
+                p.Add("SECONDARYRADIUS_FRAC", f);
             }
             p.MoveKeys("COLOR");
         }

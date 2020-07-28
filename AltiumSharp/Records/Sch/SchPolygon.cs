@@ -18,6 +18,11 @@ namespace AltiumSharp.Records
                 new CoordPoint(Vertices.Min(p => p.X), Vertices.Min(p => p.Y)),
                 new CoordPoint(Vertices.Max(p => p.X), Vertices.Max(p => p.Y)));
 
+        public SchPolygon() : base()
+        {
+            LineWidth = LineWidth.Small;
+        }
+
         public override void ImportFromParameters(ParameterCollection p)
         {
             if (p == null) throw new ArgumentNullException(nameof(p));

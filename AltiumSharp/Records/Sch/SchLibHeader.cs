@@ -1,32 +1,41 @@
 using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
+using System.Collections.Generic;
 using AltiumSharp.BasicTypes;
 
 namespace AltiumSharp.Records
 {
     public class SchLibHeader : SchDocumentHeader
     {
-        public string Header { get; internal set; }
-        public int Weight { get; internal set; }
+        private IList<SchComponent> _components;
+
+        public static string Header => "Protel for Windows - Schematic Library Editor Binary File Version 5.0";
         public int MinorVersion { get; internal set; }
-        public List<(string LibRef, string CompDescr, int PartCount)> Comp { get; private set; }
+
+        public SchLibHeader(IList<SchComponent> components)
+        {
+            _components = components;
+
+            MinorVersion = 2;
+            SheetStyle = 9;
+            SheetNumberSpaceSize = 12;
+            CustomX = 18000;
+            CustomY = 18000;
+            UseCustomSheet = true;
+            ReferenceZonesOn = true;
+            DisplayUnit = Unit.Mil;
+        }
 
         public override void ImportFromParameters(ParameterCollection p)
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
 
-            Header = p["HEADER"].AsStringOrDefault();
-            Weight = p["WEIGHT"].AsIntOrDefault();
+            var header = p["HEADER"].AsStringOrDefault();
+            if (header != Header) throw new ArgumentOutOfRangeException($"{nameof(p)}[\"HEADER\"]");
+
             MinorVersion = p["MINORVERSION"].AsIntOrDefault();
+
             base.ImportFromParameters(p);
-            Comp = Enumerable.Range(0, p["COMPCOUNT"].AsIntOrDefault())
-                .Select(i => (
-                    p[string.Format(CultureInfo.InvariantCulture, "LIBREF{0}", i)].AsStringOrDefault(),
-                    p[string.Format(CultureInfo.InvariantCulture, "COMPDESCR{0}", i)].AsStringOrDefault(),
-                    p[string.Format(CultureInfo.InvariantCulture, "PARTCOUNT{0}", i)].AsIntOrDefault()))
-                .ToList();
         }
         
         public override void ExportToParameters(ParameterCollection p)
@@ -34,15 +43,19 @@ namespace AltiumSharp.Records
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             p.Add("HEADER", Header);
-            p.Add("WEIGHT", Weight);
+            var totalPrimitiveCount = _components.Count +
+                _components.SelectMany(e => e.GetAllPrimitives()).Count();
+            p.Add("WEIGHT", totalPrimitiveCount + 1); // weight is the number of primitives + 1, for some reason
             p.Add("MINORVERSION", MinorVersion);
+
             base.ExportToParameters(p);
-            p.Add("COMPCOUNT", Comp.Count);
-            for (var i = 0; i < Comp.Count; i++)
+
+            p.Add("COMPCOUNT", _components.Count);
+            for (var i = 0; i < _components.Count; ++i)
             {
-                p.Add(string.Format(CultureInfo.InvariantCulture, "LIBREF{0}", i), Comp[i].LibRef);
-                p.Add(string.Format(CultureInfo.InvariantCulture, "COMPDESCR{0}", i), Comp[i].CompDescr);
-                p.Add(string.Format(CultureInfo.InvariantCulture, "PARTCOUNT{0}", i), Comp[i].PartCount);
+                p.Add($"LIBREF{i}", _components[i].LibReference);
+                p.Add($"COMPDESCR{i}", _components[i].ComponentDescription);
+                p.Add($"PARTCOUNT{i}", _components[i].PartCount + 1); // part count is stored + 1
             }
         }
     }

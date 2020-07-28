@@ -11,9 +11,9 @@ namespace AltiumSharp.Records
 
         public bool IsNotAccesible { get; internal set; }
 
-        public int OwnerIndex { get; internal set; }
+        public int IndexInSheet => (Owner as SchComponent)?.GetPrimitiveIndexOf(this) ?? -1;
 
-        public int IndexInSheet { get; internal set; }
+        internal int OwnerIndex { get; set; }
 
         public int OwnerPartId { get; internal set; }
 
@@ -21,7 +21,15 @@ namespace AltiumSharp.Records
 
         public bool GraphicallyLocked { get; internal set; }
 
-        public List<SchPrimitive> Primitives { get; } = new List<SchPrimitive>();
+        private List<SchPrimitive> _primitives = new List<SchPrimitive>();
+        public IReadOnlyList<SchPrimitive> Primitives => _primitives;
+        public override bool IsVisible =>
+            base.IsVisible && ((Owner as SchComponent)?.DisplayMode ?? 0) == OwnerPartDisplayMode;
+
+        public SchPrimitive() : base()
+        {
+            OwnerPartId = -1;
+        }
 
         public IEnumerable<T> GetPrimitivesOfType<T>(bool flatten = true) where T : Primitive
         {
@@ -33,24 +41,35 @@ namespace AltiumSharp.Records
             }
             else
             {
-                return Primitives.OfType<T>();
+                return GetAllPrimitives().OfType<T>();
             }
         }
 
-        public override CoordRect CalculateBounds() => CoordRect.Empty;
+        protected int GetPrimitiveIndexOf(SchPrimitive primitive) =>
+            _primitives.IndexOf(primitive);
 
-        public override bool IsVisible => base.IsVisible && ((Owner as SchComponent)?.DisplayMode ?? 0) == OwnerPartDisplayMode;
+        public override CoordRect CalculateBounds() => CoordRect.Empty;
 
         public virtual void ImportFromParameters(ParameterCollection p)
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
+
+            //var exportedParametersData = ExportToParameters().ToString();
+            //if (exportedParametersData != p.Data)
+            {
+                Console.WriteLine($" -= {GetType().Name} =-");
+                Console.WriteLine(p.Data);
+                //Console.WriteLine("------");
+                //Console.WriteLine(exportedParametersData);
+                //Console.WriteLine("------");
+                Console.WriteLine();
+            }
 
             var recordType = p["RECORD"].AsIntOrDefault();
             if (recordType != Record) throw new ArgumentException($"Record type mismatch when deserializing. Expected {Record} but got {recordType}", nameof(p));
 
             OwnerIndex = p["OWNERINDEX"].AsIntOrDefault();
             IsNotAccesible = p["ISNOTACCESIBLE"].AsBool();
-            IndexInSheet = p["INDEXINSHEET"].AsIntOrDefault();
             OwnerPartId = p["OWNERPARTID"].AsIntOrDefault();
             OwnerPartDisplayMode = p["OWNERPARTDISPLAYMODE"].AsIntOrDefault();
             GraphicallyLocked = p["GRAPHICALLYLOCKED"].AsBool();
@@ -74,6 +93,33 @@ namespace AltiumSharp.Records
             var parameters = new ParameterCollection();
             ExportToParameters(parameters);
             return parameters;
+        }
+
+        public void Add(SchPrimitive primitive)
+        {
+            if (primitive == null) throw new ArgumentNullException(nameof(primitive));
+            if (primitive == this) return;
+
+            if (DoAdd(primitive))
+            {
+                primitive.Owner = this;
+                _primitives.Add(primitive);
+            }
+        }
+
+        protected virtual bool DoAdd(SchPrimitive primitive)
+        {
+            return true;
+        }
+
+        internal IEnumerable<SchPrimitive> GetAllPrimitives()
+        {
+            return Enumerable.Concat(Primitives, DoGetParameters());
+        }
+
+        protected virtual IEnumerable<SchPrimitive> DoGetParameters()
+        {
+            return Enumerable.Empty<SchPrimitive>();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,18 +18,19 @@ namespace AltiumSharp
 
         }
 
-        protected sealed override void DoWrite()
+        protected IDictionary<string, Image> GetEmbeddedImages(IEnumerable<SchPrimitive> dataItems)
         {
-            DoWriteSch();
-            WriteStorageEmbeddedImages();
+            return dataItems
+                .SelectMany(item => item.GetPrimitivesOfType<SchImage>().Where(p => p.EmbedImage))
+                .Select(p => (p.Filename, p.Image))
+                .GroupBy(p => p.Filename).Select(g => g.First()) // only one image per file name
+                .ToDictionary(kv => kv.Filename, kv => kv.Image);
         }
-
-        protected abstract void DoWriteSch();
 
         /// <summary>
         /// Writes embedded images from the "Storage" section of the file.
         /// </summary>
-        protected void WriteStorageEmbeddedImages()
+        protected void WriteStorageEmbeddedImages(IDictionary<string, Image> embeddedImages)
         {
             byte[] ImageToBytes(Image image)
             {
@@ -37,7 +39,7 @@ namespace AltiumSharp
                 using (var stream = new MemoryStream())
                 using (var bitmap = new Bitmap(image))
                 {
-                    bitmap.Save(stream, image.RawFormat);
+                    bitmap.Save(stream, ImageFormat.Bmp);
                     return stream.ToArray();
                 }
             }
@@ -47,11 +49,11 @@ namespace AltiumSharp
                 var parameters = new ParameterCollection
                 {
                     { "HEADER", "Icon storage" },
-                    { "WEIGHT", Data.EmbeddedImages.Count }
+                    { "WEIGHT", embeddedImages.Count }
                 };
                 WriteBlock(writer, w => WriteParameters(w, parameters));
 
-                foreach (var ei in Data.EmbeddedImages)
+                foreach (var ei in embeddedImages)
                 {
                     WriteCompressedStorage(writer, ei.Key, ImageToBytes(ei.Value));
                 }
@@ -91,7 +93,7 @@ namespace AltiumSharp
 
             var currentIndex = index++;
 
-            foreach (var child in primitive.Primitives)
+            foreach (var child in primitive.GetAllPrimitives())
             {
                 WritePrimitive(writer, child, pinAsBinary, currentIndex, ref index, ref pinIndex,
                     pinsWideText, pinsTextData, pinsSymbolLineWidth);
@@ -151,7 +153,7 @@ namespace AltiumSharp
             if (!IsAscii(pin.Name)) pinWideText.Add("NAME", pin.Name);
             if (!IsAscii(pin.Designator)) pinWideText.Add("DESIG", pin.Designator);
 
-            pinTextData = new byte[0];
+            pinTextData = Array.Empty<byte>();
 
             pinSymbolLineWidth = new ParameterCollection
             {

@@ -2,33 +2,25 @@ using System;
 using System.Linq;
 using System.Drawing;
 using AltiumSharp.BasicTypes;
+using System.Collections.Generic;
 
 namespace AltiumSharp.Records
 {
     public class SchComponent : SchGraphicalObject, IComponent
     {
         public override int Record => 1;
-
-        public string Name => LibReference;
-
-        public string Description => ComponentDescription;
-
-        public override CoordRect CalculateBounds() =>
-            CoordRect.Union(GetPrimitivesOfType<Primitive>(false)
-                .Select(p => p.CalculateBounds()));
-
-        public string UniqueId { get; internal set; }
-        public int CurrentPartId { get; internal set; }
         public string LibReference { get; internal set; }
         public string ComponentDescription { get; internal set; }
+        public string UniqueId { get; internal set; }
+        public int CurrentPartId { get; internal set; }
         public int PartCount { get; internal set; }
         public int DisplayModeCount { get; internal set; }
         public int DisplayMode { get; internal set; }
         public bool ShowHiddenPins { get; internal set; }
         public string LibraryPath { get; internal set; }
         public string SourceLibraryName { get; internal set; }
-        public string SheetPartFilename { get; internal set; }
-        public string TargetFilename { get; internal set; }
+        public string SheetPartFileName { get; internal set; }
+        public string TargetFileName { get; internal set; }
         public bool OverrideColors { get; internal set; }
         public bool DesignatorLocked { get; internal set; }
         public bool PartIdLocked { get; internal set; }
@@ -37,25 +29,43 @@ namespace AltiumSharp.Records
         public string AliasList { get; internal set; }
         public int AllPinCount { get; internal set; }
 
+        public SchDesignator Designator { get; private set; }
+        public SchParameter Comment { get; private set; }
+        public SchImplementationList Implementations { get; private set; }
+
+        string IComponent.Name => LibReference;
+        string IComponent.Description => ComponentDescription;
+
+        public override CoordRect CalculateBounds() =>
+            CoordRect.Union(GetPrimitivesOfType<Primitive>(false)
+                .Select(p => p.CalculateBounds()));
+
         public SchComponent()
         {
             DisplayModeCount = 1;
-            IndexInSheet = -1;
             OwnerPartId = -1;
+            PartCount = 1;
             CurrentPartId = 1;
             LibraryPath = "*";
             SourceLibraryName = "*";
-            SheetPartFilename = "*";
-            TargetFilename = "*";
+            SheetPartFileName = "*";
+            TargetFileName = "*";
             UniqueId = Utils.GenerateUniqueId();
             AreaColor = ColorTranslator.FromWin32(11599871);
             Color = ColorTranslator.FromWin32(128);
             PartIdLocked = true;
-        }
 
-        public void Add(SchPrimitive primitive)
-        {
-            Primitives.Add(primitive);
+            Designator = new SchDesignator
+            {
+                Name = "Designator",
+                Location = new CoordPoint(-5, 5)
+            };
+            Comment = new SchParameter
+            {
+                Name = "Comment",
+                Location = new CoordPoint(-5, -15)
+            };
+            Implementations = new SchImplementationList();
         }
 
         public override void ImportFromParameters(ParameterCollection p)
@@ -63,18 +73,18 @@ namespace AltiumSharp.Records
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             base.ImportFromParameters(p);
-            UniqueId = p["UNIQUEID"].AsStringOrDefault();
-            CurrentPartId = p["CURRENTPARTID"].AsIntOrDefault();
             LibReference = p["LIBREFERENCE"].AsStringOrDefault();
             ComponentDescription = p["COMPONENTDESCRIPTION"].AsStringOrDefault();
+            UniqueId = p["UNIQUEID"].AsStringOrDefault();
+            CurrentPartId = p["CURRENTPARTID"].AsIntOrDefault();
             PartCount = p["PARTCOUNT"].AsIntOrDefault() - 1; // for some reason this number is one more than the actual number of parts
             DisplayModeCount = p["DISPLAYMODECOUNT"].AsIntOrDefault();
             DisplayMode = p["DISPLAYMODE"].AsIntOrDefault();
             ShowHiddenPins = p["SHOWHIDDENPINS"].AsBool();
             LibraryPath = p["LIBRARYPATH"].AsStringOrDefault("*");
             SourceLibraryName = p["SOURCELIBRARYNAME"].AsStringOrDefault("*");
-            SheetPartFilename = p["SHEETPARTFILENAME"].AsStringOrDefault("*");
-            TargetFilename = p["TARGETFILENAME"].AsStringOrDefault("*");
+            SheetPartFileName = p["SHEETPARTFILENAME"].AsStringOrDefault("*");
+            TargetFileName = p["TARGETFILENAME"].AsStringOrDefault("*");
             OverrideColors = p["OVERIDECOLORS"].AsBool();
             DesignatorLocked = p["DESIGNATORLOCKED"].AsBool();
             PartIdLocked = p["PARTIDLOCKED"].AsBool();
@@ -83,7 +93,7 @@ namespace AltiumSharp.Records
             AliasList = p["ALIASLIST"].AsStringOrDefault();
             AllPinCount = p["ALLPINCOUNT"].AsIntOrDefault();
         }
-        
+
         public override void ExportToParameters(ParameterCollection p)
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
@@ -99,8 +109,8 @@ namespace AltiumSharp.Records
             p.Add("SHOWHIDDENPINS", ShowHiddenPins);
             p.Add("LIBRARYPATH", LibraryPath);
             p.Add("SOURCELIBRARYNAME", SourceLibraryName);
-            p.Add("SHEETPARTFILENAME", SheetPartFilename);
-            p.Add("TARGETFILENAME", TargetFilename);
+            p.Add("SHEETPARTFILENAME", SheetPartFileName);
+            p.Add("TARGETFILENAME", TargetFileName);
             p.Add("UNIQUEID", UniqueId);
             p.MoveKey("AREACOLOR");
             p.MoveKey("COLOR");
@@ -111,7 +121,67 @@ namespace AltiumSharp.Records
             p.Add("ALIASLIST", AliasList);
             p.Add("DESIGNITEMID", DesignItemId);
             p.Add("COMPONENTKIND", ComponentKind);
-            p.Add("ALLPINCOUNT", AllPinCount);
+            var allPinCount = Primitives.OfType<SchPin>().Count();
+            p.Add("ALLPINCOUNT", allPinCount);
+        }
+
+        protected override bool DoAdd(SchPrimitive primitive)
+        {
+            if (primitive == null) return false;
+
+            if (primitive is SchParameter parameter)
+            {
+                if (parameter.Name == "Designator")
+                {
+                    Designator = (SchDesignator)parameter;
+                    return false;
+                }
+                else if (parameter.Name == "Comment")
+                {
+                    Comment = parameter;
+                    return false;
+                }
+            }
+            else if (primitive is SchImplementationList implementationList)
+            {
+                Implementations = implementationList;
+                return false;
+            }
+            else if (primitive.OwnerPartId < 1 || primitive.OwnerPartId >= PartCount)
+            {
+                primitive.OwnerPartId = CurrentPartId;
+            }
+            return true;
+        }
+
+        protected override IEnumerable<SchPrimitive> DoGetParameters()
+        {
+            return new SchPrimitive[] { Designator, Comment, Implementations };
+        }
+
+        public void AddPart()
+        {
+            CurrentPartId = ++PartCount;
+        }
+        
+        public IEnumerable<SchPrimitive> RemovePart(int partId)
+        {
+            if (partId < 1 || partId > PartCount) return Enumerable.Empty<SchPrimitive>();
+
+            // remove the part primitives
+            var partPrimitives = Primitives.Where(p => p.OwnerPartId == partId);
+            foreach (var p in partPrimitives)
+            {
+
+            }
+            
+            // decrease part id for primitives belonging to parts of higher value than the one removed
+            foreach (var p in Primitives.Where(p => p.OwnerPartId > partId))
+            {
+                p.OwnerPartId--;
+            }
+
+            return partPrimitives;
         }
     }
 }

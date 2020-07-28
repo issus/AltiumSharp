@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace AltiumSharp
 
         }
 
-        protected override void DoReadSch()
+        protected override void DoRead()
         {
             ReadSectionKeys();
             var refNames = ReadFileHeader();
@@ -30,6 +31,9 @@ namespace AltiumSharp
                 var sectionKey = GetSectionKeyFromRefName(componentRefName);
                 Data.Items.Add(ReadComponent(sectionKey));
             }
+
+            var embeddedImages = ReadStorageEmbeddedImages();
+            SetEmbeddedImages(Data.Items, embeddedImages);
         }
 
         /// <summary>
@@ -83,7 +87,9 @@ namespace AltiumSharp
                 {
                     // If we're at the end of the stream then read components
                     // from the parameters list
-                    refNames.AddRange(Data.Header.Comp.Select(c => c.LibRef));
+                    var comps = Enumerable.Range(0, parameters["COMPCOUNT"].AsIntOrDefault())
+                        .Select(i => parameters[$"LIBREF{i}"].AsStringOrDefault());
+                    refNames.AddRange(comps);
                 }
                 else
                 {
@@ -127,7 +133,7 @@ namespace AltiumSharp
                 // First primitive read must be the component SchComponent
                 var component = (SchComponent)primitives.First();
 
-                AssignOwners(primitives, component.Primitives);
+                AssignOwners(primitives);
 
                 EndContext();
 

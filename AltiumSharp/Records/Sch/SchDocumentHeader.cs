@@ -10,7 +10,8 @@ namespace AltiumSharp.Records
     public abstract class SchDocumentHeader : SchPrimitive
     {
         public string UniqueId { get; internal set; }
-        public List<(int Size, string FontName, int Rotation, bool Italic, bool Bold, bool Underline)> FontId { get; internal set; }
+        public List<(string FontName, int Size, int Rotation, bool Italic, bool Bold, bool Underline)> FontId { get; } =
+            new List<(string FontName, int Size, int Rotation, bool Italic, bool Bold, bool Underline)>();
         public bool UseMbcs { get; internal set; }
         public bool IsBoc { get; internal set; }
         public bool HotSpotGridOn { get; internal set; }
@@ -31,21 +32,39 @@ namespace AltiumSharp.Records
         public bool ShowTemplateGraphics { get; internal set; }
         public Unit DisplayUnit { get; internal set; }
 
+        public SchDocumentHeader() : base()
+        {
+            FontId.Add(("Times New Roman", 10, 0, false, false, false));
+            UseMbcs = true;
+            IsBoc = true;
+            BorderOn = true;
+            AreaColor = ColorTranslator.FromWin32(16317695);
+            SnapGridOn = true;
+            SnapGridSize = 10;
+            VisibleGridOn = true;
+            VisibleGridSize = 10;
+        }
+
         public override void ImportFromParameters(ParameterCollection p)
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             base.ImportFromParameters(p);
             UniqueId = p["UNIQUEID"].AsStringOrDefault();
-            FontId = Enumerable.Range(1, p["FONTIDCOUNT"].AsIntOrDefault())
-                .Select(i => (
-                    p[string.Format(CultureInfo.InvariantCulture, "SIZE{0}", i)].AsIntOrDefault(),
-                    p[string.Format(CultureInfo.InvariantCulture, "FONTNAME{0}", i)].AsStringOrDefault(),
-                    p[string.Format(CultureInfo.InvariantCulture, "ROTATION{0}", i)].AsIntOrDefault(),
-                    p[string.Format(CultureInfo.InvariantCulture, "ITALIC{0}", i)].AsBool(),
-                    p[string.Format(CultureInfo.InvariantCulture, "BOLD{0}", i)].AsBool(),
-                    p[string.Format(CultureInfo.InvariantCulture, "UNDERLINE{0}", i)].AsBool()))
-                .ToList();
+            var fontIdCount = p["FONTIDCOUNT"].AsIntOrDefault();
+            FontId.Clear();
+            for (int i = 0; i < fontIdCount; ++i)
+            {
+                var fontId = (
+                    p[$"FONTNAME{i+1}"].AsStringOrDefault(),
+                    p[$"SIZE{i+1}"].AsIntOrDefault(),
+                    p[$"ROTATION{i+1}"].AsIntOrDefault(),
+                    p[$"ITALIC{i+1}"].AsBool(),
+                    p[$"BOLD{i+1}"].AsBool(),
+                    p[$"UNDERLINE{i+1}"].AsBool()
+                );
+                FontId.Add(fontId);
+            }
             UseMbcs = p["USEMBCS"].AsBool();
             IsBoc = p["ISBOC"].AsBool();
             HotSpotGridOn = p["HOTSPOTGRIDON"].AsBool();
@@ -74,14 +93,15 @@ namespace AltiumSharp.Records
             base.ExportToParameters(p);
             p.Add("UNIQUEID", UniqueId);
             p.Add("FONTIDCOUNT", FontId.Count);
-            for (var i = 0; i < FontId.Count; i++)
+            for (var i = 0; i < FontId.Count; ++i)
             {
-                p.Add(string.Format(CultureInfo.InvariantCulture, "SIZE{0}", i+1), FontId[i].Size);
-                p.Add(string.Format(CultureInfo.InvariantCulture, "ROTATION{0}", i+1), FontId[i].Rotation);
-                p.Add(string.Format(CultureInfo.InvariantCulture, "ITALIC{0}", i+1), FontId[i].Italic);
-                p.Add(string.Format(CultureInfo.InvariantCulture, "BOLD{0}", i+1), FontId[i].Bold);
-                p.Add(string.Format(CultureInfo.InvariantCulture, "UNDERLINE{0}", i + 1), FontId[i].Underline);
-                p.Add(string.Format(CultureInfo.InvariantCulture, "FONTNAME{0}", i + 1), FontId[i].FontName);
+                var fontId = FontId[i];
+                p.Add($"SIZE{i+1}", fontId.Size);
+                p.Add($"ROTATION{i+1}", fontId.Rotation);
+                p.Add($"ITALIC{i+1}", fontId.Italic);
+                p.Add($"BOLD{i+1}", fontId.Bold);
+                p.Add($"UNDERLINE{i+1}", fontId.Underline);
+                p.Add($"FONTNAME{i+1}", fontId.FontName);
             }
             p.Add("USEMBCS", UseMbcs);
             p.Add("ISBOC", IsBoc);

@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using AltiumSharp.Records;
-
-namespace AltiumSharp
+﻿namespace AltiumSharp
 {
     /// <summary>
     /// Schematic document reader.
@@ -12,9 +9,12 @@ namespace AltiumSharp
         {
         }
 
-        protected override void DoReadSch()
+        protected override void DoRead()
         {
             ReadFileHeader();
+
+            var embeddedImages = ReadStorageEmbeddedImages();
+            SetEmbeddedImages(Data.Items, embeddedImages);
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace AltiumSharp
                 var primitives = ReadPrimitives(reader, null, null, null);
                 Data.Items.AddRange(primitives);
 
-                AssignOwners(primitives, null);
+                AssignOwners(primitives);
             }
 
             EndContext();

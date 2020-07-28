@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using AltiumSharp.BasicTypes;
 
 namespace AltiumSharp.Records
@@ -13,6 +14,14 @@ namespace AltiumSharp.Records
 
         public override CoordRect CalculateBounds() =>
             new CoordRect(Location.X - Radius, Location.Y - Radius, Radius * 2, Radius * 2);
+
+        public SchArc() : base()
+        {
+            LineWidth = LineWidth.Small;
+            Radius = Utils.DxpFracToCoord(10, 0);
+            EndAngle = 360.0;
+            Color = ColorTranslator.FromWin32(16711680);
+        }
 
         public override void ImportFromParameters(ParameterCollection p)
         {
