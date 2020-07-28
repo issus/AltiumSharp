@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace AltiumSharp
 {
@@ -152,5 +153,27 @@ namespace AltiumSharp
         {
             return TryGetStream(cf, path) ?? throw new ArgumentException($"Stream with path '{path}' doesn't exist.", nameof(path));
         }
+    }
+
+    public static class EnumExtensions {
+        public static T WithFlag<T>(this T @enum, T flag, bool value = true) where T : Enum
+        {
+            var intEnum = Convert.ToInt32(@enum, CultureInfo.InvariantCulture);
+            var intFlag = Convert.ToInt32(flag, CultureInfo.InvariantCulture);
+            if (value)
+            {
+                return (T)Enum.ToObject(typeof(T), intEnum | intFlag);
+            }
+            else
+            {
+                return (T)Enum.ToObject(typeof(T), intEnum & ~intFlag);
+            }
+        }
+
+        public static void SetFlag<T>(ref this T @enum, T flag, bool value = true) where T : struct, Enum =>
+            @enum = WithFlag(@enum, flag, value);
+
+        public static void ClearFlag<T>(ref this T @enum, T flag) where T : struct, Enum =>
+            SetFlag(ref @enum, flag, false);
     }
 }
