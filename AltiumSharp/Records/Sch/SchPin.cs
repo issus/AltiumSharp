@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text.RegularExpressions;
 using AltiumSharp.BasicTypes;
 
 namespace AltiumSharp.Records
@@ -82,8 +79,6 @@ namespace AltiumSharp.Records
                 .WithFlag(PinConglomerateFlags.Flipped, value.HasFlag(TextOrientations.Flipped));
         }
 
-        private Regex _designatorParser = new Regex(@"^(.*?)(\d+)\s*$");
-
         public SchPin() : base()
         {
             Electrical = PinElectricalType.Passive;
@@ -93,33 +88,8 @@ namespace AltiumSharp.Records
                 PinConglomerateFlags.Unknown;
             PinLength = Utils.DxpFracToCoord(30, 0);
             UniqueId = Utils.GenerateUniqueId();
-            Designator = GenerateDesignator();
-            Name = Designator;
-        }
-
-        /// <summary>
-        /// Generates a new designator by taking the last designator in lexicographical order
-        /// and then incrementing any ending integer.
-        /// </summary>
-        /// <remarks>
-        /// This mimicks the behavior of AD's context menu "Place > Pin", which works very differently
-        /// from AD's Properties pin list "Add" button, and the context menu behavior was chosen as it
-        /// seemed more intuitive.
-        /// </remarks>
-        private string GenerateDesignator()
-        {
-            var largestDesignator = (Owner as IContainer)?.GetPrimitivesOfType<SchPin>(false)
-                .OrderBy(p => p.Designator ?? "")
-                .LastOrDefault()?.Designator;
-            if (largestDesignator != null)
-            {
-                return _designatorParser.Replace(largestDesignator, match =>
-                        $"{match.Captures[1]}{int.Parse(match.Captures[2].Value, CultureInfo.InvariantCulture) + 1}");
-            }
-            else
-            {
-                return "1";
-            }
+            Designator = null;
+            Name = null;
         }
 
         public CoordPoint GetCorner()

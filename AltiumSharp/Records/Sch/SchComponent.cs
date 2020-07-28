@@ -1,12 +1,15 @@
 using System;
 using System.Linq;
 using System.Drawing;
-using AltiumSharp.BasicTypes;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text.RegularExpressions;
+using AltiumSharp.BasicTypes;
 
 namespace AltiumSharp.Records
 {
-    public class SchComponent : SchGraphicalObject, IComponent
+    public class SchComponent : SchGraphicalObject, IComponent, IEnumerable<SchPrimitive>
     {
         public override int Record => 1;
         public string LibReference { get; internal set; }
@@ -36,10 +39,6 @@ namespace AltiumSharp.Records
         string IComponent.Name => LibReference;
         string IComponent.Description => ComponentDescription;
 
-        public override CoordRect CalculateBounds() =>
-            CoordRect.Union(GetPrimitivesOfType<Primitive>(false)
-                .Select(p => p.CalculateBounds()));
-
         public SchComponent()
         {
             DisplayModeCount = 1;
@@ -67,6 +66,13 @@ namespace AltiumSharp.Records
             };
             Implementations = new SchImplementationList();
         }
+
+        IEnumerator<SchPrimitive> IEnumerable<SchPrimitive>.GetEnumerator() => Primitives.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => Primitives.GetEnumerator();
+
+        public override CoordRect CalculateBounds() =>
+            CoordRect.Union(GetPrimitivesOfType<Primitive>(false)
+                .Select(p => p.CalculateBounds()));
 
         public override void ImportFromParameters(ParameterCollection p)
         {
@@ -125,11 +131,43 @@ namespace AltiumSharp.Records
             p.Add("ALLPINCOUNT", allPinCount);
         }
 
+        static private Regex _designatorParser = new Regex(@"^(.*?)(\d+)\s*$");
+
+        /// <summary>
+        /// Generates a new designator by taking the last designator in lexicographical order
+        /// and then incrementing any ending integer.
+        /// </summary>
+        /// <remarks>
+        /// This mimicks the behavior of AD's context menu "Place > Pin", which works very differently
+        /// from AD's Properties pin list "Add" button, and the context menu behavior was chosen as it
+        /// seemed more intuitive.
+        /// </remarks>
+        private string GeneratePinDesignator()
+        {
+            var largestDesignator = GetPrimitivesOfType<SchPin>(false)
+                .OrderBy(p => p.Designator ?? "")
+                .LastOrDefault()?.Designator;
+            if (largestDesignator != null)
+            {
+                return _designatorParser.Replace(largestDesignator, match =>
+                        $"{match.Captures[1]}{int.Parse(match.Captures[2].Value, CultureInfo.InvariantCulture) + 1}");
+            }
+            else
+            {
+                return "1";
+            }
+        }
+
         protected override bool DoAdd(SchPrimitive primitive)
         {
             if (primitive == null) return false;
 
-            if (primitive is SchParameter parameter)
+            if (primitive is SchPin pin && pin.Name == null && pin.Designator == null)
+            {
+                pin.Designator = GeneratePinDesignator();
+                pin.Name = pin.Designator;
+            }
+            else if (primitive is SchParameter parameter)
             {
                 if (parameter.Name == "Designator")
                 {
@@ -163,7 +201,7 @@ namespace AltiumSharp.Records
         {
             CurrentPartId = ++PartCount;
         }
-        
+
         public IEnumerable<SchPrimitive> RemovePart(int partId)
         {
             if (partId < 1 || partId > PartCount) return Enumerable.Empty<SchPrimitive>();
@@ -171,7 +209,7 @@ namespace AltiumSharp.Records
             // remove the part primitives
             var partPrimitives = Primitives.Where(p => p.OwnerPartId == partId);
             foreach (var p in partPrimitives) Remove(p);
-            
+
             // decrease part id for primitives belonging to parts of higher value than the one removed
             foreach (var p in Primitives.Where(p => p.OwnerPartId > partId))
             {
