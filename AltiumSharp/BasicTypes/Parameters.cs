@@ -42,7 +42,7 @@ namespace AltiumSharp.BasicTypes
         /// <summary>
         /// Gets the string representation of this parameter value.
         /// </summary>
-        public override string ToString() => _data;
+        public override string ToString() => AsString();
 
         /// <summary>
         /// Gets the string value of this parameter.
@@ -53,7 +53,7 @@ namespace AltiumSharp.BasicTypes
         /// Gets the string value of this parameter, or a default value.
         /// </summary>
         public string AsStringOrDefault(string defaultValue = default) =>
-            _data ?? defaultValue;
+            AsString() ?? defaultValue;
 
         /// <summary>
         /// Gets the integer value of this parameter.
