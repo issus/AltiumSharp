@@ -9,7 +9,7 @@ using AltiumSharp.BasicTypes;
 
 namespace AltiumSharp.Records
 {
-    public class SchComponent : SchGraphicalObject, IComponent, IEnumerable<SchPrimitive>
+    public sealed class SchComponent : SchGraphicalObject, IComponent, IEnumerable<SchPrimitive>
     {
         public override int Record => 1;
         public string LibReference { get; internal set; }
@@ -131,11 +131,10 @@ namespace AltiumSharp.Records
             p.Add("ALLPINCOUNT", allPinCount);
         }
 
-        static private Regex _designatorParser = new Regex(@"^(.*?)(\d+)\s*$");
+        static private Regex _designatorParser = new Regex(@"^(?<Prefix>.*?)(?<Number>\d*)\s*$");
 
         /// <summary>
-        /// Generates a new designator by taking the last designator in lexicographical order
-        /// and then incrementing any ending integer.
+        /// Generates a new designator by taking the last designator in order and then incrementing any ending integer.
         /// </summary>
         /// <remarks>
         /// This mimicks the behavior of AD's context menu "Place > Pin", which works very differently
@@ -145,12 +144,17 @@ namespace AltiumSharp.Records
         private string GeneratePinDesignator()
         {
             var largestDesignator = GetPrimitivesOfType<SchPin>(false)
-                .OrderBy(p => p.Designator ?? "")
-                .LastOrDefault()?.Designator;
-            if (largestDesignator != null)
+                .Select(p => _designatorParser.Match(p.Designator ?? ""))
+                .Select(m => (m.Groups["Prefix"]?.Value ?? "", int.TryParse(m.Groups["Number"]?.Value ?? "", out int n) ? n : (int?)null))
+                .OrderBy(pn => pn)
+                .LastOrDefault();
+            if (largestDesignator.Item2 != null)
             {
-                return _designatorParser.Replace(largestDesignator, match =>
-                        $"{match.Captures[1]}{int.Parse(match.Captures[2].Value, CultureInfo.InvariantCulture) + 1}");
+                return $"{largestDesignator.Item1}{largestDesignator.Item2 + 1}";
+            }
+            else if (largestDesignator.Item1 != null)
+            {
+                return largestDesignator.Item1;
             }
             else
             {
@@ -162,10 +166,10 @@ namespace AltiumSharp.Records
         {
             if (primitive == null) return false;
 
-            if (primitive is SchPin pin && pin.Name == null && pin.Designator == null)
+            if (primitive is SchPin pin)
             {
-                pin.Designator = GeneratePinDesignator();
-                pin.Name = pin.Designator;
+                pin.Designator = pin.Designator ?? GeneratePinDesignator();
+                pin.Name = pin.Name ?? pin.Designator;
             }
             else if (primitive is SchParameter parameter)
             {
@@ -185,10 +189,12 @@ namespace AltiumSharp.Records
                 Implementations = implementationList;
                 return false;
             }
-            else if (primitive.OwnerPartId < 1 || primitive.OwnerPartId >= PartCount)
+            
+            if (primitive.OwnerPartId < 1 || primitive.OwnerPartId >= PartCount)
             {
                 primitive.OwnerPartId = CurrentPartId;
             }
+
             return true;
         }
 
