@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Linq;
-using System.Text;
 using AltiumSharp.BasicTypes;
 
 namespace AltiumSharp.Drawing
@@ -102,6 +100,12 @@ namespace AltiumSharp.Drawing
         public Color SelectionColorBg { get; set; } = Color.FromArgb(200, Color.White);
 
         /// <summary>
+        /// Color to use for pens instead of the requested color in
+        /// <seealso cref="CreatePen(in Color, float, LineCap?, LineJoin?)"/>.
+        /// </summary>
+        protected Color? PenColorOverride { get; set; }
+
+        /// <summary>
         /// Altium Schematic Viewer draws 100 pixels per inch,
         /// which makes a number of 1 in the Dxp format equal to 1 pixel.
         /// </summary>
@@ -131,7 +135,7 @@ namespace AltiumSharp.Drawing
         /// <returns></returns>
         protected Pen CreatePen(in Color color, float width, LineCap? lineCap = null, LineJoin? lineJoin = null)
         {
-            var pen = new Pen(color, width);
+            var pen = new Pen(PenColorOverride ?? color, width);
             pen.SetLineCap(lineCap ?? DefaultLineCap, lineCap ?? DefaultLineCap, DashCap.Flat);
             pen.LineJoin = lineJoin ?? DefaultLineJoin;
             return pen;
@@ -421,21 +425,25 @@ namespace AltiumSharp.Drawing
         /// </param>
         private void RenderSelection(Graphics g, bool individual)
         {
+            var visiblePrimitives = SelectedPrimitives.Where(IsPrimitiveVisibleInScreen);
+            var rects = visiblePrimitives.Select(CalculatePrimitiveScreenBounds).ToArray();
+            if (rects.Length == 0) return;
+
+            if (individual)
+            {
+                rects = rects.Select(b => b.Inflated(2, 2)).ToArray();
+            }
+            else
+            {
+                rects = new[] { rects.Aggregate(RectangleF.Union).Inflated(2, 2) };
+            }
+
             var penFgColor = SelectionColor;
             var penBgColor = SelectionColorBg;
             using (var penFg = CreatePen(penFgColor, 1))
             using (var penBg = CreatePen(penBgColor, 1))
             {
                 penFg.DashStyle = DashStyle.Dash;
-                var rects = SelectedPrimitives.Select(CalculatePrimitiveScreenBounds).ToArray();
-                if (individual)
-                {
-                    rects = rects.Select(b => b.Inflated(2, 2)).ToArray();
-                }
-                else
-                {                   
-                    rects = new[] { rects.Aggregate(RectangleF.Union).Inflated(2, 2) };
-                }
                 g.DrawRectangles(penBg, rects);
                 g.DrawRectangles(penFg, rects);
             }

@@ -48,7 +48,7 @@ namespace AltiumSharp.Drawing
 
         private IEnumerable<SchPrimitive> GetAsset(string name)
         {
-            return _assets.SingleOrDefault(c => c.Name == name)?.Primitives.Where(p => p.IsVisible);
+            return _assets.SingleOrDefault(c => c.LibReference == name)?.Primitives.Where(p => p.IsVisible);
         }
 
         /// <summary>
@@ -186,11 +186,13 @@ namespace AltiumSharp.Drawing
             }
         }
 
-        private void RenderAt(Graphics graphics, bool fastRendering, CoordPoint location, float angle, Action callback)
+        private void RenderAt(Graphics graphics, bool fastRendering, CoordPoint location, float angle, Color penColorOverride, Action callback)
         {
+            var savePenColorOverride = PenColorOverride;
             var center = Center;
             try
             {
+                PenColorOverride = penColorOverride;
                 Center = new CoordPoint(center.X - location.X, center.Y - location.Y);
 
                 var graphicsContainer = graphics.BeginContainer();
@@ -208,13 +210,14 @@ namespace AltiumSharp.Drawing
             }
             finally
             {
+                PenColorOverride = savePenColorOverride;
                 Center = center;
             }
         }
 
-        private void RenderPrimitivesAt(Graphics graphics, bool fastRendering, CoordPoint location, float angle, IEnumerable<SchPrimitive> primitives)
+        private void RenderPrimitivesAt(Graphics graphics, bool fastRendering, CoordPoint location, float angle, IEnumerable<SchPrimitive> primitives, Color penColorOverride)
         {
-            RenderAt(graphics, fastRendering, location, angle, () =>
+            RenderAt(graphics, fastRendering, location, angle, penColorOverride, () =>
             {
                 RenderPrimitives(graphics, fastRendering, primitives);
             });
@@ -707,7 +710,7 @@ namespace AltiumSharp.Drawing
                 angle -= 180.0f;
             }
 
-            RenderPrimitivesAt(g, false, powerPort.Location, angle, symbolPrimitives.Where(p => p != netNameAnchor));
+            RenderPrimitivesAt(g, false, powerPort.Location, angle, symbolPrimitives.Where(p => p != netNameAnchor), powerPort.Color);
 
             if (powerPort.ShowNetName && netNameAnchor != null)
             {
