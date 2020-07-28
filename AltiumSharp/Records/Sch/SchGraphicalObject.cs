@@ -70,6 +70,8 @@ namespace AltiumSharp.Records
 
         public SchGraphicalObject()
         {
+            Color = ColorTranslator.FromWin32(0);
+            AreaColor = ColorTranslator.FromWin32(0);
             IsNotAccesible = true;
             EnableDraw = true;
         }
