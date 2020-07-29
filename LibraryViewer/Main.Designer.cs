@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tabComponents = new System.Windows.Forms.TabControl();
             this.tabPcbLib = new System.Windows.Forms.TabPage();
@@ -262,9 +262,9 @@
             // gridPcbLibPrimitivesXSize
             // 
             this.gridPcbLibPrimitivesXSize.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle1.Format = "#####0.0#mm";
-            dataGridViewCellStyle1.NullValue = null;
-            this.gridPcbLibPrimitivesXSize.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Format = "#####0.0#mm";
+            dataGridViewCellStyle3.NullValue = null;
+            this.gridPcbLibPrimitivesXSize.DefaultCellStyle = dataGridViewCellStyle3;
             this.gridPcbLibPrimitivesXSize.HeaderText = "X-Size";
             this.gridPcbLibPrimitivesXSize.MinimumWidth = 40;
             this.gridPcbLibPrimitivesXSize.Name = "gridPcbLibPrimitivesXSize";
@@ -274,9 +274,9 @@
             // gridPcbLibPrimitivesYSize
             // 
             this.gridPcbLibPrimitivesYSize.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle2.Format = "#####0.0#mm";
-            dataGridViewCellStyle2.NullValue = null;
-            this.gridPcbLibPrimitivesYSize.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Format = "#####0.0#mm";
+            dataGridViewCellStyle4.NullValue = null;
+            this.gridPcbLibPrimitivesYSize.DefaultCellStyle = dataGridViewCellStyle4;
             this.gridPcbLibPrimitivesYSize.HeaderText = "Y-Size";
             this.gridPcbLibPrimitivesYSize.MinimumWidth = 40;
             this.gridPcbLibPrimitivesYSize.Name = "gridPcbLibPrimitivesYSize";
@@ -648,12 +648,14 @@
             // 
             // openFileDialog
             // 
-            this.openFileDialog.Filter = "PcbLib files|*.pcblib|SchLib files|*.schlib|SchDoc files|*.schdoc|All files|*.*";
+            this.openFileDialog.Filter = "Supported files|*.pcblib;*.schlib;*.schdoc|PcbLib files|*.pcblib|SchLib files|*.s" +
+    "chlib|SchDoc files|*.schdoc|All files|*.*";
             // 
             // saveFileDialog
             // 
             this.saveFileDialog.DefaultExt = "bin";
-            this.saveFileDialog.Filter = "PcbLib files|*.pcblib|SchLib files|*.schlib|SchDoc files|*.schdoc|All files|*.*";
+            this.saveFileDialog.Filter = "Supported files|*.pcblib;*.schlib;*.schdoc|PcbLib files|*.pcblib|SchLib files|*.s" +
+    "chlib|SchDoc files|*.schdoc|All files|*.*";
             // 
             // redrawTimer
             // 

@@ -169,12 +169,10 @@ namespace LibraryViewer
 
                 if (_fileData is PcbLib pcbLib)
                 {
-                    /*
                     using (var writer = new PcbLibWriter())
                     {
                         writer.Write(pcbLib, fileName, true);
                     }
-                    */
                 }
                 else if (_fileData is SchLib schLib)
                 {
@@ -489,7 +487,7 @@ namespace LibraryViewer
             {
                 var pcbPrimitive = primitive as PcbPrimitive;
                 var primitiveIndex = pcbComponent.Primitives.IndexOf(pcbPrimitive);
-                saveFileDialog.FileName = $"pcb_{pcbComponent.Name}_{primitiveIndex}_{pcbPrimitive.ObjectId}_{pcbPrimitive.GetDisplayInfo().Name}.bin".Replace('/', '_');
+                saveFileDialog.FileName = $"pcb_{pcbComponent.Name}_{primitiveIndex}_{pcbPrimitive.GetDisplayInfo().Name}.bin".Replace('/', '_');
             }
             else if (container is SchComponent schComponent)
             {
