@@ -158,7 +158,7 @@ namespace AltiumSharp.BasicTypes
     {
         private readonly byte _value;
         public Layer(byte value) => _value = value;
-        public int ToByte() => _value;
+        public byte ToByte() => _value;
 
         /// <summary>
         /// Gets the internal name of a PCB layer.
