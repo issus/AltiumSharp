@@ -44,5 +44,12 @@ namespace AltiumSharp
             p.Add("HEIGHT", Height);
             p.Add("DESCRIPTION", Description);
         }
+
+        public ParameterCollection ExportToParameters()
+        {
+            var parameters = new ParameterCollection();
+            ExportToParameters(parameters);
+            return parameters;
+        }
     }
 }

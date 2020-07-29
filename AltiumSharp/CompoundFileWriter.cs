@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using AltiumSharp.BasicTypes;
 using System.Net;
+using AltiumSharp.Records;
 
 namespace AltiumSharp
 {
@@ -70,7 +71,7 @@ namespace AltiumSharp
         /// <param name="recordCount">
         /// Size of the Data section.
         /// </param>
-        internal static void WriteHeader(CFStorage storage, uint recordCount)
+        internal static void WriteHeader(CFStorage storage, int recordCount)
         {
             storage.GetOrAddStream("Header").Write(writer => writer.Write(recordCount));
         }
@@ -93,13 +94,18 @@ namespace AltiumSharp
         /// <param name="serializer">Serializer that will generate the block data.</param>
         internal static void WriteBlock(BinaryWriter writer, Action<BinaryWriter> serializer, byte flags = 0)
         {
-            using (var memoryStream = new MemoryStream())
-            using (var binaryWriter = new BinaryWriter(memoryStream))
-            {
-                serializer?.Invoke(binaryWriter);
+            var posStart = writer.BaseStream.Position;
 
-                WriteBlock(writer, memoryStream.ToArray(), flags);
-            }
+            writer.Write(0); // dummy length header
+            serializer?.Invoke(writer);
+
+            var posEnd = writer.BaseStream.Position;
+            writer.BaseStream.Position = posStart;
+            
+            int length = (int)(posEnd - posStart - sizeof(int));
+            writer.Write(((flags << 24) | length)); // write length header
+
+            writer.BaseStream.Position = posEnd;
         }
 
         /// <summary>
@@ -344,8 +350,8 @@ namespace AltiumSharp
         }
 
         /// <summary>
-        /// Writes a list of strings to the "WideStrings" stream inside of the specified
-        /// <paramref name="storage"/> key.
+        /// Writes a list of strings from the <paramref name="component"/> to the "WideStrings"
+        /// stream inside of the specified <paramref name="storage"/> key.
         /// <para>
         /// Each string entry is encoded inside a parameter string value with a comma separated
         /// list of integers that represent UTF-16 code-points.
@@ -358,11 +364,12 @@ namespace AltiumSharp
         /// <param name="storage">
         /// Storage key where to write to "WideStrings" stream.
         /// </param>
-        /// <param name="data">
-        /// List of strings to be serialized.
+        /// <param name="component">
+        /// Component to have its list of strings serialized.
         /// </param>
-        internal static void WriteWideStrings(CFStorage storage, IList<string> data)
+        internal static void WriteWideStrings(CFStorage storage, PcbComponent component)
         {
+            var data = component.Primitives.OfType<PcbString>().Select(s => s.Text).ToList();
             storage.GetOrAddStream("WideStrings").Write(writer =>
             {
                 var parameters = new ParameterCollection();

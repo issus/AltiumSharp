@@ -16,6 +16,7 @@ namespace AltiumSharp.Records
         public override PcbPrimitiveDisplayInfo GetDisplayInfo() =>
             new PcbPrimitiveDisplayInfo(Text, null, null);
 
+        public override PcbPrimitiveObjectId ObjectId => PcbPrimitiveObjectId.Text;
         public CoordPoint Location { get; internal set; }
         public Coord Width { get; internal set; }
         public Coord Height { get; internal set; }
@@ -35,7 +36,6 @@ namespace AltiumSharp.Records
         public PcbStringJustification FontInvertedRectJustification { get; internal set; }
         public Coord FontInvertedRectTextOffset { get; internal set; }
         public string Text { get; internal set; }
-        public string AsciiText { get; internal set; }
 
         internal CoordRect CalculateRect(bool useAbsolutePosition)
         {

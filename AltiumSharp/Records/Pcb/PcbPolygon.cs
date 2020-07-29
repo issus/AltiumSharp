@@ -6,6 +6,7 @@ namespace AltiumSharp.Records
 {
     public class PcbPolygon : PcbPrimitive
     {
+        public override PcbPrimitiveObjectId ObjectId => PcbPrimitiveObjectId.Region;
         public ParameterCollection Attributes { get; internal set; }
         public List<CoordPoint> Outline { get; } = new List<CoordPoint>();
 

@@ -4,6 +4,7 @@ namespace AltiumSharp.Records
 {
     public class PcbArc : PcbPrimitive
     {
+        public override PcbPrimitiveObjectId ObjectId => PcbPrimitiveObjectId.Arc;
         public CoordPoint Location { get; internal set; }
         public Coord Radius { get; internal set; }
         public double StartAngle { get; internal set; }

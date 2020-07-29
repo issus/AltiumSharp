@@ -579,6 +579,7 @@ namespace AltiumSharp.Records
             p.Add("DISPLAYUNIT", DisplayUnit == Unit.Mil ? 1 : 0);
             p.Add("TOGGLELAYERS", ToggleLayers);
             p.Add("SHOWDEFAULTSETS", ShowDefaultSets);
+            p.Add("LAYERSETSCOUNT", Layersets.Count);
             for (var i = 0; i < Layersets.Count; i++)
             {
                 p.Add(string.Format(CultureInfo.InvariantCulture, "LAYERSET{0}NAME", i), Layersets[i].Name);
@@ -760,6 +761,13 @@ namespace AltiumSharp.Records
             p.Add("FOLDERGUID", FolderGuid);
             p.Add("LIFECYCLEDEFINITIONGUID", LifeCycleDefinitionGuid);
             p.Add("REVISIONNAMINGSCHEMEGUID", RevisionNamingSchemeGuid);
+        }
+
+        public ParameterCollection ExportToParameters()
+        {
+            var parameters = new ParameterCollection();
+            ExportToParameters(parameters);
+            return parameters;
         }
     }
 }

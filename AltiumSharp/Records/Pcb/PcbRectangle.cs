@@ -7,6 +7,7 @@ namespace AltiumSharp.Records
         public override PcbPrimitiveDisplayInfo GetDisplayInfo() =>
             new PcbPrimitiveDisplayInfo("", Width, Height);
 
+        public override PcbPrimitiveObjectId ObjectId => PcbPrimitiveObjectId.Fill;
         public CoordPoint Corner1 { get; internal set; }
         public CoordPoint Corner2 { get; internal set; }
         public double Rotation { get; internal set; }

@@ -16,6 +16,7 @@ namespace AltiumSharp.Records
         public override PcbPrimitiveDisplayInfo GetDisplayInfo() =>
             new PcbPrimitiveDisplayInfo(Designator, Math.Max(SizeTop.X, SizeBottom.X), Math.Max(SizeTop.Y, SizeBottom.Y));
 
+        public override PcbPrimitiveObjectId ObjectId => PcbPrimitiveObjectId.Pad;
         public string Designator { get; internal set; }
         public string UnknownString { get; internal set; }
         public CoordPoint Location { get; internal set; }

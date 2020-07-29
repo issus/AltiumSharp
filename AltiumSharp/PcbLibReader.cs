@@ -16,17 +16,6 @@ namespace AltiumSharp
     /// </summary>
     public sealed class PcbLibReader : CompoundFileReader<PcbLib>
     {
-        /// <summary>
-        /// UniqueId from the binary FileHeader entry
-        /// </summary>
-        public string UniqueId { get; private set; }
-
-        /// <summary>
-        /// List of model information read from the library, including positioning parameters
-        /// and the raw model data.
-        /// </summary>
-        public Dictionary<string, (ParameterCollection positioning, string step)> Models { get; private set; }
-
         public PcbLibReader() : base()
         {
 
@@ -139,12 +128,11 @@ namespace AltiumSharp
                         default:
                             // otherwise we attempt to skip the actual primitive data but still
                             // create a basic instance with just the raw data for debugging
-                            element = SkipPrimitive(reader);
+                            element = ReadFootprintUknown(reader, objectId);
                             break;
                     }
 
                     element.SetRawData(ExtractStreamData(reader, primitiveStartPosition, reader.BaseStream.Position));
-                    element.ObjectId = objectId;
 
                     component.Primitives.Add(element);
 
@@ -244,10 +232,10 @@ namespace AltiumSharp
         /// if we cannot read the data yet, we already have it and are able to inspect it
         /// and list it alongside the other component primitives.
         /// </returns>
-        private static PcbPrimitive SkipPrimitive(BinaryReader reader)
+        private static PcbPrimitive ReadFootprintUknown(BinaryReader reader, PcbPrimitiveObjectId objectId)
         {
             ReadBlock(reader);
-            return new PcbPrimitive();
+            return new PcbUnknown(objectId);
         }
 
         private PcbArc ReadFootprintArc(BinaryReader reader)
@@ -444,7 +432,7 @@ namespace AltiumSharp
                 return @string;
             });
 
-            result.AsciiText = ReadStringBlock(reader);
+            ReadStringBlock(reader); // non-unicode Text
             result.Text = unicodeText;
             return result;
         }
@@ -505,14 +493,13 @@ namespace AltiumSharp
 
         /// <summary>
         /// Reads model information from the current file.
+        /// Model information includes the model positioning parameters and its STEP data.
         /// </summary>
         /// <param name="library">Storage where to look for the models data.</param>
-        /// <returns>Returns model positioning parameters and its raw binary data.</returns>
-        private Dictionary<string, (ParameterCollection, string)> ReadLibraryModels(CFStorage library)
+        private void ReadLibraryModels(CFStorage library)
         {
             BeginContext("Models");
 
-            var result = new Dictionary<string, (ParameterCollection, string)>();
             var models = library.GetStorage("Models");
             var recordCount = ReadHeader(models);
             using (var reader = models.GetStream("Data").GetBinaryReader())
@@ -533,9 +520,9 @@ namespace AltiumSharp
                     });
 
                     // TODO: parse STEP models
-                    if (!result.ContainsKey(modelName))
+                    if (!Data.Models.ContainsKey(modelName))
                     {
-                        result.Add(parameters["NAME"].AsString(), (parameters, stepModel));
+                        Data.Models.Add(parameters["NAME"].AsString(), (parameters, stepModel));
                     }
                     else
                     {
@@ -545,14 +532,11 @@ namespace AltiumSharp
             }
 
             EndContext();
-
-            return result;
         }
 
         /// <summary>
         /// Reads the library data from the current file which contains the PCB library
         /// header information parameters and also a list of the existing components.
-        /// footprints that exist.
         /// </summary>
         /// <param name="library"></param>
         private void ReadLibraryData(CFStorage library)
@@ -587,7 +571,7 @@ namespace AltiumSharp
                 {
                     ReadPascalShortString(header); // TODO: Unknown
                     ReadPascalShortString(header); // TODO: Unknown
-                    UniqueId = ReadPascalShortString(header);
+                    Data.UniqueId = ReadPascalShortString(header);
                 }
             }
         }
@@ -600,7 +584,7 @@ namespace AltiumSharp
             var library = Cf.GetStorage("Library");
             var recordCount = ReadHeader(library);
 
-            Models = ReadLibraryModels(library);
+            ReadLibraryModels(library);
             ReadLibraryData(library);
         }
     }

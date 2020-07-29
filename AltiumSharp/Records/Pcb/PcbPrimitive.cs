@@ -25,11 +25,11 @@ namespace AltiumSharp.Records
             (Name, SizeX, SizeY) = (name, sizeX, sizeY);
     }
 
-    public class PcbPrimitive : Primitive
+    public abstract class PcbPrimitive : Primitive
     {
         public virtual PcbPrimitiveDisplayInfo GetDisplayInfo() => new PcbPrimitiveDisplayInfo();
 
-        public PcbPrimitiveObjectId ObjectId { get; internal set; }
+        public abstract PcbPrimitiveObjectId ObjectId { get; }
 
         public Layer Layer { get; internal set; }
 
@@ -40,5 +40,16 @@ namespace AltiumSharp.Records
         public string UniqueId { get; internal set; }
 
         public override CoordRect CalculateBounds() => CoordRect.Empty;
+    }
+
+    public class PcbUnknown : PcbPrimitive
+    {
+        private PcbPrimitiveObjectId _objectId;
+        public override PcbPrimitiveObjectId ObjectId => _objectId;
+
+        public PcbUnknown(PcbPrimitiveObjectId objectId)
+        {
+            _objectId = objectId;
+        }
     }
 }
