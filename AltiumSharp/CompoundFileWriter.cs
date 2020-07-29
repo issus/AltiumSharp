@@ -38,7 +38,7 @@ namespace AltiumSharp
         /// Framework hook method to be implemented by derived classes in order to perform the actual
         /// writing of the file contents.
         /// </summary>
-        protected abstract void DoWrite();
+        protected abstract void DoWrite(string fileName);
 
         /// <summary>
         /// Writes the content of the compound file.
@@ -51,7 +51,7 @@ namespace AltiumSharp
 
             using (Cf = new CompoundFile())
             {
-                DoWrite();
+                DoWrite(fileName);
 
                 using (var stream = new FileStream(fileName, overwrite ? FileMode.Create : FileMode.CreateNew))
                 {

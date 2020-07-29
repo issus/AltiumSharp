@@ -441,7 +441,7 @@ namespace AltiumSharp
         {
             return ReadBlock(reader, recordSize =>
             {
-                CheckValue(nameof(recordSize), recordSize, 38, 42, 46);
+                CheckValue(nameof(recordSize), recordSize, 37, 41, 46);
                 var rectangle = new PcbRectangle();
                 rectangle.Layer = reader.ReadByte();
                 rectangle.Flags = reader.ReadUInt16();
@@ -453,7 +453,7 @@ namespace AltiumSharp
                 var corner2Y = reader.ReadInt32();
                 rectangle.Corner2 = new CoordPoint(corner2X, corner2Y);
                 rectangle.Rotation = reader.ReadDouble();
-                if (recordSize >= 42)
+                if (recordSize >= 41)
                 {
                     reader.ReadUInt32(); // TODO: Unknown
                 }

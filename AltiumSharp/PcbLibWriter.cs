@@ -19,8 +19,10 @@ namespace AltiumSharp
 
         }
 
-        protected override void DoWrite()
+        protected override void DoWrite(string fileName)
         {
+            Data.Header.Filename = fileName;
+
             WriteFileHeader();
             WriteSectionKeys();
             WriteLibrary();
@@ -105,12 +107,10 @@ namespace AltiumSharp
 
             footprintStorage.GetOrAddStream("Data").Write(writer =>
             {
-                Console.WriteLine(component.Name);
                 WriteStringBlock(writer, component.Name);
 
                 foreach (var primitive in primitives) 
                 {
-                    Console.WriteLine(primitive.ObjectId.ToString());
                     writer.Write((byte)primitive.ObjectId);
                     switch (primitive)
                     {
@@ -168,17 +168,18 @@ namespace AltiumSharp
             });
         }
 
-        private void WriteUniqueIdPrimitiveInformation(CFStorage componentStorage, PcbComponent component)
+        private static void WriteUniqueIdPrimitiveInformation(CFStorage componentStorage, PcbComponent component)
         {
             var uniqueIdPrimitiveInformation = componentStorage.GetOrAddStorage("UniqueIdPrimitiveInformation");
 
-            WriteHeader(uniqueIdPrimitiveInformation, component.Primitives.Count);
+            var primitives = component.Primitives.Where(p => !(p is PcbUnknown)).ToList();
+            WriteHeader(uniqueIdPrimitiveInformation, primitives.Count);
 
             uniqueIdPrimitiveInformation.GetOrAddStream("Data").Write(writer =>
             {
-                for (int i = 0; i < component.Primitives.Count; ++i)
+                for (int i = 0; i < primitives.Count; ++i)
                 {
-                    var primitive = component.Primitives[i];
+                    var primitive = primitives[i];
                     var parameters = new ParameterCollection
                     {
                         { "PRIMITIVEINDEX", i },
@@ -190,7 +191,7 @@ namespace AltiumSharp
             });
         }
 
-        private void WriteFootprintCommon(BinaryWriter writer, PcbPrimitive primitive, CoordPoint? location = null)
+        private static void WriteFootprintCommon(BinaryWriter writer, PcbPrimitive primitive, CoordPoint? location = null)
         {
             writer.Write(primitive.Layer.ToByte());
             writer.Write((ushort)primitive.Flags);

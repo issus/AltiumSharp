@@ -11,10 +11,10 @@ namespace AltiumSharp.Records
     public class PcbLibHeader
     {
         public string Filename { get; internal set; }
-        public string Kind { get; internal set; }
-        public double Version { get; internal set; }
-        public string Date { get; internal set; }
-        public string Time { get; internal set; }
+        public string Kind => "Protel_Advanced_PCB_Library";
+        public string Version { get; private set; }
+        public string Date { get; set; }
+        public string Time { get; set; }
         public int V9MasterStackStyle { get; internal set; }
         public string V9MasterStackId { get; internal set; }
         public string V9MasterStackName { get; internal set; }
@@ -185,13 +185,19 @@ namespace AltiumSharp.Records
         public string LifeCycleDefinitionGuid { get; internal set; }
         public string RevisionNamingSchemeGuid { get; internal set; }
 
+        public PcbLibHeader()
+        {
+            Version = "3.00";
+        }
+
         public void ImportFromParameters(ParameterCollection p)
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             Filename = p["FILENAME"].AsStringOrDefault();
-            Kind = p["KIND"].AsStringOrDefault();
-            Version = p["VERSION"].AsDoubleOrDefault();
+            var kind = p["KIND"].AsStringOrDefault();
+            if (kind != Kind) throw new ArgumentOutOfRangeException($"{nameof(p)}[\"KIND\"]");
+            Version = p["VERSION"].AsStringOrDefault();
             Date = p["DATE"].AsStringOrDefault();
             Time = p["TIME"].AsStringOrDefault();
             V9MasterStackStyle = p["V9_MASTERSTACK_STYLE"].AsIntOrDefault();
@@ -457,6 +463,14 @@ namespace AltiumSharp.Records
             FolderGuid = p["FOLDERGUID"].AsStringOrDefault();
             LifeCycleDefinitionGuid = p["LIFECYCLEDEFINITIONGUID"].AsStringOrDefault();
             RevisionNamingSchemeGuid = p["REVISIONNAMINGSCHEMEGUID"].AsStringOrDefault();
+
+            Console.WriteLine("-=-=-=-");
+            Console.WriteLine(p.Data);
+            Console.WriteLine();
+            Console.WriteLine(p.ToString());
+            Console.WriteLine("");
+            Console.WriteLine(ExportToParameters().ToString());
+            Console.WriteLine();
         }
 
         public void ExportToParameters(ParameterCollection p)
@@ -565,13 +579,13 @@ namespace AltiumSharp.Records
                 p.Add(string.Format(CultureInfo.InvariantCulture, "LAYERV7_{0}DIELMATERIAL", i), LayerV7[i].DielMaterial);
                 p.Add(string.Format(CultureInfo.InvariantCulture, "LAYERV7_{0}LAYERID", i), LayerV7[i].LayerId);
             }
-            p.Add("SNAPGRIDSIZE", SnapGridSize);
-            p.Add("SNAPGRIDSIZEX", SnapGridSizeX);
-            p.Add("SNAPGRIDSIZEY", SnapGridSizeY);
+            p.Add("SNAPGRIDSIZE", (double)SnapGridSize.ToInt32());
+            p.Add("SNAPGRIDSIZEX", (double)SnapGridSizeX.ToInt32());
+            p.Add("SNAPGRIDSIZEY", (double)SnapGridSizeY.ToInt32());
             {
                 var (n, f) = Utils.CoordToDxpFrac(ElectricalGridRange);
-                if (n != 0 || f != 0) p.Add("ELECTRICALGRIDRANGE", n);
-                if (f != 0) p.Add("ELECTRICALGRIDRANGE" + "_FRAC", f);
+                p.Add("ELECTRICALGRIDRANGE", n);
+                p.Add("ELECTRICALGRIDRANGE_FRAC", f);
             }
             p.Add("ELECTRICALGRIDENABLED", ElectricalGridEnabled);
             p.Add("DOTGRID", DotGrid);
