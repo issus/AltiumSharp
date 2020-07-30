@@ -39,6 +39,8 @@ namespace AltiumSharp.Records
         public bool ShowBottomDielectric { get; internal set; }
         public List<(string Name, int Prev, int Next, bool MechEnabled, Coord CopThick, int DielType, double DielConst, Coord DielHeight, string DielMaterial)> Layer { get; internal set; }
         public List<(string Name, int Prev, int Next, bool MechEnabled, Coord CopThick, int DielType, double DielConst, Coord DielHeight, string DielMaterial, int LayerId)> LayerV7 { get; internal set; }
+        public Coord BigVisibleGridSize { get; internal set; }
+        public Coord VisibleGridSize { get; internal set; }
         public Coord SnapGridSize { get; internal set; }
         public Coord SnapGridSizeX { get; internal set; }
         public Coord SnapGridSizeY { get; internal set; }
@@ -148,19 +150,16 @@ namespace AltiumSharp.Records
         public double VisibleGridMultFactor { get; internal set; }
         public double BigVisibleGridMultFactor { get; internal set; }
         public string Current2D3DViewState { get; internal set; }
-        public int VpLx { get; internal set; }
-        public int VpHx { get; internal set; }
-        public int VpLy { get; internal set; }
-        public int VpHy { get; internal set; }
+        public CoordRect ViewPort { get; set; }
         public string Property2DConfigType { get; internal set; }
         public string Property2DConfiguration { get; internal set; }
         public string Property2DConfigFullFilename { get; internal set; }
         public string Property3DConfigType { get; internal set; }
         public string Property3DConfiguration { get; internal set; }
         public string Property3DConfigFullFilename { get; internal set; }
-        public CoordPoint LookAt { get; internal set; }
-        public double LookAtZ { get; internal set; }
-        public CoordPoint EyeRotation { get; internal set; }
+        public CoordPoint3D LookAt { get; internal set; }
+        public double EyeRotationX { get; internal set; }
+        public double EyeRotationY { get; internal set; }
         public double EyeRotationZ { get; internal set; }
         public double ZoomMult { get; internal set; }
         public CoordPoint ViewSize { get; internal set; }
@@ -299,6 +298,8 @@ namespace AltiumSharp.Records
                     p[string.Format(CultureInfo.InvariantCulture, "LAYERV7_{0}DIELMATERIAL", i)].AsStringOrDefault(),
                     p[string.Format(CultureInfo.InvariantCulture, "LAYERV7_{0}LAYERID", i)].AsIntOrDefault()))
                 .ToList();
+            BigVisibleGridSize = Coord.FromInt32((int)p["BIGVISIBLEGRIDSIZE"].AsDoubleOrDefault());
+            VisibleGridSize = Coord.FromInt32((int)p["VISIBLEGRIDSIZE"].AsDoubleOrDefault());
             SnapGridSize = (int)p["SNAPGRIDSIZE"].AsDoubleOrDefault();
             SnapGridSizeX = (int)p["SNAPGRIDSIZEX"].AsDoubleOrDefault();
             SnapGridSizeY = (int)p["SNAPGRIDSIZEY"].AsDoubleOrDefault();
@@ -421,29 +422,29 @@ namespace AltiumSharp.Records
             VisibleGridMultFactor = p["VISIBLEGRIDMULTFACTOR"].AsDoubleOrDefault();
             BigVisibleGridMultFactor = p["BIGVISIBLEGRIDMULTFACTOR"].AsDoubleOrDefault();
             Current2D3DViewState = p["CURRENT2D3DVIEWSTATE"].AsStringOrDefault();
-            VpLx = p["VP.LX"].AsIntOrDefault();
-            VpHx = p["VP.HX"].AsIntOrDefault();
-            VpLy = p["VP.LY"].AsIntOrDefault();
-            VpHy = p["VP.HY"].AsIntOrDefault();
+            ViewPort = new CoordRect(
+                Coord.FromInt32(p["VP.LX"].AsIntOrDefault()),
+                Coord.FromInt32(p["VP.HX"].AsIntOrDefault() - p["VP.LX"].AsIntOrDefault()),
+                Coord.FromInt32(p["VP.LY"].AsIntOrDefault()),
+                Coord.FromInt32(p["VP.HY"].AsIntOrDefault() - p["VP.LY"].AsIntOrDefault()));
             Property2DConfigType = p["2DCONFIGTYPE"].AsStringOrDefault();
             Property2DConfiguration = p["2DCONFIGURATION"].AsStringOrDefault();
             Property2DConfigFullFilename = p["2DCONFIGFULLFILENAME"].AsStringOrDefault();
             Property3DConfigType = p["3DCONFIGTYPE"].AsStringOrDefault();
             Property3DConfiguration = p["3DCONFIGURATION"].AsStringOrDefault();
             Property3DConfigFullFilename = p["3DCONFIGFULLFILENAME"].AsStringOrDefault();
-            LookAt = new CoordPoint(
-                Utils.DxpFracToCoord(p["LOOKAT.X"].AsIntOrDefault(), p["LOOKAT.X_FRAC"].AsIntOrDefault()),
-                Utils.DxpFracToCoord(p["LOOKAT.Y"].AsIntOrDefault(), p["LOOKAT.Y_FRAC"].AsIntOrDefault()));
-            LookAtZ = p["LOOKAT.Z"].AsDoubleOrDefault();
-            EyeRotation = new CoordPoint(
-                Utils.DxpFracToCoord(p["EYEROTATION.X"].AsIntOrDefault(), p["EYEROTATION.X_FRAC"].AsIntOrDefault()),
-                Utils.DxpFracToCoord(p["EYEROTATION.Y"].AsIntOrDefault(), p["EYEROTATION.Y_FRAC"].AsIntOrDefault()));
+            LookAt = new CoordPoint3D(
+                Coord.FromInt32((int)p["LOOKAT.X"].AsDoubleOrDefault()),
+                Coord.FromInt32((int)p["LOOKAT.Y"].AsDoubleOrDefault()),
+                Coord.FromInt32((int)p["LOOKAT.Z"].AsDoubleOrDefault()));
+            EyeRotationX = p["EYEROTATION.X"].AsDoubleOrDefault();
+            EyeRotationY = p["EYEROTATION.Y"].AsDoubleOrDefault();
             EyeRotationZ = p["EYEROTATION.Z"].AsDoubleOrDefault();
             ZoomMult = p["ZOOMMULT"].AsDoubleOrDefault();
             ViewSize = new CoordPoint(
-                Utils.DxpFracToCoord(p["VIEWSIZE.X"].AsIntOrDefault(), p["VIEWSIZE.X_FRAC"].AsIntOrDefault()),
-                Utils.DxpFracToCoord(p["VIEWSIZE.Y"].AsIntOrDefault(), p["VIEWSIZE.Y_FRAC"].AsIntOrDefault()));
-            EgRange = Utils.DxpFracToCoord(p["EGRANGE"].AsIntOrDefault(), p["EGRANGE_FRAC"].AsIntOrDefault());
+                Coord.FromInt32((int)p["VIEWSIZE.X"].AsDoubleOrDefault()),
+                Coord.FromInt32((int)p["VIEWSIZE.Y"].AsDoubleOrDefault()));
+            EgRange = p["EGRANGE"].AsCoord();
             EgMult = p["EGMULT"].AsDoubleOrDefault();
             EgEnabled = p["EGENABLED"].AsBool();
             EgSnapToBoardOutline = p["EGSNAPTOBOARDOUTLINE"].AsBool();
@@ -473,6 +474,18 @@ namespace AltiumSharp.Records
             Console.WriteLine();
         }
 
+        private void AddParamRecord(ParameterCollection p)
+        {
+            if (p.Contains("RECORD"))
+            {
+                p.AddKey("RECORD", true);
+            }
+            else
+            {
+                p.Add("RECORD", "Board");
+            }
+        }
+
         public void ExportToParameters(ParameterCollection p)
         {
             if (p == null) throw new ArgumentNullException(nameof(p));
@@ -482,7 +495,7 @@ namespace AltiumSharp.Records
             p.Add("VERSION", Version);
             p.Add("DATE", Date);
             p.Add("TIME", Time);
-            p.Add("V9_MASTERSTACK_STYLE", V9MasterStackStyle);
+            p.Add("V9_MASTERSTACK_STYLE", V9MasterStackStyle, false);
             p.Add("V9_MASTERSTACK_ID", V9MasterStackId);
             p.Add("V9_MASTERSTACK_NAME", V9MasterStackName);
             p.Add("V9_MASTERSTACK_SHOWTOPDIELECTRIC", V9MasterStackShowTopDielectric);
@@ -556,15 +569,16 @@ namespace AltiumSharp.Records
             p.Add("SHOWBOTTOMDIELECTRIC", ShowBottomDielectric);
             for (var i = 0; i < Layer.Count; i++)
             {
-                p.Add(string.Format(CultureInfo.InvariantCulture, "LAYER{0}NAME", i), Layer[i].Name);
-                p.Add(string.Format(CultureInfo.InvariantCulture, "LAYER{0}PREV", i), Layer[i].Prev);
-                p.Add(string.Format(CultureInfo.InvariantCulture, "LAYER{0}NEXT", i), Layer[i].Next);
-                p.Add(string.Format(CultureInfo.InvariantCulture, "LAYER{0}MECHENABLED", i), Layer[i].MechEnabled);
-                p.Add(string.Format(CultureInfo.InvariantCulture, "LAYER{0}COPTHICK", i), Layer[i].CopThick);
-                p.Add(string.Format(CultureInfo.InvariantCulture, "LAYER{0}DIELTYPE", i), Layer[i].DielType);
-                p.Add(string.Format(CultureInfo.InvariantCulture, "LAYER{0}DIELCONST", i), Layer[i].DielConst);
-                p.Add(string.Format(CultureInfo.InvariantCulture, "LAYER{0}DIELHEIGHT", i), Layer[i].DielHeight);
-                p.Add(string.Format(CultureInfo.InvariantCulture, "LAYER{0}DIELMATERIAL", i), Layer[i].DielMaterial);
+                if (i > 0 && i % 5 == 0) AddParamRecord(p);
+                p.Add($"LAYER{i + 1}NAME", Layer[i].Name);
+                p.Add($"LAYER{i + 1}PREV", Layer[i].Prev);
+                p.Add($"LAYER{i + 1}NEXT", Layer[i].Next);
+                p.Add($"LAYER{i + 1}MECHENABLED", Layer[i].MechEnabled);
+                p.Add($"LAYER{i + 1}COPTHICK", Layer[i].CopThick);
+                p.Add($"LAYER{i + 1}DIELTYPE", Layer[i].DielType);
+                p.Add($"LAYER{i + 1}DIELCONST", Layer[i].DielConst);
+                p.Add($"LAYER{i + 1}DIELHEIGHT", Layer[i].DielHeight);
+                p.Add($"LAYER{i + 1}DIELMATERIAL", Layer[i].DielMaterial);
             }
             for (var i = 0; i < LayerV7.Count; i++)
             {
@@ -579,6 +593,10 @@ namespace AltiumSharp.Records
                 p.Add(string.Format(CultureInfo.InvariantCulture, "LAYERV7_{0}DIELMATERIAL", i), LayerV7[i].DielMaterial);
                 p.Add(string.Format(CultureInfo.InvariantCulture, "LAYERV7_{0}LAYERID", i), LayerV7[i].LayerId);
             }
+
+            AddParamRecord(p);
+            p.Add("BIGVISIBLEGRIDSIZE", (double)BigVisibleGridSize.ToInt32());
+            p.Add("VISIBLEGRIDSIZE", (double)VisibleGridSize.ToInt32());
             p.Add("SNAPGRIDSIZE", (double)SnapGridSize.ToInt32());
             p.Add("SNAPGRIDSIZEX", (double)SnapGridSizeX.ToInt32());
             p.Add("SNAPGRIDSIZEY", (double)SnapGridSizeY.ToInt32());
@@ -596,18 +614,18 @@ namespace AltiumSharp.Records
             p.Add("LAYERSETSCOUNT", Layersets.Count);
             for (var i = 0; i < Layersets.Count; i++)
             {
-                p.Add(string.Format(CultureInfo.InvariantCulture, "LAYERSET{0}NAME", i), Layersets[i].Name);
-                p.Add(string.Format(CultureInfo.InvariantCulture, "LAYERSET{0}LAYERS", i), Layersets[i].Layers);
-                p.Add(string.Format(CultureInfo.InvariantCulture, "LAYERSET{0}ACTIVELAYER.7", i), Layersets[i].ActiveLayer);
-                p.Add(string.Format(CultureInfo.InvariantCulture, "LAYERSET{0}ISCURRENT", i), Layersets[i].IsCurrent);
-                p.Add(string.Format(CultureInfo.InvariantCulture, "LAYERSET{0}ISLOCKED", i), Layersets[i].IsLocked);
-                p.Add(string.Format(CultureInfo.InvariantCulture, "LAYERSET{0}FLIPBOARD", i), Layersets[i].FlipBoard);
+                p.Add($"LAYERSET{i + 1}NAME", Layersets[i].Name);
+                p.Add($"LAYERSET{i + 1}LAYERS", Layersets[i].Layers);
+                p.Add($"LAYERSET{i + 1}ACTIVELAYER.7", Layersets[i].ActiveLayer);
+                p.Add($"LAYERSET{i + 1}ISCURRENT", Layersets[i].IsCurrent);
+                p.Add($"LAYERSET{i + 1}ISLOCKED", Layersets[i].IsLocked);
+                p.Add($"LAYERSET{i + 1}FLIPBOARD", Layersets[i].FlipBoard);
             }
             p.Add("CFG2D.PRIMDRAWMODE", Cfg2DPrimDrawMode);
             p.Add("CFG2D.LAYEROPACITY.TOPLAYER", Cfg2DLayerOpacityTopLayer);
             for (var i = 0; i < Cfg2DLayerOpacityMidLayer.Count; i++)
             {
-                p.Add(string.Format(CultureInfo.InvariantCulture, "CFG2D.LAYEROPACITY.MIDLAYER{0}", i), Cfg2DLayerOpacityMidLayer[i]);
+                p.Add($"CFG2D.LAYEROPACITY.MIDLAYER{i + 1}", Cfg2DLayerOpacityMidLayer[i]);
             }
             p.Add("CFG2D.LAYEROPACITY.BOTTOMOVERLAY", Cfg2DLayerOpacityBottomOverLay);
             p.Add("CFG2D.LAYEROPACITY.TOPPASTE", Cfg2DLayerOpacityTopPaste);
@@ -703,55 +721,41 @@ namespace AltiumSharp.Records
             p.Add("BOARDINSIGHTVIEWCONFIGURATIONNAME", BoardInsightViewConfigurationName);
             p.Add("VISIBLEGRIDMULTFACTOR", VisibleGridMultFactor);
             p.Add("BIGVISIBLEGRIDMULTFACTOR", BigVisibleGridMultFactor);
+
+            AddParamRecord(p);
             p.Add("CURRENT2D3DVIEWSTATE", Current2D3DViewState);
-            p.Add("VP.LX", VpLx);
-            p.Add("VP.HX", VpHx);
-            p.Add("VP.LY", VpLy);
-            p.Add("VP.HY", VpHy);
+
+            AddParamRecord(p);
+            p.Add("VP.LX", ViewPort.Location1.X.ToInt32());
+            p.Add("VP.HX", ViewPort.Location2.X.ToInt32());
+            p.Add("VP.LY", ViewPort.Location1.Y.ToInt32());
+            p.Add("VP.HY", ViewPort.Location2.Y.ToInt32());
+
+            AddParamRecord(p);
             p.Add("2DCONFIGTYPE", Property2DConfigType);
             p.Add("2DCONFIGURATION", Property2DConfiguration);
+            
+            AddParamRecord(p);
             p.Add("2DCONFIGFULLFILENAME", Property2DConfigFullFilename);
+
+            AddParamRecord(p);
             p.Add("3DCONFIGTYPE", Property3DConfigType);
             p.Add("3DCONFIGURATION", Property3DConfiguration);
+
+            AddParamRecord(p);
             p.Add("3DCONFIGFULLFILENAME", Property3DConfigFullFilename);
-            {
-                var (n, f) = Utils.CoordToDxpFrac(LookAt.X);
-                if (n != 0 || f != 0) p.Add("LOOKAT.X", n);
-                if (f != 0) p.Add("LOOKAT.X" + "_FRAC", f);
-            }
-            {
-                var (n, f) = Utils.CoordToDxpFrac(LookAt.Y);
-                if (n != 0 || f != 0) p.Add("LOOKAT.Y", n);
-                if (f != 0) p.Add("LOOKAT.Y" + "_FRAC", f);
-            }
-            p.Add("LOOKAT.Z", LookAtZ);
-            {
-                var (n, f) = Utils.CoordToDxpFrac(EyeRotation.X);
-                if (n != 0 || f != 0) p.Add("EYEROTATION.X", n);
-                if (f != 0) p.Add("EYEROTATION.X" + "_FRAC", f);
-            }
-            {
-                var (n, f) = Utils.CoordToDxpFrac(EyeRotation.Y);
-                if (n != 0 || f != 0) p.Add("EYEROTATION.Y", n);
-                if (f != 0) p.Add("EYEROTATION.Y" + "_FRAC", f);
-            }
+
+            AddParamRecord(p);
+            p.Add("LOOKAT.X", (double)LookAt.X.ToInt32());
+            p.Add("LOOKAT.Y", (double)LookAt.Y.ToInt32());
+            p.Add("LOOKAT.Z", (double)LookAt.Z.ToInt32());
+            p.Add("EYEROTATION.X", EyeRotationX);
+            p.Add("EYEROTATION.Y", EyeRotationY);
             p.Add("EYEROTATION.Z", EyeRotationZ);
             p.Add("ZOOMMULT", ZoomMult);
-            {
-                var (n, f) = Utils.CoordToDxpFrac(ViewSize.X);
-                if (n != 0 || f != 0) p.Add("VIEWSIZE.X", n);
-                if (f != 0) p.Add("VIEWSIZE.X" + "_FRAC", f);
-            }
-            {
-                var (n, f) = Utils.CoordToDxpFrac(ViewSize.Y);
-                if (n != 0 || f != 0) p.Add("VIEWSIZE.Y", n);
-                if (f != 0) p.Add("VIEWSIZE.Y" + "_FRAC", f);
-            }
-            {
-                var (n, f) = Utils.CoordToDxpFrac(EgRange);
-                if (n != 0 || f != 0) p.Add("EGRANGE", n);
-                if (f != 0) p.Add("EGRANGE" + "_FRAC", f);
-            }
+            p.Add("VIEWSIZE.X", (double)ViewSize.X.ToInt32());
+            p.Add("VIEWSIZE.Y", (double)ViewSize.Y.ToInt32());
+            p.Add("EGRANGE", EgRange);
             p.Add("EGMULT", EgMult);
             p.Add("EGENABLED", EgEnabled);
             p.Add("EGSNAPTOBOARDOUTLINE", EgSnapToBoardOutline);
@@ -767,8 +771,8 @@ namespace AltiumSharp.Records
             p.Add("FAROBJECTSET", FarObjectSet);
             {
                 var (n, f) = Utils.CoordToDxpFrac(NearDistance);
-                if (n != 0 || f != 0) p.Add("NEARDISTANCE", n);
-                if (f != 0) p.Add("NEARDISTANCE" + "_FRAC", f);
+                p.Add("NEARDISTANCE", n);
+                p.Add("NEARDISTANCE_FRAC", f);
             }
             p.Add("BOARDVERSION", BoardVersion);
             p.Add("VAULTGUID", VaultGuid);
