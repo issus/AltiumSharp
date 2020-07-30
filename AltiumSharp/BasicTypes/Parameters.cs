@@ -310,29 +310,33 @@ namespace AltiumSharp.BasicTypes
             foreach (var (i, entryKeyValue) in entries)
             {
                 var key = (entryKeyValue.Length > 1) ? entryKeyValue[0] : "";
-                var value = entryKeyValue.Last();
+                var value = entryKeyValue.Last().TrimEnd('\r', '\n');
                 if (ignored.Contains(key))
                 {
                     continue;
                 }
-                else if (key.StartsWith(Parameter.Utf8Prefix, StringComparison.InvariantCultureIgnoreCase))
+                
+                if (key.StartsWith(Parameter.Utf8Prefix, StringComparison.InvariantCultureIgnoreCase))
                 {
                     key = key.Substring(Parameter.Utf8Prefix.Length);
                     value = Encoding.UTF8.GetString(Utils.Win1252Encoding.GetBytes(value));
                     ignored.Add(key); // ignore non-UTF8 key so this doesn't get overwritten
-                    AddData(key, value);
                 }
                 else if (key.ToUpperInvariant() == "RECORD")
                 {
                     if (string.IsNullOrEmpty(_record))
                     {
                         _record = value;
-                        AddData(key, value);
                     }
                     else if (value != _record)
                     {
                         throw new Exception();
                     }
+                }
+
+                if (Contains(key))
+                {
+                    AddKey(key, true);
                 }
                 else
                 {
@@ -358,57 +362,58 @@ namespace AltiumSharp.BasicTypes
         private IEnumerable<Parameter> GetParametersWithValues() =>
             _keys.Where(k => _parameters.ContainsKey(k)).Select(k => _parameters[k]);
 
+        private string InternalToString(Func<Parameter, string> parameterSerializer)
+        {
+            var separator = EntrySeparator.ToString(CultureInfo.InvariantCulture);
+            var sb = new StringBuilder();
+            foreach (var p in GetParametersWithValues())
+            {
+                if (p.Name.ToUpperInvariant() == "RECORD" && sb.Length > 0)
+                {
+                    sb.Append('\r');
+                }
+                sb.Append(separator);
+                sb.Append(parameterSerializer(p));
+            }
+            return sb.ToString();
+        }
+
         /// <summary>
         /// Generates a string version of the data contained in this <see cref="ParameterCollection"/>.
         /// </summary>
         /// <returns>String representaton of the current parameters.</returns>
-        public override string ToString()
-        {
-            return EntrySeparator + string.Join(EntrySeparator.ToString(CultureInfo.InvariantCulture),
-                GetParametersWithValues().Select(p => p.ToString()));
-        }
+        public override string ToString() => InternalToString(p => p.ToString());
 
         /// <summary>
         /// Generates a string version that doesn't include special UTF8 versions of the values
         /// of the data contained in this <see cref="ParameterCollection"/>.
         /// </summary>
         /// <returns>String representaton of the current parameters.</returns>
-        public string ToUnicodeString()
-        {
-            return EntrySeparator + string.Join(EntrySeparator.ToString(CultureInfo.InvariantCulture),
-                GetParametersWithValues().Select(p => p.ToUnicodeString()));
-        }
+        public string ToUnicodeString() => InternalToString(p => p.ToUnicodeString());
 
         /// <summary>
         /// Internal method used for adding a new (key, data) pair.
         /// </summary>
         /// <param name="key">Key of the value to be added.</param>
         /// <param name="data">String representation of the value to be added.</param>
-        private void AddData(string key, string data)
+        private void AddData(string key, string data, bool forceAddKey = false)
         {
             var parameterValue = new Parameter(key, data, Level);
             
             key = key?.ToUpperInvariant();
-            if (_parameters.ContainsKey(key))
-            {
-                _parameters[key] = parameterValue;
-            }
-            else
-            {
-                _parameters.Add(key, parameterValue);
-                _keys.Add(key);
-            }
+            AddKey(key, forceAddKey);
+            _parameters[key] = parameterValue;
         }
 
         /// <summary>
-        /// Internal method used for adding a new key as placeholder without any value,
-        /// but only if the key doesn't already exist.
+        /// Method used for adding a new key as placeholder without any value.
         /// </summary>
         /// <param name="key">Key to be added.</param>
-        private void AddKey(string key)
+        /// <param name="forceAddKey">If true the key is added even if it already exists.</param>
+        public void AddKey(string key, bool forceAddKey = false)
         {
             key = key?.ToUpperInvariant();
-            if (!_parameters.ContainsKey(key))
+            if (forceAddKey || !_parameters.ContainsKey(key))
             { 
                 _keys.Add(key);
             }
@@ -522,17 +527,13 @@ namespace AltiumSharp.BasicTypes
         public string GetKey(int index) => _keys[index];
 
         /// <summary>
-        /// Moves a key to the end of the list of keys,
-        /// when <paramref name="updateExisting"/> is true if the key already exists,
+        /// Moves a key to the end of the list of keys, if the key already exists
         /// then it is moved to the end of the list of keys, allowing to reposition
         /// parameters.
         /// </summary>
-        public void MoveKey(string key, bool updateExisting = true)
+        public void MoveKey(string key)
         {
-            if (updateExisting)
-            {
-                _keys.RemoveAll(k => key?.ToUpperInvariant() == k);
-            }
+            _keys.RemoveAll(k => key?.ToUpperInvariant() == k);
             _keys.Add(key?.ToUpperInvariant());
         }
 
@@ -551,7 +552,7 @@ namespace AltiumSharp.BasicTypes
             for (int i = startIndex; i < KeyCount; ++i)
             {
                 var key = _keys[i];
-                MoveKey(key, false);
+                AddKey(key, true);
                 if (updateExisting) _keys[i] = null; // tag for removal
 
                 if (key == _bookmark) break;
