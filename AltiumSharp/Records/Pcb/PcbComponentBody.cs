@@ -4,9 +4,9 @@ using AltiumSharp.BasicTypes;
 
 namespace AltiumSharp.Records
 {
-    public class PcbRegion : PcbPrimitive
+    public class PcbComponentBody : PcbPrimitive
     {
-        public override PcbPrimitiveObjectId ObjectId => PcbPrimitiveObjectId.Region;
+        public override PcbPrimitiveObjectId ObjectId => PcbPrimitiveObjectId.ComponentBody;
         public ParameterCollection Parameters { get; internal set; }
         public List<CoordPoint> Outline { get; } = new List<CoordPoint>();
 

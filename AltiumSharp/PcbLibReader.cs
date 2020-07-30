@@ -123,8 +123,11 @@ namespace AltiumSharp
                             element = ReadFootprintRegion(reader);
                             break;
 
-                        case PcbPrimitiveObjectId.Via:
                         case PcbPrimitiveObjectId.ComponentBody:
+                            element = ReadFootprintComponentBody(reader);
+                            break;
+
+                        case PcbPrimitiveObjectId.Via:
                         default:
                             // otherwise we attempt to skip the actual primitive data but still
                             // create a basic instance with just the raw data for debugging
@@ -465,17 +468,18 @@ namespace AltiumSharp
             });
         }
 
-        private PcbRegion ReadFootprintRegion(BinaryReader reader)
+        private ParameterCollection ReadFootprintCommonParametersAndOutline(BinaryReader reader, PcbPrimitive primitive,
+            List<CoordPoint> outline)
         {
-            return ReadBlock(reader, recordSize =>
+            ParameterCollection parameters = null;
+            ReadBlock(reader, recordSize =>
             {
-                var region = new PcbRegion();
-                region.Layer = reader.ReadByte();
-                region.Flags = reader.ReadUInt16();
+                primitive.Layer = reader.ReadByte();
+                primitive.Flags = reader.ReadUInt16();
                 Assert10FFbytes(reader);
                 reader.ReadUInt32(); // TODO: Unknown
                 reader.ReadByte(); // TODO: Unknown
-                region.Attributes = ReadBlock(reader, size => ReadParameters(reader, size));
+                parameters = ReadBlock(reader, size => ReadParameters(reader, size));
                 var outlineSize = reader.ReadUInt32();
                 for (int i = 0; i < outlineSize; ++i)
                 {
@@ -484,10 +488,26 @@ namespace AltiumSharp
                     // the extra precision is not needed
                     Coord x = (int)reader.ReadDouble();
                     Coord y = (int)reader.ReadDouble();
-                    region.Outline.Add(new CoordPoint(x, y));
+                    outline.Add(new CoordPoint(x, y));
                 }
-                return region;
             });
+            return parameters;
+        }
+
+        private PcbRegion ReadFootprintRegion(BinaryReader reader)
+        {
+            var region = new PcbRegion();
+            var parameters = ReadFootprintCommonParametersAndOutline(reader, region, region.Outline);
+            region.Parameters = parameters;
+            return region;
+        }
+
+        private PcbComponentBody ReadFootprintComponentBody(BinaryReader reader)
+        {
+            var body = new PcbComponentBody();
+            var parameters = ReadFootprintCommonParametersAndOutline(reader, body, body.Outline);
+            body.Parameters = parameters;
+            return body;
         }
 
         /// <summary>

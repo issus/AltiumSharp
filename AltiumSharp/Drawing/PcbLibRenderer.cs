@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using AltiumSharp.BasicTypes;
 using AltiumSharp.Records;
@@ -59,6 +60,10 @@ namespace AltiumSharp.Drawing
 
                     case PcbRegion region:
                         RenderRegionPrimitive(graphics, region);
+                        break;
+
+                    case PcbComponentBody body:
+                        RenderComponentBodyPrimitive(graphics, body);
                         break;
                 }
                 graphics.EndContainer(graphicsContainer);
@@ -243,6 +248,18 @@ namespace AltiumSharp.Drawing
             g.ResetTransform();
         }
 
+        private void RenderFillPrimitive(Graphics g, PcbFill fill)
+        {
+            var brushColor = LayerMetadata.GetColor(fill.Layer);
+            using (var brush = new SolidBrush(brushColor))
+            {
+                var worldRect = new CoordRect(fill.Corner1, fill.Corner2);
+                var worldPoints = worldRect.RotatedPoints(worldRect.Center, fill.Rotation);
+                var screenPoints = worldPoints.Select(cp => ScreenFromWorld(cp)).ToArray();
+                g.FillPolygon(brush, screenPoints);
+            }
+        }
+
         private void RenderRegionPrimitive(Graphics g, PcbRegion region)
         {
             var brushColor = LayerMetadata.GetColor(region.Layer);
@@ -253,15 +270,15 @@ namespace AltiumSharp.Drawing
             }
         }
 
-        private void RenderFillPrimitive(Graphics g, PcbFill fill)
+        private void RenderComponentBodyPrimitive(Graphics g, PcbComponentBody body)
         {
-            var brushColor = LayerMetadata.GetColor(fill.Layer);
-            using (var brush = new SolidBrush(brushColor))
+            var brushColor = LayerMetadata.GetColor(body.Layer);
+            using (var brush = new HatchBrush(HatchStyle.ForwardDiagonal, brushColor, Color.Transparent))
+            using (var pen = CreatePen(brushColor, 0))
             {
-                var worldRect = new CoordRect(fill.Corner1, fill.Corner2);
-                var worldPoints = worldRect.RotatedPoints(worldRect.Center, fill.Rotation);
-                var screenPoints = worldPoints.Select(cp => ScreenFromWorld(cp)).ToArray();
-                g.FillPolygon(brush, screenPoints);
+                var outline = body.Outline.Select(coordxy => ScreenFromWorld(coordxy)).ToArray();
+                g.FillPolygon(brush, outline);
+                g.DrawPolygon(pen, outline);
             }
         }
     }

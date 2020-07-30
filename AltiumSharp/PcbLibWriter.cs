@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -137,8 +138,11 @@ namespace AltiumSharp
                             WriteFootprintRegion(writer, region);
                             break;
 
+                        case PcbComponentBody body:
+                            WriteFootprintComponentBody(writer, body);
+                            break;
+
                         //case PcbPrimitiveObjectId.Via:
-                        //case PcbPrimitiveObjectId.ComponentBody:
                         default:
                             // otherwise we attempt to skip the actual primitive data but still
                             // create a basic instance with just the raw data for debugging
@@ -385,16 +389,17 @@ namespace AltiumSharp
             });
         }
 
-        private void WriteFootprintRegion(BinaryWriter writer, PcbRegion region)
+        private void WriteFootprintCommonParametersAndOutline(BinaryWriter writer, PcbPrimitive primitive,
+            ParameterCollection parameters, IList<CoordPoint> outline)
         {
             WriteBlock(writer, w =>
             {
-                WriteFootprintCommon(w, region);
+                WriteFootprintCommon(w, primitive);
                 w.Write(0); // TODO: Unknown
                 w.Write((byte)0); // TODO: Unknown
-                WriteBlock(w, wb => WriteParameters(wb, region.Attributes));
-                w.Write(region.Outline.Count);
-                foreach (var coord in region.Outline)
+                WriteBlock(w, wb => WriteParameters(wb, parameters));
+                w.Write(outline.Count);
+                foreach (var coord in outline)
                 {
                     // oddly enough polygonal features are stored using double precision
                     // but still employ the same units as standard Coords, which means
@@ -403,6 +408,16 @@ namespace AltiumSharp
                     w.Write((double)coord.Y.ToInt32());
                 }
             });
+        }
+
+        private void WriteFootprintRegion(BinaryWriter writer, PcbRegion region)
+        {
+            WriteFootprintCommonParametersAndOutline(writer, region, region.Parameters, region.Outline);
+        }
+
+        private void WriteFootprintComponentBody(BinaryWriter writer, PcbComponentBody body)
+        {
+            WriteFootprintCommonParametersAndOutline(writer, body, body.Parameters, body.Outline);
         }
 
         /// <summary>
