@@ -369,7 +369,7 @@ namespace AltiumSharp
         /// </param>
         internal static void WriteWideStrings(CFStorage storage, PcbComponent component)
         {
-            var data = component.Primitives.OfType<PcbString>().Select(s => s.Text).ToList();
+            var data = component.Primitives.OfType<PcbText>().Select(s => s.Text).ToList();
             storage.GetOrAddStream("WideStrings").Write(writer =>
             {
                 var parameters = new ParameterCollection();

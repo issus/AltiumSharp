@@ -125,16 +125,16 @@ namespace AltiumSharp
                             WriteFootprintTrack(writer, track);
                             break;
 
-                        case PcbString text:
-                            WriteFootprintString(writer, text);
+                        case PcbText text:
+                            WriteFootprintText(writer, text);
                             break;
 
-                        case PcbRectangle rectangle:
-                            WriteFootprintRectangle(writer, rectangle);
+                        case PcbFill fill:
+                            WriteFootprintFill(writer, fill);
                             break;
 
-                        case PcbPolygon polygon:
-                            WriteFootprintPolygon(writer, polygon);
+                        case PcbRegion region:
+                            WriteFootprintRegion(writer, region);
                             break;
 
                         //case PcbPrimitiveObjectId.Via:
@@ -269,25 +269,25 @@ namespace AltiumSharp
             {
                 WriteBlock(writer, w =>
                 {
-                // 29 items
-                foreach (var padSize in pad.SizeMiddleLayers) w.Write(padSize.X.ToInt32());
+                    // 29 items
+                    foreach (var padSize in pad.SizeMiddleLayers) w.Write(padSize.X.ToInt32());
                     foreach (var padSize in pad.SizeMiddleLayers) w.Write(padSize.Y.ToInt32());
                     foreach (var padShape in pad.ShapeMiddleLayers) w.Write((byte)padShape);
 
                     w.Write((byte)0); // TODO: Unknown
-                w.Write((byte)pad.HoleShape);
+                    w.Write((byte)pad.HoleShape);
                     w.Write(pad.HoleSlotLength);
                     w.Write((double)pad.HoleRotation);
 
-                // 32 items
-                foreach (var offset in pad.OffsetsFromHoleCenter) w.Write(offset.X.ToInt32());
+                    // 32 items
+                    foreach (var offset in pad.OffsetsFromHoleCenter) w.Write(offset.X.ToInt32());
                     foreach (var offset in pad.OffsetsFromHoleCenter) w.Write(offset.Y.ToInt32());
 
                     w.Write((byte)0); // TODO: Unknown
-                w.Write(Enumerable.Repeat((byte)0, 32).ToArray()); // TODO: Unknown
+                    w.Write(Enumerable.Repeat((byte)0, 32).ToArray()); // TODO: Unknown
 
-                // 32 items
-                foreach (var crp in pad.CornerRadiusPercentage) w.Write((byte)crp);
+                    // 32 items
+                    foreach (var crp in pad.CornerRadiusPercentage) w.Write((byte)crp);
                 });
             }
             else
@@ -321,26 +321,26 @@ namespace AltiumSharp
             });
         }
 
-        private void WriteFootprintString(BinaryWriter writer, PcbString @string)
+        private void WriteFootprintText(BinaryWriter writer, PcbText text)
         {
             WriteBlock(writer, w =>
             {
-                WriteFootprintCommon(w, @string, @string.Location);
-                w.Write(@string.Height.ToInt32());
+                WriteFootprintCommon(w, text, text.Corner1);
+                w.Write(text.Height.ToInt32());
                 w.Write((short)0); // TODO: Unknown
-                w.Write((double)@string.Rotation);
-                w.Write(@string.Mirrored);
-                w.Write(@string.Width.ToInt32());
+                w.Write((double)text.Rotation);
+                w.Write(text.Mirrored);
+                w.Write(text.Width.ToInt32());
 
                 //recordSize >= 123
                 w.Write((short)0); // TODO: Unknown
                 w.Write((byte)0); // TODO: Unknown
-                w.Write((byte)@string.Font);
-                w.Write(@string.FontBold);
-                w.Write(@string.FontItalic);
-                WriteStringFontName(w, @string.FontName); // TODO: check size and string format
-                w.Write(@string.BarcodeLRMargin.ToInt32());
-                w.Write(@string.BarcodeTBMargin.ToInt32());
+                w.Write((byte)text.Font);
+                w.Write(text.FontBold);
+                w.Write(text.FontItalic);
+                WriteStringFontName(w, text.FontName); // TODO: check size and string format
+                w.Write(text.BarcodeLRMargin.ToInt32());
+                w.Write(text.BarcodeTBMargin.ToInt32());
                 w.Write(0); // TODO: Unknown - Coord?
                 w.Write(0); // TODO: Unknown - Coord?
                 w.Write((byte)0); // TODO: Unknown
@@ -349,27 +349,27 @@ namespace AltiumSharp
                 w.Write((short)0); // TODO: Unknown
                 w.Write(0); // TODO: Unknown - Coord?
                 w.Write(0); // TODO: Unknown
-                w.Write(@string.FontInverted);
-                w.Write(@string.FontInvertedBorder.ToInt32());
+                w.Write(text.FontInverted);
+                w.Write(text.FontInvertedBorder.ToInt32());
                 w.Write(0); // TODO: Unknown
                 w.Write(0); // TODO: Unknown
-                w.Write(@string.FontInvertedRect);
-                w.Write(@string.FontInvertedRectWidth.ToInt32());
-                w.Write(@string.FontInvertedRectHeight.ToInt32());
-                w.Write((byte)@string.FontInvertedRectJustification);
-                w.Write(@string.FontInvertedRectTextOffset.ToInt32());
+                w.Write(text.FontInvertedRect);
+                w.Write(text.FontInvertedRectWidth.ToInt32());
+                w.Write(text.FontInvertedRectHeight.ToInt32());
+                w.Write((byte)text.FontInvertedRectJustification);
+                w.Write(text.FontInvertedRectTextOffset.ToInt32());
             });
 
-            WriteStringBlock(writer, @string.Text);
+            WriteStringBlock(writer, text.Text);
         }
 
-        private void WriteFootprintRectangle(BinaryWriter writer, PcbRectangle rectangle)
+        private void WriteFootprintFill(BinaryWriter writer, PcbFill fill)
         {
             WriteBlock(writer, w =>
             {
-                WriteFootprintCommon(w, rectangle, rectangle.Corner1);
-                WriteCoordPoint(w, rectangle.Corner2);
-                w.Write((double)rectangle.Rotation);
+                WriteFootprintCommon(w, fill, fill.Corner1);
+                WriteCoordPoint(w, fill.Corner2);
+                w.Write((double)fill.Rotation);
 
                 /*
                 if (recordSize >= 42)
@@ -385,16 +385,16 @@ namespace AltiumSharp
             });
         }
 
-        private void WriteFootprintPolygon(BinaryWriter writer, PcbPolygon polygon)
+        private void WriteFootprintRegion(BinaryWriter writer, PcbRegion region)
         {
             WriteBlock(writer, w =>
             {
-                WriteFootprintCommon(w, polygon);
+                WriteFootprintCommon(w, region);
                 w.Write(0); // TODO: Unknown
                 w.Write((byte)0); // TODO: Unknown
-                WriteBlock(w, wb => WriteParameters(wb, polygon.Attributes));
-                w.Write(polygon.Outline.Count);
-                foreach (var coord in polygon.Outline)
+                WriteBlock(w, wb => WriteParameters(wb, region.Attributes));
+                w.Write(region.Outline.Count);
+                foreach (var coord in region.Outline)
                 {
                     // oddly enough polygonal features are stored using double precision
                     // but still employ the same units as standard Coords, which means

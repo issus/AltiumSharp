@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Text;
 using System.Linq;
-using System.Text;
 using AltiumSharp.BasicTypes;
 using AltiumSharp.Records;
 
@@ -53,16 +49,16 @@ namespace AltiumSharp.Drawing
                         RenderTrackPrimitive(graphics, track);
                         break;
 
-                    case PcbString @string:
-                        RenderStringPrimitive(graphics, @string);
+                    case PcbText text:
+                        RenderTextPrimitive(graphics, text);
                         break;
 
-                    case PcbRectangle rectangle:
-                        RenderRectanglePrimitive(graphics, rectangle);
+                    case PcbFill fill:
+                        RenderFillPrimitive(graphics, fill);
                         break;
 
-                    case PcbPolygon polygon:
-                        RenderPolygonPrimitive(graphics, polygon);
+                    case PcbRegion region:
+                        RenderRegionPrimitive(graphics, region);
                         break;
                 }
                 graphics.EndContainer(graphicsContainer);
@@ -201,17 +197,17 @@ namespace AltiumSharp.Drawing
             }
         }
 
-        private void RenderStringPrimitive(Graphics g, PcbString @string)
+        private void RenderTextPrimitive(Graphics g, PcbText text)
         {
-            var location = ScreenFromWorld(@string.Location.X, @string.Location.Y);
-            var color = LayerMetadata.GetColor(@string.Layer);
-            var height = ScaleCoord(@string.Height);
-            var fontStyle = (@string.FontItalic ? FontStyle.Italic : FontStyle.Regular) | (@string.FontBold ? FontStyle.Bold : FontStyle.Regular);
+            var location = ScreenFromWorld(text.Corner1.X, text.Corner1.Y);
+            var color = LayerMetadata.GetColor(text.Layer);
+            var height = ScaleCoord(text.Height);
+            var fontStyle = (text.FontItalic ? FontStyle.Italic : FontStyle.Regular) | (text.FontBold ? FontStyle.Bold : FontStyle.Regular);
             float fontWidth;
             float fontSize;
-            if (@string.Font == PcbStringFont.Stroke)
+            if (text.Font == PcbTextFont.Stroke)
             {
-                fontWidth = ScaleCoord(@string.Width);
+                fontWidth = ScaleCoord(text.Width);
                 fontSize = DrawingUtils.CalculateFontSizeForBaseline(g, StrokeFontFamily, fontStyle, height + fontWidth);
             }
             else
@@ -221,25 +217,25 @@ namespace AltiumSharp.Drawing
             }
 
             g.TranslateTransform(location.X, location.Y);
-            g.RotateTransform(-(float)@string.Rotation);
+            g.RotateTransform(-(float)text.Rotation);
 
             using (var brush = new SolidBrush(color))
-            using (var fontFamily = new FontFamily(@string.FontName))
-            using (var font = new Font(@string.Font == PcbStringFont.Stroke ? StrokeFontFamily : fontFamily, fontSize, fontStyle))
+            using (var fontFamily = new FontFamily(text.FontName))
+            using (var font = new Font(text.Font == PcbTextFont.Stroke ? StrokeFontFamily : fontFamily, fontSize, fontStyle))
             {
-                var size = g.MeasureString(@string.Text, font);
+                var size = g.MeasureString(text.Text, font);
                 if (size.Height < 5)
                 {
                     using (var pen = new Pen(brush))
                     {
-                        var rect = ScaleRect(@string.CalculateRect(false));
+                        var rect = ScaleRect(text.CalculateRect(false));
                         g.DrawRectangle(pen, rect.Left, rect.Top, rect.Width, rect.Height);
                     }
                 }
                 else
                 {
-                    if (@string.Mirrored) g.ScaleTransform(-1.0f, 1.0f);
-                    DrawingUtils.DrawString(g, @string.Text, font, brush, 0, fontWidth * 0.5f,
+                    if (text.Mirrored) g.ScaleTransform(-1.0f, 1.0f);
+                    DrawingUtils.DrawString(g, text.Text, font, brush, 0, fontWidth * 0.5f,
                         StringAlignmentKind.Tight, StringAlignment.Near, StringAlignment.Far);
                 }
             }
@@ -247,23 +243,23 @@ namespace AltiumSharp.Drawing
             g.ResetTransform();
         }
 
-        private void RenderPolygonPrimitive(Graphics g, PcbPolygon polygon)
+        private void RenderRegionPrimitive(Graphics g, PcbRegion region)
         {
-            var brushColor = LayerMetadata.GetColor(polygon.Layer);
+            var brushColor = LayerMetadata.GetColor(region.Layer);
             using (var brush = new SolidBrush(brushColor))
             {
-                var outline = polygon.Outline.Select(coordxy => ScreenFromWorld(coordxy)).ToArray();
+                var outline = region.Outline.Select(coordxy => ScreenFromWorld(coordxy)).ToArray();
                 g.FillPolygon(brush, outline);
             }
         }
 
-        private void RenderRectanglePrimitive(Graphics g, PcbRectangle rectangle)
+        private void RenderFillPrimitive(Graphics g, PcbFill fill)
         {
-            var brushColor = LayerMetadata.GetColor(rectangle.Layer);
+            var brushColor = LayerMetadata.GetColor(fill.Layer);
             using (var brush = new SolidBrush(brushColor))
             {
-                var worldRect = new CoordRect(rectangle.Corner1, rectangle.Corner2);
-                var worldPoints = worldRect.RotatedPoints(worldRect.Center, rectangle.Rotation);
+                var worldRect = new CoordRect(fill.Corner1, fill.Corner2);
+                var worldPoints = worldRect.RotatedPoints(worldRect.Center, fill.Rotation);
                 var screenPoints = worldPoints.Select(cp => ScreenFromWorld(cp)).ToArray();
                 g.FillPolygon(brush, screenPoints);
             }

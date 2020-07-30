@@ -4,8 +4,8 @@ namespace AltiumSharp.Records
 {
     public enum PcbPrimitiveObjectId
     {
-        NoObject,
-        Arc = 1,
+        None,
+        Arc,
         Pad,
         Via,
         Track,

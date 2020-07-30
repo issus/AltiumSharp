@@ -116,11 +116,11 @@ namespace AltiumSharp
                             break;
 
                         case PcbPrimitiveObjectId.Fill:
-                            element = ReadFootprintRectangle(reader);
+                            element = ReadFootprintFill(reader);
                             break;
 
                         case PcbPrimitiveObjectId.Region:
-                            element = ReadFootprintPolygon(reader);
+                            element = ReadFootprintRegion(reader);
                             break;
 
                         case PcbPrimitiveObjectId.Via:
@@ -386,31 +386,34 @@ namespace AltiumSharp
             });
         }
 
-        private PcbString ReadFootprintString(BinaryReader reader, string unicodeText)
+        private PcbText ReadFootprintString(BinaryReader reader, string unicodeText)
         {
             var result = ReadBlock(reader, recordSize =>
             {
                 CheckValue(nameof(recordSize), recordSize, 43, 123, 226, 230);
-                var @string = new PcbString();
-                @string.Layer = reader.ReadByte();
-                @string.Flags = reader.ReadUInt16();
+                var text = new PcbText();
+                text.Layer = reader.ReadByte();
+                text.Flags = reader.ReadUInt16();
                 Assert10FFbytes(reader);
-                @string.Location = ReadCoordPoint(reader);
-                @string.Height = reader.ReadInt32();
+                text.Corner1 = ReadCoordPoint(reader);
+                var height = reader.ReadInt32();
                 reader.ReadInt16(); // TODO: Unknown
-                @string.Rotation = reader.ReadDouble();
-                @string.Mirrored = reader.ReadBoolean();
-                @string.Width = reader.ReadInt32();
+                text.Rotation = reader.ReadDouble();
+                text.Mirrored = reader.ReadBoolean();
+                var width = reader.ReadInt32();
+                text.Corner2 = new CoordPoint(
+                    Coord.FromInt32(text.Corner1.X.ToInt32() + width),
+                    Coord.FromInt32(text.Corner1.Y.ToInt32() + height));
                 if (recordSize >= 123)
                 {
                     reader.ReadUInt16(); // TODO: Unknown
                     reader.ReadByte(); // TODO: Unknown
-                    @string.Font = (PcbStringFont)reader.ReadByte();
-                    @string.FontBold = reader.ReadBoolean();
-                    @string.FontItalic = reader.ReadBoolean();
-                    @string.FontName = ReadStringFontName(reader); // TODO: check size and string format
-                    @string.BarcodeLRMargin = reader.ReadInt32();
-                    @string.BarcodeTBMargin = reader.ReadInt32();
+                    text.Font = (PcbTextFont)reader.ReadByte();
+                    text.FontBold = reader.ReadBoolean();
+                    text.FontItalic = reader.ReadBoolean();
+                    text.FontName = ReadStringFontName(reader); // TODO: check size and string format
+                    text.BarcodeLRMargin = reader.ReadInt32();
+                    text.BarcodeTBMargin = reader.ReadInt32();
                     reader.ReadInt32(); // TODO: Unknown - Coord?
                     reader.ReadInt32(); // TODO: Unknown - Coord?
                     reader.ReadByte(); // TODO: Unknown
@@ -419,17 +422,17 @@ namespace AltiumSharp
                     reader.ReadUInt16(); // TODO: Unknown
                     reader.ReadInt32(); // TODO: Unknown - Coord?
                     reader.ReadInt32(); // TODO: Unknown
-                    @string.FontInverted = reader.ReadBoolean();
-                    @string.FontInvertedBorder = reader.ReadInt32();
+                    text.FontInverted = reader.ReadBoolean();
+                    text.FontInvertedBorder = reader.ReadInt32();
                     reader.ReadInt32(); // TODO: Unknown
                     reader.ReadInt32(); // TODO: Unknown
-                    @string.FontInvertedRect = reader.ReadBoolean();
-                    @string.FontInvertedRectWidth = reader.ReadInt32();
-                    @string.FontInvertedRectHeight = reader.ReadInt32();
-                    @string.FontInvertedRectJustification = (PcbStringJustification)reader.ReadByte();
-                    @string.FontInvertedRectTextOffset = reader.ReadInt32();
+                    text.FontInvertedRect = reader.ReadBoolean();
+                    text.FontInvertedRectWidth = reader.ReadInt32();
+                    text.FontInvertedRectHeight = reader.ReadInt32();
+                    text.FontInvertedRectJustification = (PcbTextJustification)reader.ReadByte();
+                    text.FontInvertedRectTextOffset = reader.ReadInt32();
                 }
-                return @string;
+                return text;
             });
 
             ReadStringBlock(reader); // non-unicode Text
@@ -437,22 +440,18 @@ namespace AltiumSharp
             return result;
         }
 
-        private PcbRectangle ReadFootprintRectangle(BinaryReader reader)
+        private PcbFill ReadFootprintFill(BinaryReader reader)
         {
             return ReadBlock(reader, recordSize =>
             {
                 CheckValue(nameof(recordSize), recordSize, 37, 41, 46);
-                var rectangle = new PcbRectangle();
-                rectangle.Layer = reader.ReadByte();
-                rectangle.Flags = reader.ReadUInt16();
+                var fill = new PcbFill();
+                fill.Layer = reader.ReadByte();
+                fill.Flags = reader.ReadUInt16();
                 Assert10FFbytes(reader);
-                var corner1X = reader.ReadInt32();
-                var corner1Y = reader.ReadInt32();
-                rectangle.Corner1 = new CoordPoint(corner1X, corner1Y);
-                var corner2X = reader.ReadInt32();
-                var corner2Y = reader.ReadInt32();
-                rectangle.Corner2 = new CoordPoint(corner2X, corner2Y);
-                rectangle.Rotation = reader.ReadDouble();
+                fill.Corner1 = ReadCoordPoint(reader);
+                fill.Corner2 = ReadCoordPoint(reader);
+                fill.Rotation = reader.ReadDouble();
                 if (recordSize >= 41)
                 {
                     reader.ReadUInt32(); // TODO: Unknown
@@ -462,21 +461,21 @@ namespace AltiumSharp
                     reader.ReadByte(); // TODO: Unknown
                     reader.ReadInt32(); // TODO: Unknown - Coord?
                 }
-                return rectangle;
+                return fill;
             });
         }
 
-        private PcbPolygon ReadFootprintPolygon(BinaryReader reader)
+        private PcbRegion ReadFootprintRegion(BinaryReader reader)
         {
             return ReadBlock(reader, recordSize =>
             {
-                var polygon = new PcbPolygon();
-                polygon.Layer = reader.ReadByte();
-                polygon.Flags = reader.ReadUInt16();
+                var region = new PcbRegion();
+                region.Layer = reader.ReadByte();
+                region.Flags = reader.ReadUInt16();
                 Assert10FFbytes(reader);
                 reader.ReadUInt32(); // TODO: Unknown
                 reader.ReadByte(); // TODO: Unknown
-                polygon.Attributes = ReadBlock(reader, size => ReadParameters(reader, size));
+                region.Attributes = ReadBlock(reader, size => ReadParameters(reader, size));
                 var outlineSize = reader.ReadUInt32();
                 for (int i = 0; i < outlineSize; ++i)
                 {
@@ -485,9 +484,9 @@ namespace AltiumSharp
                     // the extra precision is not needed
                     Coord x = (int)reader.ReadDouble();
                     Coord y = (int)reader.ReadDouble();
-                    polygon.Outline.Add(new CoordPoint(x, y));
+                    region.Outline.Add(new CoordPoint(x, y));
                 }
-                return polygon;
+                return region;
             });
         }
 

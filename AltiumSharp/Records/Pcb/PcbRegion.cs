@@ -4,7 +4,7 @@ using AltiumSharp.BasicTypes;
 
 namespace AltiumSharp.Records
 {
-    public class PcbPolygon : PcbPrimitive
+    public class PcbRegion : PcbPrimitive
     {
         public override PcbPrimitiveObjectId ObjectId => PcbPrimitiveObjectId.Region;
         public ParameterCollection Attributes { get; internal set; }
