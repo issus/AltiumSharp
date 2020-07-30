@@ -8,7 +8,7 @@ namespace AltiumSharp
         /// <summary>
         /// Name of the file.
         /// </summary>
-        internal string FileName { get; private set; }
+        internal string FileName { get; set; }
     }
 
     public abstract class SchData<THeader, TItem> : SchData

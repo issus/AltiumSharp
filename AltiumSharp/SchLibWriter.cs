@@ -19,7 +19,7 @@ namespace AltiumSharp
 
         }
 
-        protected override void DoWrite()
+        protected override void DoWrite(string fileName)
         {
             WriteFileHeader();
             WriteSectionKeys();
