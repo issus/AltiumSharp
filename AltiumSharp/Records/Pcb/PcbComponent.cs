@@ -7,15 +7,16 @@ using AltiumSharp.Records;
 
 namespace AltiumSharp
 {
-    public class PcbComponent : IContainer
+    public class PcbComponent : IComponent
     {
-        public string Name => Pattern;
-
         public string Pattern { get; private set; }
-
         public string Description { get; private set; }
-
         public Coord Height { get; private set; }
+        public string ItemGuid { get; private set; }
+        public string RevisionGuid { get; private set; }
+
+        string IComponent.Name => Pattern;
+        string IComponent.Description => Description;
 
         public int Pads => Primitives.Where(p => p is PcbPad).Count();
 
@@ -32,8 +33,10 @@ namespace AltiumSharp
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             Pattern = p["PATTERN"].AsStringOrDefault();
-            Height = p["HEIGHT"].AsIntOrDefault();
+            Height = p["HEIGHT"].AsCoord();
             Description = p["DESCRIPTION"].AsStringOrDefault();
+            ItemGuid = p["ITEMGUID"].AsStringOrDefault();
+            RevisionGuid = p["REVISIONGUID"].AsStringOrDefault();
         }
 
         public void ExportToParameters(ParameterCollection p)
@@ -41,8 +44,10 @@ namespace AltiumSharp
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             p.Add("PATTERN", Pattern);
-            p.Add("HEIGHT", Height);
-            p.Add("DESCRIPTION", Description);
+            p.Add("HEIGHT", Height, false);
+            p.Add("DESCRIPTION", Description, false);
+            p.Add("ITEMGUID", ItemGuid, false);
+            p.Add("REVISIONGUID", RevisionGuid, false);
         }
 
         public ParameterCollection ExportToParameters()

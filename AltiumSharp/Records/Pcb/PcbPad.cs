@@ -35,8 +35,8 @@ namespace AltiumSharp.Records
         public PcbPadHoleShape HoleShape { get; internal set; }
         public double HoleRotation { get; internal set; }
         public Coord HoleSlotLength { get; internal set; }
-        public Layer ToLayer { get; internal set; }
         public Layer FromLayer { get; internal set; }
+        public Layer ToLayer { get; internal set; }
         public List<CoordPoint> SizeMiddleLayers { get; } = new List<CoordPoint>();
         public List<PcbPadShape> ShapeMiddleLayers { get; } = new List<PcbPadShape>();
         public List<CoordPoint> OffsetsFromHoleCenter { get; internal set; } = new List<CoordPoint>();
