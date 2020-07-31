@@ -104,6 +104,7 @@ namespace AltiumSharp
 
             WriteHeader(footprintStorage, primitives.Count()); // record count
             WriteFootprintParameters(footprintStorage, component);
+            WriteWideStrings(footprintStorage, component);
 
             footprintStorage.GetOrAddStream("Data").Write(writer =>
             {
@@ -152,7 +153,6 @@ namespace AltiumSharp
                 }
             });
 
-            WriteWideStrings(footprintStorage, component);
             WriteUniqueIdPrimitiveInformation(footprintStorage, component);
         }
 
@@ -345,31 +345,31 @@ namespace AltiumSharp
             {
                 WriteFootprintCommon(w, text, text.Corner1);
                 w.Write(text.Height.ToInt32());
-                w.Write((short)0); // TODO: Unknown
+                w.Write((short)text.StrokeFont);
                 w.Write((double)text.Rotation);
                 w.Write(text.Mirrored);
-                w.Write(text.Width.ToInt32());
+                w.Write(text.StrokeWidth.ToInt32());
 
                 //recordSize >= 123
                 w.Write((short)0); // TODO: Unknown
                 w.Write((byte)0); // TODO: Unknown
-                w.Write((byte)text.Font);
+                w.Write((byte)text.TextKind);
                 w.Write(text.FontBold);
                 w.Write(text.FontItalic);
                 WriteStringFontName(w, text.FontName); // TODO: check size and string format
                 w.Write(text.BarcodeLRMargin.ToInt32());
                 w.Write(text.BarcodeTBMargin.ToInt32());
-                w.Write(0); // TODO: Unknown - Coord?
-                w.Write(0); // TODO: Unknown - Coord?
+                w.Write(0); // TODO: Unknown - Coord 0?
+                w.Write(Coord.FromMils(4)); // TODO: Unknown - Coord 4mil?
                 w.Write((byte)0); // TODO: Unknown
                 w.Write((byte)0); // TODO: Unknown
                 w.Write(0); // TODO: Unknown - Coord?
                 w.Write((short)0); // TODO: Unknown
-                w.Write(0); // TODO: Unknown - Coord?
+                w.Write(1); // TODO: Unknown 1?
                 w.Write(0); // TODO: Unknown
                 w.Write(text.FontInverted);
                 w.Write(text.FontInvertedBorder.ToInt32());
-                w.Write(0); // TODO: Unknown
+                w.Write(text.WideStringsIndex);
                 w.Write(0); // TODO: Unknown
                 w.Write(text.FontInvertedRect);
                 w.Write(text.FontInvertedRectWidth.ToInt32());

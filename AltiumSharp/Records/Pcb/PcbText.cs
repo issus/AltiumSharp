@@ -2,7 +2,9 @@
 
 namespace AltiumSharp.Records
 {
-    public enum PcbTextFont { Stroke, TrueType, BarCode }
+    public enum PcbTextKind { Stroke, TrueType, BarCode }
+
+    public enum PcbTextStrokeFont { Default = 0, SansSerif = 1, Serif = 3 }
 
     public enum PcbTextJustification
     {
@@ -18,7 +20,9 @@ namespace AltiumSharp.Records
 
         public override PcbPrimitiveObjectId ObjectId => PcbPrimitiveObjectId.Text;
         public bool Mirrored { get; internal set; }
-        public PcbTextFont Font { get; internal set; }
+        public PcbTextKind TextKind { get; internal set; }
+        public PcbTextStrokeFont StrokeFont { get; set; }
+        public Coord StrokeWidth { get; set; }
         public bool FontBold { get; internal set; }
         public bool FontItalic { get; internal set; }
         public string FontName { get; internal set; }
@@ -32,10 +36,11 @@ namespace AltiumSharp.Records
         public PcbTextJustification FontInvertedRectJustification { get; internal set; }
         public Coord FontInvertedRectTextOffset { get; internal set; }
         public string Text { get; internal set; }
+        internal int WideStringsIndex { get; set; }
 
         internal CoordRect CalculateRect(bool useAbsolutePosition)
         {
-            var w = (Font == PcbTextFont.Stroke) ? (Text.Length * Height * 12) / 13 : (Text.Length * Height / 2);
+            var w = (TextKind == PcbTextKind.Stroke) ? (Text.Length * Height * 12) / 13 : (Text.Length * Height / 2);
             var h = Height;
             var x = Mirrored ? -w : 0;
             var y = 0;

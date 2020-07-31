@@ -244,7 +244,7 @@ namespace AltiumSharp.Drawing
             var fontStyle = (text.FontItalic ? FontStyle.Italic : FontStyle.Regular) | (text.FontBold ? FontStyle.Bold : FontStyle.Regular);
             float fontWidth;
             float fontSize;
-            if (text.Font == PcbTextFont.Stroke)
+            if (text.TextKind == PcbTextKind.Stroke)
             {
                 fontWidth = ScaleCoord(text.Width);
                 fontSize = DrawingUtils.CalculateFontSizeForBaseline(g, StrokeFontFamily, fontStyle, height + fontWidth);
@@ -260,7 +260,7 @@ namespace AltiumSharp.Drawing
 
             using (var brush = new SolidBrush(color))
             using (var fontFamily = new FontFamily(text.FontName))
-            using (var font = new Font(text.Font == PcbTextFont.Stroke ? StrokeFontFamily : fontFamily, fontSize, fontStyle))
+            using (var font = new Font(text.TextKind == PcbTextKind.Stroke ? StrokeFontFamily : fontFamily, fontSize, fontStyle))
             {
                 var size = g.MeasureString(text.Text, font);
                 if (size.Height < 5)

@@ -76,8 +76,7 @@ namespace AltiumSharp
             var component = new PcbComponent();
             ReadFootprintParameters(footprintStorage, component);
 
-            var unicodeText = ReadWideStrings(footprintStorage);
-            var ndxUnicodeText = 0;
+            var wideStrings = ReadWideStrings(footprintStorage);
 
             using (var reader = footprintStorage.GetStream("Data").GetBinaryReader())
             {
@@ -116,7 +115,7 @@ namespace AltiumSharp
                             break;
 
                         case PcbPrimitiveObjectId.Text:
-                            element = ReadFootprintString(reader, unicodeText[ndxUnicodeText++]);
+                            element = ReadFootprintString(reader, wideStrings);
                             break;
 
                         case PcbPrimitiveObjectId.Fill:
@@ -439,7 +438,7 @@ namespace AltiumSharp
             });
         }
 
-        private PcbText ReadFootprintString(BinaryReader reader, string unicodeText)
+        private PcbText ReadFootprintString(BinaryReader reader, List<string> wideStrings)
         {
             var result = ReadBlock(reader, recordSize =>
             {
@@ -450,34 +449,34 @@ namespace AltiumSharp
                 Assert10FFbytes(reader);
                 text.Corner1 = ReadCoordPoint(reader);
                 var height = reader.ReadInt32();
-                reader.ReadInt16(); // TODO: Unknown
+                text.Corner2 = new CoordPoint(
+                    Coord.FromInt32(text.Corner1.X.ToInt32()),
+                    Coord.FromInt32(text.Corner1.Y.ToInt32() + height));
+                text.StrokeFont = (PcbTextStrokeFont)reader.ReadInt16();
                 text.Rotation = reader.ReadDouble();
                 text.Mirrored = reader.ReadBoolean();
-                var width = reader.ReadInt32();
-                text.Corner2 = new CoordPoint(
-                    Coord.FromInt32(text.Corner1.X.ToInt32() + width),
-                    Coord.FromInt32(text.Corner1.Y.ToInt32() + height));
+                text.StrokeWidth = reader.ReadInt32();
                 if (recordSize >= 123)
                 {
                     reader.ReadUInt16(); // TODO: Unknown
                     reader.ReadByte(); // TODO: Unknown
-                    text.Font = (PcbTextFont)reader.ReadByte();
+                    text.TextKind = (PcbTextKind)reader.ReadByte();
                     text.FontBold = reader.ReadBoolean();
                     text.FontItalic = reader.ReadBoolean();
                     text.FontName = ReadStringFontName(reader); // TODO: check size and string format
                     text.BarcodeLRMargin = reader.ReadInt32();
                     text.BarcodeTBMargin = reader.ReadInt32();
-                    reader.ReadInt32(); // TODO: Unknown - Coord?
-                    reader.ReadInt32(); // TODO: Unknown - Coord?
+                    reader.ReadInt32(); // TODO: Unknown - Coord 0?
+                    reader.ReadInt32(); // TODO: Unknown - Coord 4mil?
                     reader.ReadByte(); // TODO: Unknown
                     reader.ReadByte(); // TODO: Unknown
                     reader.ReadInt32(); // TODO: Unknown - Coord?
                     reader.ReadUInt16(); // TODO: Unknown
-                    reader.ReadInt32(); // TODO: Unknown - Coord?
+                    reader.ReadInt32(); // TODO: Unknown 1
                     reader.ReadInt32(); // TODO: Unknown
                     text.FontInverted = reader.ReadBoolean();
                     text.FontInvertedBorder = reader.ReadInt32();
-                    reader.ReadInt32(); // TODO: Unknown
+                    text.WideStringsIndex = reader.ReadInt32();
                     reader.ReadInt32(); // TODO: Unknown
                     text.FontInvertedRect = reader.ReadBoolean();
                     text.FontInvertedRectWidth = reader.ReadInt32();
@@ -488,8 +487,15 @@ namespace AltiumSharp
                 return text;
             });
 
-            ReadStringBlock(reader); // non-unicode Text
-            result.Text = unicodeText;
+            var asciiText = ReadStringBlock(reader); // non-unicode Text
+            if (result.WideStringsIndex < wideStrings?.Count)
+            {
+                result.Text = wideStrings[result.WideStringsIndex];
+            }
+            else
+            { 
+                result.Text = asciiText;
+            }
             return result;
         }
 

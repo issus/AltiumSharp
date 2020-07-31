@@ -256,7 +256,7 @@ namespace AltiumSharp
             for (int i = rawData.Length; i < 32; ++i)
             {
                 writer.Write((byte)0);
-            }            
+            }
         }
 
         /// <summary>
@@ -369,13 +369,17 @@ namespace AltiumSharp
         /// </param>
         internal static void WriteWideStrings(CFStorage storage, PcbComponent component)
         {
-            var data = component.Primitives.OfType<PcbText>().Select(s => s.Text ?? "").ToList();
+            var texts = component.Primitives.OfType<PcbText>().ToList();
             storage.GetOrAddStream("WideStrings").Write(writer =>
             {
                 var parameters = new ParameterCollection();
-                for (var i = 0; i < data.Count; ++i)
+                for (var i = 0; i < texts.Count; ++i)
                 {
-                    var codepoints = data[i].Select(c => Convert.ToInt32(c));
+                    var text = texts[i];
+                    text.WideStringsIndex = i;
+
+                    var data = text.Text ?? "";
+                    var codepoints = data.Select(c => Convert.ToInt32(c));
                     var intList = string.Join(",", codepoints);
                     parameters.Add($"ENCODEDTEXT{i}", intList);
                 }
