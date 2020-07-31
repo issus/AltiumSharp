@@ -369,13 +369,13 @@ namespace AltiumSharp
         /// </param>
         internal static void WriteWideStrings(CFStorage storage, PcbComponent component)
         {
-            var data = component.Primitives.OfType<PcbText>().Select(s => s.Text).ToList();
+            var data = component.Primitives.OfType<PcbText>().Select(s => s.Text ?? "").ToList();
             storage.GetOrAddStream("WideStrings").Write(writer =>
             {
                 var parameters = new ParameterCollection();
                 for (var i = 0; i < data.Count; ++i)
                 {
-                    var codepoints = data[i].Cast<int>();
+                    var codepoints = data[i].Select(c => Convert.ToInt32(c));
                     var intList = string.Join(",", codepoints);
                     parameters.Add($"ENCODEDTEXT{i}", intList);
                 }
@@ -394,7 +394,7 @@ namespace AltiumSharp
         /// <returns>
         /// The generated name for a storage section key where write the data for the given <paramref name="refName"/>.
         /// </returns>
-        protected string GetSectionKeyFromRefName(string refName)
+        protected string GetSectionKeyFromComponentPattern(string refName)
         {
             return refName?.Substring(0, refName.Length > 31 ? 31 : refName.Length).Replace('/', '_');
         }
