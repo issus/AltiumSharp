@@ -70,7 +70,7 @@ namespace LibraryViewer
                     tabComponents.SelectTab(tabPcbLib);
                     foreach (var component in pcbLib.Items)
                     {
-                        var index = gridPcbLibComponents.Rows.Add(component.Name, component.Pads, component.Primitives.Count());
+                        var index = gridPcbLibComponents.Rows.Add(component.Pattern, component.Pads, component.Primitives.Count());
                         gridPcbLibComponents.Rows[index].Tag = component;
                     }
 
@@ -487,7 +487,7 @@ namespace LibraryViewer
             {
                 var pcbPrimitive = primitive as PcbPrimitive;
                 var primitiveIndex = pcbComponent.Primitives.IndexOf(pcbPrimitive);
-                saveFileDialog.FileName = $"pcb_{pcbComponent.Name}_{primitiveIndex}_{pcbPrimitive.GetDisplayInfo().Name}.bin".Replace('/', '_');
+                saveFileDialog.FileName = $"pcb_{pcbComponent.Pattern}_{primitiveIndex}_{pcbPrimitive.GetDisplayInfo().Name}.bin".Replace('/', '_');
             }
             else if (container is SchComponent schComponent)
             {
