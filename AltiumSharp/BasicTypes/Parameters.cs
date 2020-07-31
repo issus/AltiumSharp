@@ -16,8 +16,12 @@ namespace AltiumSharp.BasicTypes
     {
         private const NumberStyles Ns = NumberStyles.Any;
         private static readonly IFormatProvider Fp = CultureInfo.InvariantCulture;
-        internal static readonly string[] TrueValues = new string[] { "T", "TRUE" };
-        internal static readonly string[] FalseValues = new string[] { "F", "FALSE" };
+        internal static readonly string TrueValueShort = "T";
+        internal static readonly string TrueValueLong = "TRUE";
+        internal static readonly string FalseValueShort = "F";
+        internal static readonly string FalseValueLong = "FALSE";
+        internal static readonly string[] TrueValues = new string[] { TrueValueShort, TrueValueLong };
+        internal static readonly string[] FalseValues = new string[] { FalseValueShort, FalseValueLong };
         internal static readonly char[] ListSeparators = new[] { ',', '?' };
 
         private readonly string _data;
@@ -272,6 +276,7 @@ namespace AltiumSharp.BasicTypes
 
         public string Data { get; private set; }
         public int Level { get; private set; }
+        public bool UseLongBooleans { get; set; }
 
         private string _record;
         private List<string> _keys;
@@ -462,17 +467,12 @@ namespace AltiumSharp.BasicTypes
         /// <summary>
         /// Adds a key with a double floating point value.
         /// </summary>
-        public void Add(string key, double value, bool ignoreDefaultValue = true) =>
-            AddData(key, value, ignoreDefaultValue);
-
-        /// <summary>
-        /// Adds a key with a boolean value.
-        /// </summary>
-        public void Add(string key, bool value, bool ignoreDefaultValue = true)
+        public void Add(string key, double value, bool ignoreDefaultValue = true, int decimals = 6)
         {
-            if (!ignoreDefaultValue || value)
+            if (!ignoreDefaultValue || value != 0)
             {
-                AddData(key, value ? ParameterValue.TrueValues.First() : ParameterValue.FalseValues.First());
+                var format = "#########0." + string.Concat(Enumerable.Repeat("0", decimals)) + string.Concat(Enumerable.Repeat("#", 6 - decimals));
+                AddData(key, value.ToString(format, CultureInfo.InvariantCulture));
             }
             else
             {
@@ -481,13 +481,28 @@ namespace AltiumSharp.BasicTypes
         }
 
         /// <summary>
-        /// Adds a key with a coordinate value.
+        /// Adds a key with a boolean value.
+        /// </summary>
+        public void Add(string key, bool value, bool ignoreDefaultValue = true)
+        {
+            if (!ignoreDefaultValue || value)
+            {
+                AddData(key, value ? ParameterValue.TrueValues[UseLongBooleans ? 1 : 0] : ParameterValue.FalseValues[UseLongBooleans ? 1 : 0]);
+            }
+            else
+            {
+                AddKey(key);
+            }
+        }
+
+        /// <summary>
+        /// Adds a key with a coordinate value as mils.
         /// </summary>
         public void Add(string key, Coord value, bool ignoreDefaultValue = true)
         {
             if (!ignoreDefaultValue || (int)value != 0)
             {
-                AddData(key, Utils.CoordUnitToString(value, Unit.Mil));
+                AddData(key, value.ToMils().ToString("#####0.#####mil", CultureInfo.InvariantCulture));
             }
             else
             {
