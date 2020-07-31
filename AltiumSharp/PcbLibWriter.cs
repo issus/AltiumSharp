@@ -31,7 +31,7 @@ namespace AltiumSharp
         private void WriteSectionKeys()
         {
             // only write section keys for components that need them
-            var components = Data.Items.Where(c => GetSectionKeyFromRefName(c.Name) != c.Name).ToList();
+            var components = Data.Items.Where(c => GetSectionKeyFromComponentPattern(c.Pattern) != c.Pattern).ToList();
             if (components.Count == 0) return;
 
             Cf.RootStorage.GetOrAddStream("SectionKeys").Write(writer =>
@@ -39,8 +39,8 @@ namespace AltiumSharp
                 writer.Write(components.Count);
                 foreach (var component in components)
                 {
-                    WritePascalString(writer, component.Name);
-                    WriteStringBlock(writer, GetSectionKeyFromRefName(component.Name));
+                    WritePascalString(writer, component.Pattern);
+                    WriteStringBlock(writer, GetSectionKeyFromComponentPattern(component.Pattern));
                 }
             });
         }
@@ -83,7 +83,7 @@ namespace AltiumSharp
                 writer.Write(Data.Items.Count);
                 foreach (var component in Data.Items)
                 {
-                    WriteStringBlock(writer, component.Name);
+                    WriteStringBlock(writer, component.Pattern);
                     WriteFootprint(component);
                 }
             });
@@ -97,7 +97,7 @@ namespace AltiumSharp
         /// </param>
         private void WriteFootprint(PcbComponent component)
         {
-            var sectionKey = GetSectionKeyFromRefName(component.Name);
+            var sectionKey = GetSectionKeyFromComponentPattern(component.Pattern);
             var footprintStorage = Cf.RootStorage.GetOrAddStorage(sectionKey);
 
             var primitives = component.Primitives.Where(p => !(p is PcbUnknown));
@@ -107,7 +107,7 @@ namespace AltiumSharp
 
             footprintStorage.GetOrAddStream("Data").Write(writer =>
             {
-                WriteStringBlock(writer, component.Name);
+                WriteStringBlock(writer, component.Pattern);
 
                 foreach (var primitive in primitives) 
                 {
@@ -120,6 +120,10 @@ namespace AltiumSharp
 
                         case PcbPad pad:
                             WriteFootprintPad(writer, pad);
+                            break;
+
+                        case PcbVia via:
+                            WriteFootprintVia(writer, via);
                             break;
 
                         case PcbTrack track:
@@ -142,11 +146,7 @@ namespace AltiumSharp
                             WriteFootprintComponentBody(writer, body);
                             break;
 
-                        //case PcbPrimitiveObjectId.Via:
                         default:
-                            // otherwise we attempt to skip the actual primitive data but still
-                            // create a basic instance with just the raw data for debugging
-                            //element = SkipPrimitive(reader);
                             break;
                     }
                 }
@@ -214,15 +214,6 @@ namespace AltiumSharp
                 w.Write((double)arc.StartAngle);
                 w.Write((double)arc.EndAngle);
                 w.Write(arc.Width.ToInt32());
-                /*
-                if (recordSize >= 56)
-                {
-                    reader.ReadUInt32(); // TODO: Unknown - ordering?
-                    reader.ReadUInt16(); // TODO: Unknown
-                    reader.ReadByte(); // TODO: Unknown
-                    reader.ReadUInt32(); // TODO: Unknown
-                }
-                */
             });
         }
 
@@ -300,6 +291,41 @@ namespace AltiumSharp
             }
         }
 
+        private void WriteFootprintVia(BinaryWriter writer, PcbVia via)
+        {
+            WriteBlock(writer, w =>
+            {
+                WriteFootprintCommon(w, via, via.Location);
+                w.Write(via.Diameter.ToInt32());
+                w.Write(via.HoleSize.ToInt32());
+                w.Write(via.FromLayer.ToByte());
+                w.Write(via.ToLayer.ToByte());
+                w.Write((byte)0); // TODO: Unknown 0
+                w.Write(via.ThermalReliefAirGapWidth.ToInt32());
+                w.Write((byte)via.ThermalReliefConductors);
+                w.Write((byte)0); // TODO: Unknown 0
+                w.Write(via.ThermalReliefConductorsWidth.ToInt32());
+                w.Write(Coord.FromMils(20).ToInt32()); // TODO: Unknown - Coord 20mils?
+                w.Write(Coord.FromMils(20).ToInt32()); // TODO: Unknown - Coord 20mils?
+                w.Write(0); // TODO: Unknown 0
+                w.Write(via.SolderMaskExpansion.ToInt32());
+                w.Write(Enumerable.Repeat((byte)0, 3).ToArray()); // TODO: Unknown 0s
+                w.Write(Enumerable.Repeat((byte)1, 4).ToArray()); // TODO: Unknown 1s
+                w.Write((byte)0); // TODO: Unknown 0
+                w.Write((byte)via.SolderMaskOptions);
+                w.Write((byte)1); // TODO: Unknown 1
+                w.Write((short)0); // TODO: Unknown 0
+                w.Write(0); // TODO: Unknown 0
+                w.Write((byte)via.DiameterStackMode);
+                foreach (var diameter in via.Diameters) // 32 items
+                {
+                    w.Write(diameter.ToInt32());
+                }
+                w.Write((short)15); // TODO: Unknown 15
+                w.Write(259); // TODO: Unknown 259
+            });
+        }
+
         private void WriteFootprintTrack(BinaryWriter writer, PcbTrack track)
         {
             WriteBlock(writer, w =>
@@ -310,18 +336,6 @@ namespace AltiumSharp
                 w.Write((byte)0); // TODO: Unknown
                 w.Write((byte)0); // TODO: Unknown
                 w.Write((byte)0); // TODO: Unknown
-
-                /*
-                if (recordSize >= 41)
-                {
-                    reader.ReadByte(); // TODO: Unknown
-                    reader.ReadUInt32(); // TODO: Unknown
-                }
-                if (recordSize >= 45)
-                {
-                    reader.ReadUInt32(); // TODO: Unknown
-                }
-                */
             });
         }
 
@@ -374,18 +388,6 @@ namespace AltiumSharp
                 WriteFootprintCommon(w, fill, fill.Corner1);
                 WriteCoordPoint(w, fill.Corner2);
                 w.Write((double)fill.Rotation);
-
-                /*
-                if (recordSize >= 42)
-                {
-                    reader.ReadUInt32(); // TODO: Unknown
-                }
-                if (recordSize >= 46)
-                {
-                    reader.ReadByte(); // TODO: Unknown
-                    reader.ReadInt32(); // TODO: Unknown - Coord?
-                }
-                */
             });
         }
 

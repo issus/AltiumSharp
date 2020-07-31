@@ -36,7 +36,7 @@ namespace AltiumSharp
         private void WriteSectionKeys()
         {
             // only write section keys for components that need them
-            var components = Data.Items.Where(c => GetSectionKeyFromRefName(c.LibReference) != c.LibReference).ToList();
+            var components = Data.Items.Where(c => GetSectionKeyFromComponentPattern(c.LibReference) != c.LibReference).ToList();
             if (components.Count == 0) return;
 
             var parameters = new ParameterCollection
@@ -48,7 +48,7 @@ namespace AltiumSharp
             {
                 var component = components[i];
                 var componentRefName = component.LibReference;
-                var sectionKey = GetSectionKeyFromRefName(componentRefName);
+                var sectionKey = GetSectionKeyFromComponentPattern(componentRefName);
 
                 parameters.Add($"LIBREF{i}", componentRefName);
                 parameters.Add($"SECTIONKEY{i}", sectionKey);
@@ -88,7 +88,7 @@ namespace AltiumSharp
         /// <param name="component">Component to be serialized.</param>
         private void WriteComponent(SchComponent component)
         {
-            var resourceName = GetSectionKeyFromRefName(component.LibReference);
+            var resourceName = GetSectionKeyFromComponentPattern(component.LibReference);
             var componentStorage = Cf.RootStorage.GetOrAddStorage(resourceName);
 
             var pinsWideText = new Dictionary<int, ParameterCollection>();

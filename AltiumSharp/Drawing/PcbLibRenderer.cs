@@ -46,6 +46,10 @@ namespace AltiumSharp.Drawing
                         RenderPadPrimitive(graphics, pad);
                         break;
 
+                    case PcbVia via:
+                        RenderViaPrimitive(graphics, via);
+                        break;
+
                     case PcbTrack track:
                         RenderTrackPrimitive(graphics, track);
                         break;
@@ -188,6 +192,36 @@ namespace AltiumSharp.Drawing
                         return;
                 }
             }
+        }
+
+        private void RenderViaPrimitive(Graphics g, PcbVia via)
+        {
+            var holeCenter = ScreenFromWorld(via.Location.X, via.Location.Y);
+
+            g.TranslateTransform(holeCenter.X, holeCenter.Y);
+
+            foreach (var p in via.GetParts())
+            {
+                var color = p.Metadata.Color;
+                var rect = ScaleRect(via.CalculatePartRect(p.Metadata, false));
+                using (var brush = new SolidBrush(color))
+                {
+                    if (p == via.FromLayer)
+                    {
+                        g.FillPie(brush, Rectangle.Round(rect), 90f, 180f);
+                    }
+                    else if (p == via.ToLayer)
+                    {
+                        g.FillPie(brush, Rectangle.Round(rect), -90f, 180f);
+                    }
+                    else
+                    {
+                        g.FillEllipse(brush, rect);
+                    }
+                }
+            }
+
+            g.ResetTransform();
         }
 
         private void RenderTrackPrimitive(Graphics g, PcbTrack track)

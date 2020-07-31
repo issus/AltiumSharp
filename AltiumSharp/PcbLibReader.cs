@@ -81,7 +81,7 @@ namespace AltiumSharp
 
             using (var reader = footprintStorage.GetStream("Data").GetBinaryReader())
             {
-                AssertValue(nameof(component.Name), component.Name, ReadStringBlock(reader));
+                AssertValue(nameof(component.Pattern), component.Pattern, ReadStringBlock(reader));
 
                 int ndxRecord = 0;
                 while (reader.BaseStream.Position < reader.BaseStream.Length)
@@ -107,6 +107,10 @@ namespace AltiumSharp
                             element = ReadFootprintPad(reader);
                             break;
 
+                        case PcbPrimitiveObjectId.Via:
+                            element = ReadFootprintVia(reader);
+                            break;
+
                         case PcbPrimitiveObjectId.Track:
                             element = ReadFootprintTrack(reader);
                             break;
@@ -127,7 +131,6 @@ namespace AltiumSharp
                             element = ReadFootprintComponentBody(reader);
                             break;
 
-                        case PcbPrimitiveObjectId.Via:
                         default:
                             // otherwise we attempt to skip the actual primitive data but still
                             // create a basic instance with just the raw data for debugging
@@ -355,6 +358,53 @@ namespace AltiumSharp
             });
 
             return pad;
+        }
+
+        private PcbVia ReadFootprintVia(BinaryReader reader)
+        {
+            return ReadBlock(reader, recordSize =>
+            {
+                //CheckValue(nameof(recordSize), recordSize, , );
+                var via = new PcbVia();
+                via.Layer = reader.ReadByte();
+                via.Flags = reader.ReadUInt16();
+                Assert10FFbytes(reader);
+                via.Location = ReadCoordPoint(reader);
+                via.Diameter = Coord.FromInt32(reader.ReadInt32());
+                via.HoleSize = Coord.FromInt32(reader.ReadInt32());
+                via.FromLayer = reader.ReadByte();
+                via.ToLayer = reader.ReadByte();
+                reader.ReadByte(); // TODO: Unknown 0
+                via.ThermalReliefAirGapWidth = Coord.FromInt32(reader.ReadInt32());
+                via.ThermalReliefConductors = reader.ReadByte();
+                reader.ReadByte(); // TODO: Unknown 0
+                via.ThermalReliefConductorsWidth = Coord.FromInt32(reader.ReadInt32());
+                reader.ReadInt32(); // TODO: Unknown - Coord 20mils?
+                reader.ReadInt32(); // TODO: Unknown - Coord 20mils?
+                reader.ReadInt32(); // TODO: Unknown 0
+                via.SolderMaskExpansion = Coord.FromInt32(reader.ReadInt32());
+                reader.ReadByte(); // TODO: Unknown 0
+                reader.ReadByte(); // TODO: Unknown 0
+                reader.ReadByte(); // TODO: Unknown 0
+                reader.ReadByte(); // TODO: Unknown 1
+                reader.ReadByte(); // TODO: Unknown 1
+                reader.ReadByte(); // TODO: Unknown 1
+                reader.ReadByte(); // TODO: Unknown 1
+                reader.ReadByte(); // TODO: Unknown 0
+                via.SolderMaskOptions = (PcbViaSolderMaskOptions)reader.ReadByte();
+                reader.ReadByte(); // TODO: Unknown 1
+                reader.ReadInt16(); // TODO: Unknown 0
+                reader.ReadInt32(); // TODO: Unknown 0
+                via.DiameterStackMode = (PcbStackMode)reader.ReadByte();
+                for (int i = 0; i < 32; ++i)
+                {
+                    via.Diameters[i] = Coord.FromInt32(reader.ReadInt32());
+                }
+                reader.ReadInt16(); // TODO: Unknown 15
+                reader.ReadInt32(); // TODO: Unknown 259
+
+                return via;
+            });
         }
 
         private PcbTrack ReadFootprintTrack(BinaryReader reader)
