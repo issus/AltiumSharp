@@ -160,15 +160,17 @@ namespace AltiumSharp.BasicTypes
         public Layer(byte value) => _value = value;
         public byte ToByte() => _value;
 
+        internal LayerMetadata Metadata => LayerMetadata.Get(_value);
+
         /// <summary>
         /// Gets the internal name of a PCB layer.
         /// </summary>
-        public string Name => LayerMetadata.Get(_value)?.Name ?? "Unknown";
+        public string Name => Metadata?.Name ?? "Unknown";
 
         /// <summary>
         /// Gets the color to be used for this PCB layer.
         /// </summary>
-        public Color Color => LayerMetadata.Get(_value)?.Color ?? Color.Empty;
+        public Color Color => Metadata?.Color ?? Color.Empty;
 
         /// <summary>
         /// Gets the drawing priority for this PCB layer.
@@ -176,7 +178,9 @@ namespace AltiumSharp.BasicTypes
         /// The lower this number, the higher the priority.
         /// </para>
         /// </summary>
-        public int DrawPriority => LayerMetadata.Get(_value)?.DrawPriority ?? 0;
+        public int DrawPriority => Metadata?.DrawPriority ?? 0;
+
+        public override string ToString() => Name;
 
         /// <summary>
         /// Get a layer color from it's internal layer name.
