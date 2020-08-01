@@ -468,14 +468,6 @@ namespace AltiumSharp.Records
             FolderGuid = p["FOLDERGUID"].AsStringOrDefault();
             LifeCycleDefinitionGuid = p["LIFECYCLEDEFINITIONGUID"].AsStringOrDefault();
             RevisionNamingSchemeGuid = p["REVISIONNAMINGSCHEMEGUID"].AsStringOrDefault();
-
-            Console.WriteLine("-=-=-=-");
-            Console.WriteLine(p.Data);
-            Console.WriteLine();
-            Console.WriteLine(p.ToString());
-            Console.WriteLine("");
-            Console.WriteLine(ExportToParameters().ToString());
-            Console.WriteLine();
         }
 
         private void AddParamRecord(ParameterCollection p)
