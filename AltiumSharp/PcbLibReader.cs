@@ -586,12 +586,13 @@ namespace AltiumSharp
         {
             var body = new PcbComponentBody();
             var parameters = ReadFootprintCommonParametersAndOutline(reader, body, body.Outline);
-            body.Parameters = parameters;
+            body.ImportFromParameters(parameters);
             return body;
         }
 
         /// <summary>
-        /// Reads model information from the current file.
+        /// Reads model information from the current file, and assigns it to their respective
+        /// component bodies.
         /// Model information includes the model positioning parameters and its STEP data.
         /// </summary>
         /// <param name="library">Storage where to look for the models data.</param>
@@ -606,7 +607,7 @@ namespace AltiumSharp
                 for (var i = 0; i < recordCount; ++i)
                 {
                     var parameters = ReadBlock(reader, size => ReadParameters(reader, size));
-                    var modelName = parameters["NAME"].AsString();
+                    var modelId = parameters["ID"].AsString();
                     var modelCompressedData = models.GetStream($"{i}").GetData();
 
                     // models are stored as ASCII STEP files but using zlib compression
@@ -618,14 +619,12 @@ namespace AltiumSharp
                         }
                     });
 
-                    // TODO: parse STEP models
-                    if (!Data.Models.ContainsKey(modelName))
+                    // assign STEP data to component bodies
+                    var bodies = Data.Items.SelectMany(c => c.GetPrimitivesOfType<PcbComponentBody>(false))
+                        .Where(body => body.ModelId.ToUpperInvariant() == modelId.ToUpperInvariant());
+                    foreach (var body in bodies)
                     {
-                        Data.Models.Add(parameters["NAME"].AsString(), (parameters, stepModel));
-                    }
-                    else
-                    {
-                        EmitWarning($"Duplicated model name: {modelName}");
+                        body.StepModel = stepModel;
                     }
                 }
             }
@@ -683,8 +682,8 @@ namespace AltiumSharp
             var library = Cf.GetStorage("Library");
             var recordCount = ReadHeader(library);
 
-            ReadLibraryModels(library);
             ReadLibraryData(library);
+            ReadLibraryModels(library);
         }
     }
 }

@@ -64,8 +64,8 @@ namespace AltiumSharp
         {
             var library = Cf.RootStorage.GetOrAddStorage("Library");
             WriteHeader(library, 1);
-            WriteLibraryModels(library);
             WriteLibraryData(library);
+            WriteLibraryModels(library);
         }
 
         /// <summary>
@@ -431,30 +431,42 @@ namespace AltiumSharp
 
         private void WriteFootprintComponentBody(BinaryWriter writer, PcbComponentBody body)
         {
-            WriteFootprintCommonParametersAndOutline(writer, body, body.Parameters, body.Outline);
+            var parameters = body.ExportToParameters();
+            WriteFootprintCommonParametersAndOutline(writer, body, parameters, body.Outline);
         }
 
         /// <summary>
-        /// Writes model information.
+        /// Writes model information from component bodies.
         /// </summary>
         /// <param name="library">Storage where serialize the model data.</param>
-        /// <param name="data">List of model data.</param>
         private void WriteLibraryModels(CFStorage library)
         {
             var models = library.GetOrAddStorage("Models");
-            var data = Data.Models.Values.ToList();
-            WriteHeader(models, data.Count);
+            var bodies = Data.Items.SelectMany(c => c.GetPrimitivesOfType<PcbComponentBody>(false))
+                .Where(c => c.ModelEmbed).ToList();
+
+            WriteHeader(models, bodies.Count);
             models.GetOrAddStream("Data").Write(writer =>
             {
-                for (var i = 0; i < data.Count; ++i)
+                for (var i = 0; i < bodies.Count; ++i)
                 {
-                    var parameters = data[i].positioning;
-                    var stepModel = data[i].step;
+                    var body = bodies[i];
+                    var parameters = new ParameterCollection
+                    {
+                        { "ID", body.ModelId },
+                        { "ROTX", body.Model3DRotX },
+                        { "ROTY", body.Model3DRotY },
+                        { "ROTZ", body.Model3DRotZ },
+                        { "DZ", body.Model3DDz.ToInt32() },
+                        { "CHECKSUM", body.ModelChecksum },
+                        { "EMBED", body.ModelEmbed },
+                        { "NAME", body.Identifier + ".STEP" },
+                    };
 
                     WriteBlock(writer, w => WriteParameters(w, parameters));
 
                     // models are stored as ASCII STEP files but using zlib compression
-                    var modelCompressedData = CompressZlibData(Encoding.ASCII.GetBytes(stepModel));
+                    var modelCompressedData = CompressZlibData(Encoding.ASCII.GetBytes(body.StepModel));
                     models.GetOrAddStream($"{i}").SetData(modelCompressedData);
                 }
             });
