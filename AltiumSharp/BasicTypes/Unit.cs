@@ -97,7 +97,7 @@ namespace AltiumSharp.BasicTypes
         /// <param name="suffix">Suffix of the unit to be tested.</param>
         /// <returns></returns>
         private static bool TestIsUnitValue(string input, string suffix) =>
-            Regex.IsMatch(input, $@"^\s*\d+\.?\d*\s*{suffix}\s*$");
+            Regex.IsMatch(input, $@"^\s*[+-]?\s*\d+\.?\d*\s*{suffix}\s*$");
 
         /// <summary>
         /// Attempts to convert a string to a coordinate, if successful returns
