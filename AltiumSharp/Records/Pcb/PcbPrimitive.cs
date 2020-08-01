@@ -15,6 +15,13 @@ namespace AltiumSharp.Records
         ComponentBody
     }
 
+    public enum PcbStackMode
+    {
+        Simple,
+        TopMiddleBottom,
+        FullStack
+    }
+
     public class PcbPrimitiveDisplayInfo
     {
         public string Name { get; }

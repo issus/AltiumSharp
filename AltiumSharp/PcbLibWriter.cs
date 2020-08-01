@@ -221,7 +221,7 @@ namespace AltiumSharp
         {
             WriteStringBlock(writer, pad.Designator);
             WriteBlock(writer, new byte[] { 0 }); // TODO: Unknown
-            WriteStringBlock(writer, pad.UnknownString);
+            WriteStringBlock(writer, "|&|0");
             WriteBlock(writer, new byte[] { 0 }); // TODO: Unknown
 
             WriteBlock(writer, w =>
@@ -231,36 +231,41 @@ namespace AltiumSharp
                 WriteCoordPoint(w, pad.SizeMiddle);
                 WriteCoordPoint(w, pad.SizeBottom);
                 w.Write(pad.HoleSize.ToInt32());
-                w.Write((byte)pad.ShapeTop); // 72
-                w.Write((byte)pad.ShapeMiddle);
-                w.Write((byte)pad.ShapeBottom);
+                w.Write((byte)(pad.ShapeTop == PcbPadShape.RoundedRectangle ? PcbPadShape.Round : pad.ShapeTop)); // 72
+                w.Write((byte)(pad.ShapeMiddle == PcbPadShape.RoundedRectangle ? PcbPadShape.Round : pad.ShapeMiddle));
+                w.Write((byte)(pad.ShapeBottom == PcbPadShape.RoundedRectangle ? PcbPadShape.Round : pad.ShapeBottom));
                 w.Write((double)pad.Rotation);
-                w.Write(1L); // 83 constant value?
+                w.Write(pad.IsPlated);
+                w.Write((byte)0); // 91 constant value?
+                w.Write((byte)pad.StackMode);
+                w.Write((byte)0); // TODO: Unknown 0
+                w.Write(0); // TODO: Unknown 0
+                w.Write(Coord.FromMils(10)); // TODO: Unknown 10mil?
+                w.Write((short)4); // 102 constant value?
+                w.Write(Coord.FromMils(10)); // TODO: Unknown 10mil?
+                w.Write(Coord.FromMils(20)); // TODO: Unknown 20mil?
+                w.Write(Coord.FromMils(20)); // TODO: Unknown 20mil?
+                w.Write(pad.PasteMaskExpansion.ToInt32());
+                w.Write(pad.SolderMaskExpansion.ToInt32());
+                w.Write((byte)0); // TODO: Unknown 0
+                w.Write((byte)0); // TODO: Unknown 0
+                w.Write((byte)0); // TODO: Unknown 0
+                w.Write((byte)0); // TODO: Unknown 0/1
+                w.Write((byte)0); // TODO: Unknown 0/1
+                w.Write((byte)0); // TODO: Unknown 0/1
+                w.Write((byte)0); // TODO: Unknown 0/1
+                w.Write((byte)(pad.PasteMaskExpansionManual ? 2 : 0));
+                w.Write((byte)(pad.SolderMaskExpansionManual ? 2 : 1));
+                w.Write((byte)0); // TODO: Unknown 0/1
+                w.Write((byte)0); // TODO: Unknown 0
+                w.Write((byte)0); // TODO: Unknown 0
                 w.Write(0); // TODO: Unknown
-                w.Write((short)4); // 95 constant value?
-                w.Write(0); // TODO: Unknown
-                w.Write(0); // TODO: Unknown
-                w.Write(0); // TODO: Unknown
-                w.Write(0); // TODO: Unknown
-                w.Write(0); // TODO: Unknown
-                w.Write(0); // TODO: Unknown
-                w.Write(0); // TODO: Unknown
-                w.Write(0); // TODO: Unknown
-                w.Write(0); // 129 constant value?
-                
-                // blockSize > 114
-                w.Write(0); // TODO: Unknown
-                w.Write(pad.ToLayer.ToByte());
-                w.Write((byte)0); // TODO: Unknown
-                w.Write((byte)0); // TODO: Unknown
-                w.Write(pad.FromLayer.ToByte());
-                w.Write((byte)0); // TODO: Unknown
-                w.Write((byte)0); // TODO: Unknown
+                w.Write((short)pad.JumperId);
+                w.Write((short)0);
             });
 
             // Write size and shape and parts of hole information
-            if (pad.SizeMiddleLayers.Count == 29 && pad.ShapeMiddleLayers.Count == 29 &&
-                pad.OffsetsFromHoleCenter.Count == 32 && pad.CornerRadiusPercentage.Count == 32)
+            if (pad.NeedsFullStackData)
             {
                 WriteBlock(writer, w =>
                 {
@@ -278,8 +283,15 @@ namespace AltiumSharp
                     foreach (var offset in pad.OffsetsFromHoleCenter) w.Write(offset.X.ToInt32());
                     foreach (var offset in pad.OffsetsFromHoleCenter) w.Write(offset.Y.ToInt32());
 
-                    w.Write((byte)0); // TODO: Unknown
-                    w.Write(Enumerable.Repeat((byte)0, 32).ToArray()); // TODO: Unknown
+                    w.Write(pad.HasRoundedRectangles);
+                    if (pad.HasRoundedRectangles)
+                    {
+                        foreach (var padShape in pad.ShapeLayers) w.Write((byte)padShape);
+                    }
+                    else
+                    {
+                        foreach (var padShape in pad.ShapeLayers) w.Write((byte)PcbPadShape.Round); // write dummy value
+                    }
 
                     // 32 items
                     foreach (var crp in pad.CornerRadiusPercentage) w.Write((byte)crp);
@@ -312,7 +324,7 @@ namespace AltiumSharp
                 w.Write(Enumerable.Repeat((byte)0, 3).ToArray()); // TODO: Unknown 0s
                 w.Write(Enumerable.Repeat((byte)1, 4).ToArray()); // TODO: Unknown 1s
                 w.Write((byte)0); // TODO: Unknown 0
-                w.Write((byte)via.SolderMaskOptions);
+                w.Write((byte)(via.SolderMaskExpansionManual ? 2 : 1));
                 w.Write((byte)1); // TODO: Unknown 1
                 w.Write((short)0); // TODO: Unknown 0
                 w.Write(0); // TODO: Unknown 0

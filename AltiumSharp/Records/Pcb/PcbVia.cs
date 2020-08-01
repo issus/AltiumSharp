@@ -6,14 +6,6 @@ using AltiumSharp.Records;
 
 namespace AltiumSharp
 {
-    public enum PcbStackMode { Simple, TopMiddleBottom, FullStack }
-
-    public enum PcbViaSolderMaskOptions
-    {
-        Default = 1,
-        Override = 2
-    }
-
     public class PcbVia : PcbPrimitive
     {
         public override PcbPrimitiveDisplayInfo GetDisplayInfo() =>
@@ -28,8 +20,8 @@ namespace AltiumSharp
         public Coord ThermalReliefAirGapWidth { get; internal set; }
         public int ThermalReliefConductors { get; internal set; }
         public Coord ThermalReliefConductorsWidth { get; internal set; }
+        public bool SolderMaskExpansionManual { get; set; }
         public Coord SolderMaskExpansion { get; internal set; }
-        public PcbViaSolderMaskOptions SolderMaskOptions { get; set; }
         public PcbStackMode DiameterStackMode { get; set; }
         public IList<Coord> Diameters { get; } = new Coord[32];
         
@@ -65,8 +57,8 @@ namespace AltiumSharp
 
         public bool SolderMaskTentingBottom
         {
-            get => (Flags & 32) == 32;
-            set => Flags |= 32;
+            get => (Flags & 64) == 64;
+            set => Flags |= 64;
         }
 
         public PcbVia()
@@ -78,18 +70,18 @@ namespace AltiumSharp
             ThermalReliefAirGapWidth = Coord.FromMils(10);
             ThermalReliefConductors = 4;
             ThermalReliefConductorsWidth = Coord.FromMils(10);
-            SolderMaskOptions = PcbViaSolderMaskOptions.Default;
+            SolderMaskExpansionManual = false;
             SolderMaskExpansion = Coord.FromMils(4);
         }
 
         internal List<Layer> GetParts()
         {
             var result = new List<Layer>();
-            if (ToLayer.Name == "BottomLayer")
+            if (ToLayer.Name == "BottomLayer" && !SolderMaskTentingBottom)
             {
                 result.Add(LayerMetadata.Get("BottomSolder").Id);
             }
-            if (FromLayer.Name == "TopLayer")
+            if (FromLayer.Name == "TopLayer" && !SolderMaskTentingTop)
             {
                 result.Add(LayerMetadata.Get("TopSolder").Id);
             }
@@ -105,15 +97,17 @@ namespace AltiumSharp
 
         internal CoordRect CalculatePartRect(LayerMetadata metadata, bool useAbsolutePosition)
         {
-            var solderMaskExpansion = (SolderMaskOptions == PcbViaSolderMaskOptions.Override ? SolderMaskExpansion : Utils.MilsToCoord(8));
+            var solderMaskExpansion = SolderMaskExpansionManual ? SolderMaskExpansion : Utils.MilsToCoord(8);
+            var solderMaskExpansionTop = SolderMaskTentingTop ? Utils.MilsToCoord(0) : solderMaskExpansion;
+            var solderMaskExpansionBottom = SolderMaskTentingBottom ? Utils.MilsToCoord(0) : solderMaskExpansion;
             Coord diameter;
             if (metadata.Name == "TopSolder")
             {
-                diameter = DiameterTop + solderMaskExpansion;
+                diameter = DiameterTop + solderMaskExpansionTop;
             }
             else if (metadata.Name == "BottomSolder")
             {
-                diameter = DiameterBottom + solderMaskExpansion;
+                diameter = DiameterBottom + solderMaskExpansionBottom;
             }
             else if (metadata.Name == "MultiLayer")
             {

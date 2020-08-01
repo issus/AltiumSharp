@@ -272,8 +272,8 @@ namespace AltiumSharp
         {
             var pad = new PcbPad();
             pad.Designator = ReadStringBlock(reader);
-            ReadBlock(reader); // TODO: Unknown // 0
-            pad.UnknownString = ReadStringBlock(reader);
+            ReadBlock(reader); // TODO: Unknown 
+            ReadStringBlock(reader); // constant: |&|0
             ReadBlock(reader); // TODO: Unknown
 
             ReadBlock(reader, blockSize =>
@@ -290,28 +290,45 @@ namespace AltiumSharp
                 pad.ShapeMiddle = (PcbPadShape)reader.ReadByte();
                 pad.ShapeBottom = (PcbPadShape)reader.ReadByte();
                 pad.Rotation = reader.ReadDouble();
-                CheckValue("#83", reader.ReadInt64(), 1L);
-                reader.ReadInt32(); // TODO: Unknown
-                CheckValue("#95", reader.ReadInt16(), 4);
+                pad.IsPlated = reader.ReadBoolean();
+                CheckValue("#91", reader.ReadByte(), 0);
+                pad.StackMode = (PcbStackMode)reader.ReadByte();
+                reader.ReadByte(); // TODO: Unknown 0
+                reader.ReadInt32(); // TODO: Unknown 0
+                reader.ReadInt32(); // TODO: Unknown 10mil?
+                CheckValue("#102", reader.ReadInt16(), 4);
+                reader.ReadUInt32(); // TODO: Unknown 10mil?
+                reader.ReadUInt32(); // TODO: Unknown 20mil?
+                reader.ReadUInt32(); // TODO: Unknown 20mil?
+                pad.PasteMaskExpansion = Coord.FromInt32(reader.ReadInt32());
+                pad.SolderMaskExpansion = Coord.FromInt32(reader.ReadInt32());
+                reader.ReadByte(); // TODO: Unknown 0
+                reader.ReadByte(); // TODO: Unknown 0
+                reader.ReadByte(); // TODO: Unknown 0
+                reader.ReadByte(); // TODO: Unknown 0/1
+                reader.ReadByte(); // TODO: Unknown 0/1
+                reader.ReadByte(); // TODO: Unknown 0/1
+                reader.ReadByte(); // TODO: Unknown 0/1
+                pad.PasteMaskExpansionManual = reader.ReadByte() == 2;
+                pad.SolderMaskExpansionManual = reader.ReadByte() == 2;
+                reader.ReadByte(); // TODO: Unknown 0/1
+                reader.ReadByte(); // TODO: Unknown 0
+                reader.ReadByte(); // TODO: Unknown 0
                 reader.ReadUInt32(); // TODO: Unknown
-                reader.ReadUInt32(); // TODO: Unknown 
-                reader.ReadUInt32(); // TODO: Unknown 
-                reader.ReadUInt32(); // TODO: Unknown 
-                reader.ReadUInt32(); // TODO: Unknown
-                reader.ReadUInt32(); // TODO: Unknown
-                reader.ReadUInt32(); // TODO: Unknown 
-                reader.ReadUInt32(); // TODO: Unknown 
-                AssertValue<uint>("#129", reader.ReadUInt32(), 0);
+                pad.JumperId = reader.ReadInt16();
+                reader.ReadInt16();
+                /*
                 if (blockSize > 114)
                 {
                     reader.ReadUInt32(); // TODO: Unknown 
-                    pad.ToLayer = reader.ReadByte();
+                    pad.Layer = reader.ReadByte(); // Layer again?
                     reader.ReadByte(); // TODO: Unknown 
                     reader.ReadByte(); // TODO: Unknown 
                     pad.FromLayer = reader.ReadByte();
                     reader.ReadByte(); // TODO: Unknown 
                     reader.ReadByte(); // TODO: Unknown 
                 }
+                */
             });
 
             // Read size and shape and parts of hole information
@@ -324,11 +341,11 @@ namespace AltiumSharp
                 for (int i = 0; i < 29; ++i) padYSizes[i] = reader.ReadInt32();
                 for (int i = 0; i < 29; ++i)
                 {
-                    pad.SizeMiddleLayers.Add(new CoordPoint(padXSizes[i], padYSizes[i]));
+                    pad.SizeMiddleLayers[i] = new CoordPoint(padXSizes[i], padYSizes[i]);
                 }
-                for (int i = 0; i < 29; ++i)
+                for (int i = 1; i < 30; ++i)
                 {
-                    pad.ShapeMiddleLayers.Add((PcbPadShape)reader.ReadByte());
+                    pad.ShapeLayers[i] = (PcbPadShape)reader.ReadByte();
                 }
                 reader.ReadByte(); // TODO: Unknown
                 pad.HoleShape = (PcbPadHoleShape)reader.ReadByte();
@@ -346,13 +363,20 @@ namespace AltiumSharp
                 }
                 for (int i = 0; i < 32; ++i)
                 {
-                    pad.OffsetsFromHoleCenter.Add(new CoordPoint(offsetXFromHoleCenter[i], offsetYFromHoleCenter[i]));
+                    pad.OffsetsFromHoleCenter[i] = new CoordPoint(offsetXFromHoleCenter[i], offsetYFromHoleCenter[i]);
                 }
-                reader.ReadByte(); // TODO: Unknown
-                reader.ReadBytes(32); // TODO: Unknown
+                var hasRoundedRect = reader.ReadBoolean();
+                if (hasRoundedRect)
+                {
+                    for (int i = 0; i < 32; ++i) pad.ShapeLayers[i] = (PcbPadShape)reader.ReadByte();
+                }
+                else
+                {
+                    for (int i = 0; i < 32; ++i) reader.ReadByte(); // ignore values
+                }
                 for (int i = 0; i < 32; ++i)
                 {
-                    pad.CornerRadiusPercentage.Add(reader.ReadByte());
+                    pad.CornerRadiusPercentage[i] = reader.ReadByte();
                 }
             });
 
@@ -390,7 +414,7 @@ namespace AltiumSharp
                 reader.ReadByte(); // TODO: Unknown 1
                 reader.ReadByte(); // TODO: Unknown 1
                 reader.ReadByte(); // TODO: Unknown 0
-                via.SolderMaskOptions = (PcbViaSolderMaskOptions)reader.ReadByte();
+                via.SolderMaskExpansionManual = reader.ReadByte() == 2;
                 reader.ReadByte(); // TODO: Unknown 1
                 reader.ReadInt16(); // TODO: Unknown 0
                 reader.ReadInt32(); // TODO: Unknown 0

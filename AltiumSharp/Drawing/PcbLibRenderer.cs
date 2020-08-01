@@ -172,7 +172,6 @@ namespace AltiumSharp.Drawing
                 default:
                     return;
             }
-            cornerRadiusPercent = cornerRadiusPercent > 0 ? cornerRadiusPercent : 100;
 
             var rect = ScaleRect(pad.CalculatePartRect(padPart, false));
             using (var brush = new SolidBrush(color))
@@ -180,13 +179,17 @@ namespace AltiumSharp.Drawing
                 switch (shape)
                 {
                     case PcbPadShape.Round:
-                        DrawingUtils.FillRoundedRect(g, brush, rect, cornerRadiusPercent);
+                        DrawingUtils.FillRoundedRect(g, brush, rect, 100);
                         break;
                     case PcbPadShape.Rectangular:
                         DrawingUtils.FillRectangle(g, brush, rect);
                         break;
                     case PcbPadShape.Octogonal:
                         DrawingUtils.FillOctagon(g, brush, rect);
+                        break;
+                    case PcbPadShape.RoundedRectangle:
+                        cornerRadiusPercent = cornerRadiusPercent > 0 ? cornerRadiusPercent : 100;
+                        DrawingUtils.FillRoundedRect(g, brush, rect, cornerRadiusPercent);
                         break;
                     default:
                         return;
