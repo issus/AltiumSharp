@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tabComponents = new System.Windows.Forms.TabControl();
             this.tabPcbLib = new System.Windows.Forms.TabPage();
@@ -58,12 +58,15 @@
             this.labelPartTotal = new System.Windows.Forms.Label();
             this.editPart = new System.Windows.Forms.NumericUpDown();
             this.labelPart = new System.Windows.Forms.Label();
+            this.tabTree = new System.Windows.Forms.TabPage();
+            this.treeViewStructure = new System.Windows.Forms.TreeView();
             this.pictureBox = new System.Windows.Forms.Panel();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusLocation = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -77,6 +80,7 @@
             this.exportFootprintToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.exportPrimitiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.redrawTimer = new System.Windows.Forms.Timer(this.components);
@@ -101,6 +105,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.gridSchLibPrimitives)).BeginInit();
             this.panelPart.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.editPart)).BeginInit();
+            this.tabTree.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -127,6 +132,7 @@
             this.tabComponents.Alignment = System.Windows.Forms.TabAlignment.Bottom;
             this.tabComponents.Controls.Add(this.tabPcbLib);
             this.tabComponents.Controls.Add(this.tabSchLib);
+            this.tabComponents.Controls.Add(this.tabTree);
             this.tabComponents.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabComponents.Location = new System.Drawing.Point(0, 0);
             this.tabComponents.Name = "tabComponents";
@@ -256,9 +262,9 @@
             // gridPcbLibPrimitivesXSize
             // 
             this.gridPcbLibPrimitivesXSize.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle1.Format = "#####0.0#mm";
-            dataGridViewCellStyle1.NullValue = null;
-            this.gridPcbLibPrimitivesXSize.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Format = "#####0.0#mm";
+            dataGridViewCellStyle3.NullValue = null;
+            this.gridPcbLibPrimitivesXSize.DefaultCellStyle = dataGridViewCellStyle3;
             this.gridPcbLibPrimitivesXSize.HeaderText = "X-Size";
             this.gridPcbLibPrimitivesXSize.MinimumWidth = 40;
             this.gridPcbLibPrimitivesXSize.Name = "gridPcbLibPrimitivesXSize";
@@ -268,9 +274,9 @@
             // gridPcbLibPrimitivesYSize
             // 
             this.gridPcbLibPrimitivesYSize.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle2.Format = "#####0.0#mm";
-            dataGridViewCellStyle2.NullValue = null;
-            this.gridPcbLibPrimitivesYSize.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Format = "#####0.0#mm";
+            dataGridViewCellStyle4.NullValue = null;
+            this.gridPcbLibPrimitivesYSize.DefaultCellStyle = dataGridViewCellStyle4;
             this.gridPcbLibPrimitivesYSize.HeaderText = "Y-Size";
             this.gridPcbLibPrimitivesYSize.MinimumWidth = 40;
             this.gridPcbLibPrimitivesYSize.Name = "gridPcbLibPrimitivesYSize";
@@ -446,6 +452,27 @@
             this.labelPart.TabIndex = 0;
             this.labelPart.Text = "Part";
             // 
+            // tabTree
+            // 
+            this.tabTree.Controls.Add(this.treeViewStructure);
+            this.tabTree.Location = new System.Drawing.Point(4, 4);
+            this.tabTree.Name = "tabTree";
+            this.tabTree.Padding = new System.Windows.Forms.Padding(3);
+            this.tabTree.Size = new System.Drawing.Size(321, 487);
+            this.tabTree.TabIndex = 3;
+            this.tabTree.Text = "Tree";
+            this.tabTree.UseVisualStyleBackColor = true;
+            // 
+            // treeViewStructure
+            // 
+            this.treeViewStructure.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeViewStructure.Location = new System.Drawing.Point(3, 3);
+            this.treeViewStructure.Name = "treeViewStructure";
+            this.treeViewStructure.Size = new System.Drawing.Size(315, 481);
+            this.treeViewStructure.TabIndex = 0;
+            this.treeViewStructure.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewStructure_AfterSelect);
+            this.treeViewStructure.DoubleClick += new System.EventHandler(this.GridPrimitives_DoubleClick);
+            // 
             // pictureBox
             // 
             this.pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -489,6 +516,7 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripMenuItem,
+            this.saveAsToolStripMenuItem,
             this.toolStripMenuItem1,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -498,19 +526,26 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenToolStripMenuItem_Click);
+            // 
+            // saveAsToolStripMenuItem
+            // 
+            this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.saveAsToolStripMenuItem.Text = "Save As...";
+            this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.SaveAsToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(120, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
@@ -577,7 +612,8 @@
             this.exportToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exportFootprintToolStripMenuItem1,
             this.exportPrimitiveToolStripMenuItem,
-            this.exportImageToolStripMenuItem});
+            this.exportImageToolStripMenuItem,
+            this.testToolStripMenuItem});
             this.exportToolStripMenuItem1.Name = "exportToolStripMenuItem1";
             this.exportToolStripMenuItem1.Size = new System.Drawing.Size(52, 20);
             this.exportToolStripMenuItem1.Text = "Export";
@@ -603,9 +639,23 @@
             this.exportImageToolStripMenuItem.Text = "Export image";
             this.exportImageToolStripMenuItem.Click += new System.EventHandler(this.ExportImageToolStripMenuItem_Click);
             // 
+            // testToolStripMenuItem
+            // 
+            this.testToolStripMenuItem.Name = "testToolStripMenuItem";
+            this.testToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.testToolStripMenuItem.Text = "Test SchLib creation";
+            this.testToolStripMenuItem.Click += new System.EventHandler(this.testToolStripMenuItem_Click);
+            // 
+            // openFileDialog
+            // 
+            this.openFileDialog.Filter = "Supported files|*.pcblib;*.schlib;*.schdoc|PcbLib files|*.pcblib|SchLib files|*.s" +
+    "chlib|SchDoc files|*.schdoc|All files|*.*";
+            // 
             // saveFileDialog
             // 
             this.saveFileDialog.DefaultExt = "bin";
+            this.saveFileDialog.Filter = "Supported files|*.pcblib;*.schlib;*.schdoc|PcbLib files|*.pcblib|SchLib files|*.s" +
+    "chlib|SchDoc files|*.schdoc|All files|*.*";
             // 
             // redrawTimer
             // 
@@ -646,6 +696,7 @@
             this.panelPart.ResumeLayout(false);
             this.panelPart.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.editPart)).EndInit();
+            this.tabTree.ResumeLayout(false);
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
             this.menuStrip.ResumeLayout(false);
@@ -706,6 +757,10 @@
         private System.Windows.Forms.NumericUpDown editPart;
         private System.Windows.Forms.Label labelPart;
         private System.Windows.Forms.Label labelPartTotal;
+        private System.Windows.Forms.TabPage tabTree;
+        private System.Windows.Forms.TreeView treeViewStructure;
+        private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
     }
 }
 

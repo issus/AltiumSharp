@@ -16,8 +16,12 @@ namespace AltiumSharp.BasicTypes
     {
         private const NumberStyles Ns = NumberStyles.Any;
         private static readonly IFormatProvider Fp = CultureInfo.InvariantCulture;
-        internal static readonly string[] TrueValues = new string[] { "T", "TRUE" };
-        internal static readonly string[] FalseValues = new string[] { "F", "FALSE" };
+        internal static readonly string TrueValueShort = "T";
+        internal static readonly string TrueValueLong = "TRUE";
+        internal static readonly string FalseValueShort = "F";
+        internal static readonly string FalseValueLong = "FALSE";
+        internal static readonly string[] TrueValues = new string[] { TrueValueShort, TrueValueLong };
+        internal static readonly string[] FalseValues = new string[] { FalseValueShort, FalseValueLong };
         internal static readonly char[] ListSeparators = new[] { ',', '?' };
 
         private readonly string _data;
@@ -31,7 +35,7 @@ namespace AltiumSharp.BasicTypes
         /// <summary>
         /// Checks if the parameter value can be represented as ASCII
         /// </summary>
-        internal bool IsAscii() => Encoding.UTF8.GetByteCount(_data) == _data.Length;
+        internal bool IsAscii() => _data == null || Encoding.UTF8.GetByteCount(_data) == _data.Length;
 
         /// <summary>
         /// Gets the string representation of the UTF8 data that represents the value of this parameter.
@@ -42,7 +46,7 @@ namespace AltiumSharp.BasicTypes
         /// <summary>
         /// Gets the string representation of this parameter value.
         /// </summary>
-        public override string ToString() => _data;
+        public override string ToString() => AsString();
 
         /// <summary>
         /// Gets the string value of this parameter.
@@ -53,7 +57,7 @@ namespace AltiumSharp.BasicTypes
         /// Gets the string value of this parameter, or a default value.
         /// </summary>
         public string AsStringOrDefault(string defaultValue = default) =>
-            _data ?? defaultValue;
+            AsString() ?? defaultValue;
 
         /// <summary>
         /// Gets the integer value of this parameter.
@@ -249,6 +253,8 @@ namespace AltiumSharp.BasicTypes
         public override string ToString() =>
             Value.IsAscii() ? $"{Name}={Value}" : $"{Utf8Prefix}{Name}={Value.AsUtf8Data()}|||{Name}={Value}";
 
+        public string ToUnicodeString() => $"{Name}={Value}";
+
         #region 'boilerplate'
         public override bool Equals(object obj) => obj is Parameter other && this.Equals(other);
         public bool Equals(Parameter other) => Name == other.Name && Value == other.Value;
@@ -268,13 +274,16 @@ namespace AltiumSharp.BasicTypes
         private const char KeyValueSeparator = '=';
         private const char ListSeparator = ',';
 
-        private string _data;
-        private int _level;
+        public string Data { get; private set; }
+        public int Level { get; private set; }
+        public bool UseLongBooleans { get; set; }
+
         private string _record;
         private List<string> _keys;
         private Dictionary<string, Parameter> _parameters;
+        private string _bookmark;
 
-        private char EntrySeparator => EntrySeparators.ElementAtOrDefault(_level);
+        private char EntrySeparator => EntrySeparators.ElementAtOrDefault(Level);
 
         public ParameterCollection()
         {
@@ -286,13 +295,13 @@ namespace AltiumSharp.BasicTypes
         {
             _keys = new List<string>();
             _parameters = new Dictionary<string, Parameter>();
-            _data = data;
-            _level = level;
+            Data = data;
+            Level = level;
             ParseData();
         }
 
         /// <summary>
-        /// Parses the input <see cref="_data"/> and creates (key, value) pairs accordingly.
+        /// Parses the input <see cref="Data"/> and creates (key, value) pairs accordingly.
         /// </summary>
         private void ParseData()
         {
@@ -301,34 +310,38 @@ namespace AltiumSharp.BasicTypes
             // splits data into pipe-separated properties, and then each one into key=value pairs
             var sepKeyValue = new char[] { KeyValueSeparator };
 
-            var entries = _data.Split(new char[] { EntrySeparator }, StringSplitOptions.RemoveEmptyEntries)
+            var entries = Data.Split(new char[] { EntrySeparator }, StringSplitOptions.RemoveEmptyEntries)
                 .Select((line, index) => (index, line.Split(sepKeyValue, 2)));
             foreach (var (i, entryKeyValue) in entries)
             {
                 var key = (entryKeyValue.Length > 1) ? entryKeyValue[0] : "";
-                var value = entryKeyValue.Last();
+                var value = entryKeyValue.Last().TrimEnd('\r', '\n');
                 if (ignored.Contains(key))
                 {
                     continue;
                 }
-                else if (key.StartsWith(Parameter.Utf8Prefix, StringComparison.InvariantCultureIgnoreCase))
+                
+                if (key.StartsWith(Parameter.Utf8Prefix, StringComparison.InvariantCultureIgnoreCase))
                 {
                     key = key.Substring(Parameter.Utf8Prefix.Length);
                     value = Encoding.UTF8.GetString(Utils.Win1252Encoding.GetBytes(value));
                     ignored.Add(key); // ignore non-UTF8 key so this doesn't get overwritten
-                    AddData(key, value);
                 }
                 else if (key.ToUpperInvariant() == "RECORD")
                 {
                     if (string.IsNullOrEmpty(_record))
                     {
                         _record = value;
-                        AddData(key, value);
                     }
                     else if (value != _record)
                     {
                         throw new Exception();
                     }
+                }
+
+                if (Contains(key))
+                {
+                    AddKey(key, true);
                 }
                 else
                 {
@@ -346,76 +359,162 @@ namespace AltiumSharp.BasicTypes
             new ParameterCollection(data);
 
         /// <summary>
+        /// Gets the parameters that are actually with values.
+        /// </summary>
+        /// <returns>
+        /// Enumerable of the parameters with values.
+        /// </returns>
+        private IEnumerable<Parameter> GetParametersWithValues() =>
+            _keys.Where(k => _parameters.ContainsKey(k)).Select(k => _parameters[k]);
+
+        private string InternalToString(Func<Parameter, string> parameterSerializer)
+        {
+            var separator = EntrySeparator.ToString(CultureInfo.InvariantCulture);
+            var sb = new StringBuilder();
+            foreach (var p in GetParametersWithValues())
+            {
+                if (p.Name.ToUpperInvariant() == "RECORD" && sb.Length > 0)
+                {
+                    sb.Append('\r');
+                }
+                sb.Append(separator);
+                sb.Append(parameterSerializer(p));
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
         /// Generates a string version of the data contained in this <see cref="ParameterCollection"/>.
         /// </summary>
         /// <returns>String representaton of the current parameters.</returns>
-        public override string ToString()
-        {
-            return EntrySeparator + string.Join(EntrySeparator.ToString(CultureInfo.InvariantCulture),
-                _keys.Select(k => _parameters[k]).Select(p => p.ToString()));
-        }
+        public override string ToString() => InternalToString(p => p.ToString());
+
+        /// <summary>
+        /// Generates a string version that doesn't include special UTF8 versions of the values
+        /// of the data contained in this <see cref="ParameterCollection"/>.
+        /// </summary>
+        /// <returns>String representaton of the current parameters.</returns>
+        public string ToUnicodeString() => InternalToString(p => p.ToUnicodeString());
 
         /// <summary>
         /// Internal method used for adding a new (key, data) pair.
         /// </summary>
         /// <param name="key">Key of the value to be added.</param>
         /// <param name="data">String representation of the value to be added.</param>
-        private void AddData(string key, string data)
+        private void AddData(string key, string data, bool forceAddKey = false)
+        {
+            var parameterValue = new Parameter(key, data, Level);
+            
+            key = key?.ToUpperInvariant();
+            AddKey(key, forceAddKey);
+            _parameters[key] = parameterValue;
+        }
+
+        /// <summary>
+        /// Method used for adding a new key as placeholder without any value.
+        /// </summary>
+        /// <param name="key">Key to be added.</param>
+        /// <param name="forceAddKey">If true the key is added even if it already exists.</param>
+        public void AddKey(string key, bool forceAddKey = false)
         {
             key = key?.ToUpperInvariant();
-            var parameterValue = new Parameter(key, data, _level);
-            if (_parameters.ContainsKey(key))
+            if (forceAddKey || !_parameters.ContainsKey(key))
+            { 
+                _keys.Add(key);
+            }
+        }
+
+        /// <summary>
+        /// Adds a key with some value, ignoring it if the value is default.
+        /// </summary>
+        private void AddData<T>(string key, T value, bool ignoreDefaultValue)
+        {
+            if (!(ignoreDefaultValue && EqualityComparer<T>.Default.Equals(value, default)))
             {
-                _parameters[key] = parameterValue;
+                if (value is IConvertible convertible)
+                {
+                    AddData(key, convertible.ToString(CultureInfo.InvariantCulture));
+                }
+                else
+                {
+                    AddData(key, value.ToString());
+                }
             }
             else
             {
-                _parameters.Add(key, parameterValue);
-                _keys.Add(key);
+                AddKey(key);
             }
         }
 
         /// <summary>
         /// Adds a key with a string value.
         /// </summary>
-        public void Add(string key, string value) =>
-            AddData(key, value);
+        public void Add(string key, string value, bool ignoreDefaultValue = true) =>
+            AddData(key, value, ignoreDefaultValue);
 
         /// <summary>
         /// Adds a key with a integer value.
         /// </summary>
-        public void Add(string key, int value) =>
-            AddData(key, value.ToString(CultureInfo.InvariantCulture));
+        public void Add(string key, int value, bool ignoreDefaultValue = true) =>
+            AddData(key, value, ignoreDefaultValue);
 
         /// <summary>
         /// Adds a key with an enum value.
         /// </summary>
-        public void Add<T>(string key, T value) where T : Enum =>
-            Add(key, Convert.ToInt32(value, CultureInfo.InvariantCulture));
+        public void Add<T>(string key, T value, bool ignoreDefaultValue = true) where T : Enum =>
+            AddData(key, Convert.ToInt32(value, CultureInfo.InvariantCulture), ignoreDefaultValue);
 
         /// <summary>
         /// Adds a key with a double floating point value.
         /// </summary>
-        public void Add(string key, double value) =>
-            AddData(key, value.ToString(CultureInfo.InvariantCulture));
+        public void Add(string key, double value, bool ignoreDefaultValue = true, int decimals = 6)
+        {
+            if (!ignoreDefaultValue || value != 0)
+            {
+                var format = "#########0." + string.Concat(Enumerable.Repeat("0", decimals)) + string.Concat(Enumerable.Repeat("#", 6 - decimals));
+                AddData(key, value.ToString(format, CultureInfo.InvariantCulture));
+            }
+            else
+            {
+                AddKey(key);
+            }
+        }
 
         /// <summary>
         /// Adds a key with a boolean value.
         /// </summary>
-        public void Add(string key, bool value) =>
-            AddData(key, value ? ParameterValue.TrueValues.First() : ParameterValue.FalseValues.First());
+        public void Add(string key, bool value, bool ignoreDefaultValue = true)
+        {
+            if (!ignoreDefaultValue || value)
+            {
+                AddData(key, value ? ParameterValue.TrueValues[UseLongBooleans ? 1 : 0] : ParameterValue.FalseValues[UseLongBooleans ? 1 : 0]);
+            }
+            else
+            {
+                AddKey(key);
+            }
+        }
 
         /// <summary>
-        /// Adds a key with a coordinate value.
+        /// Adds a key with a coordinate value as mils.
         /// </summary>
-        public void Add(string key, Coord value) =>
-            AddData(key, Utils.CoordUnitToString(value, Unit.Mil));
+        public void Add(string key, Coord value, bool ignoreDefaultValue = true)
+        {
+            if (!ignoreDefaultValue || (int)value != 0)
+            {
+                AddData(key, value.ToMils().ToString("#####0.#####mil", CultureInfo.InvariantCulture));
+            }
+            else
+            {
+                AddKey(key);
+            }
+        }
 
         /// <summary>
         /// Adds a key with a color value.
         /// </summary>
-        public void Add(string key, Color value) =>
-            AddData(key, ColorTranslator.ToWin32(value).ToString(CultureInfo.InvariantCulture));
+        public void Add(string key, Color value, bool ignoreDefaultValue = true) =>
+            AddData(key, ColorTranslator.ToWin32(value), ignoreDefaultValue);
 
         /// <summary>
         /// Removes a key entry from the parameters list collection.
@@ -443,6 +542,45 @@ namespace AltiumSharp.BasicTypes
         public string GetKey(int index) => _keys[index];
 
         /// <summary>
+        /// Moves a key to the end of the list of keys, if the key already exists
+        /// then it is moved to the end of the list of keys, allowing to reposition
+        /// parameters.
+        /// </summary>
+        public void MoveKey(string key)
+        {
+            _keys.RemoveAll(k => key?.ToUpperInvariant() == k);
+            _keys.Add(key?.ToUpperInvariant());
+        }
+
+        /// <summary>
+        /// Moves a sequence of consecutive keys, begining with <paramref name="startKey"/>
+        /// up until the bookmark ,to the end of the list of keys.
+        /// When <paramref name="updateExisting"/> is true if the key already exists,
+        /// then it is moved to the end of the list of keys, allowing to reposition
+        /// parameters.
+        /// </summary>
+        public void MoveKeys(string startKey, bool updateExisting = true)
+        {
+            var startIndex = IndexOf(startKey);
+            if (startIndex < 0) return;
+
+            for (int i = startIndex; i < KeyCount; ++i)
+            {
+                var key = _keys[i];
+                AddKey(key, true);
+                if (updateExisting) _keys[i] = null; // tag for removal
+
+                if (key == _bookmark) break;
+            }
+            if (updateExisting)
+            {
+                _keys.RemoveAll(k => k == null);
+            }
+        }
+
+        public void SetBookmark() => _bookmark = _keys.LastOrDefault();
+
+        /// <summary>
         /// Gets a parameter value from its key.
         /// </summary>
         public ParameterValue this[string key]
@@ -463,7 +601,7 @@ namespace AltiumSharp.BasicTypes
         /// <summary>
         /// Gets a <see cref="Parameter"/> (key, value) descriptor for a given parameter index.
         /// </summary>
-        public Parameter this[int index] => _parameters[_keys[index]];
+        public Parameter this[int index] => _parameters.TryGetValue(_keys[index], out var parameter) ? parameter : default;
 
         /// <summary>
         /// Tries to get a <paramref name="key"/> value, and returns it if it exists.
@@ -501,9 +639,9 @@ namespace AltiumSharp.BasicTypes
         /// <returns></returns>
         public IEnumerator<(string key, ParameterValue value)> GetEnumerator()
         {
-            foreach (var key in _keys)
+            foreach (var p in GetParametersWithValues())
             {
-                yield return (key, _parameters[key].Value);
+                yield return (p.Name, p.Value);
             }
         }
 
@@ -513,6 +651,11 @@ namespace AltiumSharp.BasicTypes
         /// </summary>
         /// <returns></returns>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        /// <summary>
+        /// Returns the number of defined keys even if they have no value.
+        /// </summary>
+        public int KeyCount => _keys.Count;
 
         /// <summary>
         /// Returns the number of existing parameters.

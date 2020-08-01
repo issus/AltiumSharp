@@ -40,7 +40,7 @@ namespace AltiumSharp.BasicTypes
             num * 10.0 + frac / 10000.0;
 
         public static (int num, int frac) MilsToDxpFrac(double mils) =>
-            ((int)mils / 10, (int)Math.Round((mils - Math.Truncate(mils)) * 10000));
+            ((int)mils / 10, (int)Math.Round((mils / 10.0 - Math.Truncate(mils / 10.0)) * 100000));
 
         public static (int num, int frac) CoordToDxpFrac(Coord coord) =>
             MilsToDxpFrac(CoordToMils(coord));
@@ -101,6 +101,18 @@ namespace AltiumSharp.BasicTypes
                 points[i] = new CoordPoint(anchor.X + (int)rotatedX, anchor.Y + (int)rotatedY);
             }
             return ref points;
+        }
+
+        private static Random rng = new Random();
+
+        public static string GenerateUniqueId()
+        {
+            var result = new char[8];
+            for (int i = 0; i < 8; ++i)
+            {
+                result[i] = (char)rng.Next('A', 'Y' + 1);
+            }
+            return new string(result);
         }
     }
 }

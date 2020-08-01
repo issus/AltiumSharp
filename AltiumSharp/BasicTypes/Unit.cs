@@ -97,7 +97,7 @@ namespace AltiumSharp.BasicTypes
         /// <param name="suffix">Suffix of the unit to be tested.</param>
         /// <returns></returns>
         private static bool TestIsUnitValue(string input, string suffix) =>
-            Regex.IsMatch(input, $@"^\s*\d+\.?\d*\s*{suffix}\s*$");
+            Regex.IsMatch(input, $@"^\s*[+-]?\s*\d+\.?\d*\s*{suffix}\s*$");
 
         /// <summary>
         /// Attempts to convert a string to a coordinate, if successful returns
@@ -151,8 +151,8 @@ namespace AltiumSharp.BasicTypes
         /// <param name="grid">
         /// Grid spacing. If <paramref name="grid"/> &gt; 1 then snaps
         /// coordinate values to the nearest coordinate according to the grid spacing.</param>
-        /// /// <returns></returns>
-        public static string CoordUnitToString(Coord coord, Unit unit, int grid)
+        /// <returns></returns>
+        public static string CoordUnitToString(Coord coord, Unit unit, Coord grid)
         {
             if (unit._value < 0 || unit._value >= _metadata.Length)
             {

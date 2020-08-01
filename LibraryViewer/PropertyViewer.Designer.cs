@@ -43,7 +43,7 @@
             this.propertyGrid.SelectedObject = this;
             this.propertyGrid.Size = new System.Drawing.Size(284, 430);
             this.propertyGrid.TabIndex = 0;
-            this.propertyGrid.ToolbarVisible = false;
+            this.propertyGrid.Click += new System.EventHandler(this.propertyGrid_Click);
             // 
             // comboBoxObjects
             // 

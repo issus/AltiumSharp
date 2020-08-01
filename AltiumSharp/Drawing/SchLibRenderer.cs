@@ -13,16 +13,14 @@ namespace AltiumSharp.Drawing
 {
     public sealed class SchLibRenderer : Renderer
     {
-        private SheetRecord _sheet;
-        private Dictionary<string, Image> _embeddedImages;
-        private List<SchComponent> _assets;
+        private SchDocumentHeader _header;
+        private SchLib _assets;
 
         public int Part { get; set; }
 
-        public SchLibRenderer(SheetRecord sheet, Dictionary<string, Image> embeddedImages, List<SchComponent> assets)
+        public SchLibRenderer(SchDocumentHeader header, SchLib assets)
         {
-            _sheet = sheet;
-            _embeddedImages = embeddedImages;
+            _header = header;
             _assets = assets;
             Part = 1;
         }
@@ -36,8 +34,8 @@ namespace AltiumSharp.Drawing
         /// <returns></returns>
         private Font CreateFont(int fontId)
         {
-            if (fontId == 0) fontId = _sheet.SystemFont;
-            var f = _sheet.FontId[fontId - 1];
+            if (fontId == 0) fontId = _header.SystemFont;
+            var f = _header.FontId[fontId - 1];
             var fontStyle = FontStyle.Regular;
             if (f.Italic) fontStyle |= FontStyle.Italic;
             if (f.Bold) fontStyle |= FontStyle.Bold;
@@ -48,7 +46,7 @@ namespace AltiumSharp.Drawing
 
         private IEnumerable<SchPrimitive> GetAsset(string name)
         {
-            return _assets.SingleOrDefault(c => c.Name == name)?.Primitives.Where(p => p.IsVisible);
+            return _assets.Items.SingleOrDefault(c => c.LibReference == name)?.GetAllPrimitives().Where(p => p.IsVisible);
         }
 
         /// <summary>
@@ -128,66 +126,71 @@ namespace AltiumSharp.Drawing
 
                 switch (primitive)
                 {
-                    case PinRecord pin:
+                    case SchPin pin:
                         RenderPinPrimitive(graphics, pin);
                         break;
-                    case SymbolRecord symbol:
+                    case SchSymbol symbol:
                         RenderSymbolPrimitive(graphics, symbol);
                         break;
-                    case TextStringRecord textString:
-                        // this can handle Record34 and Record41 through inheritance
-                        RenderTextStringPrimitive(graphics, textString);
-                        break;
-                    case BezierRecord bezier:
-                        RenderBezierPrimitive(graphics, bezier);
-                        break;
-                    case PolylineRecord polyline:
-                        RenderPolylinePrimitive(graphics, polyline);
-                        break;
-                    case PolygonRecord polygon:
-                        RenderPolygonPrimitive(graphics, polygon);
-                        break;
-                    case EllipseRecord ellipse:
-                        RenderEllipsePrimitive(graphics, ellipse);
-                        break;
-                    case PieChartRecord pieChart:
-                        RenderPieChartPrimitive(graphics, pieChart);
-                        break;
-                    case RoundedRectangleRecord roundedRect:
-                        RenderRoundedRectPrimitive(graphics, roundedRect);
-                        break;
-                    case ArcRecord arc:
-                        // this can handle Record11 through inheritance
-                        RenderArcPrimitive(graphics, arc);
-                        break;
-                    case LineRecord line:
-                        RenderLinePrimitive(graphics, line);
-                        break;
-                    case RectangleRecord rectangle:
-                        RenderRectanglePrimitive(graphics, rectangle);
-                        break;
-                    case PowerPortRecord powerPort:
+                    case SchPowerObject powerPort:
                         RenderPowerPortPrimitive(graphics, powerPort);
                         break;
-                    case TextFrameRecord textFrame:
+                    case SchLabel textString:
+                        // this can handle SchDesignator and SchParameter through inheritance
+                        RenderTextStringPrimitive(graphics, textString);
+                        break;
+                    case SchBezier bezier:
+                        RenderBezierPrimitive(graphics, bezier);
+                        break;
+                    case SchPolyline polyline:
+                        RenderBasicPolyline(graphics, polyline);
+                        break;
+                    case SchWire wire:
+                        RenderBasicPolyline(graphics, wire);
+                        break;
+                    case SchPolygon polygon:
+                        RenderPolygonPrimitive(graphics, polygon);
+                        break;
+                    case SchEllipse ellipse:
+                        RenderEllipsePrimitive(graphics, ellipse);
+                        break;
+                    case SchPie pieChart:
+                        RenderPieChartPrimitive(graphics, pieChart);
+                        break;
+                    case SchRoundedRectangle roundedRect:
+                        RenderRoundedRectPrimitive(graphics, roundedRect);
+                        break;
+                    case SchArc arc:
+                        // this can handle SchEllipticalArc through inheritance
+                        RenderArcPrimitive(graphics, arc);
+                        break;
+                    case SchLine line:
+                        RenderLinePrimitive(graphics, line);
+                        break;
+                    case SchImage image:
+                        RenderImagePrimitive(graphics, image);
+                        break;
+                    case SchTextFrame textFrame:
                         RenderTextFramePrimitive(graphics, textFrame);
                         break;
-                    case JunctionRecord junction:
-                        RenderJunctionPrimitive(graphics, junction);
+                    case SchRectangle rectangle:
+                        RenderRectanglePrimitive(graphics, rectangle);
                         break;
-                    case ImageRecord image:
-                        RenderImagePrimitive(graphics, image);
+                    case SchJunction junction:
+                        RenderJunctionPrimitive(graphics, junction);
                         break;
                 }
                 graphics.EndContainer(graphicsContainer);
             }
         }
 
-        private void RenderAt(Graphics graphics, bool fastRendering, CoordPoint location, float angle, Action callback)
+        private void RenderAt(Graphics graphics, bool fastRendering, CoordPoint location, float angle, Color penColorOverride, Action callback)
         {
+            var savePenColorOverride = PenColorOverride;
             var center = Center;
             try
             {
+                PenColorOverride = penColorOverride;
                 Center = new CoordPoint(center.X - location.X, center.Y - location.Y);
 
                 var graphicsContainer = graphics.BeginContainer();
@@ -205,13 +208,14 @@ namespace AltiumSharp.Drawing
             }
             finally
             {
+                PenColorOverride = savePenColorOverride;
                 Center = center;
             }
         }
 
-        private void RenderPrimitivesAt(Graphics graphics, bool fastRendering, CoordPoint location, float angle, IEnumerable<SchPrimitive> primitives)
+        private void RenderPrimitivesAt(Graphics graphics, bool fastRendering, CoordPoint location, float angle, IEnumerable<SchPrimitive> primitives, Color penColorOverride)
         {
-            RenderAt(graphics, fastRendering, location, angle, () =>
+            RenderAt(graphics, fastRendering, location, angle, penColorOverride, () =>
             {
                 RenderPrimitives(graphics, fastRendering, primitives);
             });
@@ -239,7 +243,7 @@ namespace AltiumSharp.Drawing
             }
         }
 
-        private void RenderPinPrimitive(Graphics g, PinRecord pin)
+        private void RenderPinPrimitive(Graphics g, SchPin pin)
         {
             var location = ScreenFromWorld(pin.Location.X, pin.Location.Y);
             g.TranslateTransform(location.X, location.Y);
@@ -269,7 +273,7 @@ namespace AltiumSharp.Drawing
             using (var brush = new SolidBrush(pin.Color))
             using (var font = CreateFont(0))
             {
-                if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.DisplayNameVisible))
+                if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.DisplayNameVisible) && !string.IsNullOrEmpty(pin.Name))
                 {
                     var x = ScalePixelLength(-5.0f) * direction;
                     var displayName = pin.Name.Replace(@"\", "");
@@ -282,7 +286,7 @@ namespace AltiumSharp.Drawing
                     }
                 }
 
-                if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.DesignatorVisible))
+                if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.DesignatorVisible) && !string.IsNullOrEmpty(pin.Designator))
                 {
                     DrawingUtils.DrawString(g, pin.Designator, font, brush,
                         ScalePixelLength(8.0f) * direction, 0,
@@ -291,12 +295,12 @@ namespace AltiumSharp.Drawing
             }
         }
 
-        private void RenderSymbolPrimitive(Graphics graphics, SymbolRecord symbol)
+        private void RenderSymbolPrimitive(Graphics graphics, SchSymbol symbol)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
-        private void RenderTextStringPrimitive(Graphics g, TextStringRecord textString)
+        private void RenderTextStringPrimitive(Graphics g, SchLabel textString)
         {
             var location = ScreenFromWorld(textString.Location.X, textString.Location.Y);
             using (var brush = new SolidBrush(textString.Color))
@@ -339,14 +343,13 @@ namespace AltiumSharp.Drawing
                 }
 
                 g.TranslateTransform(location.X, location.Y);
-                if (textString.Orientations.HasFlag(TextOrientations.Rotated))
+                if (textString.Orientation.HasFlag(TextOrientations.Rotated))
                 {
                     g.RotateTransform(-90);
                 }
-                if (textString.Orientations.HasFlag(TextOrientations.Flipped))
+                if (textString.Orientation.HasFlag(TextOrientations.Flipped))
                 {
-                    horizontalAlignment = StringAlignment.Far - (int)horizontalAlignment;
-                    verticalAlignment = StringAlignment.Far - (int)verticalAlignment;
+                    g.RotateTransform(-180);
                 }
 
                 var displayText = ProcessStringIndirection(textString, textString.DisplayText);
@@ -376,9 +379,9 @@ namespace AltiumSharp.Drawing
             return parameter?.DisplayText ?? parameterName;
         }
 
-        private Record41 FindParameter(SchPrimitive primitive, string parameterName)
+        private SchParameter FindParameter(SchPrimitive primitive, string parameterName)
         {
-            Record41 parameterRecord = null;
+            SchParameter parameterRecord = null;
             while (parameterRecord == null && primitive != null)
             {
                 parameterRecord = FindParameterInContainer(primitive, parameterName);
@@ -391,18 +394,18 @@ namespace AltiumSharp.Drawing
             return parameterRecord;
         }
 
-        private static Record41 FindParameterInContainer(IContainer container, string parameterName)
+        private static SchParameter FindParameterInContainer(IContainer container, string parameterName)
         {
-            return container.GetPrimitivesOfType<Record41>(false)
+            return container.GetPrimitivesOfType<SchParameter>(false)
                 .FirstOrDefault(p => p.Name.ToUpperInvariant() == parameterName.ToUpperInvariant());
         }
 
-        private void RenderBezierPrimitive(Graphics g, BezierRecord bezier)
+        private void RenderBezierPrimitive(Graphics g, SchBezier bezier)
         {
             var penWidth = ScaleLineWidth(bezier.LineWidth);
             using (var pen = CreatePen(bezier.Color, penWidth))
             {
-                var points = bezier.Location.Select(coordxy => ScreenFromWorld(coordxy)).ToArray();
+                var points = bezier.Vertices.Select(coordxy => ScreenFromWorld(coordxy)).ToArray();
                 g.DrawBezier(pen, points[0], points[1], points[2], points[3]);
             }
         }
@@ -512,33 +515,13 @@ namespace AltiumSharp.Drawing
             }
         }
 
-        private void RenderPolylinePrimitive(Graphics g, PolylineRecord polyline)
-        {
-            // this line cap size and scaling was accomplished after a lot of tinkering
-            // and working around limitations of the System.Drawing library that does
-            // things weird when the pen width is less than 2 pixels
-            var penWidth = ScaleLineWidth(polyline.LineWidth);
-            var scaleStroke = Math.Max(1.0f, (polyline.LineShapeSize + 1));
-            var scaleFill = Math.Max(1.0f, (polyline.LineShapeSize + 1));
+        private void RenderBasicPolyline(Graphics g, SchBasicPolyline basicPolyline) { 
+            var penWidth = basicPolyline.LineWidth == 0 ? 1.0f : ScaleLineWidth(basicPolyline.LineWidth);
 
-            if (polyline.LineWidth == 0)
-            {
-                // if line width is 0 (hairline) then here we use 1 pixel as things go badly
-                // if the pen width is close to zero
-                scaleStroke *= ScaleLineWidth(LineWidth.Small);
-                scaleFill *= ScaleLineWidth(LineWidth.Small) * 0.5f;
-                penWidth = 1.0f;
-            }
-            else if (penWidth < 2.0f)
-            {
-                scaleStroke *= 1.0f;
-                scaleFill *= ScaleLineWidth(LineWidth.Small) * 0.5f;
-            }
-
-            using (var pen = CreatePen(polyline.Color, penWidth))
+            using (var pen = CreatePen(basicPolyline.Color, penWidth))
             {
                 pen.DashCap = DashCap.Round;
-                switch (polyline.LineStyle)
+                switch (basicPolyline.LineStyle)
                 {
                     case LineStyle.Dashed:
                         pen.DashStyle = DashStyle.Dash;
@@ -551,30 +534,52 @@ namespace AltiumSharp.Drawing
                         break;
                 }
 
-                if (polyline.StartLineShape != LineShape.None)
+                if (basicPolyline is SchPolyline polyline)
                 {
-                    pen.StartCap = LineCap.Custom;
-                    pen.CustomStartCap = GetLineShapeCap(polyline.StartLineShape, scaleFill, scaleStroke);
+                    // this line cap size and scaling was accomplished after a lot of tinkering
+                    // and working around limitations of the System.Drawing library that does
+                    // things weird when the pen width is less than 2 pixels
+                    var scaleStroke = Math.Max(1.0f, (polyline.LineShapeSize + 1));
+                    var scaleFill = Math.Max(1.0f, (polyline.LineShapeSize + 1));
+
+                    if (polyline.LineWidth == 0)
+                    {
+                        // if line width is 0 (hairline) then here we use 1 pixel as things go badly
+                        // if the pen width is close to zero
+                        scaleStroke *= ScaleLineWidth(LineWidth.Small);
+                        scaleFill *= ScaleLineWidth(LineWidth.Small) * 0.5f;
+                    }
+                    else if (penWidth < 2.0f)
+                    {
+                        scaleStroke *= 1.0f;
+                        scaleFill *= ScaleLineWidth(LineWidth.Small) * 0.5f;
+                    }
+
+                    if (polyline.StartLineShape != LineShape.None)
+                    {
+                        pen.StartCap = LineCap.Custom;
+                        pen.CustomStartCap = GetLineShapeCap(polyline.StartLineShape, scaleFill, scaleStroke);
+                    }
+
+                    if (polyline.EndLineShape != LineShape.None)
+                    {
+                        pen.EndCap = LineCap.Custom;
+                        pen.CustomEndCap = GetLineShapeCap(polyline.EndLineShape, scaleFill, scaleStroke);
+                    }
                 }
 
-                if (polyline.EndLineShape != LineShape.None)
-                {
-                    pen.EndCap = LineCap.Custom;
-                    pen.CustomEndCap = GetLineShapeCap(polyline.EndLineShape, scaleFill, scaleStroke);
-                }
-
-                var points = polyline.Location.Select(loc => ScreenFromWorld(loc)).ToArray();
+                var points = basicPolyline.Vertices.Select(loc => ScreenFromWorld(loc)).ToArray();
                 g.DrawLines(pen, points);
             }
         }
 
-        private void RenderPolygonPrimitive(Graphics g, PolygonRecord polygon)
+        private void RenderPolygonPrimitive(Graphics g, SchPolygon polygon)
         {
             var penWidth = ScaleLineWidth(polygon.LineWidth);
             using (var brush = new SolidBrush(polygon.AreaColor))
             using (var pen = CreatePen(polygon.Color, penWidth))
             {
-                var points = polygon.Location.Select(coordxy => ScreenFromWorld(coordxy)).ToArray();
+                var points = polygon.Vertices.Select(coordxy => ScreenFromWorld(coordxy)).ToArray();
                 if (polygon.IsSolid)
                 {
                     g.FillPolygon(brush, points);
@@ -583,7 +588,7 @@ namespace AltiumSharp.Drawing
             }
         }
 
-        private void RenderEllipsePrimitive(Graphics g, EllipseRecord ellipse)
+        private void RenderEllipsePrimitive(Graphics g, SchEllipse ellipse)
         {
             var penWidth = ScaleLineWidth(ellipse.LineWidth);
             using (var pen = CreatePen(ellipse.Color, penWidth))
@@ -600,7 +605,7 @@ namespace AltiumSharp.Drawing
             }
         }
 
-        private void RenderPieChartPrimitive(Graphics g, PieChartRecord pieChart)
+        private void RenderPieChartPrimitive(Graphics g, SchPie pieChart)
         {
             var penWidth = ScaleLineWidth(pieChart.LineWidth);
             using (var brush = new SolidBrush(pieChart.AreaColor))
@@ -617,11 +622,11 @@ namespace AltiumSharp.Drawing
             }
         }
 
-        private void RenderRoundedRectPrimitive(Graphics g, RoundedRectangleRecord roundedRect)
+        private void RenderRoundedRectPrimitive(Graphics g, SchRoundedRectangle roundedRect)
         {
             var rect = ScreenFromWorld(roundedRect.CalculateBounds());
-            var radiusX = ScalePixelLength(roundedRect.CornerXRadius);
-            var radiusY = ScalePixelLength(roundedRect.CornerYRadius);
+            var radiusX = ScaleCoord(roundedRect.CornerXRadius);
+            var radiusY = ScaleCoord(roundedRect.CornerYRadius);
 
             if (roundedRect.IsSolid)
             {
@@ -638,7 +643,7 @@ namespace AltiumSharp.Drawing
             }
         }
 
-        private void RenderArcPrimitive(Graphics g, ArcRecord arc)
+        private void RenderArcPrimitive(Graphics g, SchArc arc)
         {
             var penWidth = ScaleLineWidth(arc.LineWidth);
             using (var pen = CreatePen(arc.Color, penWidth))
@@ -651,7 +656,7 @@ namespace AltiumSharp.Drawing
             }
         }
 
-        private void RenderLinePrimitive(Graphics g, LineRecord line)
+        private void RenderLinePrimitive(Graphics g, SchLine line)
         {
             var penWidth = ScaleLineWidth(line.LineWidth);
             using (var pen = CreatePen(line.Color, penWidth))
@@ -662,7 +667,7 @@ namespace AltiumSharp.Drawing
             }
         }
 
-        private void RenderRectanglePrimitive(Graphics g, RectangleRecord rectangle)
+        private void RenderRectanglePrimitive(Graphics g, SchRectangle rectangle)
         {
             var rect = ScreenFromWorld(rectangle.CalculateBounds());
             if (rectangle.IsSolid)
@@ -680,7 +685,7 @@ namespace AltiumSharp.Drawing
             }
         }
 
-        private void RenderPowerPortPrimitive(Graphics g, PowerPortRecord powerPort)
+        private void RenderPowerPortPrimitive(Graphics g, SchPowerObject powerPort)
         {
             var location = ScreenFromWorld(powerPort.Location.X, powerPort.Location.Y);
 
@@ -689,7 +694,7 @@ namespace AltiumSharp.Drawing
 
             if (symbolPrimitives == null) return;
 
-            var netNameAnchor = symbolPrimitives?.OfType<TextStringRecord>()
+            var netNameAnchor = symbolPrimitives?.OfType<SchLabel>()
                 .SingleOrDefault(t => t.Text == "=NET");
 
             float angle = 0.0f;
@@ -703,7 +708,7 @@ namespace AltiumSharp.Drawing
                 angle -= 180.0f;
             }
 
-            RenderPrimitivesAt(g, false, powerPort.Location, angle, symbolPrimitives.Where(p => p != netNameAnchor));
+            RenderPrimitivesAt(g, false, powerPort.Location, angle, symbolPrimitives.Where(p => p != netNameAnchor), powerPort.Color);
 
             if (powerPort.ShowNetName && netNameAnchor != null)
             {
@@ -767,7 +772,7 @@ namespace AltiumSharp.Drawing
             }
         }
 
-        private void RenderTextFramePrimitive(Graphics g, TextFrameRecord textFrame)
+        private void RenderTextFramePrimitive(Graphics g, SchTextFrame textFrame)
         {
             var penWidth = ScaleLineWidth(textFrame.LineWidth);
             var rect = ScreenFromWorld(textFrame.CalculateBounds());
@@ -797,7 +802,7 @@ namespace AltiumSharp.Drawing
             }
         }
 
-        private void RenderJunctionPrimitive(Graphics g, JunctionRecord junction)
+        private void RenderJunctionPrimitive(Graphics g, SchJunction junction)
         {
             var color = junction.IsManualJunction ? junction.Color : Color.Navy;
             using (var brush = new SolidBrush(color))
@@ -808,14 +813,11 @@ namespace AltiumSharp.Drawing
             }
         }
 
-        private void RenderImagePrimitive(Graphics g, ImageRecord image)
+        private void RenderImagePrimitive(Graphics g, SchImage image)
         {
             var rect = ScreenFromWorld(image.CalculateBounds());
 
-            if (_embeddedImages.TryGetValue(image.Filename, out var img))
-            {
-                g.DrawImage(img, rect);
-            }
+            g.DrawImage(image.Image, rect);
 
             if (image.IsSolid)
             {

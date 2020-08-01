@@ -14,42 +14,30 @@ namespace AltiumSharp
     /// <summary>
     /// PCB footprint library file reader.
     /// </summary>
-    public sealed class PcbLibReader : CompoundFileReader
+    public sealed class PcbLibReader : CompoundFileReader<PcbLib>
     {
-        /// <summary>
-        /// Contents of the PcbLib Header.
-        /// </summary>
-        public PcbLibHeader Header { get; private set; }
-
-        /// <summary>
-        /// UniqueId from the binary FileHeader entry
-        /// </summary>
-        public string UniqueId { get; private set; }
-
-        /// <summary>
-        /// List of components read from the library.
-        /// </summary>
-        public List<PcbComponent> Components { get; }
-
-        /// <summary>
-        /// List of model information read from the library, including positioning parameters
-        /// and the raw model data.
-        /// </summary>
-        public Dictionary<string, (ParameterCollection positioning, string step)> Models { get; private set; }
-
-        public PcbLibReader(string fileName) : base(fileName)
+        public PcbLibReader() : base()
         {
-            Components = new List<PcbComponent>();
+
         }
 
-        protected override void DoClear()
+        protected override void DoRead()
         {
-            Components.Clear();
+            ReadFileHeader();
+            ReadSectionKeys();
+            ReadLibrary();
         }
 
-        protected override void DoReadSectionKeys(Dictionary<string, string> sectionKeys)
+        /// <summary>
+        /// Reads section keys information which can be used to match "ref lib" component names into
+        /// usable compound storage section names.
+        /// <para>
+        /// Data read can be accessed through the <see cref="GetSectionKeyFromRefName"/> method.
+        /// </para>
+        /// </summary>
+        private void ReadSectionKeys()
         {
-            if (sectionKeys == null) throw new ArgumentNullException(nameof(sectionKeys));
+            SectionKeys.Clear();
 
             var data = Cf.TryGetStream("SectionKeys");
             if (data == null) return;
@@ -63,17 +51,11 @@ namespace AltiumSharp
                 {
                     var libRef = ReadPascalString(reader);
                     var sectionKey = ReadStringBlock(reader);
-                    sectionKeys.Add(libRef, sectionKey);
+                    SectionKeys.Add(libRef, sectionKey);
                 }
             }
 
             EndContext();
-        }
-
-        protected override void DoRead()
-        {
-            ReadFileHeader();
-            ReadLibrary();
         }
 
         /// <summary>
@@ -94,12 +76,11 @@ namespace AltiumSharp
             var component = new PcbComponent();
             ReadFootprintParameters(footprintStorage, component);
 
-            var unicodeText = ReadWideStrings(footprintStorage);
-            var ndxUnicodeText = 0;
+            var wideStrings = ReadWideStrings(footprintStorage);
 
             using (var reader = footprintStorage.GetStream("Data").GetBinaryReader())
             {
-                AssertValue(nameof(component.Name), component.Name, ReadStringBlock(reader));
+                AssertValue(nameof(component.Pattern), component.Pattern, ReadStringBlock(reader));
 
                 int ndxRecord = 0;
                 while (reader.BaseStream.Position < reader.BaseStream.Length)
@@ -125,33 +106,38 @@ namespace AltiumSharp
                             element = ReadFootprintPad(reader);
                             break;
 
+                        case PcbPrimitiveObjectId.Via:
+                            element = ReadFootprintVia(reader);
+                            break;
+
                         case PcbPrimitiveObjectId.Track:
                             element = ReadFootprintTrack(reader);
                             break;
 
                         case PcbPrimitiveObjectId.Text:
-                            element = ReadFootprintString(reader, unicodeText[ndxUnicodeText++]);
+                            element = ReadFootprintString(reader, wideStrings);
                             break;
 
                         case PcbPrimitiveObjectId.Fill:
-                            element = ReadFootprintRectangle(reader);
+                            element = ReadFootprintFill(reader);
                             break;
 
                         case PcbPrimitiveObjectId.Region:
-                            element = ReadFootprintPolygon(reader);
+                            element = ReadFootprintRegion(reader);
                             break;
 
-                        case PcbPrimitiveObjectId.Via:
                         case PcbPrimitiveObjectId.ComponentBody:
+                            element = ReadFootprintComponentBody(reader);
+                            break;
+
                         default:
                             // otherwise we attempt to skip the actual primitive data but still
                             // create a basic instance with just the raw data for debugging
-                            element = SkipPrimitive(reader);
+                            element = ReadFootprintUknown(reader, objectId);
                             break;
                     }
 
                     element.SetRawData(ExtractStreamData(reader, primitiveStartPosition, reader.BaseStream.Position));
-                    element.ObjectId = objectId;
 
                     component.Primitives.Add(element);
 
@@ -191,8 +177,7 @@ namespace AltiumSharp
 
         private void ReadUniqueIdPrimitiveInformation(CFStorage componentStorage, PcbComponent component)
         {
-            var uniqueIdPrimitiveInformation = componentStorage.TryGetStorage("UniqueIdPrimitiveInformation");
-            if (uniqueIdPrimitiveInformation == null) return;
+            if (!componentStorage.TryGetStorage("UniqueIdPrimitiveInformation", out var uniqueIdPrimitiveInformation)) return;
 
             BeginContext("UniqueIdPrimitiveInformation");
             try
@@ -252,10 +237,10 @@ namespace AltiumSharp
         /// if we cannot read the data yet, we already have it and are able to inspect it
         /// and list it alongside the other component primitives.
         /// </returns>
-        private static PcbPrimitive SkipPrimitive(BinaryReader reader)
+        private static PcbPrimitive ReadFootprintUknown(BinaryReader reader, PcbPrimitiveObjectId objectId)
         {
             ReadBlock(reader);
-            return new PcbPrimitive();
+            return new PcbUnknown(objectId);
         }
 
         private PcbArc ReadFootprintArc(BinaryReader reader)
@@ -287,8 +272,8 @@ namespace AltiumSharp
         {
             var pad = new PcbPad();
             pad.Designator = ReadStringBlock(reader);
-            ReadBlock(reader); // TODO: Unknown // 0
-            pad.UnknownString = ReadStringBlock(reader);
+            ReadBlock(reader); // TODO: Unknown 
+            ReadStringBlock(reader); // constant: |&|0
             ReadBlock(reader); // TODO: Unknown
 
             ReadBlock(reader, blockSize =>
@@ -305,28 +290,45 @@ namespace AltiumSharp
                 pad.ShapeMiddle = (PcbPadShape)reader.ReadByte();
                 pad.ShapeBottom = (PcbPadShape)reader.ReadByte();
                 pad.Rotation = reader.ReadDouble();
-                CheckValue("#83", reader.ReadInt64(), 1L);
-                reader.ReadInt32(); // TODO: Unknown
-                CheckValue("#95", reader.ReadInt16(), 4);
+                pad.IsPlated = reader.ReadBoolean();
+                CheckValue("#91", reader.ReadByte(), 0);
+                pad.StackMode = (PcbStackMode)reader.ReadByte();
+                reader.ReadByte(); // TODO: Unknown 0
+                reader.ReadInt32(); // TODO: Unknown 0
+                reader.ReadInt32(); // TODO: Unknown 10mil?
+                CheckValue("#102", reader.ReadInt16(), 4);
+                reader.ReadUInt32(); // TODO: Unknown 10mil?
+                reader.ReadUInt32(); // TODO: Unknown 20mil?
+                reader.ReadUInt32(); // TODO: Unknown 20mil?
+                pad.PasteMaskExpansion = Coord.FromInt32(reader.ReadInt32());
+                pad.SolderMaskExpansion = Coord.FromInt32(reader.ReadInt32());
+                reader.ReadByte(); // TODO: Unknown 0
+                reader.ReadByte(); // TODO: Unknown 0
+                reader.ReadByte(); // TODO: Unknown 0
+                reader.ReadByte(); // TODO: Unknown 0/1
+                reader.ReadByte(); // TODO: Unknown 0/1
+                reader.ReadByte(); // TODO: Unknown 0/1
+                reader.ReadByte(); // TODO: Unknown 0/1
+                pad.PasteMaskExpansionManual = reader.ReadByte() == 2;
+                pad.SolderMaskExpansionManual = reader.ReadByte() == 2;
+                reader.ReadByte(); // TODO: Unknown 0/1
+                reader.ReadByte(); // TODO: Unknown 0
+                reader.ReadByte(); // TODO: Unknown 0
                 reader.ReadUInt32(); // TODO: Unknown
-                reader.ReadUInt32(); // TODO: Unknown 
-                reader.ReadUInt32(); // TODO: Unknown 
-                reader.ReadUInt32(); // TODO: Unknown 
-                reader.ReadUInt32(); // TODO: Unknown
-                reader.ReadUInt32(); // TODO: Unknown
-                reader.ReadUInt32(); // TODO: Unknown 
-                reader.ReadUInt32(); // TODO: Unknown 
-                AssertValue<uint>("#129", reader.ReadUInt32(), 0);
+                pad.JumperId = reader.ReadInt16();
+                reader.ReadInt16();
+                /*
                 if (blockSize > 114)
                 {
                     reader.ReadUInt32(); // TODO: Unknown 
-                    pad.ToLayer = reader.ReadByte();
+                    pad.Layer = reader.ReadByte(); // Layer again?
                     reader.ReadByte(); // TODO: Unknown 
                     reader.ReadByte(); // TODO: Unknown 
                     pad.FromLayer = reader.ReadByte();
                     reader.ReadByte(); // TODO: Unknown 
                     reader.ReadByte(); // TODO: Unknown 
                 }
+                */
             });
 
             // Read size and shape and parts of hole information
@@ -339,11 +341,11 @@ namespace AltiumSharp
                 for (int i = 0; i < 29; ++i) padYSizes[i] = reader.ReadInt32();
                 for (int i = 0; i < 29; ++i)
                 {
-                    pad.SizeMiddleLayers.Add(new CoordPoint(padXSizes[i], padYSizes[i]));
+                    pad.SizeMiddleLayers[i] = new CoordPoint(padXSizes[i], padYSizes[i]);
                 }
-                for (int i = 0; i < 29; ++i)
+                for (int i = 1; i < 30; ++i)
                 {
-                    pad.ShapeMiddleLayers.Add((PcbPadShape)reader.ReadByte());
+                    pad.ShapeLayers[i] = (PcbPadShape)reader.ReadByte();
                 }
                 reader.ReadByte(); // TODO: Unknown
                 pad.HoleShape = (PcbPadHoleShape)reader.ReadByte();
@@ -361,17 +363,71 @@ namespace AltiumSharp
                 }
                 for (int i = 0; i < 32; ++i)
                 {
-                    pad.OffsetsFromHoleCenter.Add(new CoordPoint(offsetXFromHoleCenter[i], offsetYFromHoleCenter[i]));
+                    pad.OffsetsFromHoleCenter[i] = new CoordPoint(offsetXFromHoleCenter[i], offsetYFromHoleCenter[i]);
                 }
-                reader.ReadByte(); // TODO: Unknown
-                reader.ReadBytes(32); // TODO: Unknown
+                var hasRoundedRect = reader.ReadBoolean();
+                if (hasRoundedRect)
+                {
+                    for (int i = 0; i < 32; ++i) pad.ShapeLayers[i] = (PcbPadShape)reader.ReadByte();
+                }
+                else
+                {
+                    for (int i = 0; i < 32; ++i) reader.ReadByte(); // ignore values
+                }
                 for (int i = 0; i < 32; ++i)
                 {
-                    pad.CornerRadiusPercentage.Add(reader.ReadByte());
+                    pad.CornerRadiusPercentage[i] = reader.ReadByte();
                 }
             });
 
             return pad;
+        }
+
+        private PcbVia ReadFootprintVia(BinaryReader reader)
+        {
+            return ReadBlock(reader, recordSize =>
+            {
+                //CheckValue(nameof(recordSize), recordSize, , );
+                var via = new PcbVia();
+                via.Layer = reader.ReadByte();
+                via.Flags = reader.ReadUInt16();
+                Assert10FFbytes(reader);
+                via.Location = ReadCoordPoint(reader);
+                via.Diameter = Coord.FromInt32(reader.ReadInt32());
+                via.HoleSize = Coord.FromInt32(reader.ReadInt32());
+                via.FromLayer = reader.ReadByte();
+                via.ToLayer = reader.ReadByte();
+                reader.ReadByte(); // TODO: Unknown 0
+                via.ThermalReliefAirGapWidth = Coord.FromInt32(reader.ReadInt32());
+                via.ThermalReliefConductors = reader.ReadByte();
+                reader.ReadByte(); // TODO: Unknown 0
+                via.ThermalReliefConductorsWidth = Coord.FromInt32(reader.ReadInt32());
+                reader.ReadInt32(); // TODO: Unknown - Coord 20mils?
+                reader.ReadInt32(); // TODO: Unknown - Coord 20mils?
+                reader.ReadInt32(); // TODO: Unknown 0
+                via.SolderMaskExpansion = Coord.FromInt32(reader.ReadInt32());
+                reader.ReadByte(); // TODO: Unknown 0
+                reader.ReadByte(); // TODO: Unknown 0
+                reader.ReadByte(); // TODO: Unknown 0
+                reader.ReadByte(); // TODO: Unknown 1
+                reader.ReadByte(); // TODO: Unknown 1
+                reader.ReadByte(); // TODO: Unknown 1
+                reader.ReadByte(); // TODO: Unknown 1
+                reader.ReadByte(); // TODO: Unknown 0
+                via.SolderMaskExpansionManual = reader.ReadByte() == 2;
+                reader.ReadByte(); // TODO: Unknown 1
+                reader.ReadInt16(); // TODO: Unknown 0
+                reader.ReadInt32(); // TODO: Unknown 0
+                via.DiameterStackMode = (PcbStackMode)reader.ReadByte();
+                for (int i = 0; i < 32; ++i)
+                {
+                    via.Diameters[i] = Coord.FromInt32(reader.ReadInt32());
+                }
+                reader.ReadInt16(); // TODO: Unknown 15
+                reader.ReadInt32(); // TODO: Unknown 259
+
+                return via;
+            });
         }
 
         private PcbTrack ReadFootprintTrack(BinaryReader reader)
@@ -406,74 +462,80 @@ namespace AltiumSharp
             });
         }
 
-        private PcbString ReadFootprintString(BinaryReader reader, string unicodeText)
+        private PcbText ReadFootprintString(BinaryReader reader, List<string> wideStrings)
         {
             var result = ReadBlock(reader, recordSize =>
             {
                 CheckValue(nameof(recordSize), recordSize, 43, 123, 226, 230);
-                var @string = new PcbString();
-                @string.Layer = reader.ReadByte();
-                @string.Flags = reader.ReadUInt16();
+                var text = new PcbText();
+                text.Layer = reader.ReadByte();
+                text.Flags = reader.ReadUInt16();
                 Assert10FFbytes(reader);
-                @string.Location = ReadCoordPoint(reader);
-                @string.Height = reader.ReadInt32();
-                reader.ReadInt16(); // TODO: Unknown
-                @string.Rotation = reader.ReadDouble();
-                @string.Mirrored = reader.ReadBoolean();
-                @string.Width = reader.ReadInt32();
+                text.Corner1 = ReadCoordPoint(reader);
+                var height = reader.ReadInt32();
+                text.Corner2 = new CoordPoint(
+                    Coord.FromInt32(text.Corner1.X.ToInt32()),
+                    Coord.FromInt32(text.Corner1.Y.ToInt32() + height));
+                text.StrokeFont = (PcbTextStrokeFont)reader.ReadInt16();
+                text.Rotation = reader.ReadDouble();
+                text.Mirrored = reader.ReadBoolean();
+                text.StrokeWidth = reader.ReadInt32();
                 if (recordSize >= 123)
                 {
                     reader.ReadUInt16(); // TODO: Unknown
                     reader.ReadByte(); // TODO: Unknown
-                    @string.Font = (PcbStringFont)reader.ReadByte();
-                    @string.FontBold = reader.ReadBoolean();
-                    @string.FontItalic = reader.ReadBoolean();
-                    @string.FontName = ReadStringFontName(reader); // TODO: check size and string format
-                    @string.BarcodeLRMargin = reader.ReadInt32();
-                    @string.BarcodeTBMargin = reader.ReadInt32();
-                    reader.ReadInt32(); // TODO: Unknown - Coord?
-                    reader.ReadInt32(); // TODO: Unknown - Coord?
+                    text.TextKind = (PcbTextKind)reader.ReadByte();
+                    text.FontBold = reader.ReadBoolean();
+                    text.FontItalic = reader.ReadBoolean();
+                    text.FontName = ReadStringFontName(reader); // TODO: check size and string format
+                    text.BarcodeLRMargin = reader.ReadInt32();
+                    text.BarcodeTBMargin = reader.ReadInt32();
+                    reader.ReadInt32(); // TODO: Unknown - Coord 0?
+                    reader.ReadInt32(); // TODO: Unknown - Coord 4mil?
                     reader.ReadByte(); // TODO: Unknown
                     reader.ReadByte(); // TODO: Unknown
                     reader.ReadInt32(); // TODO: Unknown - Coord?
                     reader.ReadUInt16(); // TODO: Unknown
-                    reader.ReadInt32(); // TODO: Unknown - Coord?
+                    reader.ReadInt32(); // TODO: Unknown 1
                     reader.ReadInt32(); // TODO: Unknown
-                    @string.FontInverted = reader.ReadBoolean();
-                    @string.FontInvertedBorder = reader.ReadInt32();
+                    text.FontInverted = reader.ReadBoolean();
+                    text.FontInvertedBorder = reader.ReadInt32();
+                    text.WideStringsIndex = reader.ReadInt32();
                     reader.ReadInt32(); // TODO: Unknown
-                    reader.ReadInt32(); // TODO: Unknown
-                    @string.FontInvertedRect = reader.ReadBoolean();
-                    @string.FontInvertedRectWidth = reader.ReadInt32();
-                    @string.FontInvertedRectHeight = reader.ReadInt32();
-                    @string.FontInvertedRectJustification = (PcbStringJustification)reader.ReadByte();
-                    @string.FontInvertedRectTextOffset = reader.ReadInt32();
+                    text.FontInvertedRect = reader.ReadBoolean();
+                    text.FontInvertedRectWidth = reader.ReadInt32();
+                    text.FontInvertedRectHeight = reader.ReadInt32();
+                    text.FontInvertedRectJustification = (PcbTextJustification)reader.ReadByte();
+                    text.FontInvertedRectTextOffset = reader.ReadInt32();
                 }
-                return @string;
+                return text;
             });
 
-            result.AsciiText = ReadStringBlock(reader);
-            result.Text = unicodeText;
+            var asciiText = ReadStringBlock(reader); // non-unicode Text
+            if (result.WideStringsIndex < wideStrings?.Count)
+            {
+                result.Text = wideStrings[result.WideStringsIndex];
+            }
+            else
+            { 
+                result.Text = asciiText;
+            }
             return result;
         }
 
-        private PcbRectangle ReadFootprintRectangle(BinaryReader reader)
+        private PcbFill ReadFootprintFill(BinaryReader reader)
         {
             return ReadBlock(reader, recordSize =>
             {
-                CheckValue(nameof(recordSize), recordSize, 38, 42, 46);
-                var rectangle = new PcbRectangle();
-                rectangle.Layer = reader.ReadByte();
-                rectangle.Flags = reader.ReadUInt16();
+                CheckValue(nameof(recordSize), recordSize, 37, 41, 46);
+                var fill = new PcbFill();
+                fill.Layer = reader.ReadByte();
+                fill.Flags = reader.ReadUInt16();
                 Assert10FFbytes(reader);
-                var corner1X = reader.ReadInt32();
-                var corner1Y = reader.ReadInt32();
-                rectangle.Corner1 = new CoordPoint(corner1X, corner1Y);
-                var corner2X = reader.ReadInt32();
-                var corner2Y = reader.ReadInt32();
-                rectangle.Corner2 = new CoordPoint(corner2X, corner2Y);
-                rectangle.Rotation = reader.ReadDouble();
-                if (recordSize >= 42)
+                fill.Corner1 = ReadCoordPoint(reader);
+                fill.Corner2 = ReadCoordPoint(reader);
+                fill.Rotation = reader.ReadDouble();
+                if (recordSize >= 41)
                 {
                     reader.ReadUInt32(); // TODO: Unknown
                 }
@@ -482,21 +544,22 @@ namespace AltiumSharp
                     reader.ReadByte(); // TODO: Unknown
                     reader.ReadInt32(); // TODO: Unknown - Coord?
                 }
-                return rectangle;
+                return fill;
             });
         }
 
-        private PcbPolygon ReadFootprintPolygon(BinaryReader reader)
+        private ParameterCollection ReadFootprintCommonParametersAndOutline(BinaryReader reader, PcbPrimitive primitive,
+            List<CoordPoint> outline)
         {
-            return ReadBlock(reader, recordSize =>
+            ParameterCollection parameters = null;
+            ReadBlock(reader, recordSize =>
             {
-                var polygon = new PcbPolygon();
-                polygon.Layer = reader.ReadByte();
-                polygon.Flags = reader.ReadUInt16();
+                primitive.Layer = reader.ReadByte();
+                primitive.Flags = reader.ReadUInt16();
                 Assert10FFbytes(reader);
                 reader.ReadUInt32(); // TODO: Unknown
                 reader.ReadByte(); // TODO: Unknown
-                polygon.Attributes = ReadBlock(reader, size => ReadParameters(reader, size));
+                parameters = ReadBlock(reader, size => ReadParameters(reader, size));
                 var outlineSize = reader.ReadUInt32();
                 for (int i = 0; i < outlineSize; ++i)
                 {
@@ -505,22 +568,38 @@ namespace AltiumSharp
                     // the extra precision is not needed
                     Coord x = (int)reader.ReadDouble();
                     Coord y = (int)reader.ReadDouble();
-                    polygon.Outline.Add(new CoordPoint(x, y));
+                    outline.Add(new CoordPoint(x, y));
                 }
-                return polygon;
             });
+            return parameters;
+        }
+
+        private PcbRegion ReadFootprintRegion(BinaryReader reader)
+        {
+            var region = new PcbRegion();
+            var parameters = ReadFootprintCommonParametersAndOutline(reader, region, region.Outline);
+            region.Parameters = parameters;
+            return region;
+        }
+
+        private PcbComponentBody ReadFootprintComponentBody(BinaryReader reader)
+        {
+            var body = new PcbComponentBody();
+            var parameters = ReadFootprintCommonParametersAndOutline(reader, body, body.Outline);
+            body.ImportFromParameters(parameters);
+            return body;
         }
 
         /// <summary>
-        /// Reads model information from the current file.
+        /// Reads model information from the current file, and assigns it to their respective
+        /// component bodies.
+        /// Model information includes the model positioning parameters and its STEP data.
         /// </summary>
         /// <param name="library">Storage where to look for the models data.</param>
-        /// <returns>Returns model positioning parameters and its raw binary data.</returns>
-        private Dictionary<string, (ParameterCollection, string)> ReadLibraryModels(CFStorage library)
+        private void ReadLibraryModels(CFStorage library)
         {
             BeginContext("Models");
 
-            var result = new Dictionary<string, (ParameterCollection, string)>();
             var models = library.GetStorage("Models");
             var recordCount = ReadHeader(models);
             using (var reader = models.GetStream("Data").GetBinaryReader())
@@ -528,7 +607,7 @@ namespace AltiumSharp
                 for (var i = 0; i < recordCount; ++i)
                 {
                     var parameters = ReadBlock(reader, size => ReadParameters(reader, size));
-                    var modelName = parameters["NAME"].AsString();
+                    var modelId = parameters["ID"].AsString();
                     var modelCompressedData = models.GetStream($"{i}").GetData();
 
                     // models are stored as ASCII STEP files but using zlib compression
@@ -540,27 +619,22 @@ namespace AltiumSharp
                         }
                     });
 
-                    // TODO: parse STEP models
-                    if (!result.ContainsKey(modelName))
+                    // assign STEP data to component bodies
+                    var bodies = Data.Items.SelectMany(c => c.GetPrimitivesOfType<PcbComponentBody>(false))
+                        .Where(body => body.ModelId.ToUpperInvariant() == modelId.ToUpperInvariant());
+                    foreach (var body in bodies)
                     {
-                        result.Add(parameters["NAME"].AsString(), (parameters, stepModel));
-                    }
-                    else
-                    {
-                        EmitWarning($"Duplicated model name: {modelName}");
+                        body.StepModel = stepModel;
                     }
                 }
             }
 
             EndContext();
-
-            return result;
         }
 
         /// <summary>
         /// Reads the library data from the current file which contains the PCB library
         /// header information parameters and also a list of the existing components.
-        /// footprints that exist.
         /// </summary>
         /// <param name="library"></param>
         private void ReadLibraryData(CFStorage library)
@@ -568,15 +642,14 @@ namespace AltiumSharp
             using (var reader = library.GetStream("Data").GetBinaryReader())
             {
                 var parameters = ReadBlock(reader, size => ReadParameters(reader, size));
-                Header = new PcbLibHeader();
-                Header.ImportFromParameters(parameters);
+                Data.Header.ImportFromParameters(parameters);
 
                 var footprintCount = reader.ReadUInt32();
                 for (var i = 0; i < footprintCount; ++i)
                 {
                     var refName = ReadStringBlock(reader);
                     var sectionKey = GetSectionKeyFromRefName(refName);
-                    Components.Add(ReadFootprint(sectionKey));
+                    Data.Items.Add(ReadFootprint(sectionKey));
                 }
             }
         }
@@ -592,9 +665,12 @@ namespace AltiumSharp
                 // initial block length is the same as the short string length
                 var pcbBinaryFileVersionTextLength = header.ReadInt32();
                 var pcbBinaryFileVersionText = ReadPascalShortString(header);
-                ReadPascalShortString(header); // TODO: Unknown
-                ReadPascalShortString(header); // TODO: Unknown
-                UniqueId = ReadPascalShortString(header);
+                if (header.BaseStream.Position < header.BaseStream.Length)
+                {
+                    ReadPascalShortString(header); // TODO: Unknown
+                    ReadPascalShortString(header); // TODO: Unknown
+                    Data.UniqueId = ReadPascalShortString(header);
+                }
             }
         }
 
@@ -606,8 +682,8 @@ namespace AltiumSharp
             var library = Cf.GetStorage("Library");
             var recordCount = ReadHeader(library);
 
-            Models = ReadLibraryModels(library);
             ReadLibraryData(library);
+            ReadLibraryModels(library);
         }
     }
 }
