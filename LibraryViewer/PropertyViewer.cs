@@ -32,12 +32,19 @@ namespace LibraryViewer
             _objects = objects;
             comboBoxObjects.BeginUpdate();
             comboBoxObjects.Items.Clear();
-            if (_objects.Length != 1)
+            if (_objects?.Length > 0)
             {
-                comboBoxObjects.Items.Add("<Common Properties>");
+                if (_objects.Length != 1)
+                {
+                    comboBoxObjects.Items.Add("<Common Properties>");
+                }
+                comboBoxObjects.Items.AddRange(_objects);
+                comboBoxObjects.SelectedIndex = 0;
             }
-            comboBoxObjects.Items.AddRange(_objects);
-            comboBoxObjects.SelectedIndex = 0;
+            else
+            {
+                comboBoxObjects.SelectedIndex = -1;
+            }
             comboBoxObjects.EndUpdate();
         }
 
