@@ -68,7 +68,7 @@ namespace AltiumSharp.BasicTypes
         /// Gets the integer value of this parameter, or a default value.
         /// </summary>
         public int AsIntOrDefault(int defaultValue = default) =>
-            int.TryParse(_data, Ns, Fp, out var result) ? result : defaultValue;
+            int.TryParse(_data, NumberStyles.Integer, Fp, out var result) ? result : defaultValue;
 
         /// <summary>
         /// Gets the enum value of this parameter, or a default value.
