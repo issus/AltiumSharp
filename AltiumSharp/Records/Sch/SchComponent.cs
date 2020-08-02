@@ -25,10 +25,20 @@ namespace AltiumSharp.Records
         public bool OverrideColors { get; set; }
         public bool DesignatorLocked { get; set; }
         public bool PartIdLocked { get; set; }
-        public string DesignItemId { get; set; }
         public int ComponentKind { get; set; }
-        public string AliasList { get; set; }   
+        public string AliasList { get; set; }
         public int AllPinCount => Primitives.OfType<SchPin>().Count();
+
+        /// <summary>
+        /// DesignItemId is kept for compatibility as it should be the exact same as LibReference,
+        /// except in some weird cases where it's not persisted but AD shows the LibReference
+        /// value in the "Design Item ID" field.
+        /// </summary>
+        public string DesignItemId
+        {
+            get => LibReference;
+            set => LibReference = value;
+        }
 
         public SchDesignator Designator { get; private set; }
         public SchParameter Comment { get; private set; }
@@ -77,7 +87,7 @@ namespace AltiumSharp.Records
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             base.ImportFromParameters(p);
-            LibReference = p["LIBREFERENCE"].AsStringOrDefault();
+            LibReference = p["LIBREFERENCE"].AsStringOrDefault(p["DESIGNITEMID"].AsStringOrDefault());
             ComponentDescription = p["COMPONENTDESCRIPTION"].AsStringOrDefault();
             UniqueId = p["UNIQUEID"].AsStringOrDefault();
             CurrentPartId = p["CURRENTPARTID"].AsIntOrDefault();
@@ -92,10 +102,8 @@ namespace AltiumSharp.Records
             OverrideColors = p["OVERIDECOLORS"].AsBool();
             DesignatorLocked = p["DESIGNATORLOCKED"].AsBool();
             PartIdLocked = p["PARTIDLOCKED"].AsBool();
-            DesignItemId = p["DESIGNITEMID"].AsStringOrDefault();
             ComponentKind = p["COMPONENTKIND"].AsIntOrDefault();
             AliasList = p["ALIASLIST"].AsStringOrDefault();
-            Console.WriteLine($"{LibReference} \t {DesignItemId} \t {LibReference != DesignItemId}");
         }
 
         public override void ExportToParameters(ParameterCollection p)
@@ -123,7 +131,7 @@ namespace AltiumSharp.Records
             p.Add("DESIGNATORLOCKED", DesignatorLocked);
             p.Add("PARTIDLOCKED", PartIdLocked, false);
             p.Add("ALIASLIST", AliasList);
-            p.Add("DESIGNITEMID", DesignItemId);
+            p.Add("DESIGNITEMID", DesignItemId); // same as LibReference
             p.Add("COMPONENTKIND", ComponentKind);
             p.Add("ALLPINCOUNT", AllPinCount);
         }
@@ -138,26 +146,23 @@ namespace AltiumSharp.Records
                     Utils.GenerateDesignator(GetPrimitivesOfType<SchPin>(false).Select(p => p.Designator));
                 pin.Name = pin.Name ?? pin.Designator;
             }
-            else if (primitive is SchParameter parameter)
+            else if (primitive is SchDesignator designator && designator.Name == "Designator")
             {
-                if (parameter.Name == "Designator")
-                {
-                    Designator = (SchDesignator)parameter;
-                    return false;
-                }
-                else if (parameter.Name == "Comment")
-                {
-                    Comment = parameter;
-                    return false;
-                }
+                Designator = designator;
+                return false;
+            }
+            else if (primitive is SchParameter parameter && parameter.Name == "Comment")
+            {
+                Comment = parameter;
+                return false;
             }
             else if (primitive is SchImplementationList implementationList)
             {
                 Implementations = implementationList;
                 return false;
             }
-            
-            if (primitive.OwnerPartId < 1 || primitive.OwnerPartId >= PartCount)
+
+            if (primitive.OwnerPartId < 1 || primitive.OwnerPartId > PartCount)
             {
                 primitive.OwnerPartId = CurrentPartId;
             }
