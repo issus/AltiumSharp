@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -243,15 +241,20 @@ namespace AltiumSharp
             return new PcbUnknown(objectId);
         }
 
+        private void ReadFootprintCommon(BinaryReader reader, PcbPrimitive primitive)
+        {
+            primitive.Layer = reader.ReadByte();
+            primitive.Flags = (PcbFlags)reader.ReadUInt16();
+            Assert10FFbytes(reader);
+        }
+
         private PcbArc ReadFootprintArc(BinaryReader reader)
         {
             return ReadBlock(reader, recordSize =>
             {
                 CheckValue(nameof(recordSize), recordSize, 45, 56);
                 var arc = new PcbArc();
-                arc.Layer = reader.ReadByte();
-                arc.Flags = reader.ReadUInt16();
-                Assert10FFbytes(reader);
+                ReadFootprintCommon(reader, arc);
                 arc.Location = ReadCoordPoint(reader);
                 arc.Radius = reader.ReadInt32();
                 arc.StartAngle = reader.ReadDouble();
@@ -278,9 +281,7 @@ namespace AltiumSharp
 
             ReadBlock(reader, blockSize =>
             {
-                pad.Layer = reader.ReadByte();
-                pad.Flags = reader.ReadUInt16();
-                Assert10FFbytes(reader);
+                ReadFootprintCommon(reader, pad);
                 pad.Location = ReadCoordPoint(reader);
                 pad.SizeTop = ReadCoordPoint(reader);
                 pad.SizeMiddle = ReadCoordPoint(reader);
@@ -389,9 +390,7 @@ namespace AltiumSharp
             {
                 //CheckValue(nameof(recordSize), recordSize, , );
                 var via = new PcbVia();
-                via.Layer = reader.ReadByte();
-                via.Flags = reader.ReadUInt16();
-                Assert10FFbytes(reader);
+                ReadFootprintCommon(reader, via);
                 via.Location = ReadCoordPoint(reader);
                 via.Diameter = Coord.FromInt32(reader.ReadInt32());
                 via.HoleSize = Coord.FromInt32(reader.ReadInt32());
@@ -436,9 +435,7 @@ namespace AltiumSharp
             {
                 CheckValue(nameof(recordSize), recordSize, 36, 41, 45);
                 var track = new PcbTrack();
-                track.Layer = reader.ReadByte();
-                track.Flags = reader.ReadUInt16();
-                Assert10FFbytes(reader);
+                ReadFootprintCommon(reader, track);
                 var startX = reader.ReadInt32();
                 var startY = reader.ReadInt32();
                 track.Start = new CoordPoint(startX, startY);
@@ -468,9 +465,7 @@ namespace AltiumSharp
             {
                 CheckValue(nameof(recordSize), recordSize, 43, 123, 226, 230);
                 var text = new PcbText();
-                text.Layer = reader.ReadByte();
-                text.Flags = reader.ReadUInt16();
-                Assert10FFbytes(reader);
+                ReadFootprintCommon(reader, text);
                 text.Corner1 = ReadCoordPoint(reader);
                 var height = reader.ReadInt32();
                 text.Corner2 = new CoordPoint(
@@ -529,9 +524,7 @@ namespace AltiumSharp
             {
                 CheckValue(nameof(recordSize), recordSize, 37, 41, 46);
                 var fill = new PcbFill();
-                fill.Layer = reader.ReadByte();
-                fill.Flags = reader.ReadUInt16();
-                Assert10FFbytes(reader);
+                ReadFootprintCommon(reader, fill);
                 fill.Corner1 = ReadCoordPoint(reader);
                 fill.Corner2 = ReadCoordPoint(reader);
                 fill.Rotation = reader.ReadDouble();
@@ -554,9 +547,7 @@ namespace AltiumSharp
             ParameterCollection parameters = null;
             ReadBlock(reader, recordSize =>
             {
-                primitive.Layer = reader.ReadByte();
-                primitive.Flags = reader.ReadUInt16();
-                Assert10FFbytes(reader);
+                ReadFootprintCommon(reader, primitive);
                 reader.ReadUInt32(); // TODO: Unknown
                 reader.ReadByte(); // TODO: Unknown
                 parameters = ReadBlock(reader, size => ReadParameters(reader, size));

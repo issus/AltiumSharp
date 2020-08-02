@@ -11,7 +11,7 @@ namespace AltiumSharp.Records
     public class PcbLibHeader
     {
         public string Filename { get; internal set; }
-        public string Kind => "Protel_Advanced_PCB_Library";
+        public static string Kind => "Protel_Advanced_PCB_Library";
         public string Version { get; private set; }
         public string Date { get; set; }
         public string Time { get; set; }
@@ -28,167 +28,375 @@ namespace AltiumSharp.Records
         public bool LayerMasterStackV8ShowBottomDielectric { get; internal set; }
         public bool LayerMasterStackV8IsFlex { get; internal set; }
         public List<(string Id, string Name, int LayerId, bool UsedByPrims, int DielType, double DielConst, Coord DielHeight, string DielMaterial, Coord COverLayEXPansiOn, Coord CopThick, int ComponentPlacement, bool MechEnabled)> LayerV8 { get; internal set; }
-        public int TopType { get; internal set; }
-        public double TopConst { get; internal set; }
-        public Coord TopHeight { get; internal set; }
-        public string TopMaterial { get; internal set; }
-        public int BottomType { get; internal set; }
-        public double BottomConst { get; internal set; }
-        public Coord BottomHeight { get; internal set; }
-        public string BottomMaterial { get; internal set; }
-        public int LayersTackStyle { get; internal set; }
-        public bool ShowTopDielectric { get; internal set; }
-        public bool ShowBottomDielectric { get; internal set; }
+        public int TopType { get; set; }
+        public double TopConst { get; set; }
+        public Coord TopHeight { get; set; }
+        public string TopMaterial { get; set; }
+        public int BottomType { get; set; }
+        public double BottomConst { get; set; }
+        public Coord BottomHeight { get; set; }
+        public string BottomMaterial { get; set; }
+        public int LayersTackStyle { get; set; }
+        public bool ShowTopDielectric { get; set; }
+        public bool ShowBottomDielectric { get; set; }
         public List<(string Name, int Prev, int Next, bool MechEnabled, Coord CopThick, int DielType, double DielConst, Coord DielHeight, string DielMaterial)> Layer { get; internal set; }
         public List<(string Name, int Prev, int Next, bool MechEnabled, Coord CopThick, int DielType, double DielConst, Coord DielHeight, string DielMaterial, int LayerId)> LayerV7 { get; internal set; }
-        public Coord BigVisibleGridSize { get; internal set; }
-        public Coord VisibleGridSize { get; internal set; }
-        public Coord SnapGridSize { get; internal set; }
-        public Coord SnapGridSizeX { get; internal set; }
-        public Coord SnapGridSizeY { get; internal set; }
-        public Coord ElectricalGridRange { get; internal set; }
-        public bool ElectricalGridEnabled { get; internal set; }
-        public bool DotGrid { get; internal set; }
-        public bool DotGridLarge { get; internal set; }
-        public Unit DisplayUnit { get; internal set; }
-        public double ToggleLayers { get; internal set; }
-        public bool ShowDefaultSets { get; internal set; }
+        public Coord BigVisibleGridSize { get; set; }
+        public Coord VisibleGridSize { get; set; }
+        public Coord SnapGridSize { get; set; }
+        public Coord SnapGridSizeX { get; set; }
+        public Coord SnapGridSizeY { get; set; }
+        public Coord ElectricalGridRange { get; set; }
+        public bool ElectricalGridEnabled { get; set; }
+        public bool DotGrid { get; set; }
+        public bool DotGridLarge { get; set; }
+        public Unit DisplayUnit { get; set; }
+        public string ToggleLayers { get; set; }
+        public bool ShowDefaultSets { get; set; }
         public List<(string Name, string Layers, string ActiveLayer, bool IsCurrent, bool IsLocked, bool FlipBoard)> Layersets { get; internal set; }
-        public int Cfg2DPrimDrawMode { get; internal set; }
-        public string Cfg2DLayerOpacityTopLayer { get; internal set; }
-        public List<string> Cfg2DLayerOpacityMidLayer { get; internal set; }
-        public string Cfg2DLayerOpacityBottomOverLay { get; internal set; }
-        public string Cfg2DLayerOpacityTopPaste { get; internal set; }
-        public string Cfg2DLayerOpacityBottomPaste { get; internal set; }
-        public string Cfg2DLayerOpacityTopSolder { get; internal set; }
-        public string Cfg2DLayerOpacityBottomSolder { get; internal set; }
-        public string Cfg2DLayerOpacityInternalPlane1 { get; internal set; }
-        public string Cfg2DLayerOpacityInternalPlane2 { get; internal set; }
-        public string Cfg2DLayerOpacityInternalPlane3 { get; internal set; }
-        public string Cfg2DLayerOpacityInternalPlane4 { get; internal set; }
-        public string Cfg2DLayerOpacityInternalPlane5 { get; internal set; }
-        public string Cfg2DLayerOpacityInternalPlane6 { get; internal set; }
-        public string Cfg2DLayerOpacityInternalPlane7 { get; internal set; }
-        public string Cfg2DLayerOpacityInternalPlane8 { get; internal set; }
-        public string Cfg2DLayerOpacityInternalPlane9 { get; internal set; }
-        public string Cfg2DLayerOpacityInternalPlane10 { get; internal set; }
-        public string Cfg2DLayerOpacityInternalPlane11 { get; internal set; }
-        public string Cfg2DLayerOpacityInternalPlane12 { get; internal set; }
-        public string Cfg2DLayerOpacityInternalPlane13 { get; internal set; }
-        public string Cfg2DLayerOpacityInternalPlane14 { get; internal set; }
-        public string Cfg2DLayerOpacityInternalPlane15 { get; internal set; }
-        public string Cfg2DLayerOpacityInternalPlane16 { get; internal set; }
-        public string Cfg2DLayerOpacityDrillGuide { get; internal set; }
-        public string Cfg2DLayerOpacityKeepoutLayer { get; internal set; }
-        public string Cfg2DLayerOpacityMechanical1 { get; internal set; }
-        public string Cfg2DLayerOpacityMechanical2 { get; internal set; }
-        public string Cfg2DLayerOpacityMechanical3 { get; internal set; }
-        public string Cfg2DLayerOpacityMechanical4 { get; internal set; }
-        public string Cfg2DLayerOpacityMechanical5 { get; internal set; }
-        public string Cfg2DLayerOpacityMechanical6 { get; internal set; }
-        public string Cfg2DLayerOpacityMechanical7 { get; internal set; }
-        public string Cfg2DLayerOpacityMechanical8 { get; internal set; }
-        public string Cfg2DLayerOpacityMechanical9 { get; internal set; }
-        public string Cfg2DLayerOpacityMechanical10 { get; internal set; }
-        public string Cfg2DLayerOpacityMechanical11 { get; internal set; }
-        public string Cfg2DLayerOpacityMechanical12 { get; internal set; }
-        public string Cfg2DLayerOpacityMechanical13 { get; internal set; }
-        public string Cfg2DLayerOpacityMechanical14 { get; internal set; }
-        public string Cfg2DLayerOpacityMechanical15 { get; internal set; }
-        public string Cfg2DLayerOpacityMechanical16 { get; internal set; }
-        public string Cfg2DLayerOpacityDrillDrawing { get; internal set; }
-        public string Cfg2DLayerOpacityMultiLayer { get; internal set; }
-        public string Cfg2DLayerOpacityCOnNectLayer { get; internal set; }
-        public string Cfg2DLayerOpacityBackGroundLayer { get; internal set; }
-        public string Cfg2DLayerOpacityDrcErrorLayer { get; internal set; }
-        public string Cfg2DLayerOpacityHighlightLayer { get; internal set; }
-        public string Cfg2DLayerOpacityGridColor1 { get; internal set; }
-        public string Cfg2DLayerOpacityGridColor10 { get; internal set; }
-        public string Cfg2DLayerOpacityPadHoleLayer { get; internal set; }
-        public string Cfg2DLayerOpacityViaHoleLayer { get; internal set; }
-        public double Cfg2DToggleLayers { get; internal set; }
-        public string Cfg2DToggleLayersSet { get; internal set; }
-        public double Cfg2DWorkspaceColAlpha0 { get; internal set; }
-        public double Cfg2DWorkspaceColAlpha1 { get; internal set; }
-        public double Cfg2DWorkspaceColAlpha2 { get; internal set; }
-        public double Cfg2DWorkspaceColAlpha3 { get; internal set; }
-        public double Cfg2DWorkspaceColAlpha4 { get; internal set; }
-        public double Cfg2DWorkspaceColAlpha5 { get; internal set; }
-        public double Cfg2DWorkspaceColAlpha6 { get; internal set; }
-        public double Cfg2DWorkspaceColAlpha7 { get; internal set; }
-        public double Cfg2DWorkspaceColAlpha8 { get; internal set; }
-        public double Cfg2DWorkspaceColAlpha9 { get; internal set; }
-        public double Cfg2DWorkspaceColAlpha10 { get; internal set; }
-        public double Cfg2DWorkspaceColAlpha11 { get; internal set; }
-        public int Cfg2DMechLayerInSingleLayerMode { get; internal set; }
-        public string Cfg2DMechLayerInSingleLayerModeSet { get; internal set; }
-        public int Cfg2DMechLayerLinkedToSheet { get; internal set; }
-        public string Cfg2DMechLayerLinkedToSheetSet { get; internal set; }
-        public string Cfg2DCurrentLayer { get; internal set; }
-        public bool Cfg2DDisplaySpecialStrings { get; internal set; }
-        public bool Cfg2DShowTestPoints { get; internal set; }
-        public bool Cfg2DShowOriginMarker { get; internal set; }
-        public int Cfg2DEyeDist { get; internal set; }
-        public bool Cfg2DShowStatusInfo { get; internal set; }
-        public bool Cfg2DShowPadNets { get; internal set; }
-        public bool Cfg2DShowPadNumberS { get; internal set; }
-        public bool Cfg2DShowViaNets { get; internal set; }
-        public bool Cfg2DUSetRansparentLayers { get; internal set; }
-        public int Cfg2DPlaneDrawMode { get; internal set; }
-        public int Cfg2DDisplayNetNamesOnTracks { get; internal set; }
-        public int Cfg2DFromToSDisplayMode { get; internal set; }
-        public int Cfg2DPadTypeSDisplayMode { get; internal set; }
-        public int Cfg2DSingleLayerModeState { get; internal set; }
-        public Color Cfg2DOriginMarkerColor { get; internal set; }
-        public bool Cfg2DShowComponentRefPoint { get; internal set; }
-        public Color Cfg2DComponentRefPointColor { get; internal set; }
-        public bool Cfg2DPosItiveTopSolderMask { get; internal set; }
-        public bool Cfg2DPosItiveBottomSolderMask { get; internal set; }
-        public double Cfg2DTopPosItivesolderMaskAlpha { get; internal set; }
-        public double Cfg2DBottomPosItivesolderMaskAlpha { get; internal set; }
-        public bool Cfg2DAllConnectionsInSingleLayerMode { get; internal set; }
-        public bool Cfg2DMultiColoredConnections { get; internal set; }
-        public string BoardInsightViewConfigurationName { get; internal set; }
-        public double VisibleGridMultFactor { get; internal set; }
-        public double BigVisibleGridMultFactor { get; internal set; }
-        public string Current2D3DViewState { get; internal set; }
+        public int Cfg2DPrimDrawMode { get; set; }
+        public string Cfg2DLayerOpacityTopLayer { get; set; }
+        public List<string> Cfg2DLayerOpacityMidLayer { get; set; }
+        public string Cfg2DLayerOpacityBottomOverLay { get; set; }
+        public string Cfg2DLayerOpacityTopPaste { get; set; }
+        public string Cfg2DLayerOpacityBottomPaste { get; set; }
+        public string Cfg2DLayerOpacityTopSolder { get; set; }
+        public string Cfg2DLayerOpacityBottomSolder { get; set; }
+        public string Cfg2DLayerOpacityInternalPlane1 { get; set; }
+        public string Cfg2DLayerOpacityInternalPlane2 { get; set; }
+        public string Cfg2DLayerOpacityInternalPlane3 { get; set; }
+        public string Cfg2DLayerOpacityInternalPlane4 { get; set; }
+        public string Cfg2DLayerOpacityInternalPlane5 { get; set; }
+        public string Cfg2DLayerOpacityInternalPlane6 { get; set; }
+        public string Cfg2DLayerOpacityInternalPlane7 { get; set; }
+        public string Cfg2DLayerOpacityInternalPlane8 { get; set; }
+        public string Cfg2DLayerOpacityInternalPlane9 { get; set; }
+        public string Cfg2DLayerOpacityInternalPlane10 { get; set; }
+        public string Cfg2DLayerOpacityInternalPlane11 { get; set; }
+        public string Cfg2DLayerOpacityInternalPlane12 { get; set; }
+        public string Cfg2DLayerOpacityInternalPlane13 { get; set; }
+        public string Cfg2DLayerOpacityInternalPlane14 { get; set; }
+        public string Cfg2DLayerOpacityInternalPlane15 { get; set; }
+        public string Cfg2DLayerOpacityInternalPlane16 { get; set; }
+        public string Cfg2DLayerOpacityDrillGuide { get; set; }
+        public string Cfg2DLayerOpacityKeepoutLayer { get; set; }
+        public string Cfg2DLayerOpacityMechanical1 { get; set; }
+        public string Cfg2DLayerOpacityMechanical2 { get; set; }
+        public string Cfg2DLayerOpacityMechanical3 { get; set; }
+        public string Cfg2DLayerOpacityMechanical4 { get; set; }
+        public string Cfg2DLayerOpacityMechanical5 { get; set; }
+        public string Cfg2DLayerOpacityMechanical6 { get; set; }
+        public string Cfg2DLayerOpacityMechanical7 { get; set; }
+        public string Cfg2DLayerOpacityMechanical8 { get; set; }
+        public string Cfg2DLayerOpacityMechanical9 { get; set; }
+        public string Cfg2DLayerOpacityMechanical10 { get; set; }
+        public string Cfg2DLayerOpacityMechanical11 { get; set; }
+        public string Cfg2DLayerOpacityMechanical12 { get; set; }
+        public string Cfg2DLayerOpacityMechanical13 { get; set; }
+        public string Cfg2DLayerOpacityMechanical14 { get; set; }
+        public string Cfg2DLayerOpacityMechanical15 { get; set; }
+        public string Cfg2DLayerOpacityMechanical16 { get; set; }
+        public string Cfg2DLayerOpacityDrillDrawing { get; set; }
+        public string Cfg2DLayerOpacityMultiLayer { get; set; }
+        public string Cfg2DLayerOpacityCOnNectLayer { get; set; }
+        public string Cfg2DLayerOpacityBackGroundLayer { get; set; }
+        public string Cfg2DLayerOpacityDrcErrorLayer { get; set; }
+        public string Cfg2DLayerOpacityHighlightLayer { get; set; }
+        public string Cfg2DLayerOpacityGridColor1 { get; set; }
+        public string Cfg2DLayerOpacityGridColor10 { get; set; }
+        public string Cfg2DLayerOpacityPadHoleLayer { get; set; }
+        public string Cfg2DLayerOpacityViaHoleLayer { get; set; }
+        public string Cfg2DToggleLayers { get; set; }
+        public string Cfg2DToggleLayersSet { get; set; }
+        public double Cfg2DWorkspaceColAlpha0 { get; set; }
+        public double Cfg2DWorkspaceColAlpha1 { get; set; }
+        public double Cfg2DWorkspaceColAlpha2 { get; set; }
+        public double Cfg2DWorkspaceColAlpha3 { get; set; }
+        public double Cfg2DWorkspaceColAlpha4 { get; set; }
+        public double Cfg2DWorkspaceColAlpha5 { get; set; }
+        public double Cfg2DWorkspaceColAlpha6 { get; set; }
+        public double Cfg2DWorkspaceColAlpha7 { get; set; }
+        public double Cfg2DWorkspaceColAlpha8 { get; set; }
+        public double Cfg2DWorkspaceColAlpha9 { get; set; }
+        public double Cfg2DWorkspaceColAlpha10 { get; set; }
+        public double Cfg2DWorkspaceColAlpha11 { get; set; }
+        public int Cfg2DMechLayerInSingleLayerMode { get; set; }
+        public string Cfg2DMechLayerInSingleLayerModeSet { get; set; }
+        public int Cfg2DMechLayerLinkedToSheet { get; set; }
+        public string Cfg2DMechLayerLinkedToSheetSet { get; set; }
+        public string Cfg2DCurrentLayer { get; set; }
+        public bool Cfg2DDisplaySpecialStrings { get; set; }
+        public bool Cfg2DShowTestPoints { get; set; }
+        public bool Cfg2DShowOriginMarker { get; set; }
+        public int Cfg2DEyeDist { get; set; }
+        public bool Cfg2DShowStatusInfo { get; set; }
+        public bool Cfg2DShowPadNets { get; set; }
+        public bool Cfg2DShowPadNumberS { get; set; }
+        public bool Cfg2DShowViaNets { get; set; }
+        public bool Cfg2DUSetRansparentLayers { get; set; }
+        public int Cfg2DPlaneDrawMode { get; set; }
+        public int Cfg2DDisplayNetNamesOnTracks { get; set; }
+        public int Cfg2DFromToSDisplayMode { get; set; }
+        public int Cfg2DPadTypeSDisplayMode { get; set; }
+        public int Cfg2DSingleLayerModeState { get; set; }
+        public Color Cfg2DOriginMarkerColor { get; set; }
+        public bool Cfg2DShowComponentRefPoint { get; set; }
+        public Color Cfg2DComponentRefPointColor { get; set; }
+        public bool Cfg2DPosItiveTopSolderMask { get; set; }
+        public bool Cfg2DPosItiveBottomSolderMask { get; set; }
+        public double Cfg2DTopPosItivesolderMaskAlpha { get; set; }
+        public double Cfg2DBottomPosItivesolderMaskAlpha { get; set; }
+        public bool Cfg2DAllConnectionsInSingleLayerMode { get; set; }
+        public bool Cfg2DMultiColoredConnections { get; set; }
+        public string BoardInsightViewConfigurationName { get; set; }
+        public double VisibleGridMultFactor { get; set; }
+        public double BigVisibleGridMultFactor { get; set; }
+        public string Current2D3DViewState { get; set; }
         public CoordRect ViewPort { get; set; }
-        public string Property2DConfigType { get; internal set; }
-        public string Property2DConfiguration { get; internal set; }
-        public string Property2DConfigFullFilename { get; internal set; }
-        public string Property3DConfigType { get; internal set; }
-        public string Property3DConfiguration { get; internal set; }
-        public string Property3DConfigFullFilename { get; internal set; }
-        public CoordPoint3D LookAt { get; internal set; }
-        public double EyeRotationX { get; internal set; }
-        public double EyeRotationY { get; internal set; }
-        public double EyeRotationZ { get; internal set; }
-        public double ZoomMult { get; internal set; }
-        public CoordPoint ViewSize { get; internal set; }
-        public Coord EgRange { get; internal set; }
-        public double EgMult { get; internal set; }
-        public bool EgEnabled { get; internal set; }
-        public bool EgSnapToBoardOutline { get; internal set; }
-        public bool EgSnapToArcCenters { get; internal set; }
-        public bool EgUseAllLayers { get; internal set; }
-        public bool OgSnapEnabled { get; internal set; }
-        public bool MgSnapEnabled { get; internal set; }
-        public bool PointGuideEnabled { get; internal set; }
-        public bool GridSnapEnabled { get; internal set; }
-        public bool NearObjectsEnabled { get; internal set; }
-        public bool FarObjectsEnabled { get; internal set; }
-        public string NearObjectSet { get; internal set; }
-        public string FarObjectSet { get; internal set; }
-        public Coord NearDistance { get; internal set; }
-        public double BoardVersion { get; internal set; }
-        public string VaultGuid { get; internal set; }
-        public string FolderGuid { get; internal set; }
-        public string LifeCycleDefinitionGuid { get; internal set; }
-        public string RevisionNamingSchemeGuid { get; internal set; }
+        public string Property2DConfigType { get; set; }
+        public string Property2DConfiguration { get; set; }
+        public string Property2DConfigFullFilename { get; set; }
+        public string Property3DConfigType { get; set; }
+        public string Property3DConfiguration { get; set; }
+        public string Property3DConfigFullFilename { get; set; }
+        public CoordPoint3D LookAt { get; set; }
+        public double EyeRotationX { get; set; }
+        public double EyeRotationY { get; set; }
+        public double EyeRotationZ { get; set; }
+        public double ZoomMult { get; set; }
+        public CoordPoint ViewSize { get; set; }
+        public Coord EgRange { get; set; }
+        public double EgMult { get; set; }
+        public bool EgEnabled { get; set; }
+        public bool EgSnapToBoardOutline { get; set; }
+        public bool EgSnapToArcCenters { get; set; }
+        public bool EgUseAllLayers { get; set; }
+        public bool OgSnapEnabled { get; set; }
+        public bool MgSnapEnabled { get; set; }
+        public bool PointGuideEnabled { get; set; }
+        public bool GridSnapEnabled { get; set; }
+        public bool NearObjectsEnabled { get; set; }
+        public bool FarObjectsEnabled { get; set; }
+        public string NearObjectSet { get; set; }
+        public string FarObjectSet { get; set; }
+        public Coord NearDistance { get; set; }
+        public double BoardVersion { get; set; }
+        public string VaultGuid { get; set; }
+        public string FolderGuid { get; set; }
+        public string LifeCycleDefinitionGuid { get; set; }
+        public string RevisionNamingSchemeGuid { get; set; }
 
         public PcbLibHeader()
         {
             Version = "3.00";
+            Date = DateTime.Now.ToShortDateString();
+            Time = DateTime.Now.ToLongTimeString();
+            TopType = 3;
+            TopConst = 3.5;
+            TopHeight = Coord.FromMils(0.4);
+            TopMaterial = "Solder Resist";
+            BottomType = 3;
+            BottomConst = 3.5;
+            BottomHeight = Coord.FromMils(0.4);
+            BottomMaterial = "Solder Resist";
+            Layer = new List<(string Name, int Prev, int Next, bool MechEnabled, Coord CopThick, int DielType, double DielConst, Coord DielHeight, string DielMaterial)>();
+            Layer.Add(("Top Layer", 0, 32, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 1", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 2", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 3", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 4", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 5", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 6", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 7", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 8", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 9", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 10", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 11", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 12", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 13", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 14", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 15", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 16", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 17", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 18", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 19", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 20", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 21", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 22", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 23", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 24", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 25", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 26", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 27", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 28", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 29", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 30", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Bottom Layer", 1, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Top Overlay", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Bottom Overlay", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Top Paste", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Bottom Paste", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Top Solder", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Bottom Solder", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 1", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 2", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 3", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 4", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 5", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 6", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 7", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 8", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 9", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 10", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 11", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 12", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 13", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 14", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 15", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 16", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Drill Guide", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Keep-Out Layer", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 1", 0, 0, true, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 2", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 3", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 4", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 5", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 6", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 7", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 8", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 9", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 10", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 11", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 12", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 13", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 14", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 15", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 16", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Drill Drawing", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Multi-Layer", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Connections", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Background", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("DRC Error Markers", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Selections", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Visible Grid 1", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Visible Grid 2", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Pad Holes", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Via Holes", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            LayerV7 = new List<(string Name, int Prev, int Next, bool MechEnabled, Coord CopThick, int DielType, double DielConst, Coord DielHeight, string DielMaterial, int LayerId)>();
+            LayerV7.Add(("Mechanical 17", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908305)));
+            LayerV7.Add(("Mechanical 18", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908306)));
+            LayerV7.Add(("Mechanical 19", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908307)));
+            LayerV7.Add(("Mechanical 20", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908308)));
+            LayerV7.Add(("Mechanical 21", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908309)));
+            LayerV7.Add(("Mechanical 22", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908310)));
+            LayerV7.Add(("Mechanical 23", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908311)));
+            LayerV7.Add(("Mechanical 24", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908312)));
+            LayerV7.Add(("Mechanical 25", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908313)));
+            LayerV7.Add(("Mechanical 26", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908314)));
+            LayerV7.Add(("Mechanical 27", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908315)));
+            LayerV7.Add(("Mechanical 28", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908316)));
+            LayerV7.Add(("Mechanical 29", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908317)));
+            LayerV7.Add(("Mechanical 30", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908318)));
+            LayerV7.Add(("Mechanical 31", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908319)));
+            LayerV7.Add(("Mechanical 32", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908320)));
+            /*
+            LayerV7.Add(("", 0, 0, false, Coord.FromMils(0), 0, 0, Coord.FromMils(0), "", 0));
+            LayerV7.Add(("", 0, 0, false, Coord.FromMils(0), 0, 0, Coord.FromMils(0), "", 0));
+            LayerV7.Add(("", 0, 0, false, Coord.FromMils(0), 0, 0, Coord.FromMils(0), "", 0));
+            LayerV7.Add(("", 0, 0, false, Coord.FromMils(0), 0, 0, Coord.FromMils(0), "", 0));
+            LayerV7.Add(("", 0, 0, false, Coord.FromMils(0), 0, 0, Coord.FromMils(0), "", 0));
+            LayerV7.Add(("", 0, 0, false, Coord.FromMils(0), 0, 0, Coord.FromMils(0), "", 0));
+            LayerV7.Add(("", 0, 0, false, Coord.FromMils(0), 0, 0, Coord.FromMils(0), "", 0));
+            LayerV7.Add(("", 0, 0, false, Coord.FromMils(0), 0, 0, Coord.FromMils(0), "", 0));
+            LayerV7.Add(("", 0, 0, false, Coord.FromMils(0), 0, 0, Coord.FromMils(0), "", 0));
+            LayerV7.Add(("", 0, 0, false, Coord.FromMils(0), 0, 0, Coord.FromMils(0), "", 0));
+            LayerV7.Add(("", 0, 0, false, Coord.FromMils(0), 0, 0, Coord.FromMils(0), "", 0));
+            LayerV7.Add(("", 0, 0, false, Coord.FromMils(0), 0, 0, Coord.FromMils(0), "", 0));
+            LayerV7.Add(("", 0, 0, false, Coord.FromMils(0), 0, 0, Coord.FromMils(0), "", 0));
+            LayerV7.Add(("", 0, 0, false, Coord.FromMils(0), 0, 0, Coord.FromMils(0), "", 0));
+            LayerV7.Add(("", 0, 0, false, Coord.FromMils(0), 0, 0, Coord.FromMils(0), "", 0));
+            LayerV7.Add(("", 0, 0, false, Coord.FromMils(0), 0, 0, Coord.FromMils(0), "", 0));
+            */
+            LayerV8 = new List<(string Id, string Name, int LayerId, bool UsedByPrims, int DielType, double DielConst, Coord DielHeight, string DielMaterial, Coord COverLayEXPansiOn, Coord CopThick, int ComponentPlacement, bool MechEnabled)>();
+            V9StackLayer = new List<(string Id, string Name, int LayerId, bool UsedByPrims, int DielType, double DielConst, Coord DielHeight, string DielMaterial, Coord COverLayEXPansiOn, Coord CopThick, int ComponentPlacement)>();
+            V9CacheLayer = new List<(int LayerId, bool UsedByPrims, string Id, string Name, int DielType, double DielConst, Coord DielHeight, string DielMaterial, Coord COverLayEXPansiOn, Coord CopThick, int ComponentPlacement, Coord PullBackDistance, bool MechEnabled)>();
+            BigVisibleGridSize = 0;
+            VisibleGridSize = 0;
+            SnapGridSize = 50000;
+            SnapGridSizeX = 50000;
+            SnapGridSizeY = 50000;
+            ElectricalGridRange = Coord.FromMils(8);
+            ElectricalGridEnabled = true;
+            DisplayUnit = Unit.Mil;
+            ToggleLayers = "1111111111111111111111111111111111111111111111111111111111111111111111111111111111";
+            ShowDefaultSets = true;
+            Layersets = new List<(string Name, string Layers, string ActiveLayer, bool IsCurrent, bool IsLocked, bool FlipBoard)>();
+            Layersets.Add(("&All Layers", "TopLayer,BottomLayer,TopOverlay,BottomOverlay,TopPaste,BottomPaste,TopSolder,BottomSolder,DrillGuide,KeepOutLayer,Mechanical1,DrillDrawing,MultiLayer", "TOP", false, true, false));
+            Layersets.Add(("&Signal Layers", "TopLayer,BottomLayer,MultiLayer", "TOP", false, true, false));
+            Layersets.Add(("&Plane Layers", "", "UNKNOWN", false, true, false));
+            Layersets.Add(("&NonSignal Layers", "TopOverlay,BottomOverlay,TopPaste,BottomPaste,TopSolder,BottomSolder,DrillGuide,KeepOutLayer,DrillDrawing,MultiLayer", "TOPOVERLAY", false, true, false));
+            Layersets.Add(("&Mechanical Layers", "Mechanical1", "MECHANICAL1", false, true, false));
+            Cfg2DToggleLayers = "1111111111111111111111111111111111111111111111111111111111111111111111111111111111";
+            Cfg2DToggleLayersSet = "Signal.All~0_Signal.Include~SerializeLayerHash.Version=2,ClassName=TLayerHash,16777217=1,16777218=1,16777219=1,16777220=1,16777221=1,16777222=1,16777223=1,16777224=1,16777225=1,16777226=1,16777227=1,16777228=1,16777229=1,16777230=1,16777231=1,16777232=1,16777233=1,16777234=1,16777235=1,16777236=1,16777237=1,16777238=1,16777239=1,16777240=1,16777241=1,16777242=1,16777243=1,16777244=1,16777245=1,16777246=1,16777247=1,16842751=1_Mechanical.All~0_Mechanical.Include~SerializeLayerHash.Version=2,ClassName=TLayerHash,16908289=1,16908290=1,16908291=1,16908292=1,16908293=1,16908294=1,16908295=1,16908296=1,16908297=1,16908298=1,16908299=1,16908300=1,16908301=1,16908302=1,16908303=1,16908304=1_Internal.All~0_Internal.Include~SerializeLayerHash.Version=2,ClassName=TLayerHash,16842753=1,16842754=1,16842755=1,16842756=1,16842757=1,16842758=1,16842759=1,16842760=1,16842761=1,16842762=1,16842763=1,16842764=1,16842765=1,16842766=1,16842767=1,16842768=1_Standard.All~0_Standard.Include~SerializeLayerHash.Version=2,ClassName=TLayerHash,16973850=1,16973830=1,16973831=1,16973832=1,16973833=1,16973834=1,16973835=1,16973836=1,16973837=1,16973838=1,16973839=1,16973840=1,16973841=1,16973842=1,16973843=1,16973844=1,16973845=1,16973846=1,16973847=1";
+            Cfg2DWorkspaceColAlpha0 = 1;
+            Cfg2DWorkspaceColAlpha1 = 1;
+            Cfg2DWorkspaceColAlpha2 = 1;
+            Cfg2DWorkspaceColAlpha3 = 1;
+            Cfg2DWorkspaceColAlpha4 = 1;
+            Cfg2DWorkspaceColAlpha5 = 1;
+            Cfg2DWorkspaceColAlpha6 = 1;
+            Cfg2DMechLayerInSingleLayerModeSet = "SerializeLayerHash.Version~2,ClassName~TLayerToBoolean,25165826~0";
+            Cfg2DMechLayerLinkedToSheetSet = "SerializeLayerHash.Version~2,ClassName~TLayerToBoolean,25165826~0";
+            Cfg2DCurrentLayer = "TOP";
+            Cfg2DShowOriginMarker = true;
+            Cfg2DEyeDist = 2000;
+            Cfg2DShowStatusInfo = true;
+            Cfg2DShowPadNets = true;
+            Cfg2DShowPadNumberS = true;
+            Cfg2DShowViaNets = true;
+            Cfg2DPlaneDrawMode = 2;
+            Cfg2DDisplayNetNamesOnTracks = 1;
+            Cfg2DSingleLayerModeState = 3;
+            Cfg2DOriginMarkerColor = ColorTranslator.FromWin32(16777215);
+            Cfg2DComponentRefPointColor = ColorTranslator.FromWin32(16777215);
+            Cfg2DTopPosItivesolderMaskAlpha = 0.5;
+            Cfg2DBottomPosItivesolderMaskAlpha = 0.5;
+            Cfg2DLayerOpacityMidLayer = new List<string>();
+            VisibleGridMultFactor = 1;
+            BigVisibleGridMultFactor = 5;
+            Current2D3DViewState = "2D";
+
+            ViewPort = new CoordRect(
+                Coord.FromInt32(394607096),
+                Coord.FromInt32(109393894),
+                Coord.FromInt32(415241036 - 394607096),
+                Coord.FromInt32(115878846 - 109393894));
+            Property2DConfigType = ".config_2dsimple";
+            Property2DConfiguration = @"`RECORD=Board`CFGALL.CONFIGURATIONKIND=1`CFGALL.CONFIGURATIONDESC=Altium%20Standard%202D`CFG2D.PRIMDRAWMODE=00000000000000000000000`CFG2D.LAYEROPACITY=1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?1.0?`CFG2D.LAYEROPACITY.SET=SerializeLayerHash.Version~2,ClassName~TLayerToSingle,25165829~1065353216`CFG2D.TOGGLELAYERS=1111111111111111111111111111111111111111111111111111111111111111111111111111111111`CFG2D.TOGGLELAYERS.SET=Signal.All~0_Signal.Include~SerializeLayerHash.Version=2,ClassName=TLayerHash,16777217=1,16777218=1,16777219=1,16777220=1,16777221=1,16777222=1,16777223=1,16777224=1,16777225=1,16777226=1,16777227=1,16777228=1,16777229=1,16777230=1,16777231=1,16777232=1,16777233=1,16777234=1,16777235=1,16777236=1,16777237=1,16777238=1,16777239=1,16777240=1,16777241=1,16777242=1,16777243=1,16777244=1,16777245=1,16777246=1,16777247=1,16842751=1_Mechanical.All~0_Mechanical.Include~SerializeLayerHash.Version=2,ClassName=TLayerHash,16908289=1,16908290=1,16908291=1,16908292=1,16908293=1,16908294=1,16908295=1,16908296=1,16908297=1,16908298=1,16908299=1,16908300=1,16908301=1,16908302=1,16908303=1,16908304=1_Internal.All~0_Internal.Include~SerializeLayerHash.Version=2,ClassName=TLayerHash,16842753=1,16842754=1,16842755=1,16842756=1,16842757=1,16842758=1,16842759=1,16842760=1,16842761=1,16842762=1,16842763=1,16842764=1,16842765=1,16842766=1,16842767=1,16842768=1_Standard.All~0_Standard.Include~SerializeLayerHash.Version=2,ClassName=TLayerHash,16973850=1,16973830=1,16973831=1,16973832=1,16973833=1,16973834=1,16973835=1,16973836=1,16973837=1,16973838=1,16973839=1,16973840=1,16973841=1,16973842=1,16973843=1,16973844=1,16973845=1,16973846=1,16973847=1`CFG2D.WORKSPACECOLALPHA0=1.0`CFG2D.WORKSPACECOLALPHA1=1.0`CFG2D.WORKSPACECOLALPHA2=1.0`CFG2D.WORKSPACECOLALPHA3=1.0`CFG2D.WORKSPACECOLALPHA4=1.0`CFG2D.WORKSPACECOLALPHA5=1.0`CFG2D.WORKSPACECOLALPHA6=1.0`CFG2D.MECHLAYERINSINGLELAYERMODE=0000000000000000`CFG2D.MECHLAYERINSINGLELAYERMODE.SET=SerializeLayerHash.Version~2,ClassName~TLayerToBoolean,25165826~0`CFG2D.MECHLAYERLINKEDTOSHEET=0000000000000000`CFG2D.MECHLAYERLINKEDTOSHEET.SET=SerializeLayerHash.Version~2,ClassName~TLayerToBoolean,25165826~0`CFG2D.CURRENTLAYER=TOP`CFG2D.DISPLAYSPECIALSTRINGS=FALSE`CFG2D.SHOWTESTPOINTS=FALSE`CFG2D.SHOWORIGINMARKER=TRUE`CFG2D.EYEDIST=2000`CFG2D.SHOWSTATUSINFO=TRUE`CFG2D.SHOWPADNETS=TRUE`CFG2D.SHOWPADNUMBERS=TRUE`CFG2D.SHOWVIANETS=TRUE`CFG2D.USETRANSPARENTLAYERS=FALSE`CFG2D.PLANEDRAWMODE=2`CFG2D.DISPLAYNETNAMESONTRACKS=1`CFG2D.FROMTOSDISPLAYMODE=0`CFG2D.PADTYPESDISPLAYMODE=0`CFG2D.SINGLELAYERMODESTATE=3`CFG2D.ORIGINMARKERCOLOR=16777215`CFG2D.SHOWCOMPONENTREFPOINT=FALSE`CFG2D.COMPONENTREFPOINTCOLOR=16777215`CFG2D.POSITIVETOPSOLDERMASK=FALSE`CFG2D.POSITIVEBOTTOMSOLDERMASK=FALSE`CFG2D.TOPPOSITIVESOLDERMASKALPHA=0.500000`CFG2D.BOTTOMPOSITIVESOLDERMASKALPHA=0.500000";
+            Property2DConfigFullFilename = "(Not Saved)";
+            Property3DConfigType = ".config_3d";
+            Property3DConfiguration = "";
+            Property3DConfigFullFilename = "(Not Saved)";
+            LookAt = new CoordPoint3D(
+                Coord.FromInt32(0),
+                Coord.FromInt32(0),
+                Coord.FromInt32(0));
+            EyeRotationX = 0;
+            EyeRotationY = 0;
+            EyeRotationZ = 0;
+            ZoomMult = 1E-06;
+            ViewSize = new CoordPoint(
+                Coord.FromInt32(377),
+                Coord.FromInt32(343));
+            EgRange = Coord.FromMils(8);
+            EgMult = 0;
+            EgEnabled = true;
+            GridSnapEnabled = true;
+            NearObjectsEnabled = true;
+            FarObjectsEnabled = true;
+            NearObjectSet = "011111100011100000000000001";
+            FarObjectSet = "001100000000000000000000000";
+            NearDistance = Coord.FromMils(1000);
         }
 
         public void ImportFromParameters(ParameterCollection p)
@@ -312,7 +520,7 @@ namespace AltiumSharp.Records
             DotGrid = p["DOTGRID"].AsBool();
             DotGridLarge = p["DOTGRIDLARGE"].AsBool();
             DisplayUnit = p["DISPLAYUNIT"].AsIntOrDefault() == 0 ? Unit.Millimeter : Unit.Mil;
-            ToggleLayers = p["TOGGLELAYERS"].AsDoubleOrDefault();
+            ToggleLayers = p["TOGGLELAYERS"].AsStringOrDefault();
             ShowDefaultSets = p["SHOWDEFAULTSETS"].AsBool();
             Layersets = Enumerable.Range(1, p["LAYERSETSCOUNT"].AsInt())
                 .Select(i => (
@@ -380,7 +588,7 @@ namespace AltiumSharp.Records
             Cfg2DLayerOpacityGridColor10 = p["CFG2D.LAYEROPACITY.GRIDCOLOR10"].AsStringOrDefault();
             Cfg2DLayerOpacityPadHoleLayer = p["CFG2D.LAYEROPACITY.PADHOLELAYER"].AsStringOrDefault();
             Cfg2DLayerOpacityViaHoleLayer = p["CFG2D.LAYEROPACITY.VIAHOLELAYER"].AsStringOrDefault();
-            Cfg2DToggleLayers = p["CFG2D.TOGGLELAYERS"].AsDoubleOrDefault();
+            Cfg2DToggleLayers = p["CFG2D.TOGGLELAYERS"].AsStringOrDefault();
             Cfg2DToggleLayersSet = p["CFG2D.TOGGLELAYERS.SET"].AsStringOrDefault();
             Cfg2DWorkspaceColAlpha0 = p["CFG2D.WORKSPACECOLALPHA0"].AsDoubleOrDefault();
             Cfg2DWorkspaceColAlpha1 = p["CFG2D.WORKSPACECOLALPHA1"].AsDoubleOrDefault();

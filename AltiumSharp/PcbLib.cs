@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using AltiumSharp.BasicTypes;
+﻿using System.Collections;
+using System.Collections.Generic;
 using AltiumSharp.Records;
 
 namespace AltiumSharp
 {
-    public class PcbLib : PcbData<PcbLibHeader, PcbComponent>
+    public class PcbLib : PcbData<PcbLibHeader, PcbComponent>, IEnumerable<PcbComponent>
     {
         /// <summary>
         /// UniqueId from the binary FileHeader entry
@@ -15,5 +15,18 @@ namespace AltiumSharp
         {
 
         }
+
+        public void Add(PcbComponent component)
+        {
+            if (string.IsNullOrEmpty(component.Pattern))
+            {
+                component.Pattern = $"Component_{Items.Count + 1}";
+            }
+
+            Items.Add(component);
+        }
+
+        IEnumerator<PcbComponent> IEnumerable<PcbComponent>.GetEnumerator() => Items.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => Items.GetEnumerator();
     }
 }

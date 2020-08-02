@@ -1,13 +1,12 @@
-﻿using OpenMcdf;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Text;
 using AltiumSharp.BasicTypes;
-using System.Net;
 using AltiumSharp.Records;
+using OpenMcdf;
 
 namespace AltiumSharp
 {

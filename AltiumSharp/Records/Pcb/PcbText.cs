@@ -19,24 +19,37 @@ namespace AltiumSharp.Records
             new PcbPrimitiveDisplayInfo(Text, null, null);
 
         public override PcbPrimitiveObjectId ObjectId => PcbPrimitiveObjectId.Text;
-        public bool Mirrored { get; internal set; }
-        public PcbTextKind TextKind { get; internal set; }
+        public bool Mirrored { get; set; }
+        public PcbTextKind TextKind { get; set; }
         public PcbTextStrokeFont StrokeFont { get; set; }
         public Coord StrokeWidth { get; set; }
-        public bool FontBold { get; internal set; }
-        public bool FontItalic { get; internal set; }
-        public string FontName { get; internal set; }
-        public Coord BarcodeLRMargin { get; internal set; }
-        public Coord BarcodeTBMargin { get; internal set; }
-        public bool FontInverted { get; internal set; }
-        public Coord FontInvertedBorder { get; internal set; }
-        public bool FontInvertedRect { get; internal set; }
-        public Coord FontInvertedRectWidth { get; internal set; }
-        public Coord FontInvertedRectHeight { get; internal set; }
-        public PcbTextJustification FontInvertedRectJustification { get; internal set; }
-        public Coord FontInvertedRectTextOffset { get; internal set; }
-        public string Text { get; internal set; }
+        public bool FontBold { get; set; }
+        public bool FontItalic { get; set; }
+        public string FontName { get; set; }
+        public Coord BarcodeLRMargin { get; set; }
+        public Coord BarcodeTBMargin { get; set; }
+        public bool FontInverted { get; set; }
+        public Coord FontInvertedBorder { get; set; }
+        public bool FontInvertedRect { get; set; }
+        public Coord FontInvertedRectWidth { get; set; }
+        public Coord FontInvertedRectHeight { get; set; }
+        public PcbTextJustification FontInvertedRectJustification { get; set; }
+        public Coord FontInvertedRectTextOffset { get; set; }
+        public string Text { get; set; }
         internal int WideStringsIndex { get; set; }
+
+        public PcbText() : base()
+        {
+            Text = "String";
+            Height = Coord.FromMils(60);
+            TextKind = PcbTextKind.Stroke;
+            StrokeFont = PcbTextStrokeFont.SansSerif;
+            StrokeWidth = Coord.FromMils(10);
+            FontName = "Arial";
+            FontInvertedBorder = Coord.FromMils(20);
+            FontInvertedRectJustification = PcbTextJustification.MiddleCenter;
+            FontInvertedRectTextOffset = Coord.FromMils(2);
+        }
 
         internal CoordRect CalculateRect(bool useAbsolutePosition)
         {
