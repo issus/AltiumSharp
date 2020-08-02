@@ -1,10 +1,8 @@
 using System;
-using System.Linq;
-using System.Drawing;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Text.RegularExpressions;
+using System.Drawing;
+using System.Linq;
 using AltiumSharp.BasicTypes;
 
 namespace AltiumSharp.Records
@@ -131,44 +129,14 @@ namespace AltiumSharp.Records
             p.Add("ALLPINCOUNT", allPinCount);
         }
 
-        static private Regex _designatorParser = new Regex(@"^(?<Prefix>.*?)(?<Number>\d*)\s*$");
-
-        /// <summary>
-        /// Generates a new designator by taking the last designator in order and then incrementing any ending integer.
-        /// </summary>
-        /// <remarks>
-        /// This mimicks the behavior of AD's context menu "Place > Pin", which works very differently
-        /// from AD's Properties pin list "Add" button, and the context menu behavior was chosen as it
-        /// seemed more intuitive.
-        /// </remarks>
-        private string GeneratePinDesignator()
-        {
-            var largestDesignator = GetPrimitivesOfType<SchPin>(false)
-                .Select(p => _designatorParser.Match(p.Designator ?? ""))
-                .Select(m => (m.Groups["Prefix"]?.Value ?? "", int.TryParse(m.Groups["Number"]?.Value ?? "", out int n) ? n : (int?)null))
-                .OrderBy(pn => pn)
-                .LastOrDefault();
-            if (largestDesignator.Item2 != null)
-            {
-                return $"{largestDesignator.Item1}{largestDesignator.Item2 + 1}";
-            }
-            else if (largestDesignator.Item1 != null)
-            {
-                return largestDesignator.Item1;
-            }
-            else
-            {
-                return "1";
-            }
-        }
-
         protected override bool DoAdd(SchPrimitive primitive)
         {
             if (primitive == null) return false;
 
             if (primitive is SchPin pin)
             {
-                pin.Designator = pin.Designator ?? GeneratePinDesignator();
+                pin.Designator = pin.Designator ??
+                    Utils.GenerateDesignator(GetPrimitivesOfType<SchPin>(false).Select(p => p.Designator));
                 pin.Name = pin.Name ?? pin.Designator;
             }
             else if (primitive is SchParameter parameter)
