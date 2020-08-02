@@ -95,8 +95,6 @@ namespace AltiumSharp
             var pinsTextData = new Dictionary<int, byte[]>();
             var pinsSymbolLineWidth = new Dictionary<int, ParameterCollection>();
 
-            component.AllPinCount = component.GetPrimitivesOfType<SchPin>().Count();
-
             componentStorage.GetOrAddStream("Data").Write(writer =>
             {
                 WriteComponentPrimitives(writer, component, pinsWideText, pinsTextData, pinsSymbolLineWidth);

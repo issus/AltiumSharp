@@ -10,25 +10,25 @@ namespace AltiumSharp.Records
     public sealed class SchComponent : SchGraphicalObject, IComponent, IEnumerable<SchPrimitive>
     {
         public override int Record => 1;
-        public string LibReference { get; internal set; }
-        public string ComponentDescription { get; internal set; }
+        public string LibReference { get; set; }
+        public string ComponentDescription { get; set; }
         public string UniqueId { get; internal set; }
-        public int CurrentPartId { get; internal set; }
+        public int CurrentPartId { get; set; }
         public int PartCount { get; internal set; }
-        public int DisplayModeCount { get; internal set; }
-        public int DisplayMode { get; internal set; }
-        public bool ShowHiddenPins { get; internal set; }
-        public string LibraryPath { get; internal set; }
-        public string SourceLibraryName { get; internal set; }
-        public string SheetPartFileName { get; internal set; }
-        public string TargetFileName { get; internal set; }
-        public bool OverrideColors { get; internal set; }
-        public bool DesignatorLocked { get; internal set; }
-        public bool PartIdLocked { get; internal set; }
-        public string DesignItemId { get; internal set; }
-        public int ComponentKind { get; internal set; }
-        public string AliasList { get; internal set; }
-        public int AllPinCount { get; internal set; }
+        public int DisplayModeCount { get; set; }
+        public int DisplayMode { get; set; }
+        public bool ShowHiddenPins { get; set; }
+        public string LibraryPath { get; set; }
+        public string SourceLibraryName { get; set; }
+        public string SheetPartFileName { get; set; }
+        public string TargetFileName { get; set; }
+        public bool OverrideColors { get; set; }
+        public bool DesignatorLocked { get; set; }
+        public bool PartIdLocked { get; set; }
+        public string DesignItemId { get; set; }
+        public int ComponentKind { get; set; }
+        public string AliasList { get; set; }   
+        public int AllPinCount => Primitives.OfType<SchPin>().Count();
 
         public SchDesignator Designator { get; private set; }
         public SchParameter Comment { get; private set; }
@@ -95,7 +95,7 @@ namespace AltiumSharp.Records
             DesignItemId = p["DESIGNITEMID"].AsStringOrDefault();
             ComponentKind = p["COMPONENTKIND"].AsIntOrDefault();
             AliasList = p["ALIASLIST"].AsStringOrDefault();
-            AllPinCount = p["ALLPINCOUNT"].AsIntOrDefault();
+            Console.WriteLine($"{LibReference} \t {DesignItemId} \t {LibReference != DesignItemId}");
         }
 
         public override void ExportToParameters(ParameterCollection p)
@@ -125,8 +125,7 @@ namespace AltiumSharp.Records
             p.Add("ALIASLIST", AliasList);
             p.Add("DESIGNITEMID", DesignItemId);
             p.Add("COMPONENTKIND", ComponentKind);
-            var allPinCount = Primitives.OfType<SchPin>().Count();
-            p.Add("ALLPINCOUNT", allPinCount);
+            p.Add("ALLPINCOUNT", AllPinCount);
         }
 
         protected override bool DoAdd(SchPrimitive primitive)
