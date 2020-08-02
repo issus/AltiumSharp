@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tabComponents = new System.Windows.Forms.TabControl();
             this.tabPcbLib = new System.Windows.Forms.TabPage();
@@ -84,6 +84,7 @@
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.redrawTimer = new System.Windows.Forms.Timer(this.components);
+            this.testPcbLibCreationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -262,9 +263,9 @@
             // gridPcbLibPrimitivesXSize
             // 
             this.gridPcbLibPrimitivesXSize.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle3.Format = "#####0.0#mm";
-            dataGridViewCellStyle3.NullValue = null;
-            this.gridPcbLibPrimitivesXSize.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Format = "#####0.0#mm";
+            dataGridViewCellStyle1.NullValue = null;
+            this.gridPcbLibPrimitivesXSize.DefaultCellStyle = dataGridViewCellStyle1;
             this.gridPcbLibPrimitivesXSize.HeaderText = "X-Size";
             this.gridPcbLibPrimitivesXSize.MinimumWidth = 40;
             this.gridPcbLibPrimitivesXSize.Name = "gridPcbLibPrimitivesXSize";
@@ -274,9 +275,9 @@
             // gridPcbLibPrimitivesYSize
             // 
             this.gridPcbLibPrimitivesYSize.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle4.Format = "#####0.0#mm";
-            dataGridViewCellStyle4.NullValue = null;
-            this.gridPcbLibPrimitivesYSize.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Format = "#####0.0#mm";
+            dataGridViewCellStyle2.NullValue = null;
+            this.gridPcbLibPrimitivesYSize.DefaultCellStyle = dataGridViewCellStyle2;
             this.gridPcbLibPrimitivesYSize.HeaderText = "Y-Size";
             this.gridPcbLibPrimitivesYSize.MinimumWidth = 40;
             this.gridPcbLibPrimitivesYSize.Name = "gridPcbLibPrimitivesYSize";
@@ -613,7 +614,8 @@
             this.exportFootprintToolStripMenuItem1,
             this.exportPrimitiveToolStripMenuItem,
             this.exportImageToolStripMenuItem,
-            this.testToolStripMenuItem});
+            this.testToolStripMenuItem,
+            this.testPcbLibCreationToolStripMenuItem});
             this.exportToolStripMenuItem1.Name = "exportToolStripMenuItem1";
             this.exportToolStripMenuItem1.Size = new System.Drawing.Size(52, 20);
             this.exportToolStripMenuItem1.Text = "Export";
@@ -621,28 +623,28 @@
             // exportFootprintToolStripMenuItem1
             // 
             this.exportFootprintToolStripMenuItem1.Name = "exportFootprintToolStripMenuItem1";
-            this.exportFootprintToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.exportFootprintToolStripMenuItem1.Size = new System.Drawing.Size(181, 22);
             this.exportFootprintToolStripMenuItem1.Text = "Export footprint";
             this.exportFootprintToolStripMenuItem1.Click += new System.EventHandler(this.ExportFootprintToolStripMenuItem1_Click);
             // 
             // exportPrimitiveToolStripMenuItem
             // 
             this.exportPrimitiveToolStripMenuItem.Name = "exportPrimitiveToolStripMenuItem";
-            this.exportPrimitiveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportPrimitiveToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.exportPrimitiveToolStripMenuItem.Text = "Export primitive";
             this.exportPrimitiveToolStripMenuItem.Click += new System.EventHandler(this.ExportPrimitiveToolStripMenuItem_Click);
             // 
             // exportImageToolStripMenuItem
             // 
             this.exportImageToolStripMenuItem.Name = "exportImageToolStripMenuItem";
-            this.exportImageToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportImageToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.exportImageToolStripMenuItem.Text = "Export image";
             this.exportImageToolStripMenuItem.Click += new System.EventHandler(this.ExportImageToolStripMenuItem_Click);
             // 
             // testToolStripMenuItem
             // 
             this.testToolStripMenuItem.Name = "testToolStripMenuItem";
-            this.testToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.testToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.testToolStripMenuItem.Text = "Test SchLib creation";
             this.testToolStripMenuItem.Click += new System.EventHandler(this.testToolStripMenuItem_Click);
             // 
@@ -661,6 +663,13 @@
             // 
             this.redrawTimer.Interval = 500;
             this.redrawTimer.Tick += new System.EventHandler(this.RedrawTimer_Tick);
+            // 
+            // testPcbLibCreationToolStripMenuItem
+            // 
+            this.testPcbLibCreationToolStripMenuItem.Name = "testPcbLibCreationToolStripMenuItem";
+            this.testPcbLibCreationToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.testPcbLibCreationToolStripMenuItem.Text = "Test PcbLib creation";
+            this.testPcbLibCreationToolStripMenuItem.Click += new System.EventHandler(this.testPcbLibCreationToolStripMenuItem_Click);
             // 
             // Main
             // 
@@ -761,6 +770,7 @@
         private System.Windows.Forms.TreeView treeViewStructure;
         private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem testPcbLibCreationToolStripMenuItem;
     }
 }
 
