@@ -1,19 +1,19 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using AltiumSharp.BasicTypes;
 using AltiumSharp.Records;
 
 namespace AltiumSharp
 {
-    public class PcbComponent : IComponent
+    public class PcbComponent : IComponent, IEnumerable<PcbPrimitive>
     {
-        public string Pattern { get; private set; }
-        public string Description { get; private set; }
-        public Coord Height { get; private set; }
-        public string ItemGuid { get; private set; }
-        public string RevisionGuid { get; private set; }
+        public string Pattern { get; set; }
+        public string Description { get; set; }
+        public Coord Height { get; set; }
+        public string ItemGuid { get; set; }
+        public string RevisionGuid { get; set; }
 
         string IComponent.Name => Pattern;
         string IComponent.Description => Description;
@@ -56,5 +56,33 @@ namespace AltiumSharp
             ExportToParameters(parameters);
             return parameters;
         }
+
+        public void Add(PcbPrimitive primitive)
+        {
+            if (primitive is PcbPad pad)
+            {
+                pad.Designator = pad.Designator ??
+                    Utils.GenerateDesignator(GetPrimitivesOfType<PcbPad>(false).Select(p => p.Designator));
+            }
+            else if (primitive is PcbMetaTrack metaTrack)
+            {
+                foreach (var line in metaTrack.Lines)
+                {
+                    Primitives.Add(new PcbTrack
+                    {
+                        Layer = metaTrack.Layer,
+                        Flags = metaTrack.Flags,
+                        Start = line.Item1,
+                        End = line.Item2
+                    });
+                }
+                return; // ignore the actual primitive
+            }
+
+            Primitives.Add(primitive);
+        }
+
+        IEnumerator<PcbPrimitive> IEnumerable<PcbPrimitive>.GetEnumerator() => Primitives.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => Primitives.GetEnumerator();
     }
 }

@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace AltiumSharp.BasicTypes
 {
@@ -113,6 +116,36 @@ namespace AltiumSharp.BasicTypes
                 result[i] = (char)rng.Next('A', 'Y' + 1);
             }
             return new string(result);
+        }
+
+        private static Regex _designatorParser = new Regex(@"^(?<Prefix>.*?)(?<Number>\d*)\s*$");
+
+        /// <summary>
+        /// Generates a new designator by taking the last designator in order and then incrementing any ending integer.
+        /// </summary>
+        /// <remarks>
+        /// This mimicks the behavior of AD's Schematic Editor context menu "Place > Pin", which works very differently
+        /// from AD's Properties pin list "Add" button, and the context menu behavior was chosen as it seemed more intuitive.
+        /// </remarks>
+        public static string GenerateDesignator(IEnumerable<string> existingDesignators)
+        {
+            var largestDesignator = existingDesignators
+                .Select(s => _designatorParser.Match(s ?? ""))
+                .Select(m => (m.Groups["Prefix"]?.Value ?? "", int.TryParse(m.Groups["Number"]?.Value ?? "", out int n) ? n : (int?)null))
+                .OrderBy(pn => pn)
+                .LastOrDefault();
+            if (largestDesignator.Item2 != null)
+            {
+                return $"{largestDesignator.Item1}{largestDesignator.Item2 + 1}";
+            }
+            else if (largestDesignator.Item1 != null)
+            {
+                return largestDesignator.Item1;
+            }
+            else
+            {
+                return "1";
+            }
         }
     }
 }

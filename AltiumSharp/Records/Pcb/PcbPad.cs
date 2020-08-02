@@ -139,18 +139,6 @@ namespace AltiumSharp.Records
         public IList<byte> CornerRadiusPercentage { get; } = new byte[32];
         public bool HasHole => Layer == LayerMetadata.Get("MultiLayer").Id;
         
-        public bool SolderMaskTentingTop
-        {
-            get => (Flags & 32) == 32;
-            set => Flags |= 32;
-        }
-
-        public bool SolderMaskTentingBottom
-        {
-            get => (Flags & 64) == 64;
-            set => Flags |= 64;
-        }
-
         internal bool HasRoundedRectangles =>
             ShapeLayers.Any(s => s == PcbPadShape.RoundedRectangle);
 
@@ -158,7 +146,7 @@ namespace AltiumSharp.Records
             (StackMode == PcbStackMode.FullStack) || HasRoundedRectangles ||
             OffsetsFromHoleCenter.Any(o => o != CoordPoint.Zero);
 
-        public PcbPad(PcbPadTemplate template = PcbPadTemplate.Tht)
+        public PcbPad(PcbPadTemplate template = PcbPadTemplate.Tht) : base()
         {
             switch (template)
             {
@@ -178,15 +166,9 @@ namespace AltiumSharp.Records
             var defaultSize = CoordPoint.FromMils(60, 60);
             var defaultShape = PcbPadShape.Round;
             byte defaultRadiusPercentage = 50;
-            SizeTop = defaultSize;
-            SizeMiddle = defaultSize;
-            SizeBottom = defaultSize;
-            ShapeTop = defaultShape;
-            ShapeMiddle = defaultShape;
-            ShapeBottom = defaultShape;
             HoleSize = Coord.FromMils(30);
             HoleShape = PcbPadHoleShape.Round;
-            for (int i = 0; i < SizeMiddleLayers.Count; ++i) SizeMiddleLayers[i] = defaultSize;
+            for (int i = 0; i < SizeLayers.Count; ++i) SizeLayers[i] = defaultSize;
             for (int i = 0; i < ShapeLayers.Count; ++i) ShapeLayers[i] = defaultShape;
             for (int i = 0; i < CornerRadiusPercentage.Count; ++i) CornerRadiusPercentage[i] = defaultRadiusPercentage;
         }
@@ -194,8 +176,8 @@ namespace AltiumSharp.Records
         internal CoordRect CalculatePartRect(PcbPadPart part, bool useAbsolutePosition)
         {
             var solderMaskExpansion = SolderMaskExpansionManual ? SolderMaskExpansion : Utils.MilsToCoord(8);
-            var solderMaskExpansionTop = SolderMaskTentingTop ? Utils.MilsToCoord(0) : solderMaskExpansion;
-            var solderMaskExpansionBottom = SolderMaskTentingBottom ? Utils.MilsToCoord(0) : solderMaskExpansion;
+            var solderMaskExpansionTop = IsTentingTop ? Utils.MilsToCoord(0) : solderMaskExpansion;
+            var solderMaskExpansionBottom = IsTentingBottom ? Utils.MilsToCoord(0) : solderMaskExpansion;
             Coord width, height;
             var offset = OffsetFromHoleCenter;
             switch (part)

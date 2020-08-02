@@ -1,22 +1,18 @@
-﻿using AltiumSharp;
-using AltiumSharp.Drawing;
-using OpenMcdf;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using AltiumSharp;
 using AltiumSharp.BasicTypes;
+using AltiumSharp.Drawing;
 using AltiumSharp.Records;
-using IContainer = AltiumSharp.IContainer;
+using OpenMcdf;
 using IComponent = AltiumSharp.IComponent;
+using IContainer = AltiumSharp.IContainer;
 
 namespace LibraryViewer
 {
@@ -620,77 +616,49 @@ namespace LibraryViewer
             {
                 new SchComponent
                 {
-                    new SchRectangle
-                    {
-                        Corner = CoordPoint.FromMils(500, 1100)
-                    },
-                    new SchPin
-                    {
-                        Location = CoordPoint.FromMils(500, 100)
-                    },
-                    new SchPin
-                    {
-                        Location = CoordPoint.FromMils(500, 250)
-                    },
-                    new SchPin
-                    {
-                        Location = CoordPoint.FromMils(500, 400)
-                    },
-                    new SchPin
-                    {
-                        Location = CoordPoint.FromMils(500, 550)
-                    },
-                    new SchPin
-                    {
-                        Location = CoordPoint.FromMils(500, 700)
-                    },
-                    new SchPin
-                    {
-                        Location = CoordPoint.FromMils(500, 850)
-                    },
-                    new SchPin
-                    {
-                        Location = CoordPoint.FromMils(500, 1000)
-                    },
-                    new SchPin
-                    {
-                        Designator = "P8",
-                        Location = CoordPoint.FromMils(0, 1000),
-                        Orientation = TextOrientations.Flipped
-                    },
-                    new SchPin
-                    {
-                        Location = CoordPoint.FromMils(0, 850),
-                        Orientation = TextOrientations.Flipped
-                    },
-                    new SchPin
-                    {
-                        Location = CoordPoint.FromMils(0, 700),
-                        Orientation = TextOrientations.Flipped
-                    },
-                    new SchPin
-                    {
-                        Location = CoordPoint.FromMils(0, 550),
-                        Orientation = TextOrientations.Flipped
-                    },
-                    new SchPin
-                    {
-                        Location = CoordPoint.FromMils(0, 400),
-                        Orientation = TextOrientations.Flipped
-                    },
-                    new SchPin
-                    {
-                        Location = CoordPoint.FromMils(0, 250),
-                        Orientation = TextOrientations.Flipped
-                    },
-                    new SchPin
-                    {
-                        Location = CoordPoint.FromMils(0, 100),
-                        Orientation = TextOrientations.Flipped
-                    }
+                    new SchRectangle { Corner = CoordPoint.FromMils(500, 1100) },
+                    new SchPin { Location = CoordPoint.FromMils(500, 100) },
+                    new SchPin { Location = CoordPoint.FromMils(500, 250) },
+                    new SchPin { Location = CoordPoint.FromMils(500, 400) },
+                    new SchPin { Location = CoordPoint.FromMils(500, 550) },
+                    new SchPin { Location = CoordPoint.FromMils(500, 700) },
+                    new SchPin { Location = CoordPoint.FromMils(500, 850) },
+                    new SchPin { Location = CoordPoint.FromMils(500, 1000) },
+                    new SchPin { Designator = "P8", Location = CoordPoint.FromMils(0, 1000), Orientation = TextOrientations.Flipped },
+                    new SchPin { Location = CoordPoint.FromMils(0, 850), Orientation = TextOrientations.Flipped },
+                    new SchPin { Location = CoordPoint.FromMils(0, 700), Orientation = TextOrientations.Flipped },
+                    new SchPin { Location = CoordPoint.FromMils(0, 550), Orientation = TextOrientations.Flipped },
+                    new SchPin { Location = CoordPoint.FromMils(0, 400), Orientation = TextOrientations.Flipped },
+                    new SchPin { Location = CoordPoint.FromMils(0, 250), Orientation = TextOrientations.Flipped },
+                    new SchPin { Location = CoordPoint.FromMils(0, 100), Orientation = TextOrientations.Flipped }
                 }
             };
             SetData(schLib);
+        }
+
+        private void testPcbLibCreationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetActiveContainer(null);
+
+            var pcbLib = new PcbLib
+            {
+                new PcbComponent
+                {
+                    new PcbMetaTrack(
+                        CoordPoint.FromMils(0, 0), CoordPoint.FromMils(1000, 0), CoordPoint.FromMils(1000, 1000),
+                        CoordPoint.FromMils(0, 1000), CoordPoint.FromMils(0, 0)),
+                    new PcbPad { Location = CoordPoint.FromMils(250, 100) },
+                    new PcbPad { Location = CoordPoint.FromMils(500, 100) },
+                    new PcbPad { Location = CoordPoint.FromMils(750, 100) },
+                    new PcbPad(PcbPadTemplate.SmtTop) { Location = CoordPoint.FromMils(200, 750), SizeTop = CoordPoint.FromMils(80, 180) },
+                    new PcbPad(PcbPadTemplate.SmtTop) { Location = CoordPoint.FromMils(400, 800), SizeTop = CoordPoint.FromMils(80, 180) },
+                    new PcbPad(PcbPadTemplate.SmtTop) { Location = CoordPoint.FromMils(600, 800), SizeTop = CoordPoint.FromMils(80, 180) },
+                    new PcbPad(PcbPadTemplate.SmtTop) { Location = CoordPoint.FromMils(800, 750), SizeTop = CoordPoint.FromMils(80, 180) },
+                    new PcbVia { Location = CoordPoint.FromMils(50, 800) },
+                    new PcbFill { Corner1 = CoordPoint.FromMils(200, 200), Corner2 = CoordPoint.FromMils(800, 600) }
+                }
+            };
+            SetData(pcbLib);
         }
     }
 }

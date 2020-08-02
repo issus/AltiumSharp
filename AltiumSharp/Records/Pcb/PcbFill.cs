@@ -1,6 +1,4 @@
-﻿using AltiumSharp.BasicTypes;
-
-namespace AltiumSharp.Records
+﻿namespace AltiumSharp.Records
 {
     public class PcbFill : PcbRectangularPrimitive
     {

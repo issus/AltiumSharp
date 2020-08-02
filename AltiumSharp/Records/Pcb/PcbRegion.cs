@@ -7,7 +7,7 @@ namespace AltiumSharp.Records
     public class PcbRegion : PcbPrimitive
     {
         public override PcbPrimitiveObjectId ObjectId => PcbPrimitiveObjectId.Region;
-        public ParameterCollection Parameters { get; internal set; }
+        public ParameterCollection Parameters { get; internal set; } = new ParameterCollection();
         public List<CoordPoint> Outline { get; } = new List<CoordPoint>();
 
         public override CoordRect CalculateBounds()
