@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tabComponents = new System.Windows.Forms.TabControl();
             this.tabPcbLib = new System.Windows.Forms.TabPage();
@@ -81,10 +81,10 @@
             this.exportPrimitiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testPcbLibCreationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.redrawTimer = new System.Windows.Forms.Timer(this.components);
-            this.testPcbLibCreationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -191,6 +191,7 @@
             this.gridPcbLibComponents.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.gridPcbLibComponents.Size = new System.Drawing.Size(315, 236);
             this.gridPcbLibComponents.TabIndex = 0;
+            this.gridPcbLibComponents.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.GridComponents_CellDoubleClick);
             this.gridPcbLibComponents.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.GridPcbLibComponents_RowEnter);
             // 
             // gridPcbLibComponentsName
@@ -263,9 +264,9 @@
             // gridPcbLibPrimitivesXSize
             // 
             this.gridPcbLibPrimitivesXSize.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle1.Format = "#####0.0#mm";
-            dataGridViewCellStyle1.NullValue = null;
-            this.gridPcbLibPrimitivesXSize.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Format = "#####0.0#mm";
+            dataGridViewCellStyle3.NullValue = null;
+            this.gridPcbLibPrimitivesXSize.DefaultCellStyle = dataGridViewCellStyle3;
             this.gridPcbLibPrimitivesXSize.HeaderText = "X-Size";
             this.gridPcbLibPrimitivesXSize.MinimumWidth = 40;
             this.gridPcbLibPrimitivesXSize.Name = "gridPcbLibPrimitivesXSize";
@@ -275,9 +276,9 @@
             // gridPcbLibPrimitivesYSize
             // 
             this.gridPcbLibPrimitivesYSize.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle2.Format = "#####0.0#mm";
-            dataGridViewCellStyle2.NullValue = null;
-            this.gridPcbLibPrimitivesYSize.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Format = "#####0.0#mm";
+            dataGridViewCellStyle4.NullValue = null;
+            this.gridPcbLibPrimitivesYSize.DefaultCellStyle = dataGridViewCellStyle4;
             this.gridPcbLibPrimitivesYSize.HeaderText = "Y-Size";
             this.gridPcbLibPrimitivesYSize.MinimumWidth = 40;
             this.gridPcbLibPrimitivesYSize.Name = "gridPcbLibPrimitivesYSize";
@@ -342,6 +343,7 @@
             this.gridSchLibComponents.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.gridSchLibComponents.Size = new System.Drawing.Size(315, 236);
             this.gridSchLibComponents.TabIndex = 0;
+            this.gridSchLibComponents.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.GridComponents_CellDoubleClick);
             this.gridSchLibComponents.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.GridSchLibComponents_RowEnter);
             // 
             // gridSchLibComponentName
@@ -648,6 +650,13 @@
             this.testToolStripMenuItem.Text = "Test SchLib creation";
             this.testToolStripMenuItem.Click += new System.EventHandler(this.testToolStripMenuItem_Click);
             // 
+            // testPcbLibCreationToolStripMenuItem
+            // 
+            this.testPcbLibCreationToolStripMenuItem.Name = "testPcbLibCreationToolStripMenuItem";
+            this.testPcbLibCreationToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.testPcbLibCreationToolStripMenuItem.Text = "Test PcbLib creation";
+            this.testPcbLibCreationToolStripMenuItem.Click += new System.EventHandler(this.testPcbLibCreationToolStripMenuItem_Click);
+            // 
             // openFileDialog
             // 
             this.openFileDialog.Filter = "Supported files|*.pcblib;*.schlib;*.schdoc|PcbLib files|*.pcblib|SchLib files|*.s" +
@@ -663,13 +672,6 @@
             // 
             this.redrawTimer.Interval = 500;
             this.redrawTimer.Tick += new System.EventHandler(this.RedrawTimer_Tick);
-            // 
-            // testPcbLibCreationToolStripMenuItem
-            // 
-            this.testPcbLibCreationToolStripMenuItem.Name = "testPcbLibCreationToolStripMenuItem";
-            this.testPcbLibCreationToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
-            this.testPcbLibCreationToolStripMenuItem.Text = "Test PcbLib creation";
-            this.testPcbLibCreationToolStripMenuItem.Click += new System.EventHandler(this.testPcbLibCreationToolStripMenuItem_Click);
             // 
             // Main
             // 

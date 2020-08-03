@@ -60,7 +60,7 @@ namespace LibraryViewer
             }
         }
 
-        private void propertyGrid_Click(object sender, EventArgs e)
+        private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
             Changed?.Invoke(this, EventArgs.Empty);
         }
