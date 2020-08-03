@@ -6,7 +6,7 @@ namespace AltiumSharp.Records
     public class SchTemplate : SchGraphicalObject
     {
         public override int Record => 39;
-        public string FileName { get; internal set; }
+        public string FileName { get; set; }
         
         public override void ImportFromParameters(ParameterCollection p)
         {

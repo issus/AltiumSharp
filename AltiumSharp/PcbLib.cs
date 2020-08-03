@@ -18,6 +18,8 @@ namespace AltiumSharp
 
         public void Add(PcbComponent component)
         {
+            if (component == null) return;
+
             if (string.IsNullOrEmpty(component.Pattern))
             {
                 component.Pattern = $"Component_{Items.Count + 1}";

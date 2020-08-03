@@ -27,7 +27,6 @@ namespace LibraryViewer
         private BufferedGraphics _graphicsBuffer;
         private bool _fastRendering;
 
-        private List<IContainer> _containers;
         private IContainer _activeContainer;
         private IEnumerable<Primitive> _activePrimitives;
         private Unit _displayUnit;
@@ -43,6 +42,14 @@ namespace LibraryViewer
                 null, pictureBox, new object[] { true });
         }
 
+        private SchLib GetAssetsSchLib()
+        {
+            using (var reader = new SchLibReader())
+            {
+                return reader.Read("assets.schlib");
+            }
+        }
+
         private void SetData(object fileData)
         {
             var saveLoading = _loading;
@@ -56,6 +63,8 @@ namespace LibraryViewer
                     _propertyViewer = null;
                 }
 
+                IContainer container = null;
+
                 gridPcbLibComponents.Rows.Clear();
                 gridSchLibComponents.Rows.Clear();
                 treeViewStructure.Nodes.Clear();
@@ -64,6 +73,7 @@ namespace LibraryViewer
                 if (fileData is PcbLib pcbLib)
                 {
                     tabComponents.SelectTab(tabPcbLib);
+
                     foreach (var component in pcbLib.Items)
                     {
                         var index = gridPcbLibComponents.Rows.Add(component.Pattern, component.Pads, component.Primitives.Count());
@@ -72,8 +82,8 @@ namespace LibraryViewer
 
                     _displayUnit = pcbLib.Header.DisplayUnit;
                     _snapGridSize = pcbLib.Header.SnapGridSize;
-                    _containers = pcbLib.Items.Cast<IContainer>().ToList();
                     _renderer = new PcbLibRenderer();
+                    container = pcbLib.Items.OfType<IContainer>().FirstOrDefault();
                 }
                 else if (fileData is SchLib schLib)
                 {
@@ -87,13 +97,8 @@ namespace LibraryViewer
 
                     _displayUnit = schLib.Header.DisplayUnit;
                     _snapGridSize = schLib.Header.SnapGridSize;
-                    _containers = schLib.Items.Cast<IContainer>().ToList();
-
-                    using (var reader = new SchLibReader())
-                    {
-                        var assetsData = reader.Read("assets.schlib");
-                        _renderer = new SchLibRenderer(schLib.Header, assetsData);
-                    }
+                    _renderer = new SchLibRenderer(schLib.Header, GetAssetsSchLib());
+                    container = schLib.Items.OfType<IContainer>().FirstOrDefault();
                 }
                 else if (fileData is SchDoc schDoc)
                 {
@@ -110,17 +115,12 @@ namespace LibraryViewer
                     var sheet = schDoc.Header;
                     _displayUnit = sheet.DisplayUnit;
                     _snapGridSize = sheet.SnapGridSize;
-                    _containers = new List<IContainer> { schDoc.Header };
-
-                    using (var assetsReader = new SchLibReader())
-                    {
-                        var assetsData = assetsReader.Read("assets.schlib");
-                        _renderer = new SchLibRenderer(schDoc.Header, assetsData);
-                    }
+                    _renderer = new SchLibRenderer(schDoc.Header, GetAssetsSchLib());
+                    container = schDoc.Items.OfType<IContainer>().FirstOrDefault();
                 }
 
                 _fileData = fileData;
-                SetActiveContainer(_containers.FirstOrDefault());
+                SetActiveContainer(container);
             }
             finally
             {
@@ -191,9 +191,8 @@ namespace LibraryViewer
             }
         }
 
-        private void LoadPrimitives(IContainer component, bool activateFirst = false)
+        private void LoadPrimitives(IContainer component)
         {
-            Primitive defaultPrimitive = null;
             if (component is PcbComponent pcbComponent)
             {
                 var primitives = pcbComponent.Primitives;
@@ -203,7 +202,6 @@ namespace LibraryViewer
                     var i = gridPcbLibPrimitives.Rows.Add(primitive.ObjectId, info.Name, info.SizeX?.ToString(_displayUnit), info.SizeY?.ToString(_displayUnit), primitive.Layer.Name);
                     gridPcbLibPrimitives.Rows[i].Tag = primitive;
                 }
-                defaultPrimitive = pcbComponent.Primitives.FirstOrDefault();
             }
             else if (component is SchComponent schComponent)
             {
@@ -213,9 +211,7 @@ namespace LibraryViewer
                     var i = gridSchLibPrimitives.Rows.Add(pin.Designator, pin.Name, pin.Electrical.ToString());
                     gridSchLibPrimitives.Rows[i].Tag = pin;
                 }
-                defaultPrimitive = pins.FirstOrDefault();
             }
-            SetActivePrimitives((activateFirst && defaultPrimitive != null) ? new[] { defaultPrimitive } : null);
         }
 
         private void LoadTreeViewStructure(IContainer container)
@@ -284,51 +280,55 @@ namespace LibraryViewer
             }
         }
 
-        private void ShowPropertyViewer()
+        private void ShowPropertyViewer(object[] items)
         {
             if (_propertyViewer == null)
             {
                 _propertyViewer = new PropertyViewer();
                 _propertyViewer.Owner = this;
                 _propertyViewer.FormClosed += (s, a) => _propertyViewer = null;
+                _propertyViewer.Changed += (s, a) => RequestRedraw(false);
                 _propertyViewer.Show(this);
             }
-            _propertyViewer.SetSelectedObjects(_activePrimitives?.ToArray());
+            _propertyViewer.SetSelectedObjects(items);
             _propertyViewer.BringToFront();
             _propertyViewer.Focus();
         }
 
         private void SetActiveContainer(IContainer component)
         {
-            _activeContainer = component;
-            _autoZoom = true;
-
-            panelPart.Visible = false;
-            gridPcbLibPrimitives.Rows.Clear();
-            gridSchLibPrimitives.Rows.Clear();
-            treeViewStructure.Nodes.Clear();
-
-            if (_activeContainer != null)
+            if (_activeContainer != component)
             {
-                LoadPrimitives(_activeContainer);
+                _activeContainer = component;
+                _autoZoom = true;
 
-                if (_activeContainer is SchComponent schComponent)
+                panelPart.Visible = false;
+                gridPcbLibPrimitives.Rows.Clear();
+                gridSchLibPrimitives.Rows.Clear();
+                treeViewStructure.Nodes.Clear();
+
+                if (_activeContainer != null)
                 {
-                    panelPart.Visible = schComponent.PartCount > 1;
-                    if (panelPart.Visible)
-                    {
-                        editPart.Maximum = schComponent.PartCount;
-                        editPart.Value = 1;
-                        labelPartTotal.Text = $"of {editPart.Maximum}";
-                    }
-                }
+                    LoadPrimitives(_activeContainer);
 
-                LoadTreeViewStructure(_activeContainer);
+                    if (_activeContainer is SchComponent schComponent)
+                    {
+                        panelPart.Visible = schComponent.PartCount > 1;
+                        if (panelPart.Visible)
+                        {
+                            editPart.Maximum = schComponent.PartCount;
+                            editPart.Value = 1;
+                            labelPartTotal.Text = $"of {editPart.Maximum}";
+                        }
+                    }
+
+                    LoadTreeViewStructure(_activeContainer);
+                }
             }
-            else
-            {
-                SetActivePrimitives(null);
-            }
+
+            SetActivePrimitives(null);
+            _propertyViewer?.SetSelectedObjects(_activeContainer != null ? new[] { _activeContainer } : null);
+
             RequestRedraw(false);
         }
 
@@ -382,6 +382,12 @@ namespace LibraryViewer
             SetActiveContainer(container);
         }
 
+        private void GridComponents_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (_activeContainer == null) return;
+            ShowPropertyViewer(new[] { _activeContainer });
+        }
+
         private void GridPcbLibPrimitives_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
             if (_loading || e.RowIndex < 0 || e.ColumnIndex != gridPcbLibPrimitivesLayer.Index) return;
@@ -432,7 +438,7 @@ namespace LibraryViewer
         {
             if (_activePrimitives?.Any() == false) return;
 
-            ShowPropertyViewer();
+            ShowPropertyViewer(_activePrimitives?.ToArray());
         }
 
         private void CenterToolStripMenuItem_Click(object sender, EventArgs e)
@@ -534,15 +540,15 @@ namespace LibraryViewer
         {
             if (e.Button == MouseButtons.Left && e.Clicks == 1)
             {
-                SetActivePrimitives(_renderer.Pick(e.X, e.Y));
+                SetActivePrimitives(_renderer?.Pick(e.X, e.Y));
             }
         }
 
         private void PictureBox_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if (_activePrimitives.Count() > 0)
+            if (_activePrimitives?.Count() > 0)
             {
-                ShowPropertyViewer();
+                ShowPropertyViewer(_activePrimitives.ToArray());
             }
         }
 
