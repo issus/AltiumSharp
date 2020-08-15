@@ -24,11 +24,19 @@ namespace AltiumSharp.Records
         private List<SchPrimitive> _primitives = new List<SchPrimitive>();
         internal IReadOnlyList<SchPrimitive> Primitives => _primitives;
 
+        public virtual bool IsOfCurrentPart =>
+            OwnerPartId == -1 || (Owner is SchComponent component && component.CurrentPartId == OwnerPartId);
+
+        public virtual bool IsOfCurrentDisplayMode =>
+            !(Owner is SchComponent) ||
+            (Owner is SchComponent component && component.DisplayMode == OwnerPartDisplayMode);
+
         public override bool IsVisible =>
-            base.IsVisible && ((Owner as SchComponent)?.DisplayMode ?? 0) == OwnerPartDisplayMode;
+            base.IsVisible && IsOfCurrentPart && IsOfCurrentDisplayMode;
 
         public SchPrimitive() : base()
         {
+            OwnerPartDisplayMode = -1;
             OwnerPartId = -1;
         }
 

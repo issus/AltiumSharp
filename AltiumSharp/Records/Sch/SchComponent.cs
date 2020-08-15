@@ -12,10 +12,10 @@ namespace AltiumSharp.Records
         public override int Record => 1;
         public string LibReference { get; set; }
         public string ComponentDescription { get; set; }
-        public string UniqueId { get; internal set; }
+        public string UniqueId { get; set; }
         public int CurrentPartId { get; set; }
         public int PartCount { get; internal set; }
-        public int DisplayModeCount { get; set; }
+        public int DisplayModeCount { get; internal set; }
         public int DisplayMode { get; set; }
         public bool ShowHiddenPins { get; set; }
         public string LibraryPath { get; set; }
@@ -162,6 +162,11 @@ namespace AltiumSharp.Records
                 return false;
             }
 
+            if (primitive.OwnerPartDisplayMode < 0 || primitive.OwnerPartDisplayMode >= DisplayModeCount)
+            {
+                primitive.OwnerPartDisplayMode = DisplayMode;
+            }
+
             if (primitive.OwnerPartId < 1 || primitive.OwnerPartId > PartCount)
             {
                 primitive.OwnerPartId = CurrentPartId;
@@ -175,9 +180,35 @@ namespace AltiumSharp.Records
             return new SchPrimitive[] { Designator, Comment, Implementations };
         }
 
+        public SchParameter GetParameter(string name) =>
+            Primitives.OfType<SchParameter>()
+                .FirstOrDefault(p => p.Name?.Equals(name, StringComparison.InvariantCultureIgnoreCase) == true);
+
+        public void AddDisplayMode()
+        {
+            DisplayMode = DisplayModeCount++;
+        }
+
+        public IEnumerable<SchPrimitive> RemoveDisplayMode(int displayMode)
+        {
+            if (displayMode < 0 || displayMode >= DisplayModeCount) return Enumerable.Empty<SchPrimitive>();
+
+            // remove the display mode primitives
+            var modePrimitives = Primitives.Where(p => p.OwnerPartDisplayMode == displayMode);
+            foreach (var p in modePrimitives) Remove(p);
+
+            // decrease display mode for primitives belonging to modes of higher value than the one removed
+            foreach (var p in Primitives.Where(p => p.OwnerPartDisplayMode > displayMode))
+            {
+                p.OwnerPartDisplayMode--;
+            }
+
+            return modePrimitives;
+        }
+
         public void AddPart()
         {
-            CurrentPartId = ++PartCount;
+            CurrentPartId = ++PartCount; // CurrentPartId starts with 1
         }
 
         public IEnumerable<SchPrimitive> RemovePart(int partId)

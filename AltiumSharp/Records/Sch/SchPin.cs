@@ -64,10 +64,24 @@ namespace AltiumSharp.Records
         public string Name { get; set; }
         public string Designator { get; set; }
         public int SwapIdPart { get; set; }
+        public string HiddenNetName { get; set; }
+        public string DefaultValue { get; set; }
         public double PinPropagationDelay { get; set; }
-        public string UniqueId { get; internal set; }
+        public string UniqueId { get; set; }
 
         public override bool IsVisible => base.IsVisible && !PinConglomerate.HasFlag(PinConglomerateFlags.Hide);
+
+        public bool NameVisible
+        {
+            get => PinConglomerate.HasFlag(PinConglomerateFlags.DisplayNameVisible);
+            set => PinConglomerate = PinConglomerate.WithFlag(PinConglomerateFlags.DisplayNameVisible, value);
+        }
+
+        public bool DesignatorVisible
+        {
+            get => PinConglomerate.HasFlag(PinConglomerateFlags.DesignatorVisible);
+            set => PinConglomerate = PinConglomerate.WithFlag(PinConglomerateFlags.DesignatorVisible, value);
+        }
 
         public TextOrientations Orientation
         {
@@ -182,15 +196,26 @@ namespace AltiumSharp.Records
                     UniqueId = parameter.Text;
                     return false;
                 }
+                else if (parameter.Name == "HiddenNetName")
+                {
+                    HiddenNetName = parameter.Text;
+                    return false;
+                }
             }
             return true;
         }
 
         protected override IEnumerable<SchPrimitive> DoGetParameters()
         {
-            return new SchPrimitive[] {
-                new SchParameter{ Name = "PinUniqueId", Text = UniqueId }
-            };
+            if (!string.IsNullOrEmpty(HiddenNetName))
+            {
+                yield return new SchParameter { Name = "HiddenNetName", Text = HiddenNetName };
+            }
+
+            if (!string.IsNullOrEmpty(UniqueId))
+            {
+                yield return new SchParameter {Name = "PinUniqueId", Text = UniqueId};
+            }
         }
     }
 }

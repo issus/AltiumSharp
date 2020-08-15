@@ -10,7 +10,7 @@ namespace AltiumSharp.Records
         public override int Record => 7;
         public bool IsSolid { get; set; }
         public LineWidth LineWidth { get; set; }
-        public List<CoordPoint> Vertices { get; private set; }
+        public List<CoordPoint> Vertices { get; set; } = new List<CoordPoint>();
         public bool Transparent { get; set; }
 
         public SchPolygon() : base()
