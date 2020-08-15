@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using AltiumSharp;
 using AltiumSharp.BasicTypes;
@@ -287,7 +289,7 @@ namespace LibraryViewer
                 _propertyViewer = new PropertyViewer();
                 _propertyViewer.Owner = this;
                 _propertyViewer.FormClosed += (s, a) => _propertyViewer = null;
-                _propertyViewer.Changed += (s, a) => RequestRedraw(false);
+                _propertyViewer.Changed += (s, a) => UpdateUi(false);
                 _propertyViewer.Show(this);
             }
             _propertyViewer.SetSelectedObjects(items);
@@ -295,7 +297,22 @@ namespace LibraryViewer
             _propertyViewer.Focus();
         }
 
-        private void SetActiveContainer(IContainer component)
+        private void UpdateUi(bool autoZoom)
+        {
+            var saveLoading = _loading;
+            try
+            {
+                _loading = true;
+                _autoZoom = autoZoom;
+                SetActiveContainer(_activeContainer, _activePrimitives);
+            }
+            finally
+            {
+                _loading = saveLoading;
+            }
+        }
+
+        private void SetActiveContainer(IContainer component, IEnumerable<Primitive> activePrimitives = null)
         {
             if (_activeContainer != component)
             {
@@ -310,37 +327,54 @@ namespace LibraryViewer
                 if (_activeContainer != null)
                 {
                     LoadPrimitives(_activeContainer);
-
-                    if (_activeContainer is SchComponent schComponent)
-                    {
-                        panelPart.Visible = schComponent.PartCount > 1;
-                        if (panelPart.Visible)
-                        {
-                            editPart.Maximum = schComponent.PartCount;
-                            editPart.Value = 1;
-                            labelPartTotal.Text = $"of {editPart.Maximum}";
-                        }
-                    }
-
                     LoadTreeViewStructure(_activeContainer);
                 }
             }
+            else
+            {
+                gridPcbLibPrimitives.Invalidate();
+                gridSchLibPrimitives.Invalidate();
+                treeViewStructure.Invalidate();
+            }
 
-            SetActivePrimitives(null);
-            _propertyViewer?.SetSelectedObjects(_activeContainer != null ? new[] { _activeContainer } : null);
+            if (_activeContainer is SchComponent schComponent)
+            {
+                panelPart.Visible = (schComponent.DisplayModeCount > 1) || (schComponent.PartCount > 1);
+                if (panelPart.Visible)
+                {
+                    comboDisplayMode.Items.Clear();
+                    comboDisplayMode.Items.Add(@"Normal");
+                    for (var i = 1; i < schComponent.DisplayModeCount; ++i)
+                    {
+                        comboDisplayMode.Items.Add($@"Alternate {i}");
+                    }
+
+                    comboDisplayMode.SelectedIndex = schComponent.DisplayMode;
+
+                    editPart.Maximum = schComponent.PartCount;
+                    labelPartTotal.Text = $@"of {editPart.Maximum}";
+                    editPart.Value = schComponent.CurrentPartId;
+                }
+            }
+
+            SetActivePrimitives(activePrimitives);
+            if (_activeContainer != null && activePrimitives == null)
+            {
+                _propertyViewer?.SetSelectedObjects(new[] { _activeContainer });
+            }
 
             RequestRedraw(false);
         }
 
         private void SetActivePrimitives(IEnumerable<Primitive> primitives)
         {
-            _activePrimitives = primitives;
-
-            _propertyViewer?.SetSelectedObjects(_activePrimitives?.ToArray());
-
-            if (_renderer != null)
+            if (_activePrimitives != primitives)
             {
-                _renderer.SelectedPrimitives = primitives;
+                _activePrimitives = primitives;
+                _propertyViewer?.SetSelectedObjects(_activePrimitives?.ToArray());
+
+                if (_renderer == null) return;
+                _renderer.SelectedPrimitives = _activePrimitives;
                 RequestRedraw(false);
             }
         }
@@ -415,16 +449,6 @@ namespace LibraryViewer
             SetActivePrimitives(primitives);
         }
 
-        private void EditPart_ValueChanged(object sender, EventArgs e)
-        {
-            if (_renderer is SchLibRenderer schLibRenderer)
-            {
-                schLibRenderer.Part = (int)editPart.Value;
-                _autoZoom = true;
-                RequestRedraw(false);
-            }
-        }
-
         private void GridSchLibPrimitives_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
             if (_loading || gridSchLibPrimitives.SelectedRows.Count == 0) return;
@@ -432,6 +456,48 @@ namespace LibraryViewer
             var primitives = gridSchLibPrimitives.SelectedRows.OfType<DataGridViewRow>()
                 .Select(row => (SchPrimitive)row.Tag).ToArray();
             SetActivePrimitives(primitives);
+        }
+
+        private void gridSchLibPrimitives_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+        {
+            if (_loading || e.RowIndex < 0) return;
+
+            // Draw background depending on the "display mode" matching the current one
+            var primitive = (SchPrimitive)gridSchLibPrimitives.Rows[e.RowIndex].Tag;
+            if (!primitive.IsOfCurrentDisplayMode)
+            {
+                e.PaintCellsBackground(e.RowBounds, (e.State & DataGridViewElementStates.Selected) == DataGridViewElementStates.Selected);
+                using (var brush = new HatchBrush(HatchStyle.DiagonalCross, Color.FromKnownColor(KnownColor.ControlDark), Color.Transparent))
+                {
+                    e.Graphics.FillRectangle(brush, e.RowBounds);
+                }
+
+                // Draw contents
+                e.PaintCellsContent(e.RowBounds);
+                e.Handled = true;
+            }
+        }
+
+        private void comboDisplayMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_loading) return;
+
+            if (_activeContainer is SchComponent c)
+            {
+                c.DisplayMode = comboDisplayMode.SelectedIndex;
+            }
+            UpdateUi(true);
+        }
+
+        private void editPart_ValueChanged(object sender, EventArgs e)
+        {
+            if (_loading) return;
+
+            if (_activeContainer is SchComponent c)
+            {
+                c.CurrentPartId = (int)editPart.Value;
+            }
+            UpdateUi(true);
         }
 
         private void GridPrimitives_DoubleClick(object sender, EventArgs e)
@@ -665,6 +731,42 @@ namespace LibraryViewer
                 }
             };
             SetData(pcbLib);
+        }
+
+        private async void importBXLToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            /*
+            using (var fileDialog = new OpenFileDialog())
+            {
+                fileDialog.CheckFileExists = true;
+                fileDialog.Filter = @"Xlator DataBase (*.bxl, *.xlr)|*.bxl;*.xlr";
+                if (fileDialog.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                statusProgressBar.Visible = true;
+                statusStrip.Update();
+                Enabled = false;
+                try
+                {
+                    var progress = new Progress<int>(v =>
+                    {
+                        statusProgressBar.Value = v;
+                        statusStrip.Update();
+                    });
+                    var schLib = await Task.Run(() =>
+                        BxlConverter.ReadSymbolsFromFile(fileDialog.FileName, out _, progress));
+                    SetActiveContainer(null);
+                    SetData(schLib);
+                }
+                finally
+                {
+                    Enabled = true;
+                    statusProgressBar.Visible = false;
+                }
+            }
+            */
         }
     }
 }
