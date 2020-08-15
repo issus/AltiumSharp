@@ -45,7 +45,8 @@ namespace AltiumSharp
         {
             var index = 0;
             var pinIndex = 0;
-            WritePrimitive(writer, Data.Header, false, 0, ref index, ref pinIndex, null, null, null);
+            WritePrimitive(writer, Data.Header, false, 0, ref index, ref pinIndex,
+                null, null, null, null);
         }
 
         private void WriteAdditional()

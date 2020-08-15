@@ -122,13 +122,14 @@ namespace AltiumSharp
 
             BeginContext(resourceName);
 
+            var pinsFrac = ReadPinFrac(componentStorage);
             var pinsWideText = ReadPinWideText(componentStorage);
             var pinsTextData = ReadPinTextData(componentStorage);
             var pinsSymbolLineWidth = ReadPinSymbolLineWidth(componentStorage);
 
             using (var reader = componentStorage.GetStream("Data").GetBinaryReader())
             {
-                var primitives = ReadPrimitives(reader, pinsWideText, pinsTextData, pinsSymbolLineWidth).ToList();
+                var primitives = ReadPrimitives(reader, pinsFrac, pinsWideText, pinsTextData, pinsSymbolLineWidth).ToList();
 
                 // First primitive read must be the component SchComponent
                 var component = (SchComponent)primitives.First();
@@ -139,6 +140,45 @@ namespace AltiumSharp
 
                 return component;
             }
+        }
+
+        /// <summary>
+        /// Reads pin fractional locations for the component at <paramref name="componentStorage"/>.
+        /// </summary>
+        private Dictionary<int, (int x, int y, int length)> ReadPinFrac(CFStorage componentStorage)
+        {
+            if (!componentStorage.TryGetStream("PinFrac", out var storage)) return null;
+
+            BeginContext("PinFrac");
+
+            var result = new Dictionary<int, (int, int, int)>();
+            using (var reader = storage.GetBinaryReader())
+            {
+                var headerParams = ReadBlock(reader, size => ReadParameters(reader, size));
+                var header = headerParams["HEADER"].AsStringOrDefault();
+                var weight = headerParams["WEIGHT"].AsIntOrDefault();
+                AssertValue(nameof(header), header, "PinFrac");
+
+                while (reader.BaseStream.Position < reader.BaseStream.Length)
+                {
+                    var (id, (fracX, fracY, fracLength)) = ReadCompressedStorage(reader, stream =>
+                    {
+                        using (var r = new BinaryReader(stream))
+                        {
+                            var x = r.ReadInt32();
+                            var y = r.ReadInt32();
+                            var l = r.ReadInt32();
+                            return (x, y, l);
+                        }
+                    });
+                    result.Add(int.Parse(id, CultureInfo.InvariantCulture), (fracX, fracY, fracLength));
+                }
+                CheckValue(nameof(weight), weight, result.Count);
+            }
+
+            EndContext();
+
+            return result;
         }
 
         /// <summary>

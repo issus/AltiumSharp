@@ -58,8 +58,10 @@ namespace AltiumSharp
             return embeddedImages;
         }
 
-        protected List<SchPrimitive> ReadPrimitives(BinaryReader reader, Dictionary<int, ParameterCollection> pinsWideText,
-            Dictionary<int, byte[]> pinsTextData, Dictionary<int, ParameterCollection> pinsSymbolLineWidth)
+        protected List<SchPrimitive> ReadPrimitives(BinaryReader reader,
+            Dictionary<int, (int x, int y, int length)> pinsFrac,
+            Dictionary<int, ParameterCollection> pinsWideText, Dictionary<int, byte[]> pinsTextData,
+            Dictionary<int, ParameterCollection> pinsSymbolLineWidth)
         {
             BeginContext("ReadPrimitives");
 
@@ -71,15 +73,18 @@ namespace AltiumSharp
                 var primitiveStartPosition = reader.BaseStream.Position;
                 var primitive = ReadRecord(reader,
                     size => ReadAsciiRecord(reader, size),
-                    size => {
+                    size =>
+                    {
+                        (int x, int y, int lenght) pinFrac = default;
                         ParameterCollection pinWideText = null;
                         byte[] pinTextData = null;
                         ParameterCollection pinSymbolLineWidth = null;
+                        pinsFrac?.TryGetValue(pinIndex, out pinFrac);
                         pinsWideText?.TryGetValue(pinIndex, out pinWideText);
                         pinsTextData?.TryGetValue(pinIndex, out pinTextData);
                         pinsSymbolLineWidth?.TryGetValue(pinIndex, out pinSymbolLineWidth);
                         pinIndex++;
-                        return ReadPinRecord(reader, size, pinWideText, pinTextData, pinSymbolLineWidth);
+                        return ReadPinRecord(reader, size, pinFrac, pinWideText, pinTextData, pinSymbolLineWidth);
                     });
 
                 primitive.SetRawData(ExtractStreamData(reader, primitiveStartPosition, reader.BaseStream.Position));
@@ -255,7 +260,8 @@ namespace AltiumSharp
             }, onEmpty);
         }
 
-        protected SchPin ReadPinRecord(BinaryReader reader, int size, ParameterCollection pinWideText, byte[] pinTextData, ParameterCollection pinSymbolLineWidth)
+        protected SchPin ReadPinRecord(BinaryReader reader, int size, (int x, int y, int length) pinFrac,
+            ParameterCollection pinWideText, byte[] pinTextData, ParameterCollection pinSymbolLineWidth)
         {
             int recordType = (size >> 24);
 
@@ -266,7 +272,7 @@ namespace AltiumSharp
             AssertValue(nameof(pinRecord), pinRecord, 2);
             reader.ReadByte(); // TODO: unknown
             pin.OwnerPartId = reader.ReadInt16();
-            reader.ReadByte(); // TODO: unknown
+            pin.OwnerPartDisplayMode = reader.ReadByte();
             pin.SymbolInnerEdge = (PinSymbol)reader.ReadByte();
             pin.SymbolOuterEdge = (PinSymbol)reader.ReadByte();
             pin.SymbolInside = (PinSymbol)reader.ReadByte();
@@ -276,16 +282,16 @@ namespace AltiumSharp
             reader.ReadByte(); // TODO: unknown
             pin.Electrical = (PinElectricalType)reader.ReadByte();
             pin.PinConglomerate = (PinConglomerateFlags)reader.ReadByte();
-            pin.PinLength = Utils.DxpFracToCoord(reader.ReadInt16(), 0);
-            var locationX = Utils.DxpFracToCoord(reader.ReadInt16(), 0);
-            var locationY = Utils.DxpFracToCoord(reader.ReadInt16(), 0);
+            pin.PinLength = Utils.DxpFracToCoord(reader.ReadInt16(), pinFrac.length);
+            var locationX = Utils.DxpFracToCoord(reader.ReadInt16(), pinFrac.x);
+            var locationY = Utils.DxpFracToCoord(reader.ReadInt16(), pinFrac.y);
             pin.Location = new CoordPoint(locationX, locationY);
             pin.Color = ColorTranslator.FromWin32(reader.ReadInt32());
             pin.Name = ReadPascalShortString(reader);
             pin.Designator = ReadPascalShortString(reader);
             reader.ReadByte(); // TODO: unknown
             reader.ReadByte(); // TODO: unknown
-            reader.ReadByte(); // TODO: unknown
+            pin.DefaultValue = ReadPascalShortString(reader);
 
             if (pinWideText != null)
             {

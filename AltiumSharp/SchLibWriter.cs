@@ -91,27 +91,59 @@ namespace AltiumSharp
             var resourceName = GetSectionKeyFromComponentPattern(component.LibReference);
             var componentStorage = Cf.RootStorage.GetOrAddStorage(resourceName);
 
+            var pinsFrac = new Dictionary<int, (int, int, int)>();
             var pinsWideText = new Dictionary<int, ParameterCollection>();
             var pinsTextData = new Dictionary<int, byte[]>();
             var pinsSymbolLineWidth = new Dictionary<int, ParameterCollection>();
 
             componentStorage.GetOrAddStream("Data").Write(writer =>
             {
-                WriteComponentPrimitives(writer, component, pinsWideText, pinsTextData, pinsSymbolLineWidth);
+                WriteComponentPrimitives(writer, component, pinsFrac, pinsWideText, pinsTextData, pinsSymbolLineWidth);
             });
 
+            WritePinFrac(componentStorage, pinsFrac);
             WritePinTextData(componentStorage, pinsTextData);
             WriteComponentExtendedParameters(componentStorage, "PinWideText", pinsWideText);
             WriteComponentExtendedParameters(componentStorage, "PinSymbolLineWidth", pinsSymbolLineWidth);
         }
 
         private static void WriteComponentPrimitives(BinaryWriter writer, SchComponent component,
+            Dictionary<int, (int x, int y, int length)> pinsFrac,
             Dictionary<int, ParameterCollection> pinsWideText, Dictionary<int, byte[]> pinsTextData,
             Dictionary<int, ParameterCollection> pinsSymbolLineWidth)
         {
             var index = 0;
             var pinIndex = 0;
-            WritePrimitive(writer, component, true, 0, ref index, ref pinIndex, pinsWideText, pinsTextData, pinsSymbolLineWidth);
+            WritePrimitive(writer, component, true, 0, ref index, ref pinIndex,
+                pinsFrac, pinsWideText, pinsTextData, pinsSymbolLineWidth);
+        }
+
+        /// <summary>
+        /// Writes a pin text data for the component at <paramref name="componentStorage"/>.
+        /// </summary>
+        private static void WritePinFrac(CFStorage componentStorage, Dictionary<int, (int x, int y, int length)> data)
+        {
+            if (data.Count == 0) return;
+
+            componentStorage.GetOrAddStream("PinFrac").Write(writer =>
+            {
+                var parameters = new ParameterCollection
+                {
+                    { "HEADER", "PinFrac" },
+                    { "WEIGHT", data.Count }
+                };
+                WriteBlock(writer, w => WriteParameters(w, parameters));
+
+                foreach (var kv in data)
+                {
+                    WriteCompressedStorage(writer, kv.Key.ToString(CultureInfo.InvariantCulture), ws =>
+                    {
+                        ws.Write(kv.Value.x);
+                        ws.Write(kv.Value.y);
+                        ws.Write(kv.Value.length);
+                    });
+                }
+            });
         }
 
         /// <summary>
