@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tabComponents = new System.Windows.Forms.TabControl();
             this.tabPcbLib = new System.Windows.Forms.TabPage();
@@ -55,6 +55,8 @@
             this.gridSchLibPrimitiveName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.gridSchLibPrimitiveType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panelPart = new System.Windows.Forms.Panel();
+            this.comboDisplayMode = new System.Windows.Forms.ComboBox();
+            this.labelDisplayMode = new System.Windows.Forms.Label();
             this.labelPartTotal = new System.Windows.Forms.Label();
             this.editPart = new System.Windows.Forms.NumericUpDown();
             this.labelPart = new System.Windows.Forms.Label();
@@ -63,6 +65,7 @@
             this.pictureBox = new System.Windows.Forms.Panel();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusLocation = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -82,6 +85,7 @@
             this.exportImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testPcbLibCreationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importBXLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.redrawTimer = new System.Windows.Forms.Timer(this.components);
@@ -264,9 +268,9 @@
             // gridPcbLibPrimitivesXSize
             // 
             this.gridPcbLibPrimitivesXSize.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle3.Format = "#####0.0#mm";
-            dataGridViewCellStyle3.NullValue = null;
-            this.gridPcbLibPrimitivesXSize.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Format = "#####0.0#mm";
+            dataGridViewCellStyle1.NullValue = null;
+            this.gridPcbLibPrimitivesXSize.DefaultCellStyle = dataGridViewCellStyle1;
             this.gridPcbLibPrimitivesXSize.HeaderText = "X-Size";
             this.gridPcbLibPrimitivesXSize.MinimumWidth = 40;
             this.gridPcbLibPrimitivesXSize.Name = "gridPcbLibPrimitivesXSize";
@@ -276,9 +280,9 @@
             // gridPcbLibPrimitivesYSize
             // 
             this.gridPcbLibPrimitivesYSize.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle4.Format = "#####0.0#mm";
-            dataGridViewCellStyle4.NullValue = null;
-            this.gridPcbLibPrimitivesYSize.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Format = "#####0.0#mm";
+            dataGridViewCellStyle2.NullValue = null;
+            this.gridPcbLibPrimitivesYSize.DefaultCellStyle = dataGridViewCellStyle2;
             this.gridPcbLibPrimitivesYSize.HeaderText = "Y-Size";
             this.gridPcbLibPrimitivesYSize.MinimumWidth = 40;
             this.gridPcbLibPrimitivesYSize.Name = "gridPcbLibPrimitivesYSize";
@@ -373,14 +377,15 @@
             this.gridSchLibPrimitiveName,
             this.gridSchLibPrimitiveType});
             this.gridSchLibPrimitives.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gridSchLibPrimitives.Location = new System.Drawing.Point(0, 27);
+            this.gridSchLibPrimitives.Location = new System.Drawing.Point(0, 29);
             this.gridSchLibPrimitives.Name = "gridSchLibPrimitives";
             this.gridSchLibPrimitives.ReadOnly = true;
             this.gridSchLibPrimitives.RowHeadersVisible = false;
             this.gridSchLibPrimitives.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.gridSchLibPrimitives.Size = new System.Drawing.Size(315, 214);
+            this.gridSchLibPrimitives.Size = new System.Drawing.Size(315, 212);
             this.gridSchLibPrimitives.TabIndex = 0;
             this.gridSchLibPrimitives.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.GridSchLibPrimitives_RowEnter);
+            this.gridSchLibPrimitives.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.gridSchLibPrimitives_RowPrePaint);
             this.gridSchLibPrimitives.DoubleClick += new System.EventHandler(this.GridPrimitives_DoubleClick);
             // 
             // gridSchLibPrimitiveDescriptor
@@ -409,27 +414,50 @@
             // 
             // panelPart
             // 
+            this.panelPart.Controls.Add(this.comboDisplayMode);
+            this.panelPart.Controls.Add(this.labelDisplayMode);
             this.panelPart.Controls.Add(this.labelPartTotal);
             this.panelPart.Controls.Add(this.editPart);
             this.panelPart.Controls.Add(this.labelPart);
             this.panelPart.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelPart.Location = new System.Drawing.Point(0, 0);
             this.panelPart.Name = "panelPart";
-            this.panelPart.Size = new System.Drawing.Size(315, 27);
+            this.panelPart.Size = new System.Drawing.Size(315, 29);
             this.panelPart.TabIndex = 1;
+            // 
+            // comboDisplayMode
+            // 
+            this.comboDisplayMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboDisplayMode.FormattingEnabled = true;
+            this.comboDisplayMode.Location = new System.Drawing.Point(45, 4);
+            this.comboDisplayMode.Name = "comboDisplayMode";
+            this.comboDisplayMode.Size = new System.Drawing.Size(93, 21);
+            this.comboDisplayMode.TabIndex = 1;
+            this.comboDisplayMode.SelectedIndexChanged += new System.EventHandler(this.comboDisplayMode_SelectedIndexChanged);
+            // 
+            // labelDisplayMode
+            // 
+            this.labelDisplayMode.AutoSize = true;
+            this.labelDisplayMode.Location = new System.Drawing.Point(5, 7);
+            this.labelDisplayMode.Name = "labelDisplayMode";
+            this.labelDisplayMode.Size = new System.Drawing.Size(34, 13);
+            this.labelDisplayMode.TabIndex = 0;
+            this.labelDisplayMode.Text = "Mode";
             // 
             // labelPartTotal
             // 
+            this.labelPartTotal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.labelPartTotal.AutoSize = true;
-            this.labelPartTotal.Location = new System.Drawing.Point(95, 5);
+            this.labelPartTotal.Location = new System.Drawing.Point(271, 7);
             this.labelPartTotal.Name = "labelPartTotal";
             this.labelPartTotal.Size = new System.Drawing.Size(31, 13);
-            this.labelPartTotal.TabIndex = 2;
+            this.labelPartTotal.TabIndex = 4;
             this.labelPartTotal.Text = "of 10";
             // 
             // editPart
             // 
-            this.editPart.Location = new System.Drawing.Point(37, 3);
+            this.editPart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.editPart.Location = new System.Drawing.Point(213, 5);
             this.editPart.Minimum = new decimal(new int[] {
             1,
             0,
@@ -437,22 +465,23 @@
             0});
             this.editPart.Name = "editPart";
             this.editPart.Size = new System.Drawing.Size(52, 20);
-            this.editPart.TabIndex = 1;
+            this.editPart.TabIndex = 3;
             this.editPart.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.editPart.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.editPart.ValueChanged += new System.EventHandler(this.EditPart_ValueChanged);
+            this.editPart.ValueChanged += new System.EventHandler(this.editPart_ValueChanged);
             // 
             // labelPart
             // 
+            this.labelPart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.labelPart.AutoSize = true;
-            this.labelPart.Location = new System.Drawing.Point(5, 5);
+            this.labelPart.Location = new System.Drawing.Point(181, 7);
             this.labelPart.Name = "labelPart";
             this.labelPart.Size = new System.Drawing.Size(26, 13);
-            this.labelPart.TabIndex = 0;
+            this.labelPart.TabIndex = 2;
             this.labelPart.Text = "Part";
             // 
             // tabTree
@@ -492,7 +521,8 @@
             // statusStrip
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.statusLocation});
+            this.statusLocation,
+            this.statusProgressBar});
             this.statusStrip.Location = new System.Drawing.Point(0, 537);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(990, 22);
@@ -502,6 +532,12 @@
             // 
             this.statusLocation.Name = "statusLocation";
             this.statusLocation.Size = new System.Drawing.Size(0, 17);
+            // 
+            // statusProgressBar
+            // 
+            this.statusProgressBar.Name = "statusProgressBar";
+            this.statusProgressBar.Size = new System.Drawing.Size(250, 16);
+            this.statusProgressBar.Visible = false;
             // 
             // menuStrip
             // 
@@ -529,26 +565,26 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenToolStripMenuItem_Click);
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveAsToolStripMenuItem.Text = "Save As...";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.SaveAsToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(120, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
@@ -617,10 +653,11 @@
             this.exportPrimitiveToolStripMenuItem,
             this.exportImageToolStripMenuItem,
             this.testToolStripMenuItem,
-            this.testPcbLibCreationToolStripMenuItem});
+            this.testPcbLibCreationToolStripMenuItem,
+            this.importBXLToolStripMenuItem});
             this.exportToolStripMenuItem1.Name = "exportToolStripMenuItem1";
-            this.exportToolStripMenuItem1.Size = new System.Drawing.Size(52, 20);
-            this.exportToolStripMenuItem1.Text = "Export";
+            this.exportToolStripMenuItem1.Size = new System.Drawing.Size(54, 20);
+            this.exportToolStripMenuItem1.Text = "Debug";
             // 
             // exportFootprintToolStripMenuItem1
             // 
@@ -656,6 +693,13 @@
             this.testPcbLibCreationToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.testPcbLibCreationToolStripMenuItem.Text = "Test PcbLib creation";
             this.testPcbLibCreationToolStripMenuItem.Click += new System.EventHandler(this.testPcbLibCreationToolStripMenuItem_Click);
+            // 
+            // importBXLToolStripMenuItem
+            // 
+            this.importBXLToolStripMenuItem.Name = "importBXLToolStripMenuItem";
+            this.importBXLToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.importBXLToolStripMenuItem.Text = "Import BXL";
+            this.importBXLToolStripMenuItem.Click += new System.EventHandler(this.importBXLToolStripMenuItem_Click);
             // 
             // openFileDialog
             // 
@@ -773,6 +817,10 @@
         private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testPcbLibCreationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importBXLToolStripMenuItem;
+        private System.Windows.Forms.ComboBox comboDisplayMode;
+        private System.Windows.Forms.Label labelDisplayMode;
+        private System.Windows.Forms.ToolStripProgressBar statusProgressBar;
     }
 }
 

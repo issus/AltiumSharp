@@ -16,13 +16,10 @@ namespace AltiumSharp.Drawing
         private SchDocumentHeader _header;
         private SchLib _assets;
 
-        public int Part { get; set; }
-
         public SchLibRenderer(SchDocumentHeader header, SchLib assets)
         {
             _header = header;
             _assets = assets;
-            Part = 1;
         }
 
         private const double FontScalingAdjust = 0.667; // value obtained empirically
@@ -82,14 +79,6 @@ namespace AltiumSharp.Drawing
             var maxX = points.Max(p => p.X);
             var maxY = points.Max(p => p.Y);
             return new RectangleF(minX, minY, maxX - minX, maxY - minY);
-        }
-
-        /// <summary>
-        /// Returns primitives as drawables as long as they belong with the same part.
-        /// </summary>
-        protected override bool DoIsPrimitiveDrawable(Primitive primitive)
-        {
-            return (primitive is SchPrimitive p) && (p.OwnerPartId == -1 || p.OwnerPartId == Part);
         }
 
         /// <summary>
@@ -252,7 +241,7 @@ namespace AltiumSharp.Drawing
             var displayNameHorizontalAlignment = StringAlignment.Far;
             var designatorHorizontalAlignment = StringAlignment.Near;
             var penWidth = ScaleLineWidth(LineWidth.Small);
-            using (var pen = CreatePen(pin.Color, penWidth, LineCap.Flat))
+            using (var pen = CreatePen(pin.Color, penWidth))
             {
                 if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.Rotated))
                 {

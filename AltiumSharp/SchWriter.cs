@@ -62,6 +62,7 @@ namespace AltiumSharp
 
         protected static void WritePrimitive(BinaryWriter writer, SchPrimitive primitive, bool pinAsBinary,
             int ownerIndex, ref int index, ref int pinIndex,
+            Dictionary<int, (int x, int y, int length)> pinsFrac,
             Dictionary<int, ParameterCollection> pinsWideText, Dictionary<int, byte[]> pinsTextData,
             Dictionary<int, ParameterCollection> pinsSymbolLineWidth)
         {
@@ -69,8 +70,12 @@ namespace AltiumSharp
 
             if (pinAsBinary && primitive is SchPin pin)
             {
-                WritePinRecord(writer, pin, out var pinWideText, out var pinTextData, out var pinSymbolLineWidth);
+                WritePinRecord(writer, pin, out var pinFrac, out var pinWideText, out var pinTextData, out var pinSymbolLineWidth);
 
+                if (pinFrac.x != 0 || pinFrac.y != 0 || pinFrac.length != 0)
+                {
+                    pinsFrac?.Add(pinIndex, pinFrac);
+                }
                 if (pinTextData?.Length > 0)
                 {
                     pinsTextData?.Add(pinIndex, pinTextData);
@@ -96,7 +101,7 @@ namespace AltiumSharp
             foreach (var child in primitive.GetAllPrimitives())
             {
                 WritePrimitive(writer, child, pinAsBinary, currentIndex, ref index, ref pinIndex,
-                    pinsWideText, pinsTextData, pinsSymbolLineWidth);
+                    pinsFrac, pinsWideText, pinsTextData, pinsSymbolLineWidth);
             }
         }
 
@@ -119,8 +124,13 @@ namespace AltiumSharp
         /// </summary>
         /// <param name="writer">Binary writer.</param>
         /// <param name="pin">Pin primitive to be serialized as a record.</param>
-        protected static void WritePinRecord(BinaryWriter writer, SchPin pin, out ParameterCollection pinWideText, out byte[] pinTextData, out ParameterCollection pinSymbolLineWidth)
+        protected static void WritePinRecord(BinaryWriter writer, SchPin pin, out (int x, int y, int length) pinFrac,
+            out ParameterCollection pinWideText, out byte[] pinTextData, out ParameterCollection pinSymbolLineWidth)
         {
+            var pinLocationX = Utils.CoordToDxpFrac(pin.Location.X);
+            var pinLocationY = Utils.CoordToDxpFrac(pin.Location.Y);
+            var pinLength = Utils.CoordToDxpFrac(pin.PinLength);
+
             WriteBlock(writer, w =>
             {
                 pin.SymbolLineWidth = LineWidth.Smallest;
@@ -128,7 +138,7 @@ namespace AltiumSharp
                 w.Write(pin.Record);
                 w.Write((byte)0); // TODO: unknown
                 w.Write((short)pin.OwnerPartId);
-                w.Write((byte)0); // TODO: unknown
+                w.Write((byte)pin.OwnerPartDisplayMode);
                 w.Write((byte)pin.SymbolInnerEdge);
                 w.Write((byte)pin.SymbolOuterEdge);
                 w.Write((byte)pin.SymbolInside);
@@ -137,16 +147,18 @@ namespace AltiumSharp
                 w.Write((byte)0); // TODO: unknown
                 w.Write((byte)pin.Electrical);
                 w.Write((byte)pin.PinConglomerate);
-                w.Write((short)Utils.CoordToDxpFrac(pin.PinLength).num);
-                w.Write((short)Utils.CoordToDxpFrac(pin.Location.X).num);
-                w.Write((short)Utils.CoordToDxpFrac(pin.Location.Y).num);
+                w.Write((short)pinLength.num);
+                w.Write((short)pinLocationX.num);
+                w.Write((short)pinLocationY.num);
                 w.Write(ColorTranslator.ToWin32(pin.Color));
                 WritePascalShortString(w, pin.Name);
                 WritePascalShortString(w, pin.Designator);
                 w.Write((byte)0); // TODO: unknown
                 w.Write((byte)0); // TODO: unknown
-                w.Write((byte)0); // TODO: unknown
+                WritePascalShortString(w, pin.DefaultValue);
             }, (byte)0x01); // flag needs to be 1
+
+            pinFrac = (pinLocationX.frac, pinLocationY.frac, pinLength.frac);
 
             pinWideText = new ParameterCollection();
             if (!IsAscii(pin.Description)) pinWideText.Add("DESC", pin.Description);

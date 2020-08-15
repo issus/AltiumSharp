@@ -59,9 +59,13 @@ namespace AltiumSharp.Drawing
                 }
             }
 
-            if (state != State.NoBar && startIndex < charIndex)
+            if (state != State.NoBar)
             {
-                overlineRanges.Add(new CharacterRange(startIndex, charIndex - startIndex));
+                if (state == State.CheckBar) --charIndex; // last character isn't overlined
+                if (startIndex < charIndex)
+                {
+                    overlineRanges.Add(new CharacterRange(startIndex, charIndex - startIndex));
+                }
             }
 
             // limit size to 32 as it's the maximum allowed by SetMeasurableCharacterRanges
