@@ -36,9 +36,9 @@ namespace AltiumSharp.BasicTypes
         public int ToInt32() => _value;
 
         /// <summary>
-        /// Gets the string representation of this coordinate using the <see cref="Unit.DxpDefault"/> unit.
+        /// Gets the string representation of this coordinate using the <see cref="Unit.Mil"/> unit.
         /// </summary>
-        public override string ToString() => Utils.CoordUnitToString(_value, Unit.DxpDefault);
+        public override string ToString() => Utils.CoordUnitToString(_value, Unit.Mil);
 
         /// <summary>
         /// Gets the string representation of this coordinate using the given <paramref name="unit"/>.
