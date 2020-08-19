@@ -25,7 +25,7 @@ namespace AltiumSharp.Records
         internal IReadOnlyList<SchPrimitive> Primitives => _primitives;
 
         public virtual bool IsOfCurrentPart =>
-            OwnerPartId == -1 || (Owner is SchComponent component && component.CurrentPartId == OwnerPartId);
+            OwnerPartId <= 0 || (Owner is SchComponent component && component.CurrentPartId == OwnerPartId);
 
         public virtual bool IsOfCurrentDisplayMode =>
             !(Owner is SchComponent) ||

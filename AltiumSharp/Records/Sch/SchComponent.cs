@@ -167,7 +167,7 @@ namespace AltiumSharp.Records
                 primitive.OwnerPartDisplayMode = DisplayMode;
             }
 
-            if (primitive.OwnerPartId < 1 || primitive.OwnerPartId > PartCount)
+            if (primitive.OwnerPartId < 0 || primitive.OwnerPartId > PartCount)
             {
                 primitive.OwnerPartId = CurrentPartId;
             }
