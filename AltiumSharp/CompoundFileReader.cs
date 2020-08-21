@@ -46,6 +46,8 @@ namespace AltiumSharp
         /// </summary>
         public List<string> Errors { get; }
 
+        public string Context => string.Join(":", _context);
+
         /// <summary>
         /// Creates a CompoundFileReader instance for accessing the provided file name.
         /// </summary>
@@ -166,7 +168,7 @@ namespace AltiumSharp
         protected void EmitError(string message)
         {
             Console.Error.WriteLine($"Error: {message}");
-            Errors.Add($"{string.Join(":", _context)}\t{message}");
+            Errors.Add($"{Context}\t{message}");
             throw new InvalidDataException(message);
         }
 
@@ -180,7 +182,7 @@ namespace AltiumSharp
         protected void EmitWarning(string message)
         {
             Console.Error.WriteLine($"Warning: {message}");
-            Warnings.Add($"{string.Join(":", _context)}\t{message}");
+            Warnings.Add($"{Context}\t{message}");
         }
 
         /// <summary>
@@ -271,10 +273,11 @@ namespace AltiumSharp
         /// Reads a block of bytes that is prefixed with its size as an int32.
         /// </summary>
         /// <param name="reader">Binary data reader.</param>
+        /// <param name="emptySize">Size considered as an empty block that should have its content skipped.</param>
         /// <returns>Bytes contained in the block.</returns>
-        internal static byte[] ReadBlock(BinaryReader reader)
+        internal static byte[] ReadBlock(BinaryReader reader, int emptySize = 0)
         {
-            return ReadBlock(reader, reader.ReadBytes);
+            return ReadBlock(reader, reader.ReadBytes, emptySize: emptySize);
         }
 
         /// <summary>
@@ -294,7 +297,8 @@ namespace AltiumSharp
         /// <param name="onEmpty">
         /// Callback to signal that the block was empty.
         /// </param>
-        internal static void ReadBlock(BinaryReader reader, Action<int> interpreter, Action onEmpty = null)
+        /// <param name="emptySize">Size considered as an empty block that should have its content skipped.</param>
+        internal static void ReadBlock(BinaryReader reader, Action<int> interpreter, Action onEmpty = null, int emptySize = 0)
         {
             ReadBlock<object>(reader, size =>
             {
@@ -304,7 +308,7 @@ namespace AltiumSharp
             {
                 onEmpty?.Invoke();
                 return null;
-            });
+            }, emptySize);
         }
 
         /// <summary>
@@ -331,11 +335,12 @@ namespace AltiumSharp
         /// <param name="onEmpty">
         /// Callback to signal that the block was empty.
         /// </param>
-        internal static T ReadBlock<T>(BinaryReader reader, Func<int, T> interpreter, Func<T> onEmpty = null)
+        /// <param name="emptySize">Size considered as an empty block that should have its content skipped.</param>
+        internal static T ReadBlock<T>(BinaryReader reader, Func<int, T> interpreter, Func<T> onEmpty = null, int emptySize = 0)
         {
             var size = reader.ReadInt32();
             var sanitizedSize = size & 0x00ffffff; // mask out last byte which may include a flag
-            if (size > 0)
+            if (size > emptySize)
             {
                 var position = reader.BaseStream.Position;
                 try
@@ -520,13 +525,14 @@ namespace AltiumSharp
         /// <returns>Read string.</returns>
         internal static string ReadStringFontName(BinaryReader reader)
         {
+            var pos = reader.BaseStream.Position;
             List<byte> data = new List<byte>();
             ushort unicodeChar;
-            while ((unicodeChar = reader.ReadUInt16()) != 0)
+            while (data.Count < 32 && (unicodeChar = reader.ReadUInt16()) != 0)
             {
                 data.AddRange(BitConverter.GetBytes(unicodeChar));
             }
-            reader.ReadBytes(32 - data.Count - 2); // needs to read 32 bytes, so skip remaining ones
+            reader.BaseStream.Position = pos + 32; // needs to read 32 bytes, so skip remaining ones
             return ParseRawString(data.ToArray(), encoding: Encoding.Unicode);
         }
 

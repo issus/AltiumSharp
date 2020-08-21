@@ -80,10 +80,15 @@ namespace AltiumSharp
         /// </summary>
         /// <param name="writer">Binary data writer.</param>
         /// <param name="data">Block data.</param>
-        internal static void WriteBlock(BinaryWriter writer, byte[] data, byte flags = 0)
+        /// <param name="flags">Block flags.</param>
+        /// <param name="emptySize">Size considered as an empty block that will not have content data written.</param>
+        internal static void WriteBlock(BinaryWriter writer, byte[] data, byte flags = 0, int emptySize = 0)
         {
             writer.Write((flags << 24) | data.Length); // flags + size
-            writer.Write(data ?? Array.Empty<byte>()); // data
+            if (data.Length > emptySize)
+            {
+                writer.Write(data ?? Array.Empty<byte>()); // data
+            }
         }
 
         /// <summary>
@@ -91,7 +96,9 @@ namespace AltiumSharp
         /// </summary>
         /// <param name="writer">Binary data writer.</param>
         /// <param name="serializer">Serializer that will generate the block data.</param>
-        internal static void WriteBlock(BinaryWriter writer, Action<BinaryWriter> serializer, byte flags = 0)
+        /// <param name="flags">Block flags.</param>
+        /// <param name="emptySize">Size considered as an empty block that will not have content data written.</param>
+        internal static void WriteBlock(BinaryWriter writer, Action<BinaryWriter> serializer, byte flags = 0, int emptySize = 0)
         {
             var posStart = writer.BaseStream.Position;
 
@@ -104,7 +111,10 @@ namespace AltiumSharp
             int length = (int)(posEnd - posStart - sizeof(int));
             writer.Write(((flags << 24) | length)); // write length header
 
-            writer.BaseStream.Position = posEnd;
+            if (length > emptySize)
+            {
+                writer.BaseStream.Position = posEnd;
+            }
         }
 
         /// <summary>
