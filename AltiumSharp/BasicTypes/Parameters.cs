@@ -134,6 +134,8 @@ namespace AltiumSharp.BasicTypes
         /// </param>
         public IEnumerable<ParameterValue> AsEnumerable(char? separator = null)
         {
+            if (string.IsNullOrEmpty(_data)) yield break;
+
             foreach (var item in _data.Split(separator ?? ListSeparator))
             {
                 yield return new ParameterValue(item, '\0');
