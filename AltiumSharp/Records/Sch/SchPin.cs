@@ -63,7 +63,9 @@ namespace AltiumSharp.Records
         public Coord PinLength { get; set; }
         public string Name { get; set; }
         public string Designator { get; set; }
+        public string SwapIdGroup { get; set; }
         public int SwapIdPart { get; set; }
+        public string SwapIdSequence { get; set; }
         public string HiddenNetName { get; set; }
         public string DefaultValue { get; set; }
         public double PinPropagationDelay { get; set; }

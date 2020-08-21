@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using AltiumSharp.BasicTypes;
@@ -71,6 +72,8 @@ namespace AltiumSharp
             while (reader.BaseStream.Position < reader.BaseStream.Length)
             {
                 var primitiveStartPosition = reader.BaseStream.Position;
+                BeginContext($"{primitives.Count} {primitiveStartPosition}");
+
                 var primitive = ReadRecord(reader,
                     size => ReadAsciiRecord(reader, size),
                     size =>
@@ -86,10 +89,10 @@ namespace AltiumSharp
                         pinIndex++;
                         return ReadPinRecord(reader, size, pinFrac, pinWideText, pinTextData, pinSymbolLineWidth);
                     });
-
                 primitive.SetRawData(ExtractStreamData(reader, primitiveStartPosition, reader.BaseStream.Position));
-
                 primitives.Add(primitive);
+
+                EndContext();
             }
 
             EndContext();
@@ -263,9 +266,7 @@ namespace AltiumSharp
         protected SchPin ReadPinRecord(BinaryReader reader, int size, (int x, int y, int length) pinFrac,
             ParameterCollection pinWideText, byte[] pinTextData, ParameterCollection pinSymbolLineWidth)
         {
-            int recordType = (size >> 24);
-
-            BeginContext($"Binary Record {recordType}");
+            BeginContext("Binary Record");
 
             var pin = new SchPin();
             var pinRecord = reader.ReadInt32();
@@ -289,8 +290,16 @@ namespace AltiumSharp
             pin.Color = ColorTranslator.FromWin32(reader.ReadInt32());
             pin.Name = ReadPascalShortString(reader);
             pin.Designator = ReadPascalShortString(reader);
-            reader.ReadByte(); // TODO: unknown
-            reader.ReadByte(); // TODO: unknown
+            pin.SwapIdGroup = ReadPascalShortString(reader);
+            var partAndSequence = ReadPascalShortString(reader)?.Split(new[] { '|' }, 3); // format is Part|&|Sequence
+            if (partAndSequence?.Length == 3)
+            {
+                if (int.TryParse(partAndSequence[0], out var partId))
+                {
+                    pin.SwapIdPart = partId;
+                }
+                pin.SwapIdSequence = partAndSequence[2];
+            }
             pin.DefaultValue = ReadPascalShortString(reader);
 
             if (pinWideText != null)
