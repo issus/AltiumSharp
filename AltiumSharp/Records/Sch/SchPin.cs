@@ -73,13 +73,13 @@ namespace AltiumSharp.Records
 
         public override bool IsVisible => base.IsVisible && !PinConglomerate.HasFlag(PinConglomerateFlags.Hide);
 
-        public bool NameVisible
+        public bool IsNameVisible
         {
             get => PinConglomerate.HasFlag(PinConglomerateFlags.DisplayNameVisible);
             set => PinConglomerate = PinConglomerate.WithFlag(PinConglomerateFlags.DisplayNameVisible, value);
         }
 
-        public bool DesignatorVisible
+        public bool IsDesignatorVisible
         {
             get => PinConglomerate.HasFlag(PinConglomerateFlags.DesignatorVisible);
             set => PinConglomerate = PinConglomerate.WithFlag(PinConglomerateFlags.DesignatorVisible, value);
