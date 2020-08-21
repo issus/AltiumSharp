@@ -77,10 +77,10 @@ namespace AltiumSharp.BasicTypes
             double.Parse(str, NumberStyles.Any, CultureInfo.InvariantCulture);
 
         /// <summary>
-        /// Makes sure angle is between [0, 360)
+        /// Makes sure angle is between [0, 360]
         /// </summary>
         public static double NormalizeAngle(double degrees) =>
-            (degrees % 360.0 + 360.0) % 360.0;
+            (degrees > 0 && degrees % 360.0 == 0) ? 360.0 : (degrees % 360.0 + 360.0) % 360.0;
 
         internal static bool TryStringToDouble(string str, out double value) =>
             double.TryParse(str, NumberStyles.Any, CultureInfo.InvariantCulture, out value);
