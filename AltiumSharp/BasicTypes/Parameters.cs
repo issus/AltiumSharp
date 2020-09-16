@@ -347,7 +347,7 @@ namespace AltiumSharp.BasicTypes
                 }
                 else
                 {
-                    AddData(key, value);
+                    InternalAddData(key, value);
                 }
             }
         }
@@ -403,7 +403,7 @@ namespace AltiumSharp.BasicTypes
         /// </summary>
         /// <param name="key">Key of the value to be added.</param>
         /// <param name="data">String representation of the value to be added.</param>
-        private void AddData(string key, string data, bool forceAddKey = false)
+        private void InternalAddData(string key, string data, bool forceAddKey = false)
         {
             var parameterValue = new Parameter(key, data, Level);
             
@@ -435,11 +435,11 @@ namespace AltiumSharp.BasicTypes
             {
                 if (value is IConvertible convertible)
                 {
-                    AddData(key, convertible.ToString(CultureInfo.InvariantCulture));
+                    InternalAddData(key, convertible.ToString(CultureInfo.InvariantCulture));
                 }
                 else
                 {
-                    AddData(key, value.ToString());
+                    InternalAddData(key, value.ToString());
                 }
             }
             else
@@ -474,7 +474,7 @@ namespace AltiumSharp.BasicTypes
             if (!ignoreDefaultValue || value != 0)
             {
                 var format = "#########0." + string.Concat(Enumerable.Repeat("0", decimals)) + string.Concat(Enumerable.Repeat("#", 6 - decimals));
-                AddData(key, value.ToString(format, CultureInfo.InvariantCulture));
+                InternalAddData(key, value.ToString(format, CultureInfo.InvariantCulture));
             }
             else
             {
@@ -489,7 +489,7 @@ namespace AltiumSharp.BasicTypes
         {
             if (!ignoreDefaultValue || value)
             {
-                AddData(key, value ? ParameterValue.TrueValues[UseLongBooleans ? 1 : 0] : ParameterValue.FalseValues[UseLongBooleans ? 1 : 0]);
+                InternalAddData(key, value ? ParameterValue.TrueValues[UseLongBooleans ? 1 : 0] : ParameterValue.FalseValues[UseLongBooleans ? 1 : 0]);
             }
             else
             {
@@ -504,7 +504,7 @@ namespace AltiumSharp.BasicTypes
         {
             if (!ignoreDefaultValue || (int)value != 0)
             {
-                AddData(key, value.ToMils().ToString("#####0.#####mil", CultureInfo.InvariantCulture));
+                InternalAddData(key, value.ToMils().ToString("#####0.#####mil", CultureInfo.InvariantCulture));
             }
             else
             {
