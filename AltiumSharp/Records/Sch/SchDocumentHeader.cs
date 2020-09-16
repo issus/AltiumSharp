@@ -19,6 +19,7 @@ namespace AltiumSharp.Records
         public int SheetStyle { get; set; }
         public int SystemFont { get; set; }
         public bool BorderOn { get; set; }
+        public bool TitleBlockOn { get; set; }
         public int SheetNumberSpaceSize { get; internal set; }
         public Color AreaColor { get; set; }
         public bool SnapGridOn { get; set; }
@@ -27,6 +28,9 @@ namespace AltiumSharp.Records
         public Coord VisibleGridSize { get; set; }
         public int CustomX { get; internal set; }
         public int CustomY { get; internal set; }
+        public int CustomXZones { get; internal set; }
+        public int CustomYZones { get; internal set; }
+        public int CustomMarginWidth { get; internal set; }
         public bool UseCustomSheet { get; internal set; }
         public bool ReferenceZonesOn { get; internal set; }
         public bool ShowTemplateGraphics { get; internal set; }
@@ -73,6 +77,7 @@ namespace AltiumSharp.Records
             SheetStyle = p["SHEETSTYLE"].AsIntOrDefault();
             SystemFont = p["SYSTEMFONT"].AsIntOrDefault(1);
             BorderOn = p["BORDERON"].AsBool();
+            TitleBlockOn = p["TITLEBLOCKON"].AsBool();
             SheetNumberSpaceSize = p["SHEETNUMBERSPACESIZE"].AsIntOrDefault();
             AreaColor = p["AREACOLOR"].AsColorOrDefault();
             SnapGridOn = p["SNAPGRIDON"].AsBool();
@@ -81,6 +86,9 @@ namespace AltiumSharp.Records
             VisibleGridSize = Utils.DxpFracToCoord(p["VISIBLEGRIDSIZE"].AsIntOrDefault(), p["VISIBLEGRIDSIZE_FRAC"].AsIntOrDefault());
             CustomX = p["CUSTOMX"].AsIntOrDefault();
             CustomY = p["CUSTOMY"].AsIntOrDefault();
+            CustomXZones = p["CUSTOMXZONES"].AsIntOrDefault();
+            CustomYZones = p["CUSTOMYZONES"].AsIntOrDefault();
+            CustomMarginWidth = p["CUSTOMMARGINWIDTH"].AsIntOrDefault();
             UseCustomSheet = p["USECUSTOMSHEET"].AsBool();
             ReferenceZonesOn = p["REFERENCEZONESON"].AsBool();
             ShowTemplateGraphics = p["SHOWTEMPLATEGRAPHICS"].AsBool();
@@ -111,6 +119,7 @@ namespace AltiumSharp.Records
             p.Add("SHEETSTYLE", SheetStyle);
             p.Add("SYSTEMFONT", SystemFont);
             p.Add("BORDERON", BorderOn);
+            p.Add("TITLEBLOCKON", TitleBlockOn);
             p.Add("SHEETNUMBERSPACESIZE", SheetNumberSpaceSize);
             p.Add("AREACOLOR", AreaColor);
             p.Add("SNAPGRIDON", SnapGridOn);
@@ -127,6 +136,9 @@ namespace AltiumSharp.Records
             }
             p.Add("CUSTOMX", CustomX);
             p.Add("CUSTOMY", CustomY);
+            p.Add("CUSTOMXZONES", CustomXZones);
+            p.Add("CUSTOMYZONES", CustomYZones);
+            p.Add("CUSTOMMARGINWIDTH", CustomMarginWidth);
             p.Add("USECUSTOMSHEET", UseCustomSheet);
             p.Add("REFERENCEZONESON", ReferenceZonesOn);
             p.Add("SHOWTEMPLATEGRAPHICS", ShowTemplateGraphics);
