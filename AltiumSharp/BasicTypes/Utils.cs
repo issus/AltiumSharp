@@ -88,6 +88,19 @@ namespace AltiumSharp.BasicTypes
         internal static string Format(string format, params object[] args) =>
             string.Format(CultureInfo.InvariantCulture, format, args);
 
+        internal static ref CoordPoint[] TranslatePoints(ref CoordPoint[] points, in CoordPoint value)
+        {
+            if (value == CoordPoint.Zero) return ref points;
+
+            for (var i = 0; i < points.Length; ++i)
+            {
+                var p = points[i];
+                points[i] = new CoordPoint(p.X + value.X, p.Y + value.Y);
+            }
+
+            return ref points;
+        }
+
         internal static ref CoordPoint[] RotatePoints(ref CoordPoint[] points,
             in CoordPoint anchor, double angleDegrees)
         {
