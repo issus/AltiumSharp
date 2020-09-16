@@ -11,7 +11,7 @@ namespace AltiumSharp.Records
         public bool ShowName { get; set; }
         public string Description { get; set; }
         public int ReadOnlyState { get; set; }
-        public string UniqueId { get; internal set; }
+        public string UniqueId { get; set; }
         public string Value => string.IsNullOrEmpty(Description) ? base.DisplayText : Description;
         internal override string DisplayText => ShowName ? $"{Name}: {Value}" : Value;
         public override bool IsOfCurrentPart => true;
@@ -28,7 +28,6 @@ namespace AltiumSharp.Records
             OwnerPartId = -1;
             Text = "*";
             IsHidden = true;
-            UniqueId = Utils.GenerateUniqueId();
         }
 
         public override string ToString()

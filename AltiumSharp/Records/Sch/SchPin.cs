@@ -103,7 +103,6 @@ namespace AltiumSharp.Records
                 PinConglomerateFlags.DesignatorVisible |
                 PinConglomerateFlags.Unknown;
             PinLength = Utils.DxpFracToCoord(30, 0);
-            UniqueId = Utils.GenerateUniqueId();
             Designator = null;
             Name = null;
         }
@@ -184,7 +183,6 @@ namespace AltiumSharp.Records
             p.Add("DESIGNATOR", Designator);
             p.Add("SWAPIDPART", SwapIdPart);
             p.Add("PINPROPAGATIONDELAY", PinPropagationDelay);
-            p.Add("UNIQUEID", UniqueId);
         }
 
         protected override bool DoAdd(SchPrimitive primitive)
@@ -216,7 +214,7 @@ namespace AltiumSharp.Records
 
             if (!string.IsNullOrEmpty(UniqueId))
             {
-                yield return new SchParameter {Name = "PinUniqueId", Text = UniqueId};
+                yield return new SchParameter {Name = "PinUniqueId", Text = UniqueId, Location = Location};
             }
         }
     }
