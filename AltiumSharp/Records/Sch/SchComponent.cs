@@ -28,6 +28,7 @@ namespace AltiumSharp.Records
         public int ComponentKind { get; set; }
         public string AliasList { get; set; }
         public int AllPinCount => Primitives.OfType<SchPin>().Count();
+        public TextOrientations Orientation { get; set; }
 
         /// <summary>
         /// DesignItemId is kept for compatibility as it should be the exact same as LibReference,
@@ -104,6 +105,7 @@ namespace AltiumSharp.Records
             PartIdLocked = p["PARTIDLOCKED"].AsBool();
             ComponentKind = p["COMPONENTKIND"].AsIntOrDefault();
             AliasList = p["ALIASLIST"].AsStringOrDefault();
+            Orientation = p["ORIENTATION"].AsEnumOrDefault<TextOrientations>();
         }
 
         public override void ExportToParameters(ParameterCollection p)
@@ -117,6 +119,7 @@ namespace AltiumSharp.Records
             p.Add("PARTCOUNT", PartCount + 1);
             p.Add("DISPLAYMODECOUNT", DisplayModeCount);
             p.MoveKeys("INDEXINSHEET");
+            p.Add("ORIENTATION", Orientation);
             p.Add("CURRENTPARTID", CurrentPartId);
             p.Add("SHOWHIDDENPINS", ShowHiddenPins);
             p.Add("LIBRARYPATH", LibraryPath);
@@ -162,14 +165,22 @@ namespace AltiumSharp.Records
                 return false;
             }
 
-            if (primitive.OwnerPartDisplayMode < 0 || primitive.OwnerPartDisplayMode >= DisplayModeCount)
+            if (primitive.OwnerPartDisplayMode == null)
             {
                 primitive.OwnerPartDisplayMode = DisplayMode;
             }
+            else if (primitive.OwnerPartDisplayMode >= DisplayModeCount)
+            {
+                DisplayModeCount = primitive.OwnerPartDisplayMode.Value + 1;
+            }
 
-            if (primitive.OwnerPartId < 0 || primitive.OwnerPartId > PartCount)
+            if (primitive.OwnerPartId == null)
             {
                 primitive.OwnerPartId = CurrentPartId;
+            }
+            else if (primitive.OwnerPartId > PartCount)
+            {
+                PartCount = primitive.OwnerPartId.Value;
             }
 
             return true;
