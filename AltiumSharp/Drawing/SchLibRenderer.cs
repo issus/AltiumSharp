@@ -18,7 +18,7 @@ namespace AltiumSharp.Drawing
 
         public SchLibRenderer(SchDocumentHeader header, SchLib assets)
         {
-            _header = header;
+            _header = header ?? new SchSheetHeader();
             _assets = assets;
         }
 
@@ -31,7 +31,7 @@ namespace AltiumSharp.Drawing
         /// <returns></returns>
         private Font CreateFont(int fontId)
         {
-            if (fontId == 0) fontId = _header.SystemFont;
+            if (fontId < 1 || fontId > _header.FontId.Count) fontId = _header.SystemFont;
             var f = _header.FontId[fontId - 1];
             var fontStyle = FontStyle.Regular;
             if (f.Italic) fontStyle |= FontStyle.Italic;
@@ -43,7 +43,7 @@ namespace AltiumSharp.Drawing
 
         private IEnumerable<SchPrimitive> GetAsset(string name)
         {
-            return _assets.Items.SingleOrDefault(c => c.LibReference == name)?.GetAllPrimitives().Where(p => p.IsVisible);
+            return _assets?.Items.SingleOrDefault(c => c.LibReference == name)?.GetAllPrimitives().Where(p => p.IsVisible);
         }
 
         /// <summary>
