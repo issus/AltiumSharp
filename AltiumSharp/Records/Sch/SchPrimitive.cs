@@ -11,13 +11,13 @@ namespace AltiumSharp.Records
 
         public bool IsNotAccesible { get; set; }
 
-        public int IndexInSheet => (Owner as SchComponent)?.GetPrimitiveIndexOf(this) ?? -1;
+        public int? IndexInSheet => (Owner as SchSheetHeader)?.GetPrimitiveIndexOf(this);
 
         internal int OwnerIndex { get; set; }
 
-        public int OwnerPartId { get; set; }
+        public int? OwnerPartId { get; set; }
 
-        public int OwnerPartDisplayMode { get; set; }
+        public int? OwnerPartDisplayMode { get; set; }
 
         public bool GraphicallyLocked { get; set; }
 
@@ -25,7 +25,7 @@ namespace AltiumSharp.Records
         internal IReadOnlyList<SchPrimitive> Primitives => _primitives;
 
         public virtual bool IsOfCurrentPart =>
-            OwnerPartId == -1 || (Owner is SchComponent component && component.CurrentPartId == OwnerPartId);
+            OwnerPartId <= 0 || (Owner is SchComponent component && component.CurrentPartId == OwnerPartId);
 
         public virtual bool IsOfCurrentDisplayMode =>
             !(Owner is SchComponent) ||
@@ -36,8 +36,6 @@ namespace AltiumSharp.Records
 
         public SchPrimitive() : base()
         {
-            OwnerPartDisplayMode = -1;
-            OwnerPartId = -1;
         }
 
         public IEnumerable<T> GetPrimitivesOfType<T>(bool flatten = true) where T : Primitive
@@ -64,7 +62,7 @@ namespace AltiumSharp.Records
             if (p == null) throw new ArgumentNullException(nameof(p));
 
             var recordType = p["RECORD"].AsIntOrDefault();
-            if (recordType != Record) throw new ArgumentException($"Record type mismatch when deserializing. Expected {Record} but got {recordType}", nameof(p));
+            if (Record != 0 && recordType != Record) throw new ArgumentException($"Record type mismatch when deserializing. Expected {Record} but got {recordType}", nameof(p));
 
             OwnerIndex = p["OWNERINDEX"].AsIntOrDefault();
             IsNotAccesible = p["ISNOTACCESIBLE"].AsBool();
@@ -80,9 +78,9 @@ namespace AltiumSharp.Records
             p.Add("RECORD", Record);
             p.Add("OWNERINDEX", OwnerIndex);
             p.Add("ISNOTACCESIBLE", IsNotAccesible);
-            p.Add("INDEXINSHEET", IndexInSheet);
-            p.Add("OWNERPARTID", OwnerPartId);
-            p.Add("OWNERPARTDISPLAYMODE", OwnerPartDisplayMode);
+            p.Add("INDEXINSHEET", IndexInSheet ?? default);
+            p.Add("OWNERPARTID", OwnerPartId ?? default);
+            p.Add("OWNERPARTDISPLAYMODE", OwnerPartDisplayMode ?? default);
             p.Add("GRAPHICALLYLOCKED", GraphicallyLocked);
         }
 

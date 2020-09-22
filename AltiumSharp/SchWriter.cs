@@ -153,8 +153,15 @@ namespace AltiumSharp
                 w.Write(ColorTranslator.ToWin32(pin.Color));
                 WritePascalShortString(w, pin.Name);
                 WritePascalShortString(w, pin.Designator);
-                w.Write((byte)0); // TODO: unknown
-                w.Write((byte)0); // TODO: unknown
+                WritePascalShortString(w, pin.SwapIdGroup);
+                var partAndSequence = string.Empty;
+                if (!(pin.SwapIdPart == 0 && string.IsNullOrEmpty(pin.SwapIdSequence)))
+                {
+                    partAndSequence = pin.SwapIdPart != 0
+                        ? $"{pin.SwapIdPart}|&|{pin.SwapIdSequence}"
+                        : $"|&|{pin.SwapIdSequence}";
+                }
+                WritePascalShortString(w, partAndSequence);
                 WritePascalShortString(w, pin.DefaultValue);
             }, (byte)0x01); // flag needs to be 1
 

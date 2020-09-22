@@ -2,160 +2,107 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 
 namespace AltiumSharp.BasicTypes
 {
-    /// <summary>
-    /// Information about the possible layers.
-    /// </summary>
-    internal class LayerMetadata
-    {
-        private static Dictionary<Layer, LayerMetadata> _info = new Dictionary<Layer, LayerMetadata>();
-
-        private static void RegisterLayerInfo(int id, string name, int drawPriority, Color color)
-        {
-            _info.Add((byte)id, new LayerMetadata((byte)id, name, drawPriority, color));
-        }
-
-        static LayerMetadata()
-        {
-            /* from Default.PCBSysColors */
-            RegisterLayerInfo(_info.Count + 1, "TopLayer", 3, ColorTranslator.FromWin32(0x000000FF));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer1", 3, ColorTranslator.FromWin32(0x00008EBC));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer2", 3, ColorTranslator.FromWin32(0x00FADB70));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer3", 3, ColorTranslator.FromWin32(0x0066CC00));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer4", 3, ColorTranslator.FromWin32(0x00FF6699));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer5", 3, ColorTranslator.FromWin32(0x00FFFF00));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer6", 3, ColorTranslator.FromWin32(0x00800080));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer7", 3, ColorTranslator.FromWin32(0x00FF00FF));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer8", 3, ColorTranslator.FromWin32(0x00008080));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer9", 3, ColorTranslator.FromWin32(0x0000FFFF));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer10", 3, ColorTranslator.FromWin32(0x00808080));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer11", 3, ColorTranslator.FromWin32(0x00FFFFFF));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer12", 3, ColorTranslator.FromWin32(0x00800080));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer13", 3, ColorTranslator.FromWin32(0x00808000));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer14", 3, ColorTranslator.FromWin32(0x00C0C0C0));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer15", 3, ColorTranslator.FromWin32(0x00000080));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer16", 3, ColorTranslator.FromWin32(0x00008000));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer17", 3, ColorTranslator.FromWin32(0x0000FF00));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer18", 3, ColorTranslator.FromWin32(0x00800000));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer19", 3, ColorTranslator.FromWin32(0x00FFFF00));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer20", 3, ColorTranslator.FromWin32(0x00800080));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer21", 3, ColorTranslator.FromWin32(0x00FF00FF));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer22", 3, ColorTranslator.FromWin32(0x00008080));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer23", 3, ColorTranslator.FromWin32(0x0000FFFF));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer24", 3, ColorTranslator.FromWin32(0x00808080));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer25", 3, ColorTranslator.FromWin32(0x00FFFFFF));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer26", 3, ColorTranslator.FromWin32(0x00800080));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer27", 3, ColorTranslator.FromWin32(0x00808000));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer28", 3, ColorTranslator.FromWin32(0x00C0C0C0));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer29", 3, ColorTranslator.FromWin32(0x00000080));
-            RegisterLayerInfo(_info.Count + 1, "MidLayer30", 3, ColorTranslator.FromWin32(0x00008000));
-            RegisterLayerInfo(_info.Count + 1, "BottomLayer", 2, ColorTranslator.FromWin32(0x00FF0000));
-            RegisterLayerInfo(_info.Count + 1, "TopOverlay", 2, ColorTranslator.FromWin32(0x0000FFFF));
-            RegisterLayerInfo(_info.Count + 1, "BottomOverlay", 2, ColorTranslator.FromWin32(0x00008080));
-            RegisterLayerInfo(_info.Count + 1, "TopPaste", 2, ColorTranslator.FromWin32(0x00808080));
-            RegisterLayerInfo(_info.Count + 1, "BottomPaste", 2, ColorTranslator.FromWin32(0x00000080));
-            RegisterLayerInfo(_info.Count + 1, "TopSolder", 2, ColorTranslator.FromWin32(0x00800080));
-            RegisterLayerInfo(_info.Count + 1, "BottomSolder", 2, ColorTranslator.FromWin32(0x00FF00FF));
-            RegisterLayerInfo(_info.Count + 1, "InternalPlane1", 3, ColorTranslator.FromWin32(0x00008000));
-            RegisterLayerInfo(_info.Count + 1, "InternalPlane2", 3, ColorTranslator.FromWin32(0x00000080));
-            RegisterLayerInfo(_info.Count + 1, "InternalPlane3", 3, ColorTranslator.FromWin32(0x00800080));
-            RegisterLayerInfo(_info.Count + 1, "InternalPlane4", 3, ColorTranslator.FromWin32(0x00808000));
-            RegisterLayerInfo(_info.Count + 1, "InternalPlane5", 3, ColorTranslator.FromWin32(0x00008000));
-            RegisterLayerInfo(_info.Count + 1, "InternalPlane6", 3, ColorTranslator.FromWin32(0x00000080));
-            RegisterLayerInfo(_info.Count + 1, "InternalPlane7", 3, ColorTranslator.FromWin32(0x00800080));
-            RegisterLayerInfo(_info.Count + 1, "InternalPlane8", 3, ColorTranslator.FromWin32(0x00808000));
-            RegisterLayerInfo(_info.Count + 1, "InternalPlane9", 3, ColorTranslator.FromWin32(0x00008000));
-            RegisterLayerInfo(_info.Count + 1, "InternalPlane10", 3, ColorTranslator.FromWin32(0x00000080));
-            RegisterLayerInfo(_info.Count + 1, "InternalPlane11", 3, ColorTranslator.FromWin32(0x00800080));
-            RegisterLayerInfo(_info.Count + 1, "InternalPlane12", 3, ColorTranslator.FromWin32(0x00808000));
-            RegisterLayerInfo(_info.Count + 1, "InternalPlane13", 3, ColorTranslator.FromWin32(0x00008000));
-            RegisterLayerInfo(_info.Count + 1, "InternalPlane14", 3, ColorTranslator.FromWin32(0x00000080));
-            RegisterLayerInfo(_info.Count + 1, "InternalPlane15", 3, ColorTranslator.FromWin32(0x00800080));
-            RegisterLayerInfo(_info.Count + 1, "InternalPlane16", 3, ColorTranslator.FromWin32(0x00808000));
-            RegisterLayerInfo(_info.Count + 1, "DrillGuide", 2, ColorTranslator.FromWin32(0x00000080));
-            RegisterLayerInfo(_info.Count + 1, "KeepOutLayer", 3, ColorTranslator.FromWin32(0x00FF00FF));
-            RegisterLayerInfo(_info.Count + 1, "Mechanical1", 3, ColorTranslator.FromWin32(0x00FF00FF));
-            RegisterLayerInfo(_info.Count + 1, "Mechanical2", 3, ColorTranslator.FromWin32(0x00800080));
-            RegisterLayerInfo(_info.Count + 1, "Mechanical3", 3, ColorTranslator.FromWin32(0x00008000));
-            RegisterLayerInfo(_info.Count + 1, "Mechanical4", 3, ColorTranslator.FromWin32(0x00008080));
-            RegisterLayerInfo(_info.Count + 1, "Mechanical5", 3, ColorTranslator.FromWin32(0x00FF00FF));
-            RegisterLayerInfo(_info.Count + 1, "Mechanical6", 3, ColorTranslator.FromWin32(0x00800080));
-            RegisterLayerInfo(_info.Count + 1, "Mechanical7", 3, ColorTranslator.FromWin32(0x00008000));
-            RegisterLayerInfo(_info.Count + 1, "Mechanical8", 3, ColorTranslator.FromWin32(0x00008080));
-            RegisterLayerInfo(_info.Count + 1, "Mechanical9", 3, ColorTranslator.FromWin32(0x00FF00FF));
-            RegisterLayerInfo(_info.Count + 1, "Mechanical10", 3, ColorTranslator.FromWin32(0x00800080));
-            RegisterLayerInfo(_info.Count + 1, "Mechanical11", 3, ColorTranslator.FromWin32(0x00008000));
-            RegisterLayerInfo(_info.Count + 1, "Mechanical12", 3, ColorTranslator.FromWin32(0x00008080));
-            RegisterLayerInfo(_info.Count + 1, "Mechanical13", 3, ColorTranslator.FromWin32(0x00FF00FF));
-            RegisterLayerInfo(_info.Count + 1, "Mechanical14", 3, ColorTranslator.FromWin32(0x00800080));
-            RegisterLayerInfo(_info.Count + 1, "Mechanical15", 3, ColorTranslator.FromWin32(0x00008000));
-            RegisterLayerInfo(_info.Count + 1, "Mechanical16", 3, ColorTranslator.FromWin32(0x00000000));
-            RegisterLayerInfo(_info.Count + 1, "DrillDrawing", 3, ColorTranslator.FromWin32(0x002A00FF));
-            RegisterLayerInfo(_info.Count + 1, "MultiLayer", 1, ColorTranslator.FromWin32(0x00C0C0C0));
-            RegisterLayerInfo(_info.Count + 1, "ConnectLayer", 2, ColorTranslator.FromWin32(0x0075A19E));
-            RegisterLayerInfo(_info.Count + 1, "BackGroundLayer", 5, ColorTranslator.FromWin32(0x00000000));
-            RegisterLayerInfo(_info.Count + 1, "DRCErrorLayer", 3, ColorTranslator.FromWin32(0x0000FF00));
-            RegisterLayerInfo(_info.Count + 1, "HighlightLayer", 0, ColorTranslator.FromWin32(0x00FFFFFF));
-            RegisterLayerInfo(_info.Count + 1, "GridColor1", 5, ColorTranslator.FromWin32(0x005C4D4D));
-            RegisterLayerInfo(_info.Count + 1, "GridColor10", 5, ColorTranslator.FromWin32(0x00908D91));
-            RegisterLayerInfo(_info.Count + 1, "PadHoleLayer", 2, ColorTranslator.FromWin32(0x00909100));
-            RegisterLayerInfo(_info.Count + 1, "ViaHoleLayer", 2, ColorTranslator.FromWin32(0x00006281));
-        }
-
-        public static LayerMetadata Get(Layer layer) =>
-            _info.TryGetValue(layer, out var result) ? result : null;
-
-        public static LayerMetadata Get(string layerName) =>
-            _info.Values.FirstOrDefault(li => layerName.Equals(li.Name, StringComparison.InvariantCultureIgnoreCase));
-
-        public static string GetName(Layer layer) =>
-            Get(layer)?.Name ?? $"UnknownLayer{layer.ToByte()}";
-
-        public static Color GetColor(Layer layer) =>
-            Get(layer)?.Color ?? Color.Empty;
-
-        public static Color GetColor(string layerName) =>
-            Get(layerName)?.Color ?? Color.Empty;
-
-        /// <summary>
-        /// Layer identifier as a byte.
-        /// </summary>
-        public byte Id { get; }
-
-        /// <summary>
-        /// Layer internal name.
-        /// </summary>
-        public string Name { get; }
-
-        /// <summary>
-        /// Layer draw priority. the lower, the higher priority.
-        /// </summary>
-        public int DrawPriority { get; }
-
-        /// <summary>
-        /// Color for the layer.
-        /// </summary>
-        public Color Color { get; }
-
-        private LayerMetadata(byte id, string name, int drawPriority, Color color)
-        {
-            Id = id;
-            Name = name;
-            DrawPriority = drawPriority;
-            Color = color;
-        }
-    }
-
-
     /// <summary>
     /// Layer data type used for ease of handling PCB layer references.
     /// </summary>
     [DebuggerDisplay("{Name,nq}")]
     public readonly struct Layer : IEquatable<Layer>, IComparable<Layer>
     {
+        public static Layer NoLayer = 0;
+        public static Layer TopLayer = 1;
+        public static Layer MidLayer1 = 2;
+        public static Layer MidLayer2 = 3;
+        public static Layer MidLayer3 = 4;
+        public static Layer MidLayer4 = 5;
+        public static Layer MidLayer5 = 6;
+        public static Layer MidLayer6 = 7;
+        public static Layer MidLayer7 = 8;
+        public static Layer MidLayer8 = 9;
+        public static Layer MidLayer9 = 10;
+        public static Layer MidLayer10 = 11;
+        public static Layer MidLayer11 = 12;
+        public static Layer MidLayer12 = 13;
+        public static Layer MidLayer13 = 14;
+        public static Layer MidLayer14 = 15;
+        public static Layer MidLayer15 = 16;
+        public static Layer MidLayer16 = 17;
+        public static Layer MidLayer17 = 18;
+        public static Layer MidLayer18 = 19;
+        public static Layer MidLayer19 = 20;
+        public static Layer MidLayer20 = 21;
+        public static Layer MidLayer21 = 22;
+        public static Layer MidLayer22 = 23;
+        public static Layer MidLayer23 = 24;
+        public static Layer MidLayer24 = 25;
+        public static Layer MidLayer25 = 26;
+        public static Layer MidLayer26 = 27;
+        public static Layer MidLayer27 = 28;
+        public static Layer MidLayer28 = 29;
+        public static Layer MidLayer29 = 30;
+        public static Layer MidLayer30 = 31;
+        public static Layer BottomLayer = 32;
+        public static Layer TopOverlay = 33;
+        public static Layer BottomOverlay = 34;
+        public static Layer TopPaste = 35;
+        public static Layer BottomPaste = 36;
+        public static Layer TopSolder = 37;
+        public static Layer BottomSolder = 38;
+        public static Layer InternalPlane1 = 39;
+        public static Layer InternalPlane2 = 40;
+        public static Layer InternalPlane3 = 41;
+        public static Layer InternalPlane4 = 42;
+        public static Layer InternalPlane5 = 43;
+        public static Layer InternalPlane6 = 44;
+        public static Layer InternalPlane7 = 45;
+        public static Layer InternalPlane8 = 46;
+        public static Layer InternalPlane9 = 47;
+        public static Layer InternalPlane10 = 48;
+        public static Layer InternalPlane11 = 49;
+        public static Layer InternalPlane12 = 50;
+        public static Layer InternalPlane13 = 51;
+        public static Layer InternalPlane14 = 52;
+        public static Layer InternalPlane15 = 53;
+        public static Layer InternalPlane16 = 54;
+        public static Layer DrillGuide = 55;
+        public static Layer KeepOutLayer = 56;
+        public static Layer Mechanical1 = 57;
+        public static Layer Mechanical2 = 58;
+        public static Layer Mechanical3 = 59;
+        public static Layer Mechanical4 = 60;
+        public static Layer Mechanical5 = 61;
+        public static Layer Mechanical6 = 62;
+        public static Layer Mechanical7 = 63;
+        public static Layer Mechanical8 = 64;
+        public static Layer Mechanical9 = 65;
+        public static Layer Mechanical10 = 66;
+        public static Layer Mechanical11 = 67;
+        public static Layer Mechanical12 = 68;
+        public static Layer Mechanical13 = 69;
+        public static Layer Mechanical14 = 70;
+        public static Layer Mechanical15 = 71;
+        public static Layer Mechanical16 = 72;
+        public static Layer DrillDrawing = 73;
+        public static Layer MultiLayer = 74;
+        public static Layer ConnectLayer = 75;
+        public static Layer BackGroundLayer = 76;
+        public static Layer DRCErrorLayer = 77;
+        public static Layer HighlightLayer = 78;
+        public static Layer GridColor1 = 79;
+        public static Layer GridColor10 = 80;
+        public static Layer PadHoleLayer = 81;
+        public static Layer ViaHoleLayer = 82;
+
+        public static Layer TopPadMaster = 83;
+        public static Layer BottomPadMaster = 84;
+        public static Layer DRCDetailLayer = 85;
+        public static Layer Unknown = byte.MaxValue;
+
+        public static IEnumerable<string> Names => LayerMetadata.Names;
+        public static IEnumerable<Layer> Values => LayerMetadata.Values;
+
         private readonly byte _value;
         public Layer(byte value) => _value = value;
         public byte ToByte() => _value;
@@ -165,7 +112,22 @@ namespace AltiumSharp.BasicTypes
         /// <summary>
         /// Gets the internal name of a PCB layer.
         /// </summary>
-        public string Name => Metadata?.Name ?? "Unknown";
+        public string Name => Metadata?.InternalName ?? nameof(Unknown);
+
+        /// <summary>
+        /// Gets the long name of a PCB layer.
+        /// </summary>
+        public string LongName => Metadata?.LongName ?? nameof(Unknown);
+
+        /// <summary>
+        /// Gets the medium name of a PCB layer.
+        /// </summary>
+        public string MediumName => Metadata?.MediumName ?? nameof(Unknown);
+
+        /// <summary>
+        /// Gets the short name of a PCB layer.
+        /// </summary>
+        public string ShortName => Metadata?.ShortName ?? nameof(Unknown);
 
         /// <summary>
         /// Gets the color to be used for this PCB layer.
@@ -179,6 +141,13 @@ namespace AltiumSharp.BasicTypes
         /// </para>
         /// </summary>
         public int DrawPriority => Metadata?.DrawPriority ?? 0;
+
+        /// <summary>
+        /// Creates a layer reference from an internal layer name.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static Layer FromString(string layerName) => LayerMetadata.Get(layerName)?.Id ?? Unknown;
 
         public override string ToString() => Name;
 

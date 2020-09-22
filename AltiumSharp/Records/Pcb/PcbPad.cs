@@ -53,68 +53,77 @@ namespace AltiumSharp.Records
                 }
             }
         }
-        
+
+        public CoordPoint Size
+        {
+            get => SizeTop;
+            set => SetSizeAll(value);
+        }
+
+        public PcbPadShape Shape
+        {
+            get => ShapeTop;
+            set => SetShapeAll(value);
+        }
+
+        public byte CornerRadius
+        {
+            get => CornerRadiusTop;
+            set => SetCornerRadiusAll(value);
+        }
+
         public CoordPoint SizeTop
         {
             get => SizeLayers[0];
-            set => SizeLayers[0] = value;
+            set => SetSizeTop(value);
         }
         
         public PcbPadShape ShapeTop
         {
             get => ShapeLayers[0];
-            set => ShapeLayers[0] = value;
+            set => SetShapeTop(value);
         }
         
         public byte CornerRadiusTop
         {
             get => ShapeTop == PcbPadShape.RoundedRectangle ? CornerRadiusPercentage[0] : (byte)0;
-            set => CornerRadiusPercentage[0] = value;
+            set => SetCornerRadiusTop(value);
         }
         
         public CoordPoint SizeMiddle
         {
             get => SizeLayers[1];
-            set
-            {
-                for (int i = 1; i < 31; ++i) SizeLayers[i] = value;
-            }
+            set => SetSizeMiddle(value);
         }
         
         public PcbPadShape ShapeMiddle
         {
             get => ShapeLayers[1];
-            set
-            {
-                for (int i = 1; i < 31; ++i) ShapeLayers[i] = value;
-            }
+            set => SetShapeMiddle(value);
         }
         
         public byte CornerRadiusMid
         {
             get => ShapeMiddle == PcbPadShape.RoundedRectangle ? CornerRadiusPercentage[1] : (byte)0;
-            set
-            {
-                for (int i = 1; i < 31; ++i) CornerRadiusPercentage[i] = value;
-            }
+            set => SetCornerRadiusMiddle(value);
         }
         
         public CoordPoint SizeBottom
         {
             get => SizeLayers[31];
-            set => SizeLayers[31] = value;
+            set => SetSizeBottom(value);
         }
         
         public PcbPadShape ShapeBottom
         {
             get => ShapeLayers[31];
-            set => ShapeLayers[31] = value;
+            set => SetShapeBottom(value);
         }
         
         public byte CornerRadiusBot
         {
             get => ShapeBottom == PcbPadShape.RoundedRectangle ? CornerRadiusPercentage[31] : (byte)0;
-            set => CornerRadiusPercentage[31] = value;
+            set => SetCornerRadiusBottom(value);
         }
         
         public CoordPoint OffsetFromHoleCenter
@@ -231,5 +240,140 @@ namespace AltiumSharp.Records
             }
             return result;
         }
+
+        private void SetSizeAll(CoordPoint value)
+        {
+            for (int i = 0; i < SizeLayers.Count; ++i)
+            {
+                SizeLayers[i] = value;
+            }
+        }
+
+        private void SetSizeTop(CoordPoint value)
+        {
+            if (StackMode == PcbStackMode.Simple)
+            {
+                SetSizeAll(value);
+            }
+            else
+            {
+                SizeLayers[0] = value;
+            }
+        }
+
+        private void SetSizeMiddle(CoordPoint value)
+        {
+            for (int i = 1; i < SizeLayers.Count - 1; ++i)
+            {
+                SizeLayers[i] = value;
+            }
+        }
+
+        private void SetSizeBottom(CoordPoint value)
+        {
+            if (StackMode == PcbStackMode.Simple)
+            {
+                SetSizeAll(value);
+            }
+            else
+            {
+                SizeLayers[SizeLayers.Count - 1] = value;
+            }
+        }
+
+        private void SetShapeAll(PcbPadShape value)
+        {
+            for (int i = 0; i < ShapeLayers.Count; ++i)
+            {
+                ShapeLayers[i] = value;
+            }
+        }
+
+        private void SetShapeTop(PcbPadShape value)
+        {
+            if (StackMode == PcbStackMode.Simple)
+            {
+                SetShapeAll(value);
+            }
+            else
+            {
+                ShapeLayers[0] = value;
+            }
+        }
+
+        private void SetShapeMiddle(PcbPadShape value)
+        {
+            if (StackMode == PcbStackMode.Simple)
+            {
+                SetShapeAll(value);
+            }
+            else
+            {
+                for (int i = 1; i < ShapeLayers.Count - 1; ++i)
+                {
+                    ShapeLayers[i] = value;
+                }
+            }
+        }
+
+        private void SetShapeBottom(PcbPadShape value)
+        {
+            if (StackMode == PcbStackMode.Simple)
+            {
+                SetShapeAll(value);
+            }
+            else
+            {
+                ShapeLayers[ShapeLayers.Count - 1] = value;
+            }
+        }
+
+        private void SetCornerRadiusAll(byte value)
+        {
+            for (int i = 0; i < CornerRadiusPercentage.Count; ++i)
+            {
+                CornerRadiusPercentage[i] = value;
+            }
+        }
+
+        private void SetCornerRadiusTop(byte value)
+        {
+            if (StackMode == PcbStackMode.Simple)
+            {
+                SetCornerRadiusAll(value);
+            }
+            else
+            {
+                CornerRadiusPercentage[0] = value;
+            }
+        }
+
+        private void SetCornerRadiusMiddle(byte value)
+        {
+            if (StackMode == PcbStackMode.Simple)
+            {
+                SetCornerRadiusAll(value);
+            }
+            else
+            {
+                for (int i = 1; i < CornerRadiusPercentage.Count - 1; ++i)
+                {
+                    CornerRadiusPercentage[i] = value;
+                }
+            }
+        }
+
+        private void SetCornerRadiusBottom(byte value)
+        {
+            if (StackMode == PcbStackMode.Simple)
+            {
+                SetCornerRadiusAll(value);
+            }
+            else
+            {
+                CornerRadiusPercentage[CornerRadiusPercentage.Count - 1] = value;
+            }
+        }
+
     }
 }

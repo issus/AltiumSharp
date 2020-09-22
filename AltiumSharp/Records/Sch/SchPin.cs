@@ -63,7 +63,9 @@ namespace AltiumSharp.Records
         public Coord PinLength { get; set; }
         public string Name { get; set; }
         public string Designator { get; set; }
+        public string SwapIdGroup { get; set; }
         public int SwapIdPart { get; set; }
+        public string SwapIdSequence { get; set; }
         public string HiddenNetName { get; set; }
         public string DefaultValue { get; set; }
         public double PinPropagationDelay { get; set; }
@@ -71,13 +73,13 @@ namespace AltiumSharp.Records
 
         public override bool IsVisible => base.IsVisible && !PinConglomerate.HasFlag(PinConglomerateFlags.Hide);
 
-        public bool NameVisible
+        public bool IsNameVisible
         {
             get => PinConglomerate.HasFlag(PinConglomerateFlags.DisplayNameVisible);
             set => PinConglomerate = PinConglomerate.WithFlag(PinConglomerateFlags.DisplayNameVisible, value);
         }
 
-        public bool DesignatorVisible
+        public bool IsDesignatorVisible
         {
             get => PinConglomerate.HasFlag(PinConglomerateFlags.DesignatorVisible);
             set => PinConglomerate = PinConglomerate.WithFlag(PinConglomerateFlags.DesignatorVisible, value);
@@ -101,7 +103,6 @@ namespace AltiumSharp.Records
                 PinConglomerateFlags.DesignatorVisible |
                 PinConglomerateFlags.Unknown;
             PinLength = Utils.DxpFracToCoord(30, 0);
-            UniqueId = Utils.GenerateUniqueId();
             Designator = null;
             Name = null;
         }
@@ -182,7 +183,6 @@ namespace AltiumSharp.Records
             p.Add("DESIGNATOR", Designator);
             p.Add("SWAPIDPART", SwapIdPart);
             p.Add("PINPROPAGATIONDELAY", PinPropagationDelay);
-            p.Add("UNIQUEID", UniqueId);
         }
 
         protected override bool DoAdd(SchPrimitive primitive)
@@ -214,7 +214,7 @@ namespace AltiumSharp.Records
 
             if (!string.IsNullOrEmpty(UniqueId))
             {
-                yield return new SchParameter {Name = "PinUniqueId", Text = UniqueId};
+                yield return new SchParameter {Name = "PinUniqueId", Text = UniqueId, Location = Location};
             }
         }
     }

@@ -237,26 +237,58 @@ namespace AltiumSharp.Drawing
             var location = ScreenFromWorld(pin.Location.X, pin.Location.Y);
             g.TranslateTransform(location.X, location.Y);
 
-            var direction = 1.0f;
+            var direction = 1;
             var displayNameHorizontalAlignment = StringAlignment.Far;
             var designatorHorizontalAlignment = StringAlignment.Near;
             var penWidth = ScaleLineWidth(LineWidth.Small);
+
+            if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.Rotated))
+            {
+                g.RotateTransform(-90);
+            }
+
+            if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.Flipped))
+            {
+                direction = -1;
+                displayNameHorizontalAlignment = StringAlignment.Near;
+                designatorHorizontalAlignment = StringAlignment.Far;
+            }
+
+            var pinLength = ScaleCoord(pin.PinLength) * direction;
+
             using (var pen = CreatePen(pin.Color, penWidth))
             {
-                if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.Rotated))
+                g.DrawLine(pen, 0.0f, 0.0f, pinLength, 0.0f);
+            }
+
+            using (var pen = CreatePen(pin.Color, 0))
+            {
+                var arrowWidth = Coord.FromMils(60);
+                var arrowHeight = Coord.FromMils(20);
+                var arrowOffset = 0;
+                var arrowPoints = new[]
+                    { new CoordPoint(0, 0), new CoordPoint(arrowWidth, -arrowHeight), new CoordPoint(arrowWidth, arrowHeight) };
+                if (direction < 0f)
                 {
-                    g.RotateTransform(-90);
+                    Utils.RotatePoints(ref arrowPoints, CoordPoint.Zero, 180f);
                 }
 
-                if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.Flipped))
+                if (pin.Electrical == PinElectricalType.Input || pin.Electrical == PinElectricalType.InputOutput)
                 {
-                    direction = -1.0f;
-                    displayNameHorizontalAlignment = StringAlignment.Near;
-                    designatorHorizontalAlignment = StringAlignment.Far;
+                    var points = arrowPoints.Select(p => ScalePoint(p)).ToArray();
+                    g.FillPolygon(Brushes.White, points);
+                    g.DrawPolygon(pen, points);
+                    arrowOffset = Coord.FromMils(70);
                 }
-
-                var length = ScaleCoord(pin.PinLength) * direction;
-                g.DrawLine(pen, -1.0f, 0.0f, length, 0.0f);
+                if (pin.Electrical == PinElectricalType.Output || pin.Electrical == PinElectricalType.InputOutput)
+                {
+                    var anchor = new CoordPoint(arrowWidth * direction, 0);
+                    var offset = new CoordPoint((arrowOffset - arrowWidth) * direction, 0);
+                    Utils.TranslatePoints(ref Utils.RotatePoints(ref arrowPoints, anchor, 180f), offset);
+                    var points = arrowPoints.Select(p => ScalePoint(p)).ToArray();
+                    g.FillPolygon(Brushes.White, points);
+                    g.DrawPolygon(pen, points);
+                }
             }
 
             using (var brush = new SolidBrush(pin.Color))
@@ -345,7 +377,7 @@ namespace AltiumSharp.Drawing
 
                 DrawingUtils.DrawString(g, displayText, font, brush, 0, 0,
                     StringAlignmentKind.Extent, horizontalAlignment, verticalAlignment);
-                              
+
                 PrimitiveScreenBounds[textString] = CalculateScreenBounds(g,
                     DrawingUtils.CalculateTextExtent(g, displayText, font, 0, 0,
                         StringAlignmentKind.Extent, horizontalAlignment, verticalAlignment)); ;
@@ -504,7 +536,8 @@ namespace AltiumSharp.Drawing
             }
         }
 
-        private void RenderBasicPolyline(Graphics g, SchBasicPolyline basicPolyline) { 
+        private void RenderBasicPolyline(Graphics g, SchBasicPolyline basicPolyline)
+        {
             var penWidth = basicPolyline.LineWidth == 0 ? 1.0f : ScaleLineWidth(basicPolyline.LineWidth);
 
             using (var pen = CreatePen(basicPolyline.Color, penWidth))
