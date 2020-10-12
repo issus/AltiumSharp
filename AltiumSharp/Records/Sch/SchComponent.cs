@@ -62,6 +62,7 @@ namespace AltiumSharp.Records
             AreaColor = ColorTranslator.FromWin32(11599871);
             Color = ColorTranslator.FromWin32(128);
             PartIdLocked = true;
+            IsNotAccesible = false;
 
             Designator = new SchDesignator
             {
