@@ -67,7 +67,8 @@ namespace AltiumSharp.Records
             Designator = new SchDesignator
             {
                 Name = "Designator",
-                Location = new CoordPoint(-5, 5)
+                Location = new CoordPoint(-5, 5),
+                IsHidden = false
             };
             Comment = new SchParameter
             {
