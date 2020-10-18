@@ -264,43 +264,35 @@ namespace AltiumSharp
                 w.Write((short)0);
             });
 
-            // Write size and shape and parts of hole information
-            if (pad.NeedsFullStackData)
+            WriteBlock(writer, w =>
             {
-                WriteBlock(writer, w =>
+                // 29 items
+                foreach (var padSize in pad.SizeMiddleLayers) w.Write(padSize.X.ToInt32());
+                foreach (var padSize in pad.SizeMiddleLayers) w.Write(padSize.Y.ToInt32());
+                foreach (var padShape in pad.ShapeMiddleLayers) w.Write((byte)padShape);
+
+                w.Write((byte)0); // TODO: Unknown
+                w.Write((byte)pad.HoleShape);
+                w.Write(pad.HoleSlotLength);
+                w.Write((double)pad.HoleRotation);
+
+                // 32 items
+                foreach (var offset in pad.OffsetsFromHoleCenter) w.Write(offset.X.ToInt32());
+                foreach (var offset in pad.OffsetsFromHoleCenter) w.Write(offset.Y.ToInt32());
+
+                w.Write(pad.HasRoundedRectangles);
+                if (pad.HasRoundedRectangles)
                 {
-                    // 29 items
-                    foreach (var padSize in pad.SizeMiddleLayers) w.Write(padSize.X.ToInt32());
-                    foreach (var padSize in pad.SizeMiddleLayers) w.Write(padSize.Y.ToInt32());
-                    foreach (var padShape in pad.ShapeMiddleLayers) w.Write((byte)padShape);
+                    foreach (var padShape in pad.ShapeLayers) w.Write((byte)padShape);
+                }
+                else
+                {
+                    foreach (var padShape in pad.ShapeLayers) w.Write((byte)PcbPadShape.Round); // write dummy value
+                }
 
-                    w.Write((byte)0); // TODO: Unknown
-                    w.Write((byte)pad.HoleShape);
-                    w.Write(pad.HoleSlotLength);
-                    w.Write((double)pad.HoleRotation);
-
-                    // 32 items
-                    foreach (var offset in pad.OffsetsFromHoleCenter) w.Write(offset.X.ToInt32());
-                    foreach (var offset in pad.OffsetsFromHoleCenter) w.Write(offset.Y.ToInt32());
-
-                    w.Write(pad.HasRoundedRectangles);
-                    if (pad.HasRoundedRectangles)
-                    {
-                        foreach (var padShape in pad.ShapeLayers) w.Write((byte)padShape);
-                    }
-                    else
-                    {
-                        foreach (var padShape in pad.ShapeLayers) w.Write((byte)PcbPadShape.Round); // write dummy value
-                    }
-
-                    // 32 items
-                    foreach (var crp in pad.CornerRadiusPercentage) w.Write((byte)crp);
-                });
-            }
-            else
-            {
-                WriteBlock(writer, Array.Empty<byte>());
-            }
+                // 32 items
+                foreach (var crp in pad.CornerRadiusPercentage) w.Write((byte)crp);
+            });
         }
 
         private void WriteFootprintVia(BinaryWriter writer, PcbVia via)
