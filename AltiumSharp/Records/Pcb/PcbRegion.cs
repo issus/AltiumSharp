@@ -8,7 +8,7 @@ namespace AltiumSharp.Records
     {
         public override PcbPrimitiveObjectId ObjectId => PcbPrimitiveObjectId.Region;
         public ParameterCollection Parameters { get; internal set; } = new ParameterCollection();
-        public List<CoordPoint> Outline { get; } = new List<CoordPoint>();
+        public List<CoordPoint> Outline { get; set; } = new List<CoordPoint>();
 
         public override CoordRect CalculateBounds()
         {
