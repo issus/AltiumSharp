@@ -22,7 +22,7 @@ namespace AltiumSharp.BasicTypes
         public string ToString(Unit unit, Coord grid) => $"X:{X.ToString(unit, grid)} Y:{Y.ToString(unit, grid)} Z:{Z.ToString(unit, grid)}";
 
         #region 'boilerplate'
-        public override bool Equals(object obj) => obj is CoordPoint other && Equals(other);
+        public override bool Equals(object obj) => obj is CoordPoint3D other && Equals(other);
         public bool Equals(CoordPoint3D other) => X == other.X && Y == other.Y && Z == other.Z;
         public override int GetHashCode() => X.GetHashCode() ^ Y.GetHashCode() ^ Z.GetHashCode();
         public static bool operator ==(CoordPoint3D left, CoordPoint3D right) => left.Equals(right);
