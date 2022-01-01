@@ -61,6 +61,20 @@ namespace AltiumSharp
             Cf = null;
         }
 
+        public void WriteStream(TData data, Stream stream)
+        {
+            Data = data;
+
+            using (Cf = new CompoundFile())
+            {
+                DoWrite("");
+
+                Cf.Save(stream);
+            }
+
+            Cf = null;
+        }
+
         /// <summary>
         /// Writes the header record containing the size of the data.
         /// </summary>
