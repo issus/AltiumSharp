@@ -95,6 +95,24 @@ namespace AltiumSharp
         }
 
         /// <summary>
+        /// Reads the content of the compound file.
+        /// </summary>
+        /// <param name="stream">Stream of the compound storage file to be read.</param>
+        public TData Read(Stream stream)
+        {
+            Clear();
+
+            using (Cf = new CompoundFile(stream))
+            {
+                DoRead();
+            }
+
+            Cf = null;
+
+            return Data;
+        }
+
+        /// <summary>
         /// Get the name of the section storage key to be used to read a component "ref name".
         /// <para>
         /// This allows for giving an alias for reading a component that has a name that is

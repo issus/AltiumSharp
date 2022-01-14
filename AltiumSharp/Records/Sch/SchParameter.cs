@@ -28,6 +28,7 @@ namespace AltiumSharp.Records
             OwnerPartId = -1;
             Text = "*";
             IsHidden = true;
+            UniqueId = Utils.GenerateUniqueId();
         }
 
         public override string ToString()

@@ -56,6 +56,7 @@ namespace AltiumSharp.Records
             p.MoveKeys("COLOR");
             p.Add("ISSOLID", IsSolid);
             p.Add("TRANSPARENT", Transparent);
+            p.Add("UNIQUEID", Utils.GenerateUniqueId());
         }
     }
 }
