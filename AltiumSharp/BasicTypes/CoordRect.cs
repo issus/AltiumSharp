@@ -87,7 +87,7 @@ namespace AltiumSharp.BasicTypes
         }
 
         #region 'boilerplate'
-        public override bool Equals(object obj) => obj is CoordPoint other && Equals(other);
+        public override bool Equals(object obj) => obj is CoordRect other && Equals(other);
         public bool Equals(CoordRect other) => Location1 == other.Location1 && Location2 == other.Location2;
         public override int GetHashCode() => Location1.GetHashCode() ^ Location2.GetHashCode();
         public static bool operator ==(CoordRect left, CoordRect right) => left.Equals(right);
