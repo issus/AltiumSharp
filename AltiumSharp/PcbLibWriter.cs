@@ -161,7 +161,7 @@ namespace AltiumSharp
         /// </summary>
         /// <param name="componentStorage">Component footprint storage key.</param>
         /// <param name="component">Component instance to have its parameters serialized.</param>
-        private void WriteFootprintParameters(CFStorage componentStorage, PcbComponent component)
+        private static void WriteFootprintParameters(CFStorage componentStorage, PcbComponent component)
         {
             var parameters = component.ExportToParameters();
 
@@ -205,7 +205,7 @@ namespace AltiumSharp
             }
         }
 
-        private void WriteFootprintArc(BinaryWriter writer, PcbArc arc)
+        private static void WriteFootprintArc(BinaryWriter writer, PcbArc arc)
         {
             WriteBlock(writer, w =>
             {
@@ -217,7 +217,7 @@ namespace AltiumSharp
             });
         }
 
-        private void WriteFootprintPad(BinaryWriter writer, PcbPad pad)
+        private static void WriteFootprintPad(BinaryWriter writer, PcbPad pad)
         {
             WriteStringBlock(writer, pad.Designator);
             WriteBlock(writer, new byte[] { 0 }); // TODO: Unknown
@@ -303,7 +303,7 @@ namespace AltiumSharp
             }
         }
 
-        private void WriteFootprintVia(BinaryWriter writer, PcbVia via)
+        private static void WriteFootprintVia(BinaryWriter writer, PcbVia via)
         {
             WriteBlock(writer, w =>
             {
@@ -338,7 +338,7 @@ namespace AltiumSharp
             });
         }
 
-        private void WriteFootprintTrack(BinaryWriter writer, PcbTrack track)
+        private static void WriteFootprintTrack(BinaryWriter writer, PcbTrack track)
         {
             WriteBlock(writer, w =>
             {
@@ -351,7 +351,7 @@ namespace AltiumSharp
             });
         }
 
-        private void WriteFootprintText(BinaryWriter writer, PcbText text)
+        private static void WriteFootprintText(BinaryWriter writer, PcbText text)
         {
             WriteBlock(writer, w =>
             {
@@ -393,7 +393,7 @@ namespace AltiumSharp
             WriteStringBlock(writer, text.Text);
         }
 
-        private void WriteFootprintFill(BinaryWriter writer, PcbFill fill)
+        private static void WriteFootprintFill(BinaryWriter writer, PcbFill fill)
         {
             WriteBlock(writer, w =>
             {
@@ -403,7 +403,7 @@ namespace AltiumSharp
             });
         }
 
-        private void WriteFootprintCommonParametersAndOutline(BinaryWriter writer, PcbPrimitive primitive,
+        private static void WriteFootprintCommonParametersAndOutline(BinaryWriter writer, PcbPrimitive primitive,
             ParameterCollection parameters, IList<CoordPoint> outline)
         {
             WriteBlock(writer, w =>
@@ -424,12 +424,12 @@ namespace AltiumSharp
             });
         }
 
-        private void WriteFootprintRegion(BinaryWriter writer, PcbRegion region)
+        private static void WriteFootprintRegion(BinaryWriter writer, PcbRegion region)
         {
             WriteFootprintCommonParametersAndOutline(writer, region, region.Parameters, region.Outline);
         }
 
-        private void WriteFootprintComponentBody(BinaryWriter writer, PcbComponentBody body)
+        private static void WriteFootprintComponentBody(BinaryWriter writer, PcbComponentBody body)
         {
             var parameters = body.ExportToParameters();
             WriteFootprintCommonParametersAndOutline(writer, body, parameters, body.Outline);

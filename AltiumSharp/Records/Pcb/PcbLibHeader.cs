@@ -23,6 +23,9 @@ namespace AltiumSharp.Records
         public bool V9MasterStackIsFlex { get; internal set; }
         public List<(string Id, string Name, int LayerId, bool UsedByPrims, int DielType, double DielConst, Coord DielHeight, string DielMaterial, Coord COverLayEXPansiOn, Coord CopThick, int ComponentPlacement)> V9StackLayer { get; internal set; }
         public List<(int LayerId, bool UsedByPrims, string Id, string Name, int DielType, double DielConst, Coord DielHeight, string DielMaterial, Coord COverLayEXPansiOn, Coord CopThick, int ComponentPlacement, Coord PullBackDistance, bool MechEnabled)> V9CacheLayer { get; internal set; }
+
+        public int LayerMasterStackV8Style { get; internal set; }
+        public string LayerMasterStackV8Id { get; internal set; }
         public string LayerMasterStackV8Name { get; internal set; }
         public bool LayerMasterStackV8ShowTopDielectric { get; internal set; }
         public bool LayerMasterStackV8ShowBottomDielectric { get; internal set; }
@@ -36,7 +39,7 @@ namespace AltiumSharp.Records
         public double BottomConst { get; set; }
         public Coord BottomHeight { get; set; }
         public string BottomMaterial { get; set; }
-        public int LayersTackStyle { get; set; }
+        public int LayerStackStyle { get; set; }
         public bool ShowTopDielectric { get; set; }
         public bool ShowBottomDielectric { get; set; }
         public List<(string Name, int Prev, int Next, bool MechEnabled, Coord CopThick, int DielType, double DielConst, Coord DielHeight, string DielMaterial)> Layer { get; internal set; }
@@ -46,6 +49,7 @@ namespace AltiumSharp.Records
         public Coord SnapGridSize { get; set; }
         public Coord SnapGridSizeX { get; set; }
         public Coord SnapGridSizeY { get; set; }
+        public string LibGridsNGuide { get; set; }
         public Coord ElectricalGridRange { get; set; }
         public bool ElectricalGridEnabled { get; set; }
         public bool DotGrid { get; set; }
@@ -54,10 +58,16 @@ namespace AltiumSharp.Records
         public string ToggleLayers { get; set; }
         public bool ShowDefaultSets { get; set; }
         public List<(string Name, string Layers, string ActiveLayer, bool IsCurrent, bool IsLocked, bool FlipBoard)> Layersets { get; internal set; }
-        public int Cfg2DPrimDrawMode { get; set; }
+        public int CfgAllConfigurationKind { get; private set; }
+        public string CfgAllConfigurationDesc { get; private set; }
+        public Color CfgAllComponentBodyRefPointColor { get; private set; }
+        public string Cfg2DPrimDrawMode { get; set; }
         public string Cfg2DLayerOpacityTopLayer { get; set; }
         public List<string> Cfg2DLayerOpacityMidLayer { get; set; }
-        public string Cfg2DLayerOpacityBottomOverLay { get; set; }
+        public List<string> Cfg2DLayerOpacityMechanicalLayer { get; set; }
+        public string Cfg2DLayerOpacityBottomLayer { get; private set; }
+        public string Cfg2DLayerOpacityTopOverlay { get; private set; }
+        public string Cfg2DLayerOpacityBottomOverlay { get; set; }
         public string Cfg2DLayerOpacityTopPaste { get; set; }
         public string Cfg2DLayerOpacityBottomPaste { get; set; }
         public string Cfg2DLayerOpacityTopSolder { get; set; }
@@ -80,22 +90,6 @@ namespace AltiumSharp.Records
         public string Cfg2DLayerOpacityInternalPlane16 { get; set; }
         public string Cfg2DLayerOpacityDrillGuide { get; set; }
         public string Cfg2DLayerOpacityKeepoutLayer { get; set; }
-        public string Cfg2DLayerOpacityMechanical1 { get; set; }
-        public string Cfg2DLayerOpacityMechanical2 { get; set; }
-        public string Cfg2DLayerOpacityMechanical3 { get; set; }
-        public string Cfg2DLayerOpacityMechanical4 { get; set; }
-        public string Cfg2DLayerOpacityMechanical5 { get; set; }
-        public string Cfg2DLayerOpacityMechanical6 { get; set; }
-        public string Cfg2DLayerOpacityMechanical7 { get; set; }
-        public string Cfg2DLayerOpacityMechanical8 { get; set; }
-        public string Cfg2DLayerOpacityMechanical9 { get; set; }
-        public string Cfg2DLayerOpacityMechanical10 { get; set; }
-        public string Cfg2DLayerOpacityMechanical11 { get; set; }
-        public string Cfg2DLayerOpacityMechanical12 { get; set; }
-        public string Cfg2DLayerOpacityMechanical13 { get; set; }
-        public string Cfg2DLayerOpacityMechanical14 { get; set; }
-        public string Cfg2DLayerOpacityMechanical15 { get; set; }
-        public string Cfg2DLayerOpacityMechanical16 { get; set; }
         public string Cfg2DLayerOpacityDrillDrawing { get; set; }
         public string Cfg2DLayerOpacityMultiLayer { get; set; }
         public string Cfg2DLayerOpacityCOnNectLayer { get; set; }
@@ -108,21 +102,11 @@ namespace AltiumSharp.Records
         public string Cfg2DLayerOpacityViaHoleLayer { get; set; }
         public string Cfg2DToggleLayers { get; set; }
         public string Cfg2DToggleLayersSet { get; set; }
-        public double Cfg2DWorkspaceColAlpha0 { get; set; }
-        public double Cfg2DWorkspaceColAlpha1 { get; set; }
-        public double Cfg2DWorkspaceColAlpha2 { get; set; }
-        public double Cfg2DWorkspaceColAlpha3 { get; set; }
-        public double Cfg2DWorkspaceColAlpha4 { get; set; }
-        public double Cfg2DWorkspaceColAlpha5 { get; set; }
-        public double Cfg2DWorkspaceColAlpha6 { get; set; }
-        public double Cfg2DWorkspaceColAlpha7 { get; set; }
-        public double Cfg2DWorkspaceColAlpha8 { get; set; }
-        public double Cfg2DWorkspaceColAlpha9 { get; set; }
-        public double Cfg2DWorkspaceColAlpha10 { get; set; }
-        public double Cfg2DWorkspaceColAlpha11 { get; set; }
-        public int Cfg2DMechLayerInSingleLayerMode { get; set; }
+        public List<KeyValuePair<int, double>> Cfg2DWorkspaceColAlpha { get; set; }
+        public string Cfg2DMechLayerInSingleLayerMode { get; set; }
         public string Cfg2DMechLayerInSingleLayerModeSet { get; set; }
-        public int Cfg2DMechLayerLinkedToSheet { get; set; }
+        public string Cfg2DLayersInSingleLayerModeSet { get; private set; }
+        public string Cfg2DMechLayerLinkedToSheet { get; set; }
         public string Cfg2DMechLayerLinkedToSheetSet { get; set; }
         public string Cfg2DCurrentLayer { get; set; }
         public bool Cfg2DDisplaySpecialStrings { get; set; }
@@ -148,6 +132,8 @@ namespace AltiumSharp.Records
         public double Cfg2DBottomPosItivesolderMaskAlpha { get; set; }
         public bool Cfg2DAllConnectionsInSingleLayerMode { get; set; }
         public bool Cfg2DMultiColoredConnections { get; set; }
+        public bool Cfg2DShowSpecialStringsHandles { get; private set; }
+        public bool Cfg2DMechanicalCoverLayerUpdated { get; private set; }
         public string BoardInsightViewConfigurationName { get; set; }
         public double VisibleGridMultFactor { get; set; }
         public double BigVisibleGridMultFactor { get; set; }
@@ -185,6 +171,11 @@ namespace AltiumSharp.Records
         public string FolderGuid { get; set; }
         public string LifeCycleDefinitionGuid { get; set; }
         public string RevisionNamingSchemeGuid { get; set; }
+        public Color CfgAllComponentBodySnapPointColor { get; private set; }
+        public bool CfgAllShowComponentSnapMarkers { get; private set; }
+        public bool CfgAllShowComponentSnapReference { get; private set; }
+        public bool CfgAllShowComponentSnapCustom { get; private set; }
+        public bool Cfg2DShowViaSpan { get; private set; }
 
         public PcbLibHeader()
         {
@@ -338,13 +329,7 @@ namespace AltiumSharp.Records
             Layersets.Add(("&Mechanical Layers", "Mechanical1", "MECHANICAL1", false, true, false));
             Cfg2DToggleLayers = "1111111111111111111111111111111111111111111111111111111111111111111111111111111111";
             Cfg2DToggleLayersSet = "Signal.All~0_Signal.Include~SerializeLayerHash.Version=2,ClassName=TLayerHash,16777217=1,16777218=1,16777219=1,16777220=1,16777221=1,16777222=1,16777223=1,16777224=1,16777225=1,16777226=1,16777227=1,16777228=1,16777229=1,16777230=1,16777231=1,16777232=1,16777233=1,16777234=1,16777235=1,16777236=1,16777237=1,16777238=1,16777239=1,16777240=1,16777241=1,16777242=1,16777243=1,16777244=1,16777245=1,16777246=1,16777247=1,16842751=1_Mechanical.All~0_Mechanical.Include~SerializeLayerHash.Version=2,ClassName=TLayerHash,16908289=1,16908290=1,16908291=1,16908292=1,16908293=1,16908294=1,16908295=1,16908296=1,16908297=1,16908298=1,16908299=1,16908300=1,16908301=1,16908302=1,16908303=1,16908304=1_Internal.All~0_Internal.Include~SerializeLayerHash.Version=2,ClassName=TLayerHash,16842753=1,16842754=1,16842755=1,16842756=1,16842757=1,16842758=1,16842759=1,16842760=1,16842761=1,16842762=1,16842763=1,16842764=1,16842765=1,16842766=1,16842767=1,16842768=1_Standard.All~0_Standard.Include~SerializeLayerHash.Version=2,ClassName=TLayerHash,16973850=1,16973830=1,16973831=1,16973832=1,16973833=1,16973834=1,16973835=1,16973836=1,16973837=1,16973838=1,16973839=1,16973840=1,16973841=1,16973842=1,16973843=1,16973844=1,16973845=1,16973846=1,16973847=1";
-            Cfg2DWorkspaceColAlpha0 = 1;
-            Cfg2DWorkspaceColAlpha1 = 1;
-            Cfg2DWorkspaceColAlpha2 = 1;
-            Cfg2DWorkspaceColAlpha3 = 1;
-            Cfg2DWorkspaceColAlpha4 = 1;
-            Cfg2DWorkspaceColAlpha5 = 1;
-            Cfg2DWorkspaceColAlpha6 = 1;
+            Cfg2DWorkspaceColAlpha = new List<KeyValuePair<int, double>>();
             Cfg2DMechLayerInSingleLayerModeSet = "SerializeLayerHash.Version~2,ClassName~TLayerToBoolean,25165826~0";
             Cfg2DMechLayerLinkedToSheetSet = "SerializeLayerHash.Version~2,ClassName~TLayerToBoolean,25165826~0";
             Cfg2DCurrentLayer = "TOP";
@@ -362,6 +347,7 @@ namespace AltiumSharp.Records
             Cfg2DTopPosItivesolderMaskAlpha = 0.5;
             Cfg2DBottomPosItivesolderMaskAlpha = 0.5;
             Cfg2DLayerOpacityMidLayer = new List<string>();
+            Cfg2DLayerOpacityMechanicalLayer = new List<string>();
             VisibleGridMultFactor = 1;
             BigVisibleGridMultFactor = 5;
             Current2D3DViewState = "2D";
@@ -415,7 +401,8 @@ namespace AltiumSharp.Records
             V9MasterStackShowTopDielectric = p["V9_MASTERSTACK_SHOWTOPDIELECTRIC"].AsBool();
             V9MasterStackShowBottomDielectric = p["V9_MASTERSTACK_SHOWBOTTOMDIELECTRIC"].AsBool();
             V9MasterStackIsFlex = p["V9_MASTERSTACK_ISFLEX"].AsBool();
-            V9StackLayer = Enumerable.Range(
+            /*V9StackLayer = Too hard to debug
+                Enumerable.Range(
                     p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_ID", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).DefaultIfEmpty("0").Min(v => int.Parse(v, CultureInfo.InvariantCulture)),
                     p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_ID", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).Count())
                 .Select(i => (
@@ -425,51 +412,202 @@ namespace AltiumSharp.Records
                     p[string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_USEDBYPRIMS", i)].AsBool(),
                     p[string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_DIELTYPE", i)].AsIntOrDefault(),
                     p[string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_DIELCONST", i)].AsDoubleOrDefault(),
-                    Utils.DxpFracToCoord(p[string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_DIELHEIGHT", i)].AsIntOrDefault(), p["V9_STACK_LAYER6_DIELHEIGHT_FRAC"].AsIntOrDefault()),
+                    p.Contains(string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_DIELHEIGHT_FRAC", i)) ?
+                        Utils.DxpFracToCoord(p[string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_DIELHEIGHT", i)].AsIntOrDefault(), p[string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_DIELHEIGHT_FRAC", i)].AsIntOrDefault()) :
+                        Unit.StringToCoordUnit(p[string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_DIELHEIGHT", i)].AsStringOrDefault()),
                     p[string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_DIELMATERIAL", i)].AsStringOrDefault(),
-                    Utils.DxpFracToCoord(p[string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_COVERLAY_EXPANSION", i)].AsIntOrDefault(), p["V9_STACK_LAYER6_COVERLAY_EXPANSION_FRAC"].AsIntOrDefault()),
-                    Utils.DxpFracToCoord(p[string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_COPTHICK", i)].AsIntOrDefault(), p["V9_STACK_LAYER5_COPTHICK_FRAC"].AsIntOrDefault()),
+                    p.Contains(string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_COVERLAY_EXPANSION_FRAC", i)) ?
+                        Utils.DxpFracToCoord(p[string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_COVERLAY_EXPANSION", i)].AsIntOrDefault(), p[string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_COVERLAY_EXPANSION_FRAC", i)].AsIntOrDefault()) :
+                        Unit.StringToCoordUnit(p[string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_COVERLAY_EXPANSION", i)].AsStringOrDefault()),
+                    p.Contains(string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_COPTHICK_FRAC", i)) ?
+                        Utils.DxpFracToCoord(p[string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_COPTHICK", i)].AsIntOrDefault(), p[string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_COPTHICK_FRAC", i)].AsIntOrDefault()) :
+                        Unit.StringToCoordUnit(p[string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_COPTHICK", i)].AsStringOrDefault()),
                     p[string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_COMPONENTPLACEMENT", i)].AsIntOrDefault()))
-                .ToList();
+                .ToList();*/
+            int v9StackLayerMin = p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_ID", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).DefaultIfEmpty("0").Min(v => int.Parse(v, CultureInfo.InvariantCulture));
+            int v9StackLayerCount = p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_ID", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).Count();
+
+            V9StackLayer = new List<(string Id, string Name, int LayerId, bool UsedByPrims, int DielType, double DielConst, Coord DielHeight, string DielMaterial, Coord COverLayEXPansiOn, Coord CopThick, int ComponentPlacement)>();
+
+            for (int i = v9StackLayerMin; i < v9StackLayerCount; i++)
+            {
+                Coord dielHeight = Coord.FromMils(0);
+                if (p.Contains(fmt("V9_STACK_LAYER{0}_DIELHEIGHT", i)) && p.Contains(fmt("V9_STACK_LAYER{0}_DIELHEIGHT_FRAC", i)))
+                    dielHeight = Utils.DxpFracToCoord(p[fmt("V9_STACK_LAYER{0}_DIELHEIGHT", i)].AsIntOrDefault(), p[fmt("V9_STACK_LAYER{0}_DIELHEIGHT_FRAC", i)].AsIntOrDefault());
+                else if (p.Contains(fmt("V9_STACK_LAYER{0}_DIELHEIGHT", i)))
+                    dielHeight = Unit.StringToCoordUnit(p[fmt("V9_STACK_LAYER{0}_DIELHEIGHT", i)].AsStringOrDefault());
+
+                Coord coverlayExpansion = Coord.FromMils(0);
+                if (p.Contains(fmt("V9_STACK_LAYER{0}_COVERLAY_EXPANSION", i)) && p.Contains(fmt("V9_STACK_LAYER{0}_COVERLAY_EXPANSION_FRAC", i)))
+                    coverlayExpansion = Utils.DxpFracToCoord(p[fmt("V9_STACK_LAYER{0}_COVERLAY_EXPANSION", i)].AsIntOrDefault(), p[fmt("V9_STACK_LAYER{0}_COVERLAY_EXPANSION_FRAC", i)].AsIntOrDefault());
+                else if (p.Contains(fmt("V9_STACK_LAYER{0}_COVERLAY_EXPANSION", i)))
+                    coverlayExpansion = Unit.StringToCoordUnit(p[fmt("V9_STACK_LAYER{0}_COVERLAY_EXPANSION", i)].AsStringOrDefault());
+
+                Coord copperThickness = Coord.FromMils(0);
+                if (p.Contains(fmt("V9_STACK_LAYER{0}_COPTHICK", i)) && p.Contains(fmt("V9_STACK_LAYER{0}_COPTHICK_FRAC", i)))
+                    copperThickness = Utils.DxpFracToCoord(p[fmt("V9_STACK_LAYER{0}_COPTHICK", i)].AsIntOrDefault(), p[fmt("V9_STACK_LAYER{0}_COPTHICK_FRAC", i)].AsIntOrDefault());
+                else if (p.Contains(fmt("V9_STACK_LAYER{0}_COPTHICK", i)))
+                    copperThickness = Unit.StringToCoordUnit(p[fmt("V9_STACK_LAYER{0}_COPTHICK", i)].AsStringOrDefault());
+
+                V9StackLayer.Add(
+                    (
+                        p[fmt("V9_STACK_LAYER{0}_ID", i)].AsStringOrDefault(),
+                        p[fmt("V9_STACK_LAYER{0}_NAME", i)].AsStringOrDefault(),
+                        p[fmt("V9_STACK_LAYER{0}_LAYERID", i)].AsIntOrDefault(),
+                        p[fmt("V9_STACK_LAYER{0}_USEDBYPRIMS", i)].AsBool(),
+                        p[fmt("V9_STACK_LAYER{0}_DIELTYPE", i)].AsIntOrDefault(),
+                        p[fmt("V9_STACK_LAYER{0}_DIELCONST", i)].AsDoubleOrDefault(),
+                        dielHeight,
+                        p[fmt("V9_STACK_LAYER{0}_DIELMATERIAL", i)].AsStringOrDefault(),
+                        coverlayExpansion,
+                        copperThickness,
+                        p[fmt("V9_STACK_LAYER{0}_COMPONENTPLACEMENT", i)].AsIntOrDefault()
+                    )
+                );
+            }
+            /* Too hard to debug
             V9CacheLayer = Enumerable.Range(
                     p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_LAYERID", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).DefaultIfEmpty("0").Min(v => int.Parse(v, CultureInfo.InvariantCulture)),
                     p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_LAYERID", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).Count())
                 .Select(i => (
-                    p[string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_LAYERID", i)].AsIntOrDefault(),
-                    p[string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_USEDBYPRIMS", i)].AsBool(),
-                    p[string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_ID", i)].AsStringOrDefault(),
-                    p[string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_NAME", i)].AsStringOrDefault(),
-                    p[string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_DIELTYPE", i)].AsIntOrDefault(),
-                    p[string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_DIELCONST", i)].AsDoubleOrDefault(),
-                    Utils.DxpFracToCoord(p[string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_DIELHEIGHT", i)].AsIntOrDefault(), p["V9_CACHE_LAYER18_DIELHEIGHT_FRAC"].AsIntOrDefault()),
-                    p[string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_DIELMATERIAL", i)].AsStringOrDefault(),
-                    Utils.DxpFracToCoord(p[string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_COVERLAY_EXPANSION", i)].AsIntOrDefault(), p["V9_CACHE_LAYER18_COVERLAY_EXPANSION_FRAC"].AsIntOrDefault()),
-                    Utils.DxpFracToCoord(p[string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_COPTHICK", i)].AsIntOrDefault(), p["V9_CACHE_LAYER66_COPTHICK_FRAC"].AsIntOrDefault()),
-                    p[string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_COMPONENTPLACEMENT", i)].AsIntOrDefault(),
-                    Utils.DxpFracToCoord(p[string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_PULLBACKDISTANCE", i)].AsIntOrDefault(), p["V9_CACHE_LAYER66_PULLBACKDISTANCE_FRAC"].AsIntOrDefault()),
-                    p[string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_MECHENABLED", i)].AsBool()))
-                .ToList();
+                    p[fmt("V9_CACHE_LAYER{0}_LAYERID", i)].AsIntOrDefault(),
+                    p[fmt("V9_CACHE_LAYER{0}_USEDBYPRIMS", i)].AsBool(),
+                    p[fmt("V9_CACHE_LAYER{0}_ID", i)].AsStringOrDefault(),
+                    p[fmt("V9_CACHE_LAYER{0}_NAME", i)].AsStringOrDefault(),
+                    p[fmt("V9_CACHE_LAYER{0}_DIELTYPE", i)].AsIntOrDefault(),
+                    p[fmt("V9_CACHE_LAYER{0}_DIELCONST", i)].AsDoubleOrDefault(),
+                    p.Contains(fmt("V9_CACHE_LAYER{0}_DIELHEIGHT_FRAC", i)) ?
+                        Utils.DxpFracToCoord(p[fmt("V9_CACHE_LAYER{0}_DIELHEIGHT", i)].AsIntOrDefault(), p[fmt("V9_CACHE_LAYER{0}_DIELHEIGHT_FRAC", i)].AsIntOrDefault()) :
+                        Unit.StringToCoordUnit(p[fmt("V9_CACHE_LAYER{0}_DIELHEIGHT", i)].AsStringOrDefault()),
+                    p[fmt("V9_CACHE_LAYER{0}_DIELMATERIAL", i)].AsStringOrDefault(),
+                    p.Contains(fmt("V9_CACHE_LAYER{0}_COVERLAY_EXPANSION_FRAC", i)) ?
+                        Utils.DxpFracToCoord(p[fmt("V9_CACHE_LAYER{0}_COVERLAY_EXPANSION", i)].AsIntOrDefault(), p[fmt("V9_CACHE_LAYER{0}_COVERLAY_EXPANSION_FRAC", i)].AsIntOrDefault()) :
+                        Unit.StringToCoordUnit(p[fmt("V9_CACHE_LAYER{0}_COVERLAY_EXPANSION", i)].AsStringOrDefault()),
+                    p.Contains(fmt("V9_CACHE_LAYER{0}_COPTHICK_FRAC", i)) ?
+                        Utils.DxpFracToCoord(p[fmt("V9_CACHE_LAYER{0}_COPTHICK", i)].AsIntOrDefault(), p[fmt("V9_CACHE_LAYER{0}_COPTHICK_FRAC", i)].AsIntOrDefault()) :
+                        Unit.StringToCoordUnit(p[fmt("V9_CACHE_LAYER{0}_COPTHICK", i)].AsStringOrDefault()),
+                    p[fmt("V9_CACHE_LAYER{0}_COMPONENTPLACEMENT", i)].AsIntOrDefault(),
+                    p.Contains(fmt("V9_CACHE_LAYER{0}_PULLBACKDISTANCE_FRAC", i)) ?
+                        Utils.DxpFracToCoord(p[fmt("V9_CACHE_LAYER{0}_PULLBACKDISTANCE", i)].AsIntOrDefault(), p[fmt("V9_CACHE_LAYER{0}_PULLBACKDISTANCE_FRAC", i)].AsIntOrDefault()) :
+                        Unit.StringToCoordUnit(p[fmt("V9_CACHE_LAYER{0}_PULLBACKDISTANCE", i)].AsStringOrDefault()),
+                    p[fmt("V9_CACHE_LAYER{0}_MECHENABLED", i)].AsBool()))
+                .ToList();*/
+            int v9CacheLayerMin = p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_LAYERID", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).DefaultIfEmpty("0").Min(v => int.Parse(v, CultureInfo.InvariantCulture));
+            int v9CacheLayerCount = p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_LAYERID", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).Count();
+
+            V9CacheLayer = new List<(int LayerId, bool UsedByPrims, string Id, string Name, int DielType, double DielConst, Coord DielHeight, string DielMaterial, Coord COverLayEXPansiOn, Coord CopThick, int ComponentPlacement, Coord PullBackDistance, bool MechEnabled)>();
+
+            for (int i = v9CacheLayerMin; i < v9CacheLayerCount; i++)
+            {
+                Coord dielHeight = Coord.FromMils(0);
+                if (p.Contains(fmt("V9_CACHE_LAYER{0}_DIELHEIGHT", i)) && p.Contains(fmt("V9_CACHE_LAYER{0}_DIELHEIGHT_FRAC", i)))
+                    dielHeight = Utils.DxpFracToCoord(p[fmt("V9_CACHE_LAYER{0}_DIELHEIGHT", i)].AsIntOrDefault(), p[fmt("V9_CACHE_LAYER{0}_DIELHEIGHT_FRAC", i)].AsIntOrDefault());
+                else if (p.Contains(fmt("V9_CACHE_LAYER{0}_DIELHEIGHT", i)))
+                    dielHeight = Unit.StringToCoordUnit(p[fmt("V9_CACHE_LAYER{0}_DIELHEIGHT", i)].AsStringOrDefault());
+
+                Coord coverlayExpansion = Coord.FromMils(0);
+                if (p.Contains(fmt("V9_CACHE_LAYER{0}_COVERLAY_EXPANSION", i)) && p.Contains(fmt("V9_CACHE_LAYER{0}_COVERLAY_EXPANSION_FRAC", i)))
+                    coverlayExpansion = Utils.DxpFracToCoord(p[fmt("V9_CACHE_LAYER{0}_COVERLAY_EXPANSION", i)].AsIntOrDefault(), p[fmt("V9_CACHE_LAYER{0}_COVERLAY_EXPANSION_FRAC", i)].AsIntOrDefault());
+                else if (p.Contains(fmt("V9_CACHE_LAYER{0}_COVERLAY_EXPANSION", i)))
+                    coverlayExpansion = Unit.StringToCoordUnit(p[fmt("V9_CACHE_LAYER{0}_COVERLAY_EXPANSION", i)].AsStringOrDefault());
+
+                Coord copperThickness = Coord.FromMils(0);
+                if (p.Contains(fmt("V9_CACHE_LAYER{0}_COPTHICK", i)) && p.Contains(fmt("V9_CACHE_LAYER{0}_COPTHICK_FRAC", i)))
+                    copperThickness = Utils.DxpFracToCoord(p[fmt("V9_CACHE_LAYER{0}_COPTHICK", i)].AsIntOrDefault(), p[fmt("V9_CACHE_LAYER{0}_COPTHICK_FRAC", i)].AsIntOrDefault());
+                else if (p.Contains(fmt("V9_CACHE_LAYER{0}_COPTHICK", i)))
+                    copperThickness = Unit.StringToCoordUnit(p[fmt("V9_CACHE_LAYER{0}_COPTHICK", i)].AsStringOrDefault());
+
+                Coord pullback = Coord.FromMils(0);
+                if (p.Contains(fmt("V9_CACHE_LAYER{0}_PULLBACKDISTANCE", i)) && p.Contains(fmt("V9_CACHE_LAYER{0}_PULLBACKDISTANCE_FRAC", i)))
+                    pullback = Utils.DxpFracToCoord(p[fmt("V9_CACHE_LAYER{0}_PULLBACKDISTANCE", i)].AsIntOrDefault(), p[fmt("V9_CACHE_LAYER{0}_PULLBACKDISTANCE_FRAC", i)].AsIntOrDefault());
+                else if (p.Contains(fmt("V9_CACHE_LAYER{0}_PULLBACKDISTANCE", i)))
+                    pullback = Unit.StringToCoordUnit(p[fmt("V9_CACHE_LAYER{0}_PULLBACKDISTANCE", i)].AsStringOrDefault());
+
+                V9CacheLayer.Add(
+                    (
+                        p[fmt("V9_CACHE_LAYER{0}_LAYERID", i)].AsIntOrDefault(),
+                        p[fmt("V9_CACHE_LAYER{0}_USEDBYPRIMS", i)].AsBool(),
+                        p[fmt("V9_CACHE_LAYER{0}_ID", i)].AsStringOrDefault(),
+                        p[fmt("V9_CACHE_LAYER{0}_NAME", i)].AsStringOrDefault(),
+                        p[fmt("V9_CACHE_LAYER{0}_DIELTYPE", i)].AsIntOrDefault(),
+                        p[fmt("V9_CACHE_LAYER{0}_DIELCONST", i)].AsDoubleOrDefault(),
+                        dielHeight,
+                        p[fmt("V9_CACHE_LAYER{0}_DIELMATERIAL", i)].AsStringOrDefault(),
+                        coverlayExpansion,
+                        copperThickness,
+                        p[fmt("V9_CACHE_LAYER{0}_COMPONENTPLACEMENT", i)].AsIntOrDefault(),
+                        pullback,
+                        p[fmt("V9_CACHE_LAYER{0}_MECHENABLED", i)].AsBool()
+                    )
+                );
+            }
+
+            LayerMasterStackV8Style = p["LAYERMASTERSTACK_V8STYLE"].AsIntOrDefault();
+            LayerMasterStackV8Id = p["LAYERMASTERSTACK_V8ID"].AsStringOrDefault();
             LayerMasterStackV8Name = p["LAYERMASTERSTACK_V8NAME"].AsStringOrDefault();
             LayerMasterStackV8ShowTopDielectric = p["LAYERMASTERSTACK_V8SHOWTOPDIELECTRIC"].AsBool();
             LayerMasterStackV8ShowBottomDielectric = p["LAYERMASTERSTACK_V8SHOWBOTTOMDIELECTRIC"].AsBool();
             LayerMasterStackV8IsFlex = p["LAYERMASTERSTACK_V8ISFLEX"].AsBool();
-            LayerV8 = Enumerable.Range(
+            /*LayerV8 = Enumerable.Range(
                     p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}ID", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).DefaultIfEmpty("0").Min(v => int.Parse(v, CultureInfo.InvariantCulture)),
                     p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}ID", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).Count())
                 .Select(i => (
-                    p[string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}ID", i)].AsStringOrDefault(),
-                    p[string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}NAME", i)].AsStringOrDefault(),
-                    p[string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}LAYERID", i)].AsIntOrDefault(),
-                    p[string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}USEDBYPRIMS", i)].AsBool(),
-                    p[string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}DIELTYPE", i)].AsIntOrDefault(),
-                    p[string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}DIELCONST", i)].AsDoubleOrDefault(),
-                    Utils.DxpFracToCoord(p[string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}DIELHEIGHT", i)].AsIntOrDefault(), p["LAYER_V8_6DIELHEIGHT_FRAC"].AsIntOrDefault()),
-                    p[string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}DIELMATERIAL", i)].AsStringOrDefault(),
-                    Utils.DxpFracToCoord(p[string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}COVERLAY_EXPANSION", i)].AsIntOrDefault(), p["LAYER_V8_6COVERLAY_EXPANSION_FRAC"].AsIntOrDefault()),
-                    Utils.DxpFracToCoord(p[string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}COPTHICK", i)].AsIntOrDefault(), p["LAYER_V8_5COPTHICK_FRAC"].AsIntOrDefault()),
-                    p[string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}COMPONENTPLACEMENT", i)].AsIntOrDefault(),
-                    p[string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}MECHENABLED", i)].AsBool()))
-                .ToList();
+                    p[fmt("LAYER_V8_{0}ID", i)].AsStringOrDefault(),
+                    p[fmt("LAYER_V8_{0}NAME", i)].AsStringOrDefault(),
+                    p[fmt("LAYER_V8_{0}LAYERID", i)].AsIntOrDefault(),
+                    p[fmt("LAYER_V8_{0}USEDBYPRIMS", i)].AsBool(),
+                    p[fmt("LAYER_V8_{0}DIELTYPE", i)].AsIntOrDefault(),
+                    p[fmt("LAYER_V8_{0}DIELCONST", i)].AsDoubleOrDefault(),
+                    Utils.DxpFracToCoord(p[fmt("LAYER_V8_{0}DIELHEIGHT", i)].AsIntOrDefault(), p[fmt("LAYER_V8_{0}DIELHEIGHT_FRAC", i)].AsIntOrDefault()),
+                    p[fmt("LAYER_V8_{0}DIELMATERIAL", i)].AsStringOrDefault(),
+                    Utils.DxpFracToCoord(p[fmt("LAYER_V8_{0}COVERLAY_EXPANSION", i)].AsIntOrDefault(), p[fmt("LAYER_V8_{0}COVERLAY_EXPANSION_FRAC", i)].AsIntOrDefault()),
+                    Utils.DxpFracToCoord(p[fmt("LAYER_V8_{0}COPTHICK", i)].AsIntOrDefault(), p[fmt("LAYER_V8_{0}COPTHICK_FRAC", i)].AsIntOrDefault()),
+                    p[fmt("LAYER_V8_{0}COMPONENTPLACEMENT", i)].AsIntOrDefault(),
+                    p[fmt("LAYER_V8_{0}MECHENABLED", i)].AsBool()))
+                .ToList();*/
+            int v8LayerMin = p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}ID", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).DefaultIfEmpty("0").Min(v => int.Parse(v, CultureInfo.InvariantCulture));
+            int v8LayerCount = p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}ID", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).Count();
+
+            LayerV8 = new List<(string Id, string Name, int LayerId, bool UsedByPrims, int DielType, double DielConst, Coord DielHeight, string DielMaterial, Coord COverLayEXPansiOn, Coord CopThick, int ComponentPlacement, bool MechEnabled)>();
+
+            for (int i = v8LayerMin; i < v8LayerCount; i++)
+            {
+                Coord dielHeight = Coord.FromMils(0);
+                if (p.Contains(fmt("LAYER_V8_{0}DIELHEIGHT", i)) && p.Contains(fmt("LAYER_V8_{0}DIELHEIGHT_FRAC", i)))
+                    dielHeight = Utils.DxpFracToCoord(p[fmt("LAYER_V8_{0}DIELHEIGHT", i)].AsIntOrDefault(), p[fmt("LAYER_V8_{0}DIELHEIGHT_FRAC", i)].AsIntOrDefault());
+                else if (p.Contains(fmt("LAYER_V8_{0}DIELHEIGHT", i)))
+                    dielHeight = Unit.StringToCoordUnit(p[fmt("LAYER_V8_{0}DIELHEIGHT", i)].AsStringOrDefault());
+
+                Coord coverlayExpansion = Coord.FromMils(0);
+                if (p.Contains(fmt("LAYER_V8_{0}COVERLAY_EXPANSION", i)) && p.Contains(fmt("LAYER_V8_{0}COVERLAY_EXPANSION_FRAC", i)))
+                    coverlayExpansion = Utils.DxpFracToCoord(p[fmt("LAYER_V8_{0}COVERLAY_EXPANSION", i)].AsIntOrDefault(), p[fmt("LAYER_V8_{0}COVERLAY_EXPANSION_FRAC", i)].AsIntOrDefault());
+                else if (p.Contains(fmt("LAYER_V8_{0}COVERLAY_EXPANSION", i)))
+                    coverlayExpansion = Unit.StringToCoordUnit(p[fmt("LAYER_V8_{0}COVERLAY_EXPANSION", i)].AsStringOrDefault());
+
+                Coord copperThickness = Coord.FromMils(0);
+                if (p.Contains(fmt("LAYER_V8_{0}COPTHICK", i)) && p.Contains(fmt("LAYER_V8_{0}COPTHICK_FRAC", i)))
+                    copperThickness = Utils.DxpFracToCoord(p[fmt("LAYER_V8_{0}COPTHICK", i)].AsIntOrDefault(), p[fmt("LAYER_V8_{0}COPTHICK_FRAC", i)].AsIntOrDefault());
+                else if (p.Contains(fmt("LAYER_V8_{0}COPTHICK", i)))
+                    copperThickness = Unit.StringToCoordUnit(p[fmt("LAYER_V8_{0}COPTHICK", i)].AsStringOrDefault());
+
+                LayerV8.Add(
+                    (
+                        p[fmt("LAYER_V8_{0}ID", i)].AsStringOrDefault(),
+                        p[fmt("LAYER_V8_{0}NAME", i)].AsStringOrDefault(),
+                        p[fmt("LAYER_V8_{0}LAYERID", i)].AsIntOrDefault(),
+                        p[fmt("LAYER_V8_{0}USEDBYPRIMS", i)].AsBool(),
+                        p[fmt("LAYER_V8_{0}DIELTYPE", i)].AsIntOrDefault(),
+                        p[fmt("LAYER_V8_{0}DIELCONST", i)].AsDoubleOrDefault(),
+                        dielHeight,
+                        p[fmt("LAYER_V8_{0}DIELMATERIAL", i)].AsStringOrDefault(),
+                        coverlayExpansion,
+                        copperThickness,
+                        p[fmt("LAYER_V8_{0}COMPONENTPLACEMENT", i)].AsIntOrDefault(),
+                        p[fmt("LAYER_V8_{0}MECHENABLED", i)].AsBool()
+                    )
+                );
+            }
+
             TopType = p["TOPTYPE"].AsIntOrDefault();
             TopConst = p["TOPCONST"].AsDoubleOrDefault();
             TopHeight = p["TOPHEIGHT"].AsCoord();
@@ -478,7 +616,7 @@ namespace AltiumSharp.Records
             BottomConst = p["BOTTOMCONST"].AsDoubleOrDefault();
             BottomHeight = p["BOTTOMHEIGHT"].AsCoord();
             BottomMaterial = p["BOTTOMMATERIAL"].AsStringOrDefault();
-            LayersTackStyle = p["LAYERSTACKSTYLE"].AsIntOrDefault();
+            LayerStackStyle = p["LAYERSTACKSTYLE"].AsIntOrDefault();
             ShowTopDielectric = p["SHOWTOPDIELECTRIC"].AsBool();
             ShowBottomDielectric = p["SHOWBOTTOMDIELECTRIC"].AsBool();
             Layer = Enumerable.Range(
@@ -495,26 +633,66 @@ namespace AltiumSharp.Records
                     p[$"LAYER{i}DIELHEIGHT"].AsCoord(),
                     p[$"LAYER{i}DIELMATERIAL"].AsStringOrDefault()))
                 .ToList();
+
+            /*
             LayerV7 = Enumerable.Range(
                     p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "LAYERV7_{0}NAME", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).DefaultIfEmpty("0").Min(v => int.Parse(v, CultureInfo.InvariantCulture)),
                     p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "LAYERV7_{0}NAME", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).Count())
                 .Select(i => (
-                    p[string.Format(CultureInfo.InvariantCulture, "LAYERV7_{0}NAME", i)].AsStringOrDefault(),
-                    p[string.Format(CultureInfo.InvariantCulture, "LAYERV7_{0}PREV", i)].AsIntOrDefault(),
-                    p[string.Format(CultureInfo.InvariantCulture, "LAYERV7_{0}NEXT", i)].AsIntOrDefault(),
-                    p[string.Format(CultureInfo.InvariantCulture, "LAYERV7_{0}MECHENABLED", i)].AsBool(),
-                    Utils.DxpFracToCoord(p[string.Format(CultureInfo.InvariantCulture, "LAYERV7_{0}COPTHICK", i)].AsIntOrDefault(), p["LAYERV7_15COPTHICK_FRAC"].AsIntOrDefault()),
-                    p[string.Format(CultureInfo.InvariantCulture, "LAYERV7_{0}DIELTYPE", i)].AsIntOrDefault(),
-                    p[string.Format(CultureInfo.InvariantCulture, "LAYERV7_{0}DIELCONST", i)].AsDoubleOrDefault(),
-                    Utils.DxpFracToCoord(p[string.Format(CultureInfo.InvariantCulture, "LAYERV7_{0}DIELHEIGHT", i)].AsIntOrDefault(), p["LAYERV7_15DIELHEIGHT_FRAC"].AsIntOrDefault()),
-                    p[string.Format(CultureInfo.InvariantCulture, "LAYERV7_{0}DIELMATERIAL", i)].AsStringOrDefault(),
-                    p[string.Format(CultureInfo.InvariantCulture, "LAYERV7_{0}LAYERID", i)].AsIntOrDefault()))
+                    p[fmt("LAYERV7_{0}NAME", i)].AsStringOrDefault(),
+                    p[fmt("LAYERV7_{0}PREV", i)].AsIntOrDefault(),
+                    p[fmt("LAYERV7_{0}NEXT", i)].AsIntOrDefault(),
+                    p[fmt("LAYERV7_{0}MECHENABLED", i)].AsBool(),
+                    Utils.DxpFracToCoord(p[fmt("LAYERV7_{0}COPTHICK", i)].AsIntOrDefault(), p[fmt("LAYERV7_{0}COPTHICK_FRAC", i)].AsIntOrDefault()),
+                    p[fmt("LAYERV7_{0}DIELTYPE", i)].AsIntOrDefault(),
+                    p[fmt("LAYERV7_{0}DIELCONST", i)].AsDoubleOrDefault(),
+                    Utils.DxpFracToCoord(p[fmt("LAYERV7_{0}DIELHEIGHT", i)].AsIntOrDefault(), p[fmt("LAYERV7_{0}DIELHEIGHT_FRAC", i)].AsIntOrDefault()),
+                    p[fmt("LAYERV7_{0}DIELMATERIAL", i)].AsStringOrDefault(),
+                    p[fmt("LAYERV7_{0}LAYERID", i)].AsIntOrDefault()))
                 .ToList();
+            */
+
+            int v7LayerMin = p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "LAYERV7_{0}NAME", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).DefaultIfEmpty("0").Min(v => int.Parse(v, CultureInfo.InvariantCulture));
+            int v7LayerCount = p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "LAYERV7_{0}NAME", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).Count();
+
+            LayerV7 = new List<(string Name, int Prev, int Next, bool MechEnabled, Coord CopThick, int DielType, double DielConst, Coord DielHeight, string DielMaterial, int LayerId)>();
+
+            for (int i = v7LayerMin; i < v7LayerCount; i++)
+            {
+                Coord dielHeight = Coord.FromMils(0);
+                if (p.Contains(fmt("LAYERV7_{0}DIELHEIGHT", i)) && p.Contains(fmt("LAYERV7_{0}DIELHEIGHT_FRAC", i)))
+                    dielHeight = Utils.DxpFracToCoord(p[fmt("LAYERV7_{0}DIELHEIGHT", i)].AsIntOrDefault(), p[fmt("LAYERV7_{0}DIELHEIGHT_FRAC", i)].AsIntOrDefault());
+                else if (p.Contains(fmt("LAYERV7_{0}DIELHEIGHT", i)))
+                    dielHeight = Unit.StringToCoordUnit(p[fmt("LAYERV7_{0}DIELHEIGHT", i)].AsStringOrDefault());
+
+                Coord copperThickness = Coord.FromMils(0);
+                if (p.Contains(fmt("LAYERV7_{0}COPTHICK", i)) && p.Contains(fmt("LAYERV7_{0}COPTHICK_FRAC", i)))
+                    copperThickness = Utils.DxpFracToCoord(p[fmt("LAYERV7_{0}COPTHICK", i)].AsIntOrDefault(), p[fmt("LAYERV7_{0}COPTHICK_FRAC", i)].AsIntOrDefault());
+                else if (p.Contains(fmt("LAYERV7_{0}COPTHICK", i)))
+                    copperThickness = Unit.StringToCoordUnit(p[fmt("LAYERV7_{0}COPTHICK", i)].AsStringOrDefault());
+
+                LayerV7.Add(
+                    (
+                        p[fmt("LAYERV7_{0}NAME", i)].AsStringOrDefault(),
+                        p[fmt("LAYERV7_{0}PREV", i)].AsIntOrDefault(),
+                        p[fmt("LAYERV7_{0}NEXT", i)].AsIntOrDefault(),
+                        p[fmt("LAYERV7_{0}MECHENABLED", i)].AsBool(),
+                        copperThickness,
+                        p[fmt("LAYERV7_{0}DIELTYPE", i)].AsIntOrDefault(),
+                        p[fmt("LAYERV7_{0}DIELCONST", i)].AsDoubleOrDefault(),
+                        dielHeight,
+                        p[fmt("LAYERV7_{0}DIELMATERIAL", i)].AsStringOrDefault(),
+                        p[fmt("LAYERV7_{0}LAYERID", i)].AsIntOrDefault()
+                    )
+                );
+            }
+
             BigVisibleGridSize = Coord.FromInt32((int)p["BIGVISIBLEGRIDSIZE"].AsDoubleOrDefault());
             VisibleGridSize = Coord.FromInt32((int)p["VISIBLEGRIDSIZE"].AsDoubleOrDefault());
             SnapGridSize = (int)p["SNAPGRIDSIZE"].AsDoubleOrDefault();
             SnapGridSizeX = (int)p["SNAPGRIDSIZEX"].AsDoubleOrDefault();
             SnapGridSizeY = (int)p["SNAPGRIDSIZEY"].AsDoubleOrDefault();
+            LibGridsNGuide = p["LIBGRIDSNGUIDE"].AsStringOrDefault();
             ElectricalGridRange = p["ELECTRICALGRIDRANGE"].AsCoord();
             ElectricalGridEnabled = p["ELECTRICALGRIDENABLED"].AsBool();
             DotGrid = p["DOTGRID"].AsBool();
@@ -524,22 +702,31 @@ namespace AltiumSharp.Records
             ShowDefaultSets = p["SHOWDEFAULTSETS"].AsBool();
             Layersets = Enumerable.Range(1, p["LAYERSETSCOUNT"].AsInt())
                 .Select(i => (
-                    p[string.Format(CultureInfo.InvariantCulture, "LAYERSET{0}NAME", i)].AsStringOrDefault(),
-                    p[string.Format(CultureInfo.InvariantCulture, "LAYERSET{0}LAYERS", i)].AsStringOrDefault(),
-                    p[string.Format(CultureInfo.InvariantCulture, "LAYERSET{0}ACTIVELAYER.7", i)].AsStringOrDefault(),
-                    p[string.Format(CultureInfo.InvariantCulture, "LAYERSET{0}ISCURRENT", i)].AsBool(),
-                    p[string.Format(CultureInfo.InvariantCulture, "LAYERSET{0}ISLOCKED", i)].AsBool(),
-                    p[string.Format(CultureInfo.InvariantCulture, "LAYERSET{0}FLIPBOARD", i)].AsBool()))
+                    p[fmt("LAYERSET{0}NAME", i)].AsStringOrDefault(),
+                    p[fmt("LAYERSET{0}LAYERS", i)].AsStringOrDefault(),
+                    p[fmt("LAYERSET{0}ACTIVELAYER.7", i)].AsStringOrDefault(),
+                    p[fmt("LAYERSET{0}ISCURRENT", i)].AsBool(),
+                    p[fmt("LAYERSET{0}ISLOCKED", i)].AsBool(),
+                    p[fmt("LAYERSET{0}FLIPBOARD", i)].AsBool()))
                 .ToList();
-            Cfg2DPrimDrawMode = p["CFG2D.PRIMDRAWMODE"].AsIntOrDefault();
+            CfgAllConfigurationKind = p["CFGALL.CONFIGURATIONKIND"].AsIntOrDefault();
+            CfgAllConfigurationDesc = p["CFGALL.CONFIGURATIONDESC"].AsStringOrDefault();
+            CfgAllComponentBodyRefPointColor = p["CFGALL.COMPONENTBODYREFPOINTCOLOR"].AsColorOrDefault();
+            CfgAllComponentBodySnapPointColor = p["CFGALL.COMPONENTBODYSNAPPOINTCOLOR"].AsColorOrDefault();
+            CfgAllShowComponentSnapMarkers = p["CFGALL.SHOWCOMPONENTSNAPMARKERS"].AsBool();
+            CfgAllShowComponentSnapReference = p["CFGALL.SHOWCOMPONENTSNAPREFERENCE"].AsBool();
+            CfgAllShowComponentSnapCustom = p["CFGALL.SHOWCOMPONENTSNAPCUSTOM"].AsBool();
+            Cfg2DPrimDrawMode = p["CFG2D.PRIMDRAWMODE"].AsStringOrDefault();
             Cfg2DLayerOpacityTopLayer = p["CFG2D.LAYEROPACITY.TOPLAYER"].AsStringOrDefault();
             Cfg2DLayerOpacityMidLayer = Enumerable.Range(
                     p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "CFG2D.LAYEROPACITY.MIDLAYER{0}", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).DefaultIfEmpty("0").Min(v => int.Parse(v, CultureInfo.InvariantCulture)),
                     p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "CFG2D.LAYEROPACITY.MIDLAYER{0}", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).Count())
                 .Select(i =>
-                    p[string.Format(CultureInfo.InvariantCulture, "CFG2D.LAYEROPACITY.MIDLAYER{0}", i)].AsStringOrDefault())
+                    p[fmt("CFG2D.LAYEROPACITY.MIDLAYER{0}", i)].AsStringOrDefault())
                 .ToList();
-            Cfg2DLayerOpacityBottomOverLay = p["CFG2D.LAYEROPACITY.BOTTOMOVERLAY"].AsStringOrDefault();
+            Cfg2DLayerOpacityBottomLayer = p["CFG2D.LAYEROPACITY.BOTTOMLAYER"].AsStringOrDefault();
+            Cfg2DLayerOpacityTopOverlay = p["CFG2D.LAYEROPACITY.TOPOVERLAY"].AsStringOrDefault();
+            Cfg2DLayerOpacityBottomOverlay = p["CFG2D.LAYEROPACITY.BOTTOMOVERLAY"].AsStringOrDefault();
             Cfg2DLayerOpacityTopPaste = p["CFG2D.LAYEROPACITY.TOPPASTE"].AsStringOrDefault();
             Cfg2DLayerOpacityBottomPaste = p["CFG2D.LAYEROPACITY.BOTTOMPASTE"].AsStringOrDefault();
             Cfg2DLayerOpacityTopSolder = p["CFG2D.LAYEROPACITY.TOPSOLDER"].AsStringOrDefault();
@@ -562,22 +749,12 @@ namespace AltiumSharp.Records
             Cfg2DLayerOpacityInternalPlane16 = p["CFG2D.LAYEROPACITY.INTERNALPLANE16"].AsStringOrDefault();
             Cfg2DLayerOpacityDrillGuide = p["CFG2D.LAYEROPACITY.DRILLGUIDE"].AsStringOrDefault();
             Cfg2DLayerOpacityKeepoutLayer = p["CFG2D.LAYEROPACITY.KEEPOUTLAYER"].AsStringOrDefault();
-            Cfg2DLayerOpacityMechanical1 = p["CFG2D.LAYEROPACITY.MECHANICAL1"].AsStringOrDefault();
-            Cfg2DLayerOpacityMechanical2 = p["CFG2D.LAYEROPACITY.MECHANICAL2"].AsStringOrDefault();
-            Cfg2DLayerOpacityMechanical3 = p["CFG2D.LAYEROPACITY.MECHANICAL3"].AsStringOrDefault();
-            Cfg2DLayerOpacityMechanical4 = p["CFG2D.LAYEROPACITY.MECHANICAL4"].AsStringOrDefault();
-            Cfg2DLayerOpacityMechanical5 = p["CFG2D.LAYEROPACITY.MECHANICAL5"].AsStringOrDefault();
-            Cfg2DLayerOpacityMechanical6 = p["CFG2D.LAYEROPACITY.MECHANICAL6"].AsStringOrDefault();
-            Cfg2DLayerOpacityMechanical7 = p["CFG2D.LAYEROPACITY.MECHANICAL7"].AsStringOrDefault();
-            Cfg2DLayerOpacityMechanical8 = p["CFG2D.LAYEROPACITY.MECHANICAL8"].AsStringOrDefault();
-            Cfg2DLayerOpacityMechanical9 = p["CFG2D.LAYEROPACITY.MECHANICAL9"].AsStringOrDefault();
-            Cfg2DLayerOpacityMechanical10 = p["CFG2D.LAYEROPACITY.MECHANICAL10"].AsStringOrDefault();
-            Cfg2DLayerOpacityMechanical11 = p["CFG2D.LAYEROPACITY.MECHANICAL11"].AsStringOrDefault();
-            Cfg2DLayerOpacityMechanical12 = p["CFG2D.LAYEROPACITY.MECHANICAL12"].AsStringOrDefault();
-            Cfg2DLayerOpacityMechanical13 = p["CFG2D.LAYEROPACITY.MECHANICAL13"].AsStringOrDefault();
-            Cfg2DLayerOpacityMechanical14 = p["CFG2D.LAYEROPACITY.MECHANICAL14"].AsStringOrDefault();
-            Cfg2DLayerOpacityMechanical15 = p["CFG2D.LAYEROPACITY.MECHANICAL15"].AsStringOrDefault();
-            Cfg2DLayerOpacityMechanical16 = p["CFG2D.LAYEROPACITY.MECHANICAL16"].AsStringOrDefault();
+            Cfg2DLayerOpacityMechanicalLayer = Enumerable.Range(
+                    p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "CFG2D.LAYEROPACITY.MECHANICAL{0}", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).DefaultIfEmpty("0").Min(v => int.Parse(v, CultureInfo.InvariantCulture)),
+                    p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "CFG2D.LAYEROPACITY.MECHANICAL{0}", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).Count())
+                .Select(i =>
+                    p[fmt("CFG2D.LAYEROPACITY.MECHANICAL{0}", i)].AsStringOrDefault())
+                .ToList();
             Cfg2DLayerOpacityDrillDrawing = p["CFG2D.LAYEROPACITY.DRILLDRAWING"].AsStringOrDefault();
             Cfg2DLayerOpacityMultiLayer = p["CFG2D.LAYEROPACITY.MULTILAYER"].AsStringOrDefault();
             Cfg2DLayerOpacityCOnNectLayer = p["CFG2D.LAYEROPACITY.CONNECTLAYER"].AsStringOrDefault();
@@ -590,21 +767,14 @@ namespace AltiumSharp.Records
             Cfg2DLayerOpacityViaHoleLayer = p["CFG2D.LAYEROPACITY.VIAHOLELAYER"].AsStringOrDefault();
             Cfg2DToggleLayers = p["CFG2D.TOGGLELAYERS"].AsStringOrDefault();
             Cfg2DToggleLayersSet = p["CFG2D.TOGGLELAYERS.SET"].AsStringOrDefault();
-            Cfg2DWorkspaceColAlpha0 = p["CFG2D.WORKSPACECOLALPHA0"].AsDoubleOrDefault();
-            Cfg2DWorkspaceColAlpha1 = p["CFG2D.WORKSPACECOLALPHA1"].AsDoubleOrDefault();
-            Cfg2DWorkspaceColAlpha2 = p["CFG2D.WORKSPACECOLALPHA2"].AsDoubleOrDefault();
-            Cfg2DWorkspaceColAlpha3 = p["CFG2D.WORKSPACECOLALPHA3"].AsDoubleOrDefault();
-            Cfg2DWorkspaceColAlpha4 = p["CFG2D.WORKSPACECOLALPHA4"].AsDoubleOrDefault();
-            Cfg2DWorkspaceColAlpha5 = p["CFG2D.WORKSPACECOLALPHA5"].AsDoubleOrDefault();
-            Cfg2DWorkspaceColAlpha6 = p["CFG2D.WORKSPACECOLALPHA6"].AsDoubleOrDefault();
-            Cfg2DWorkspaceColAlpha7 = p["CFG2D.WORKSPACECOLALPHA7"].AsDoubleOrDefault();
-            Cfg2DWorkspaceColAlpha8 = p["CFG2D.WORKSPACECOLALPHA8"].AsDoubleOrDefault();
-            Cfg2DWorkspaceColAlpha9 = p["CFG2D.WORKSPACECOLALPHA9"].AsDoubleOrDefault();
-            Cfg2DWorkspaceColAlpha10 = p["CFG2D.WORKSPACECOLALPHA10"].AsDoubleOrDefault();
-            Cfg2DWorkspaceColAlpha11 = p["CFG2D.WORKSPACECOLALPHA11"].AsDoubleOrDefault();
-            Cfg2DMechLayerInSingleLayerMode = p["CFG2D.MECHLAYERINSINGLELAYERMODE"].AsIntOrDefault();
+
+            Cfg2DWorkspaceColAlpha = p.Where(n => Regex.IsMatch(n.key, "CFG2D.WORKSPACECOLALPHA\\d+", RegexOptions.CultureInvariant))
+             .Select(n => new KeyValuePair<int, double>(Int32.Parse(Regex.Match(n.key, "CFG2D.WORKSPACECOLALPHA(\\d+)", RegexOptions.CultureInvariant).Groups[1].Value), p[n.key].AsDoubleOrDefault()))
+             .ToList();
+            Cfg2DMechLayerInSingleLayerMode = p["CFG2D.MECHLAYERINSINGLELAYERMODE"].AsStringOrDefault();
             Cfg2DMechLayerInSingleLayerModeSet = p["CFG2D.MECHLAYERINSINGLELAYERMODE.SET"].AsStringOrDefault();
-            Cfg2DMechLayerLinkedToSheet = p["CFG2D.MECHLAYERLINKEDTOSHEET"].AsIntOrDefault();
+            Cfg2DLayersInSingleLayerModeSet = p["CFG2D.LAYERSINSINGLELAYERMODE.SET"].AsStringOrDefault();
+            Cfg2DMechLayerLinkedToSheet = p["CFG2D.MECHLAYERLINKEDTOSHEET"].AsStringOrDefault();
             Cfg2DMechLayerLinkedToSheetSet = p["CFG2D.MECHLAYERLINKEDTOSHEET.SET"].AsStringOrDefault();
             Cfg2DCurrentLayer = p["CFG2D.CURRENTLAYER"].AsStringOrDefault();
             Cfg2DDisplaySpecialStrings = p["CFG2D.DISPLAYSPECIALSTRINGS"].AsBool();
@@ -615,6 +785,7 @@ namespace AltiumSharp.Records
             Cfg2DShowPadNets = p["CFG2D.SHOWPADNETS"].AsBool();
             Cfg2DShowPadNumberS = p["CFG2D.SHOWPADNUMBERS"].AsBool();
             Cfg2DShowViaNets = p["CFG2D.SHOWVIANETS"].AsBool();
+            Cfg2DShowViaSpan = p["CFG2D.SHOWVIASPAN"].AsBool();
             Cfg2DUSetRansparentLayers = p["CFG2D.USETRANSPARENTLAYERS"].AsBool();
             Cfg2DPlaneDrawMode = p["CFG2D.PLANEDRAWMODE"].AsIntOrDefault();
             Cfg2DDisplayNetNamesOnTracks = p["CFG2D.DISPLAYNETNAMESONTRACKS"].AsIntOrDefault();
@@ -630,6 +801,8 @@ namespace AltiumSharp.Records
             Cfg2DBottomPosItivesolderMaskAlpha = p["CFG2D.BOTTOMPOSITIVESOLDERMASKALPHA"].AsDoubleOrDefault();
             Cfg2DAllConnectionsInSingleLayerMode = p["CFG2D.ALLCONNECTIONSINSINGLELAYERMODE"].AsBool();
             Cfg2DMultiColoredConnections = p["CFG2D.MULTICOLOREDCONNECTIONS"].AsBool();
+            Cfg2DShowSpecialStringsHandles = p["CFG2D.SHOWSPECIALSTRINGSHANDLES"].AsBool();
+            Cfg2DMechanicalCoverLayerUpdated = p["CFG2D.MECHCOVERLAYERUPDATED"].AsBool();
             BoardInsightViewConfigurationName = p["BOARDINSIGHTVIEWCONFIGURATIONNAME"].AsStringOrDefault();
             VisibleGridMultFactor = p["VISIBLEGRIDMULTFACTOR"].AsDoubleOrDefault();
             BigVisibleGridMultFactor = p["BIGVISIBLEGRIDMULTFACTOR"].AsDoubleOrDefault();
@@ -678,7 +851,7 @@ namespace AltiumSharp.Records
             RevisionNamingSchemeGuid = p["REVISIONNAMINGSCHEMEGUID"].AsStringOrDefault();
         }
 
-        private void AddParamRecord(ParameterCollection p)
+        private static void AddParamRecord(ParameterCollection p)
         {
             if (p.Contains("RECORD"))
             {
@@ -706,60 +879,62 @@ namespace AltiumSharp.Records
                 p.Add("V9_MASTERSTACK_STYLE", V9MasterStackStyle, false);
                 p.Add("V9_MASTERSTACK_ID", V9MasterStackId);
                 p.Add("V9_MASTERSTACK_NAME", V9MasterStackName);
-                p.Add("V9_MASTERSTACK_SHOWTOPDIELECTRIC", V9MasterStackShowTopDielectric);
-                p.Add("V9_MASTERSTACK_SHOWBOTTOMDIELECTRIC", V9MasterStackShowBottomDielectric);
-                p.Add("V9_MASTERSTACK_ISFLEX", V9MasterStackIsFlex);
+                p.Add("V9_MASTERSTACK_SHOWTOPDIELECTRIC", V9MasterStackShowTopDielectric, false);
+                p.Add("V9_MASTERSTACK_SHOWBOTTOMDIELECTRIC", V9MasterStackShowBottomDielectric, false);
+                p.Add("V9_MASTERSTACK_ISFLEX", V9MasterStackIsFlex, false);
                 for (var i = 0; i < V9StackLayer.Count; i++)
                 {
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_ID", i), V9StackLayer[i].Id);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_NAME", i), V9StackLayer[i].Name);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_LAYERID", i), V9StackLayer[i].LayerId);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_USEDBYPRIMS", i), V9StackLayer[i].UsedByPrims);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_DIELTYPE", i), V9StackLayer[i].DielType);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_DIELCONST", i), V9StackLayer[i].DielConst);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_DIELHEIGHT", i), V9StackLayer[i].DielHeight);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_DIELMATERIAL", i), V9StackLayer[i].DielMaterial);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_COVERLAY_EXPANSION", i), V9StackLayer[i].COverLayEXPansiOn);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_COPTHICK", i), V9StackLayer[i].CopThick);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_STACK_LAYER{0}_COMPONENTPLACEMENT", i), V9StackLayer[i].ComponentPlacement);
+                    p.Add(fmt("V9_STACK_LAYER{0}_ID", i), V9StackLayer[i].Id);
+                    p.Add(fmt("V9_STACK_LAYER{0}_NAME", i), V9StackLayer[i].Name);
+                    p.Add(fmt("V9_STACK_LAYER{0}_LAYERID", i), V9StackLayer[i].LayerId);
+                    p.Add(fmt("V9_STACK_LAYER{0}_USEDBYPRIMS", i), V9StackLayer[i].UsedByPrims, false);
+                    p.Add(fmt("V9_STACK_LAYER{0}_DIELTYPE", i), V9StackLayer[i].DielType, V9StackLayer[i].DielConst == 0);
+                    p.Add(fmt("V9_STACK_LAYER{0}_DIELCONST", i), V9StackLayer[i].DielConst);
+                    p.Add(fmt("V9_STACK_LAYER{0}_DIELHEIGHT", i), V9StackLayer[i].DielHeight);
+                    p.Add(fmt("V9_STACK_LAYER{0}_DIELMATERIAL", i), V9StackLayer[i].DielMaterial);
+                    p.Add(fmt("V9_STACK_LAYER{0}_COVERLAY_EXPANSION", i), V9StackLayer[i].COverLayEXPansiOn, !(V9StackLayer[i].Name == "Top Solder" || V9StackLayer[i].Name == "Bottom Solder" || V9StackLayer[i].DielMaterial == "Solder Resist"));
+                    p.Add(fmt("V9_STACK_LAYER{0}_COPTHICK", i), V9StackLayer[i].CopThick);
+                    p.Add(fmt("V9_STACK_LAYER{0}_COMPONENTPLACEMENT", i), V9StackLayer[i].ComponentPlacement);
                 }
                 for (var i = 0; i < V9CacheLayer.Count; i++)
                 {
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_LAYERID", i), V9CacheLayer[i].LayerId);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_USEDBYPRIMS", i), V9CacheLayer[i].UsedByPrims);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_ID", i), V9CacheLayer[i].Id);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_NAME", i), V9CacheLayer[i].Name);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_DIELTYPE", i), V9CacheLayer[i].DielType);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_DIELCONST", i), V9CacheLayer[i].DielConst);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_DIELHEIGHT", i), V9CacheLayer[i].DielHeight);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_DIELMATERIAL", i), V9CacheLayer[i].DielMaterial);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_COVERLAY_EXPANSION", i), V9CacheLayer[i].COverLayEXPansiOn);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_COPTHICK", i), V9CacheLayer[i].CopThick);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_COMPONENTPLACEMENT", i), V9CacheLayer[i].ComponentPlacement);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_PULLBACKDISTANCE", i), V9CacheLayer[i].PullBackDistance);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "V9_CACHE_LAYER{0}_MECHENABLED", i), V9CacheLayer[i].MechEnabled);
+                    p.Add(fmt("V9_CACHE_LAYER{0}_ID", i), V9CacheLayer[i].Id);
+                    p.Add(fmt("V9_CACHE_LAYER{0}_NAME", i), V9CacheLayer[i].Name);
+                    p.Add(fmt("V9_CACHE_LAYER{0}_LAYERID", i), V9CacheLayer[i].LayerId);
+                    p.Add(fmt("V9_CACHE_LAYER{0}_USEDBYPRIMS", i), V9CacheLayer[i].UsedByPrims, false);
+                    p.Add(fmt("V9_CACHE_LAYER{0}_DIELTYPE", i), V9CacheLayer[i].DielType, V9CacheLayer[i].DielConst == 0);
+                    p.Add(fmt("V9_CACHE_LAYER{0}_DIELCONST", i), V9CacheLayer[i].DielConst);
+                    p.Add(fmt("V9_CACHE_LAYER{0}_DIELHEIGHT", i), V9CacheLayer[i].DielHeight);
+                    p.Add(fmt("V9_CACHE_LAYER{0}_DIELMATERIAL", i), V9CacheLayer[i].DielMaterial);
+                    p.Add(fmt("V9_CACHE_LAYER{0}_COVERLAY_EXPANSION", i), V9CacheLayer[i].COverLayEXPansiOn, !(V9CacheLayer[i].Name == "Top Solder" || V9CacheLayer[i].Name == "Bottom Solder" || V9CacheLayer[i].DielMaterial == "Solder Resist"));
+                    p.Add(fmt("V9_CACHE_LAYER{0}_COPTHICK", i), V9CacheLayer[i].CopThick);
+                    p.Add(fmt("V9_CACHE_LAYER{0}_COMPONENTPLACEMENT", i), V9CacheLayer[i].ComponentPlacement, V9CacheLayer[i].CopThick.ToMils() == 0);
+                    p.Add(fmt("V9_CACHE_LAYER{0}_PULLBACKDISTANCE", i), V9CacheLayer[i].PullBackDistance);
+                    p.Add(fmt("V9_CACHE_LAYER{0}_MECHENABLED", i), V9CacheLayer[i].MechEnabled, i < 70);
                 }
             }
             if (LayerV8.Count > 0)
             {
+                p.Add("LAYERMASTERSTACK_V8STYLE", LayerMasterStackV8Style, false);
+                p.Add("LAYERMASTERSTACK_V8ID", LayerMasterStackV8Id);
                 p.Add("LAYERMASTERSTACK_V8NAME", LayerMasterStackV8Name);
-                p.Add("LAYERMASTERSTACK_V8SHOWTOPDIELECTRIC", LayerMasterStackV8ShowTopDielectric);
-                p.Add("LAYERMASTERSTACK_V8SHOWBOTTOMDIELECTRIC", LayerMasterStackV8ShowBottomDielectric);
-                p.Add("LAYERMASTERSTACK_V8ISFLEX", LayerMasterStackV8IsFlex);
+                p.Add("LAYERMASTERSTACK_V8SHOWTOPDIELECTRIC", LayerMasterStackV8ShowTopDielectric, false);
+                p.Add("LAYERMASTERSTACK_V8SHOWBOTTOMDIELECTRIC", LayerMasterStackV8ShowBottomDielectric, false);
+                p.Add("LAYERMASTERSTACK_V8ISFLEX", LayerMasterStackV8IsFlex, false);
                 for (var i = 0; i < LayerV8.Count; i++)
                 {
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}ID", i), LayerV8[i].Id);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}NAME", i), LayerV8[i].Name);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}LAYERID", i), LayerV8[i].LayerId);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}USEDBYPRIMS", i), LayerV8[i].UsedByPrims);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}DIELTYPE", i), LayerV8[i].DielType);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}DIELCONST", i), LayerV8[i].DielConst);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}DIELHEIGHT", i), LayerV8[i].DielHeight);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}DIELMATERIAL", i), LayerV8[i].DielMaterial);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}COVERLAY_EXPANSION", i), LayerV8[i].COverLayEXPansiOn);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}COPTHICK", i), LayerV8[i].CopThick);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}COMPONENTPLACEMENT", i), LayerV8[i].ComponentPlacement);
-                    p.Add(string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}MECHENABLED", i), LayerV8[i].MechEnabled);
+                    p.Add(fmt("LAYER_V8_{0}ID", i), LayerV8[i].Id);
+                    p.Add(fmt("LAYER_V8_{0}NAME", i), LayerV8[i].Name);
+                    p.Add(fmt("LAYER_V8_{0}LAYERID", i), LayerV8[i].LayerId);
+                    p.Add(fmt("LAYER_V8_{0}USEDBYPRIMS", i), LayerV8[i].UsedByPrims, false);
+                    p.Add(fmt("LAYER_V8_{0}DIELTYPE", i), LayerV8[i].DielType, LayerV8[i].DielConst == 0);
+                    p.Add(fmt("LAYER_V8_{0}DIELCONST", i), LayerV8[i].DielConst);
+                    p.Add(fmt("LAYER_V8_{0}DIELHEIGHT", i), LayerV8[i].DielHeight);
+                    p.Add(fmt("LAYER_V8_{0}DIELMATERIAL", i), LayerV8[i].DielMaterial);
+                    p.Add(fmt("LAYER_V8_{0}COVERLAY_EXPANSION", i), LayerV8[i].COverLayEXPansiOn, !(LayerV8[i].Name == "Top Solder" || LayerV8[i].Name == "Bottom Solder" || LayerV8[i].DielMaterial == "Solder Resist"));
+                    p.Add(fmt("LAYER_V8_{0}COPTHICK", i), LayerV8[i].CopThick);
+                    p.Add(fmt("LAYER_V8_{0}COMPONENTPLACEMENT", i), LayerV8[i].ComponentPlacement);
+                    p.Add(fmt("LAYER_V8_{0}MECHENABLED", i), LayerV8[i].MechEnabled, i < 15 || (i > 26 && i < 40));
                 }
             }
 
@@ -773,7 +948,7 @@ namespace AltiumSharp.Records
             p.Add("BOTTOMHEIGHT", BottomHeight);
             p.Add("BOTTOMMATERIAL", BottomMaterial);
 
-            p.Add("LAYERSTACKSTYLE", LayersTackStyle);
+            p.Add("LAYERSTACKSTYLE", LayerStackStyle, false);
             p.Add("SHOWTOPDIELECTRIC", ShowTopDielectric, false);
             p.Add("SHOWBOTTOMDIELECTRIC", ShowBottomDielectric, false);
             for (var i = 0; i < Layer.Count; i++)
@@ -809,6 +984,7 @@ namespace AltiumSharp.Records
             p.Add("SNAPGRIDSIZE", (double)SnapGridSize.ToInt32());
             p.Add("SNAPGRIDSIZEX", (double)SnapGridSizeX.ToInt32());
             p.Add("SNAPGRIDSIZEY", (double)SnapGridSizeY.ToInt32());
+            p.Add("LIBGRIDSNGUIDE", LibGridsNGuide);
             p.Add("ELECTRICALGRIDRANGE", ElectricalGridRange);
             p.Add("ELECTRICALGRIDENABLED", ElectricalGridEnabled);
             p.Add("DOTGRID", DotGrid);
@@ -822,17 +998,28 @@ namespace AltiumSharp.Records
                 p.Add($"LAYERSET{i + 1}NAME", Layersets[i].Name);
                 p.Add($"LAYERSET{i + 1}LAYERS", Layersets[i].Layers);
                 p.Add($"LAYERSET{i + 1}ACTIVELAYER.7", Layersets[i].ActiveLayer);
-                p.Add($"LAYERSET{i + 1}ISCURRENT", Layersets[i].IsCurrent);
+                p.Add($"LAYERSET{i + 1}ISCURRENT", Layersets[i].IsCurrent, false);
                 p.Add($"LAYERSET{i + 1}ISLOCKED", Layersets[i].IsLocked);
-                p.Add($"LAYERSET{i + 1}FLIPBOARD", Layersets[i].FlipBoard);
+                p.Add($"LAYERSET{i + 1}FLIPBOARD", Layersets[i].FlipBoard, false);
             }
+
+            AddParamRecord(p);
+            p.Add("CFGALL.CONFIGURATIONKIND", CfgAllConfigurationKind);
+            p.Add("CFGALL.CONFIGURATIONDESC", CfgAllConfigurationDesc);
+            p.Add("CFGALL.COMPONENTBODYREFPOINTCOLOR", CfgAllComponentBodyRefPointColor);
+            p.Add("CFGALL.COMPONENTBODYSNAPPOINTCOLOR", CfgAllComponentBodySnapPointColor);
+            p.Add("CFGALL.SHOWCOMPONENTSNAPMARKERS", CfgAllShowComponentSnapMarkers, false);
+            p.Add("CFGALL.SHOWCOMPONENTSNAPREFERENCE", CfgAllShowComponentSnapReference, false);
+            p.Add("CFGALL.SHOWCOMPONENTSNAPCUSTOM", CfgAllShowComponentSnapCustom, false);
             p.Add("CFG2D.PRIMDRAWMODE", Cfg2DPrimDrawMode);
             p.Add("CFG2D.LAYEROPACITY.TOPLAYER", Cfg2DLayerOpacityTopLayer);
             for (var i = 0; i < Cfg2DLayerOpacityMidLayer.Count; i++)
             {
                 p.Add($"CFG2D.LAYEROPACITY.MIDLAYER{i + 1}", Cfg2DLayerOpacityMidLayer[i]);
             }
-            p.Add("CFG2D.LAYEROPACITY.BOTTOMOVERLAY", Cfg2DLayerOpacityBottomOverLay);
+            p.Add("CFG2D.LAYEROPACITY.BOTTOMLAYER", Cfg2DLayerOpacityBottomLayer);
+            p.Add("CFG2D.LAYEROPACITY.TOPOVERLAY", Cfg2DLayerOpacityTopOverlay);
+            p.Add("CFG2D.LAYEROPACITY.BOTTOMOVERLAY", Cfg2DLayerOpacityBottomOverlay);
             p.Add("CFG2D.LAYEROPACITY.TOPPASTE", Cfg2DLayerOpacityTopPaste);
             p.Add("CFG2D.LAYEROPACITY.BOTTOMPASTE", Cfg2DLayerOpacityBottomPaste);
             p.Add("CFG2D.LAYEROPACITY.TOPSOLDER", Cfg2DLayerOpacityTopSolder);
@@ -855,22 +1042,12 @@ namespace AltiumSharp.Records
             p.Add("CFG2D.LAYEROPACITY.INTERNALPLANE16", Cfg2DLayerOpacityInternalPlane16);
             p.Add("CFG2D.LAYEROPACITY.DRILLGUIDE", Cfg2DLayerOpacityDrillGuide);
             p.Add("CFG2D.LAYEROPACITY.KEEPOUTLAYER", Cfg2DLayerOpacityKeepoutLayer);
-            p.Add("CFG2D.LAYEROPACITY.MECHANICAL1", Cfg2DLayerOpacityMechanical1);
-            p.Add("CFG2D.LAYEROPACITY.MECHANICAL2", Cfg2DLayerOpacityMechanical2);
-            p.Add("CFG2D.LAYEROPACITY.MECHANICAL3", Cfg2DLayerOpacityMechanical3);
-            p.Add("CFG2D.LAYEROPACITY.MECHANICAL4", Cfg2DLayerOpacityMechanical4);
-            p.Add("CFG2D.LAYEROPACITY.MECHANICAL5", Cfg2DLayerOpacityMechanical5);
-            p.Add("CFG2D.LAYEROPACITY.MECHANICAL6", Cfg2DLayerOpacityMechanical6);
-            p.Add("CFG2D.LAYEROPACITY.MECHANICAL7", Cfg2DLayerOpacityMechanical7);
-            p.Add("CFG2D.LAYEROPACITY.MECHANICAL8", Cfg2DLayerOpacityMechanical8);
-            p.Add("CFG2D.LAYEROPACITY.MECHANICAL9", Cfg2DLayerOpacityMechanical9);
-            p.Add("CFG2D.LAYEROPACITY.MECHANICAL10", Cfg2DLayerOpacityMechanical10);
-            p.Add("CFG2D.LAYEROPACITY.MECHANICAL11", Cfg2DLayerOpacityMechanical11);
-            p.Add("CFG2D.LAYEROPACITY.MECHANICAL12", Cfg2DLayerOpacityMechanical12);
-            p.Add("CFG2D.LAYEROPACITY.MECHANICAL13", Cfg2DLayerOpacityMechanical13);
-            p.Add("CFG2D.LAYEROPACITY.MECHANICAL14", Cfg2DLayerOpacityMechanical14);
-            p.Add("CFG2D.LAYEROPACITY.MECHANICAL15", Cfg2DLayerOpacityMechanical15);
-            p.Add("CFG2D.LAYEROPACITY.MECHANICAL16", Cfg2DLayerOpacityMechanical16);
+
+            for (var i = 0; i < Cfg2DLayerOpacityMechanicalLayer.Count && i < 16; i++)
+            {
+                p.Add($"CFG2D.LAYEROPACITY.MECHANICAL{i + 1}", Cfg2DLayerOpacityMechanicalLayer[i]);
+            }
+
             p.Add("CFG2D.LAYEROPACITY.DRILLDRAWING", Cfg2DLayerOpacityDrillDrawing);
             p.Add("CFG2D.LAYEROPACITY.MULTILAYER", Cfg2DLayerOpacityMultiLayer);
             p.Add("CFG2D.LAYEROPACITY.CONNECTLAYER", Cfg2DLayerOpacityCOnNectLayer);
@@ -881,48 +1058,52 @@ namespace AltiumSharp.Records
             p.Add("CFG2D.LAYEROPACITY.GRIDCOLOR10", Cfg2DLayerOpacityGridColor10);
             p.Add("CFG2D.LAYEROPACITY.PADHOLELAYER", Cfg2DLayerOpacityPadHoleLayer);
             p.Add("CFG2D.LAYEROPACITY.VIAHOLELAYER", Cfg2DLayerOpacityViaHoleLayer);
+
+            for (var i = 16; i < Cfg2DLayerOpacityMechanicalLayer.Count; i++)
+            {
+                p.Add($"CFG2D.LAYEROPACITY.MECHANICAL{i + 1}", Cfg2DLayerOpacityMechanicalLayer[i]);
+            }
+
             p.Add("CFG2D.TOGGLELAYERS", Cfg2DToggleLayers);
             p.Add("CFG2D.TOGGLELAYERS.SET", Cfg2DToggleLayersSet);
-            p.Add("CFG2D.WORKSPACECOLALPHA0", Cfg2DWorkspaceColAlpha0);
-            p.Add("CFG2D.WORKSPACECOLALPHA1", Cfg2DWorkspaceColAlpha1);
-            p.Add("CFG2D.WORKSPACECOLALPHA2", Cfg2DWorkspaceColAlpha2);
-            p.Add("CFG2D.WORKSPACECOLALPHA3", Cfg2DWorkspaceColAlpha3);
-            p.Add("CFG2D.WORKSPACECOLALPHA4", Cfg2DWorkspaceColAlpha4);
-            p.Add("CFG2D.WORKSPACECOLALPHA5", Cfg2DWorkspaceColAlpha5);
-            p.Add("CFG2D.WORKSPACECOLALPHA6", Cfg2DWorkspaceColAlpha6);
-            p.Add("CFG2D.WORKSPACECOLALPHA7", Cfg2DWorkspaceColAlpha7);
-            p.Add("CFG2D.WORKSPACECOLALPHA8", Cfg2DWorkspaceColAlpha8);
-            p.Add("CFG2D.WORKSPACECOLALPHA9", Cfg2DWorkspaceColAlpha9);
-            p.Add("CFG2D.WORKSPACECOLALPHA10", Cfg2DWorkspaceColAlpha10);
-            p.Add("CFG2D.WORKSPACECOLALPHA11", Cfg2DWorkspaceColAlpha11);
+
+            foreach (var a in Cfg2DWorkspaceColAlpha)
+            {
+                p.Add($"CFG2D.WORKSPACECOLALPHA{a.Key}", a.Value);
+            }
+
             p.Add("CFG2D.MECHLAYERINSINGLELAYERMODE", Cfg2DMechLayerInSingleLayerMode);
             p.Add("CFG2D.MECHLAYERINSINGLELAYERMODE.SET", Cfg2DMechLayerInSingleLayerModeSet);
+            p.Add("CFG2D.LAYERSINSINGLELAYERMODE.SET", Cfg2DLayersInSingleLayerModeSet);
             p.Add("CFG2D.MECHLAYERLINKEDTOSHEET", Cfg2DMechLayerLinkedToSheet);
             p.Add("CFG2D.MECHLAYERLINKEDTOSHEET.SET", Cfg2DMechLayerLinkedToSheetSet);
             p.Add("CFG2D.CURRENTLAYER", Cfg2DCurrentLayer);
-            p.Add("CFG2D.DISPLAYSPECIALSTRINGS", Cfg2DDisplaySpecialStrings);
-            p.Add("CFG2D.SHOWTESTPOINTS", Cfg2DShowTestPoints);
-            p.Add("CFG2D.SHOWORIGINMARKER", Cfg2DShowOriginMarker);
+            p.Add("CFG2D.DISPLAYSPECIALSTRINGS", Cfg2DDisplaySpecialStrings, false);
+            p.Add("CFG2D.SHOWTESTPOINTS", Cfg2DShowTestPoints, false);
+            p.Add("CFG2D.SHOWORIGINMARKER", Cfg2DShowOriginMarker, false);
             p.Add("CFG2D.EYEDIST", Cfg2DEyeDist);
             p.Add("CFG2D.SHOWSTATUSINFO", Cfg2DShowStatusInfo);
             p.Add("CFG2D.SHOWPADNETS", Cfg2DShowPadNets);
             p.Add("CFG2D.SHOWPADNUMBERS", Cfg2DShowPadNumberS);
             p.Add("CFG2D.SHOWVIANETS", Cfg2DShowViaNets);
-            p.Add("CFG2D.USETRANSPARENTLAYERS", Cfg2DUSetRansparentLayers);
+            p.Add("CFG2D.SHOWVIASPAN", Cfg2DShowViaSpan);
+            p.Add("CFG2D.USETRANSPARENTLAYERS", Cfg2DUSetRansparentLayers, false);
             p.Add("CFG2D.PLANEDRAWMODE", Cfg2DPlaneDrawMode);
             p.Add("CFG2D.DISPLAYNETNAMESONTRACKS", Cfg2DDisplayNetNamesOnTracks);
-            p.Add("CFG2D.FROMTOSDISPLAYMODE", Cfg2DFromToSDisplayMode);
-            p.Add("CFG2D.PADTYPESDISPLAYMODE", Cfg2DPadTypeSDisplayMode);
+            p.Add("CFG2D.FROMTOSDISPLAYMODE", Cfg2DFromToSDisplayMode, false);
+            p.Add("CFG2D.PADTYPESDISPLAYMODE", Cfg2DPadTypeSDisplayMode, false);
             p.Add("CFG2D.SINGLELAYERMODESTATE", Cfg2DSingleLayerModeState);
             p.Add("CFG2D.ORIGINMARKERCOLOR", Cfg2DOriginMarkerColor);
-            p.Add("CFG2D.SHOWCOMPONENTREFPOINT", Cfg2DShowComponentRefPoint);
+            p.Add("CFG2D.SHOWCOMPONENTREFPOINT", Cfg2DShowComponentRefPoint, false);
             p.Add("CFG2D.COMPONENTREFPOINTCOLOR", Cfg2DComponentRefPointColor);
-            p.Add("CFG2D.POSITIVETOPSOLDERMASK", Cfg2DPosItiveTopSolderMask);
-            p.Add("CFG2D.POSITIVEBOTTOMSOLDERMASK", Cfg2DPosItiveBottomSolderMask);
+            p.Add("CFG2D.POSITIVETOPSOLDERMASK", Cfg2DPosItiveTopSolderMask, false);
+            p.Add("CFG2D.POSITIVEBOTTOMSOLDERMASK", Cfg2DPosItiveBottomSolderMask, false);
             p.Add("CFG2D.TOPPOSITIVESOLDERMASKALPHA", Cfg2DTopPosItivesolderMaskAlpha);
             p.Add("CFG2D.BOTTOMPOSITIVESOLDERMASKALPHA", Cfg2DBottomPosItivesolderMaskAlpha);
             p.Add("CFG2D.ALLCONNECTIONSINSINGLELAYERMODE", Cfg2DAllConnectionsInSingleLayerMode);
-            p.Add("CFG2D.MULTICOLOREDCONNECTIONS", Cfg2DMultiColoredConnections);
+            p.Add("CFG2D.MULTICOLOREDCONNECTIONS", Cfg2DMultiColoredConnections, false);
+            p.Add("CFG2D.SHOWSPECIALSTRINGSHANDLES", Cfg2DShowSpecialStringsHandles, false);
+            p.Add("CFG2D.MECHCOVERLAYERUPDATED", Cfg2DMechanicalCoverLayerUpdated, false);
             p.Add("BOARDINSIGHTVIEWCONFIGURATIONNAME", BoardInsightViewConfigurationName, false);
             p.Add("VISIBLEGRIDMULTFACTOR", VisibleGridMultFactor, decimals: 3);
             p.Add("BIGVISIBLEGRIDMULTFACTOR", BigVisibleGridMultFactor, decimals: 3);
@@ -939,7 +1120,7 @@ namespace AltiumSharp.Records
             AddParamRecord(p);
             p.Add("2DCONFIGTYPE", Property2DConfigType);
             p.Add("2DCONFIGURATION", Property2DConfiguration);
-            
+
             AddParamRecord(p);
             p.Add("2DCONFIGFULLFILENAME", Property2DConfigFullFilename);
 
@@ -991,5 +1172,7 @@ namespace AltiumSharp.Records
             ExportToParameters(parameters);
             return parameters;
         }
+
+        private string fmt(string format, int i ) => string.Format(CultureInfo.InvariantCulture, format, i);
     }
 }

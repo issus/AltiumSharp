@@ -134,6 +134,39 @@ namespace AltiumSharp.BasicTypes
             return false;
         }
 
+
+        /// <summary>
+        /// Attempts to convert a string to a coordinate, if successful returns
+        /// the <paramref name="unit"/> used.
+        /// </summary>
+        /// <param name="input">String to be converted.</param>
+        /// <param name="result">Resulting coordinate.</param>
+        /// <returns>
+        /// Returns true if string to coordinate conversion was possible.
+        /// </returns>
+        public static bool TryStringToCoordUnit(string input, out Coord result)
+        {
+            result = default;
+
+            input = input?.Trim() ?? "";
+            foreach (var m in _metadata)
+            {
+                if (TestIsUnitValue(input, m.Suffix))
+                {
+                    if (Utils.TryStringToDouble(input.Substring(0, input.Length - m.Suffix.Length), out var value))
+                    {
+                        result = m.UnitValueToCoord(value);
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            return false;
+        }
+
         /// <summary>
         /// Converts a string to a coordinate and it's unit.
         /// </summary>
@@ -142,6 +175,14 @@ namespace AltiumSharp.BasicTypes
         /// <returns>Returns the output coordinate.</returns>
         public static Coord StringToCoordUnit(string input, out Unit unit) =>
             TryStringToCoordUnit(input, out var result, out unit) ? result : throw new FormatException($"Invalid coordinate: {input}");
+
+        /// <summary>
+        /// Converts a string to a coordinate and it's unit.
+        /// </summary>
+        /// <param name="input">Text to be converted</param>
+        /// <returns>Returns the output coordinate.</returns>
+        public static Coord StringToCoordUnit(string input) =>
+            TryStringToCoordUnit(input, out var result) ? result : throw new FormatException($"Invalid coordinate: {input}");
 
         /// <summary>
         /// Converts a coordinate and unit to its string representation.
