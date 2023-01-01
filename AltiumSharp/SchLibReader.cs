@@ -5,11 +5,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using AltiumSharp.BasicTypes;
-using AltiumSharp.Records;
+using OriginalCircuit.AltiumSharp.BasicTypes;
+using OriginalCircuit.AltiumSharp.Records;
 using OpenMcdf;
 
-namespace AltiumSharp
+namespace OriginalCircuit.AltiumSharp
 {
     /// <summary>
     /// Schematic library reader.

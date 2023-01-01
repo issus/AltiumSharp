@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AltiumSharp.BasicTypes;
+using OriginalCircuit.AltiumSharp.BasicTypes;
 
-namespace AltiumSharp.Records
+namespace OriginalCircuit.AltiumSharp.Records
 {
     public class PcbTrack : PcbPrimitive
     {
@@ -36,7 +36,7 @@ namespace AltiumSharp.Records
     /// </summary>
     public class PcbMetaTrack : PcbUnknown
     {
-        public IList<CoordPoint> Vertices { get; set; }
+        public IList<CoordPoint> Vertices { get; }
         public Coord Width { get; set; }
 
         public PcbMetaTrack() : base(PcbPrimitiveObjectId.None)

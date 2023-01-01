@@ -4,10 +4,10 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using AltiumSharp.BasicTypes;
-using AltiumSharp.Records;
+using OriginalCircuit.AltiumSharp.BasicTypes;
+using OriginalCircuit.AltiumSharp.Records;
 
-namespace AltiumSharp
+namespace OriginalCircuit.AltiumSharp
 {
     public abstract class SchReader<TData> : CompoundFileReader<TData>
         where TData : SchData, new()
@@ -18,8 +18,12 @@ namespace AltiumSharp
 
         protected void SetEmbeddedImages(IEnumerable<SchPrimitive> dataItems, IDictionary<string, Image> embeddedImages)
         {
+            if (embeddedImages == null)
+                throw new ArgumentNullException(nameof(embeddedImages));
+
             var primitives = dataItems.SelectMany(item =>
                     item.GetPrimitivesOfType<SchImage>().Where(p => p.EmbedImage));
+
             foreach (var p in primitives)
             {
                 if (embeddedImages.TryGetValue(p.Filename, out var image))
@@ -64,6 +68,9 @@ namespace AltiumSharp
             Dictionary<int, ParameterCollection> pinsWideText, Dictionary<int, byte[]> pinsTextData,
             Dictionary<int, ParameterCollection> pinsSymbolLineWidth)
         {
+            if (reader == null) 
+                throw new ArgumentNullException(nameof(reader));
+
             BeginContext("ReadPrimitives");
 
             var primitives = new List<SchPrimitive>();
@@ -78,7 +85,7 @@ namespace AltiumSharp
                     size => ReadAsciiRecord(reader, size),
                     size =>
                     {
-                        (int x, int y, int lenght) pinFrac = default;
+                        (int x, int y, int length) pinFrac = default;
                         ParameterCollection pinWideText = null;
                         byte[] pinTextData = null;
                         ParameterCollection pinSymbolLineWidth = null;
@@ -249,6 +256,9 @@ namespace AltiumSharp
             Func<int, T> binaryInterpreter,
             Func<T> onEmpty = null)
         {
+            if (reader == null)
+                throw new ArgumentNullException(nameof(reader));
+
             return ReadBlock(reader, size =>
             {
                 var isBinary = (size & 0xff000000) != 0;
@@ -266,6 +276,9 @@ namespace AltiumSharp
         protected SchPin ReadPinRecord(BinaryReader reader, int size, (int x, int y, int length) pinFrac,
             ParameterCollection pinWideText, byte[] pinTextData, ParameterCollection pinSymbolLineWidth)
         {
+            if (reader == null)
+                throw new ArgumentNullException(nameof(reader));
+
             BeginContext("Binary Record");
 
             var pin = new SchPin();

@@ -1,4 +1,4 @@
-﻿namespace AltiumSharp.BasicTypes
+﻿namespace OriginalCircuit.AltiumSharp.BasicTypes
 {
     public enum LineWidth
     {

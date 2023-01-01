@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using AltiumSharp.BasicTypes;
+using OriginalCircuit.AltiumSharp.BasicTypes;
 
-namespace AltiumSharp.Records
+namespace OriginalCircuit.AltiumSharp.Records
 {
     public class SchMapDefiner : SchPrimitive
     {

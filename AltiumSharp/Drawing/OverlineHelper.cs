@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 
-namespace AltiumSharp.Drawing
+namespace OriginalCircuit.AltiumSharp.Drawing
 {
     internal static class OverlineHelper
     {

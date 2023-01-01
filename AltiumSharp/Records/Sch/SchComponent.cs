@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using AltiumSharp.BasicTypes;
+using OriginalCircuit.AltiumSharp.BasicTypes;
 
-namespace AltiumSharp.Records
+namespace OriginalCircuit.AltiumSharp.Records
 {
     public sealed class SchComponent : SchGraphicalObject, IComponent, IEnumerable<SchPrimitive>
     {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using AltiumSharp.BasicTypes;
+using OriginalCircuit.AltiumSharp.BasicTypes;
 
-namespace AltiumSharp.Records
+namespace OriginalCircuit.AltiumSharp.Records
 {
     public abstract class SchDocumentHeader : SchPrimitive
     {

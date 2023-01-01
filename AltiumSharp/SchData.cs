@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using AltiumSharp.Records;
+using OriginalCircuit.AltiumSharp.Records;
 
-namespace AltiumSharp
+namespace OriginalCircuit.AltiumSharp
 {
     public abstract class SchData
     {

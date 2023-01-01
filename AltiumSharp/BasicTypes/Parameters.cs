@@ -7,7 +7,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
-namespace AltiumSharp.BasicTypes
+namespace OriginalCircuit.AltiumSharp.BasicTypes
 {
     /// <summary>
     /// Value of a parameter.
@@ -16,10 +16,10 @@ namespace AltiumSharp.BasicTypes
     {
         private const NumberStyles Ns = NumberStyles.Any;
         private static readonly IFormatProvider Fp = CultureInfo.InvariantCulture;
-        internal static readonly string TrueValueShort = "T";
-        internal static readonly string TrueValueLong = "TRUE";
-        internal static readonly string FalseValueShort = "F";
-        internal static readonly string FalseValueLong = "FALSE";
+        internal const string TrueValueShort = "T";
+        internal const string TrueValueLong = "TRUE";
+        internal const string FalseValueShort = "F";
+        internal const string FalseValueLong = "FALSE";
         internal static readonly string[] TrueValues = new string[] { TrueValueShort, TrueValueLong };
         internal static readonly string[] FalseValues = new string[] { FalseValueShort, FalseValueLong };
         internal static readonly char[] ListSeparators = new[] { ',', '?' };
@@ -214,7 +214,7 @@ namespace AltiumSharp.BasicTypes
         /// True if this value can be split into a list using the given <paramref name="separator"/>.
         /// </returns>
         public bool IsList(char? separator = null) =>
-            _data.Contains(separator ?? ListSeparator);
+            _data.Contains(separator ?? ListSeparator, StringComparison.InvariantCulture);
 
         /// <summary>
         /// Tests if the current value can be possibly converted to a parameters list.
@@ -224,12 +224,12 @@ namespace AltiumSharp.BasicTypes
         /// True if this value can be split into a key, value parameter list.
         /// </returns>
         public bool IsParameters() =>
-            _data.Contains(ParameterCollection.EntrySeparators.ElementAtOrDefault(_level + 1));
+            _data.Contains(ParameterCollection.EntrySeparators.ElementAtOrDefault(_level + 1), StringComparison.InvariantCulture);
 
         #region 'boilerplate'
         public override bool Equals(object obj) => obj is ParameterValue other && this.Equals(other);
         public bool Equals(ParameterValue other) => _data == other._data;
-        public override int GetHashCode() => _data.GetHashCode();
+        public override int GetHashCode() => _data.GetHashCode(StringComparison.InvariantCulture);
         public static bool operator ==(ParameterValue left, ParameterValue right) => left.Equals(right);
         public static bool operator !=(ParameterValue left, ParameterValue right) => !(left == right);
         #endregion
@@ -260,7 +260,7 @@ namespace AltiumSharp.BasicTypes
         #region 'boilerplate'
         public override bool Equals(object obj) => obj is Parameter other && this.Equals(other);
         public bool Equals(Parameter other) => Name == other.Name && Value == other.Value;
-        public override int GetHashCode() => Name.GetHashCode();
+        public override int GetHashCode() => Name.GetHashCode(StringComparison.InvariantCultureIgnoreCase);
         public static bool operator ==(Parameter left, Parameter right) => left.Equals(right);
         public static bool operator !=(Parameter left, Parameter right) => !(left == right);
         #endregion
@@ -431,6 +431,9 @@ namespace AltiumSharp.BasicTypes
         /// </summary>
         private void AddData<T>(string key, T value, bool ignoreDefaultValue)
         {
+            if (value == null)
+                return;
+
             if (!(ignoreDefaultValue && EqualityComparer<T>.Default.Equals(value, default)))
             {
                 if (value is IConvertible convertible)
@@ -451,7 +454,7 @@ namespace AltiumSharp.BasicTypes
         /// <summary>
         /// Adds a key with a string value.
         /// </summary>
-        public void Add(string key, string value, bool ignoreDefaultValue = true) =>
+        public void Add(string key, string? value, bool ignoreDefaultValue = true) =>
             AddData(key, value, ignoreDefaultValue);
 
         /// <summary>

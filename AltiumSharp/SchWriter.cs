@@ -5,10 +5,10 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
-using AltiumSharp.BasicTypes;
-using AltiumSharp.Records;
+using OriginalCircuit.AltiumSharp.BasicTypes;
+using OriginalCircuit.AltiumSharp.Records;
 
-namespace AltiumSharp
+namespace OriginalCircuit.AltiumSharp
 {
     public abstract class SchWriter<TData> : CompoundFileWriter<TData>
         where TData : SchData, new()
@@ -66,6 +66,12 @@ namespace AltiumSharp
             Dictionary<int, ParameterCollection> pinsWideText, Dictionary<int, byte[]> pinsTextData,
             Dictionary<int, ParameterCollection> pinsSymbolLineWidth)
         {
+            if (primitive == null)
+                throw new ArgumentNullException(nameof(primitive));
+
+            if (pinsSymbolLineWidth == null)
+                throw new ArgumentNullException(nameof(pinsSymbolLineWidth));
+
             primitive.OwnerIndex = ownerIndex;
 
             if (pinAsBinary && primitive is SchPin pin)
@@ -112,6 +118,11 @@ namespace AltiumSharp
         /// <param name="primitive">Primitive to be serialized as a record.</param>
         protected static void WriteAsciiRecord(BinaryWriter writer, SchPrimitive primitive)
         {
+            if (primitive == null)
+                throw new ArgumentNullException(nameof(primitive));
+            if (writer == null)
+                throw new ArgumentNullException(nameof(writer));
+
             var parameters = primitive.ExportToParameters();
             WriteBlock(writer, w => WriteParameters(w, parameters), 0);
         }
@@ -127,6 +138,11 @@ namespace AltiumSharp
         protected static void WritePinRecord(BinaryWriter writer, SchPin pin, out (int x, int y, int length) pinFrac,
             out ParameterCollection pinWideText, out byte[] pinTextData, out ParameterCollection pinSymbolLineWidth)
         {
+            if (pin == null)
+                throw new ArgumentNullException(nameof(pin));
+            if (writer == null)
+                throw new ArgumentNullException(nameof(writer));
+
             var pinLocationX = Utils.CoordToDxpFrac(pin.Location.X);
             var pinLocationY = Utils.CoordToDxpFrac(pin.Location.Y);
             var pinLength = Utils.CoordToDxpFrac(pin.PinLength);

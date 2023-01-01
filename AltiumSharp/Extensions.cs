@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Globalization;
 
-namespace AltiumSharp
+namespace OriginalCircuit.AltiumSharp
 {
     public static class CFItemExtensions
     {

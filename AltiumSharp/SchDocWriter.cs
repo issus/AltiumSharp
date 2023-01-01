@@ -1,7 +1,7 @@
 ﻿using System.IO;
-using AltiumSharp.BasicTypes;
+using OriginalCircuit.AltiumSharp.BasicTypes;
 
-namespace AltiumSharp
+namespace OriginalCircuit.AltiumSharp
 {
     /// <summary>
     /// Schematic document writer.

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AltiumSharp.BasicTypes
+namespace OriginalCircuit.AltiumSharp.BasicTypes
 {
     public readonly struct CoordRect : IEquatable<CoordRect>
     {

@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace AltiumSharp.BasicTypes
+namespace OriginalCircuit.AltiumSharp.BasicTypes
 {
     /// <summary>
     /// Information about the supported coordinate types.

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AltiumSharp.BasicTypes
+namespace OriginalCircuit.AltiumSharp.BasicTypes
 {
     public readonly struct CoordPoint : IEquatable<CoordPoint>
     {

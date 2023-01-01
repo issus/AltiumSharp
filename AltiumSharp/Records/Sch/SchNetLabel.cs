@@ -1,4 +1,4 @@
-﻿namespace AltiumSharp.Records
+﻿namespace OriginalCircuit.AltiumSharp.Records
 {
     public class SchNetLabel : SchLabel
     {

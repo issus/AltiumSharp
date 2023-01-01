@@ -4,9 +4,9 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Linq;
-using AltiumSharp.BasicTypes;
+using OriginalCircuit.AltiumSharp.BasicTypes;
 
-namespace AltiumSharp.Drawing
+namespace OriginalCircuit.AltiumSharp.Drawing
 {
     /// <summary>
     /// Base class that implements common rendering functionality.

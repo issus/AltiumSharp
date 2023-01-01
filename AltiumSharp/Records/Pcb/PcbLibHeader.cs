@@ -4,9 +4,9 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using AltiumSharp.BasicTypes;
+using OriginalCircuit.AltiumSharp.BasicTypes;
 
-namespace AltiumSharp.Records
+namespace OriginalCircuit.AltiumSharp.Records
 {
     public class PcbLibHeader
     {
@@ -1173,6 +1173,6 @@ namespace AltiumSharp.Records
             return parameters;
         }
 
-        private string fmt(string format, int i ) => string.Format(CultureInfo.InvariantCulture, format, i);
+        private static string fmt(string format, int i ) => string.Format(CultureInfo.InvariantCulture, format, i);
     }
 }

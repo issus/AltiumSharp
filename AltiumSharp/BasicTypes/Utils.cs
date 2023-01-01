@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace AltiumSharp.BasicTypes
+namespace OriginalCircuit.AltiumSharp.BasicTypes
 {
     public static class Utils
     {

@@ -1,8 +1,8 @@
 using System;
 using System.Drawing;
-using AltiumSharp.BasicTypes;
+using OriginalCircuit.AltiumSharp.BasicTypes;
 
-namespace AltiumSharp.Records
+namespace OriginalCircuit.AltiumSharp.Records
 {
     public class SchLabel : SchGraphicalObject
     {

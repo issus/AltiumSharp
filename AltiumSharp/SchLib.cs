@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using AltiumSharp.Records;
+using OriginalCircuit.AltiumSharp.Records;
 
-namespace AltiumSharp
+namespace OriginalCircuit.AltiumSharp
 {
     public class SchLib : SchData<SchLibHeader, SchComponent>, IEnumerable<SchComponent>
     {
@@ -15,6 +16,9 @@ namespace AltiumSharp
 
         public void Add(SchComponent component)
         {
+            if (component == null)
+                throw new ArgumentNullException(nameof(component));
+
             if (string.IsNullOrEmpty(component.LibReference))
             {
                 component.LibReference = $"Component_{Items.Count+1}";

@@ -6,10 +6,10 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Linq;
 using System.Text;
-using AltiumSharp.BasicTypes;
-using AltiumSharp.Records;
+using OriginalCircuit.AltiumSharp.BasicTypes;
+using OriginalCircuit.AltiumSharp.Records;
 
-namespace AltiumSharp.Drawing
+namespace OriginalCircuit.AltiumSharp.Drawing
 {
     public sealed class SchLibRenderer : Renderer
     {
@@ -219,7 +219,7 @@ namespace AltiumSharp.Drawing
             var overlineRanges = OverlineHelper.Parse(text);
             if (overlineRanges.Length == 0) return;
 
-            var plainText = text.Replace(@"\", "");
+            var plainText = text.Replace(@"\", "", StringComparison.Ordinal);
             var offsetX = ScalePixelLength(0.5f);
             var offsetY = 0.0f;
 
@@ -297,7 +297,7 @@ namespace AltiumSharp.Drawing
                 if (pin.PinConglomerate.HasFlag(PinConglomerateFlags.DisplayNameVisible) && !string.IsNullOrEmpty(pin.Name))
                 {
                     var x = ScalePixelLength(-5.0f) * direction;
-                    var displayName = pin.Name.Replace(@"\", "");
+                    var displayName = pin.Name.Replace(@"\", "", StringComparison.Ordinal);
                     DrawingUtils.DrawString(g, displayName, font, brush, x, ScalePixelLength(0.5),
                         StringAlignmentKind.Default, displayNameHorizontalAlignment, StringAlignment.Center);
                     using (var pen = CreatePen(pin.Color, ScaleLineWidth(LineWidth.Small)))

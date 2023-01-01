@@ -5,9 +5,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using AltiumSharp.BasicTypes;
+using OriginalCircuit.AltiumSharp.BasicTypes;
 
-namespace AltiumSharp
+namespace OriginalCircuit.AltiumSharp
 {
     /// <summary>
     /// Base class for implementing parsers that read COM/OLE Structured Storage based formats.

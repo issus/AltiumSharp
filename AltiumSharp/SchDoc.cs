@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using AltiumSharp.BasicTypes;
-using AltiumSharp.Records;
+using OriginalCircuit.AltiumSharp.BasicTypes;
+using OriginalCircuit.AltiumSharp.Records;
 
-namespace AltiumSharp
+namespace OriginalCircuit.AltiumSharp
 {
     public class SchDoc : SchData<SchSheetHeader, SchPrimitive>
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AltiumSharp.BasicTypes
+namespace OriginalCircuit.AltiumSharp.BasicTypes
 {
     /// <summary>
     /// Internal coordinate value, stored as a fixed point integer.

@@ -6,9 +6,9 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Drawing.Imaging;
 using System.Linq;
-using AltiumSharp.Records;
+using OriginalCircuit.AltiumSharp.Records;
 
-namespace AltiumSharp.Drawing
+namespace OriginalCircuit.AltiumSharp.Drawing
 {
     internal enum StringAlignmentKind { Default, Tight, Extent }
 

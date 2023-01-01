@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 
-namespace AltiumSharp.Drawing
+namespace OriginalCircuit.AltiumSharp.Drawing
 {
     internal static class RectangleFExtensions
     {

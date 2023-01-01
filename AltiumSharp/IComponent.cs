@@ -1,4 +1,4 @@
-﻿namespace AltiumSharp
+﻿namespace OriginalCircuit.AltiumSharp
 {
     public interface IComponent : IContainer
     {

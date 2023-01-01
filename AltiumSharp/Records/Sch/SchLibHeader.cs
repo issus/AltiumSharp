@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using AltiumSharp.BasicTypes;
+using OriginalCircuit.AltiumSharp.BasicTypes;
 
-namespace AltiumSharp.Records
+namespace OriginalCircuit.AltiumSharp.Records
 {
     public class SchLibHeader : SchDocumentHeader
     {
@@ -28,10 +28,12 @@ namespace AltiumSharp.Records
 
         public override void ImportFromParameters(ParameterCollection p)
         {
-            if (p == null) throw new ArgumentNullException(nameof(p));
+            if (p == null) 
+                throw new ArgumentNullException(nameof(p));
 
             var header = p["HEADER"].AsStringOrDefault();
-            if (header != Header) throw new ArgumentOutOfRangeException($"{nameof(p)}[\"HEADER\"]");
+            if (header == null || string.Equals(header, Header, StringComparison.InvariantCultureIgnoreCase))
+                throw new ArgumentOutOfRangeException($"{nameof(p)}[\"HEADER\"]");
 
             MinorVersion = p["MINORVERSION"].AsIntOrDefault();
 

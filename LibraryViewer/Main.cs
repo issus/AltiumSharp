@@ -8,13 +8,13 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using AltiumSharp;
-using AltiumSharp.BasicTypes;
-using AltiumSharp.Drawing;
-using AltiumSharp.Records;
+using OriginalCircuit.AltiumSharp;
+using OriginalCircuit.AltiumSharp.BasicTypes;
+using OriginalCircuit.AltiumSharp.Drawing;
+using OriginalCircuit.AltiumSharp.Records;
 using OpenMcdf;
-using IComponent = AltiumSharp.IComponent;
-using IContainer = AltiumSharp.IContainer;
+using IComponent = OriginalCircuit.AltiumSharp.IComponent;
+using IContainer = OriginalCircuit.AltiumSharp.IContainer;
 
 namespace LibraryViewer
 {

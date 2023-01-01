@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using AltiumSharp.BasicTypes;
+using OriginalCircuit.AltiumSharp.BasicTypes;
 
-namespace AltiumSharp
+namespace OriginalCircuit.AltiumSharp
 {
     public interface IContainer
     {

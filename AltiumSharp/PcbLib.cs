@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using AltiumSharp.Records;
+using OriginalCircuit.AltiumSharp.Records;
 
-namespace AltiumSharp
+namespace OriginalCircuit.AltiumSharp
 {
     public class PcbLib : PcbData<PcbLibHeader, PcbComponent>, IEnumerable<PcbComponent>
     {

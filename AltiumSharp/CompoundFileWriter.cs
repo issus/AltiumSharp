@@ -4,11 +4,11 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Text;
-using AltiumSharp.BasicTypes;
-using AltiumSharp.Records;
+using OriginalCircuit.AltiumSharp.BasicTypes;
+using OriginalCircuit.AltiumSharp.Records;
 using OpenMcdf;
 
-namespace AltiumSharp
+namespace OriginalCircuit.AltiumSharp
 {
     /// <summary>
     /// Base class for implementing writers for COM/OLE Structured Storage based formats.
