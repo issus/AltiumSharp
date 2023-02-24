@@ -32,7 +32,7 @@ namespace OriginalCircuit.AltiumSharp.Records
                 throw new ArgumentNullException(nameof(p));
 
             var header = p["HEADER"].AsStringOrDefault();
-            if (header == null || string.Equals(header, Header, StringComparison.InvariantCultureIgnoreCase))
+            if (header == null || !string.Equals(header, Header, StringComparison.InvariantCultureIgnoreCase))
                 throw new ArgumentOutOfRangeException($"{nameof(p)}[\"HEADER\"]");
 
             MinorVersion = p["MINORVERSION"].AsIntOrDefault();
