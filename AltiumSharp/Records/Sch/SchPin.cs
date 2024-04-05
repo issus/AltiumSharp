@@ -95,6 +95,10 @@ namespace OriginalCircuit.AltiumSharp.Records
                 .WithFlag(PinConglomerateFlags.Flipped, value.HasFlag(TextOrientations.Flipped));
         }
 
+        public IList<string> Functions { get; } = new List<string>();
+
+        public IList<string> SelectedFunctions { get; } = new List<string>();
+
         public SchPin() : base()
         {
             Electrical = PinElectricalType.Passive;

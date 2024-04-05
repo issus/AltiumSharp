@@ -95,27 +95,30 @@ namespace OriginalCircuit.AltiumSharp
             var pinsWideText = new Dictionary<int, ParameterCollection>();
             var pinsTextData = new Dictionary<int, byte[]>();
             var pinsSymbolLineWidth = new Dictionary<int, ParameterCollection>();
+            var pinsFunctionData = new Dictionary<int, ParameterCollection>();
 
             componentStorage.GetOrAddStream("Data").Write(writer =>
             {
-                WriteComponentPrimitives(writer, component, pinsFrac, pinsWideText, pinsTextData, pinsSymbolLineWidth);
+                WriteComponentPrimitives(writer, component, pinsFrac, pinsWideText, pinsTextData, pinsSymbolLineWidth, pinsFunctionData);
             });
 
             WritePinFrac(componentStorage, pinsFrac);
             WritePinTextData(componentStorage, pinsTextData);
             WriteComponentExtendedParameters(componentStorage, "PinWideText", pinsWideText);
             WriteComponentExtendedParameters(componentStorage, "PinSymbolLineWidth", pinsSymbolLineWidth);
+            WriteComponentExtendedParameters(componentStorage, "PinFunctionData", pinsFunctionData);
         }
 
         private static void WriteComponentPrimitives(BinaryWriter writer, SchComponent component,
             Dictionary<int, (int x, int y, int length)> pinsFrac,
             Dictionary<int, ParameterCollection> pinsWideText, Dictionary<int, byte[]> pinsTextData,
-            Dictionary<int, ParameterCollection> pinsSymbolLineWidth)
+            Dictionary<int, ParameterCollection> pinsSymbolLineWidth, 
+            Dictionary<int, ParameterCollection> pinsFunctionData)
         {
             var index = 0;
             var pinIndex = 0;
             WritePrimitive(writer, component, true, 0, ref index, ref pinIndex,
-                pinsFrac, pinsWideText, pinsTextData, pinsSymbolLineWidth);
+                pinsFrac, pinsWideText, pinsTextData, pinsSymbolLineWidth, pinsFunctionData);
         }
 
         /// <summary>
