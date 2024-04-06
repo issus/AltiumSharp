@@ -64,7 +64,7 @@ namespace OriginalCircuit.AltiumSharp
             int ownerIndex, ref int index, ref int pinIndex,
             Dictionary<int, (int x, int y, int length)> pinsFrac,
             Dictionary<int, ParameterCollection> pinsWideText, Dictionary<int, byte[]> pinsTextData,
-            Dictionary<int, ParameterCollection> pinsSymbolLineWidth)
+            Dictionary<int, ParameterCollection> pinsSymbolLineWidth, Dictionary<int, ParameterCollection> pinsFunctionData)
         {
             if (primitive == null)
                 throw new ArgumentNullException(nameof(primitive));
@@ -72,11 +72,14 @@ namespace OriginalCircuit.AltiumSharp
             if (pinsSymbolLineWidth == null)
                 throw new ArgumentNullException(nameof(pinsSymbolLineWidth));
 
+            if (pinsFunctionData == null)
+                throw new ArgumentNullException(nameof(pinsFunctionData));
+
             primitive.OwnerIndex = ownerIndex;
 
             if (pinAsBinary && primitive is SchPin pin)
             {
-                WritePinRecord(writer, pin, out var pinFrac, out var pinWideText, out var pinTextData, out var pinSymbolLineWidth);
+                WritePinRecord(writer, pin, out var pinFrac, out var pinWideText, out var pinTextData, out var pinSymbolLineWidth, out var pinFunctionData);
 
                 if (pinFrac.x != 0 || pinFrac.y != 0 || pinFrac.length != 0)
                 {
@@ -94,6 +97,10 @@ namespace OriginalCircuit.AltiumSharp
                 {
                     pinsSymbolLineWidth.Add(pinIndex, pinSymbolLineWidth);
                 }
+                if (pinFunctionData?.Count > 0)
+                {
+                    pinsFunctionData.Add(pinIndex, pinFunctionData);
+                }
 
                 pinIndex++;
             }
@@ -107,7 +114,7 @@ namespace OriginalCircuit.AltiumSharp
             foreach (var child in primitive.GetAllPrimitives())
             {
                 WritePrimitive(writer, child, pinAsBinary, currentIndex, ref index, ref pinIndex,
-                    pinsFrac, pinsWideText, pinsTextData, pinsSymbolLineWidth);
+                    pinsFrac, pinsWideText, pinsTextData, pinsSymbolLineWidth, pinsFunctionData);
             }
         }
 
@@ -136,7 +143,8 @@ namespace OriginalCircuit.AltiumSharp
         /// <param name="writer">Binary writer.</param>
         /// <param name="pin">Pin primitive to be serialized as a record.</param>
         protected static void WritePinRecord(BinaryWriter writer, SchPin pin, out (int x, int y, int length) pinFrac,
-            out ParameterCollection pinWideText, out byte[] pinTextData, out ParameterCollection pinSymbolLineWidth)
+            out ParameterCollection pinWideText, out byte[] pinTextData, out ParameterCollection pinSymbolLineWidth,
+            out ParameterCollection pinFunctionData)
         {
             if (pin == null)
                 throw new ArgumentNullException(nameof(pin));
@@ -194,6 +202,46 @@ namespace OriginalCircuit.AltiumSharp
             {
                 { "SYMBOL_LINEWIDTH", pin.SymbolLineWidth }
             };
+
+            pinFunctionData = new ParameterCollection();
+
+            var hash = new HashSet<string>();   
+
+            if (pin.SelectedFunctions.Count > 0)
+            {
+                var pinHash = new HashSet<string>(pin.Functions);
+
+                pinFunctionData.Add("PINSELECTEDFUNCTIONSCOUNT", pin.SelectedFunctions.Count);
+
+                for (int i = 0; i < pin.SelectedFunctions.Count; i++)
+                {
+                    var selectedFunction = pin.SelectedFunctions[i];
+                    if (!pinHash.Contains(selectedFunction) || !hash.Add(selectedFunction))
+                    {
+                        throw new NotSupportedException();
+                    }
+
+                    pinFunctionData.Add($"PINSELECTEDFUNCTION{i + 1}", selectedFunction);
+                }
+            }
+
+            if (pin.Functions.Count > 0)
+            {
+                pinFunctionData.Add("PINDEFINEDFUNCTIONSCOUNT", pin.Functions.Count);
+
+                hash.Clear();
+
+                for (int i = 0; i < pin.Functions.Count; i++)
+                {
+                    var function = pin.Functions[i];
+                    if (!hash.Add(function))
+                    {
+                        throw new NotSupportedException();
+                    }
+
+                    pinFunctionData.Add($"PINDEFINEDFUNCTION{i + 1}", function);
+                }
+            }
         }
     }
 }

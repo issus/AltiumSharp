@@ -30,7 +30,7 @@
                 var parameters = ReadBlock(reader, size => ReadParameters(reader, size));
                 var weight = parameters["WEIGHT"].AsIntOrDefault();
 
-                var primitives = ReadPrimitives(reader, null, null, null, null);
+                var primitives = ReadPrimitives(reader, null, null, null, null, null);
                 Data.Items.AddRange(primitives);
 
                 AssignOwners(primitives);

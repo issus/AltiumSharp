@@ -66,7 +66,8 @@ namespace OriginalCircuit.AltiumSharp
         protected List<SchPrimitive> ReadPrimitives(BinaryReader reader,
             Dictionary<int, (int x, int y, int length)> pinsFrac,
             Dictionary<int, ParameterCollection> pinsWideText, Dictionary<int, byte[]> pinsTextData,
-            Dictionary<int, ParameterCollection> pinsSymbolLineWidth)
+            Dictionary<int, ParameterCollection> pinsSymbolLineWidth,
+            Dictionary<int, ParameterCollection> pinsFunctionData)
         {
             if (reader == null) 
                 throw new ArgumentNullException(nameof(reader));
@@ -89,12 +90,14 @@ namespace OriginalCircuit.AltiumSharp
                         ParameterCollection pinWideText = null;
                         byte[] pinTextData = null;
                         ParameterCollection pinSymbolLineWidth = null;
+                        ParameterCollection pinFunctionData = null;
                         pinsFrac?.TryGetValue(pinIndex, out pinFrac);
                         pinsWideText?.TryGetValue(pinIndex, out pinWideText);
                         pinsTextData?.TryGetValue(pinIndex, out pinTextData);
                         pinsSymbolLineWidth?.TryGetValue(pinIndex, out pinSymbolLineWidth);
+                        pinsFunctionData?.TryGetValue(pinIndex, out pinFunctionData);
                         pinIndex++;
-                        return ReadPinRecord(reader, size, pinFrac, pinWideText, pinTextData, pinSymbolLineWidth);
+                        return ReadPinRecord(reader, size, pinFrac, pinWideText, pinTextData, pinSymbolLineWidth, pinFunctionData);
                     });
                 primitive.SetRawData(ExtractStreamData(reader, primitiveStartPosition, reader.BaseStream.Position));
                 primitives.Add(primitive);
@@ -274,7 +277,7 @@ namespace OriginalCircuit.AltiumSharp
         }
 
         protected SchPin ReadPinRecord(BinaryReader reader, int size, (int x, int y, int length) pinFrac,
-            ParameterCollection pinWideText, byte[] pinTextData, ParameterCollection pinSymbolLineWidth)
+            ParameterCollection pinWideText, byte[] pinTextData, ParameterCollection pinSymbolLineWidth, ParameterCollection pinFunctionData)
         {
             if (reader == null)
                 throw new ArgumentNullException(nameof(reader));
@@ -330,6 +333,20 @@ namespace OriginalCircuit.AltiumSharp
             if (pinSymbolLineWidth != null)
             {
                 pin.SymbolLineWidth = pinSymbolLineWidth["SYMBOL_LINEWIDTH"].AsEnumOrDefault(pin.SymbolLineWidth);
+            }
+
+            if (pinFunctionData?.Count > 0)
+            {
+                var pinDefinedFunctionsCount = pinFunctionData[0].Value.AsInt();
+                for (int i = 1; i < pinFunctionData.Count; i++)
+                {
+                    pin.Functions.Add(pinFunctionData[i].Value.AsString());
+                }   
+
+                if (pin.Functions.Count != pinDefinedFunctionsCount)
+                {
+                    EmitWarning($"Pin function count mismatch: {pin.Functions.Count} != {pinDefinedFunctionsCount}");
+                }
             }
 
             EndContext();

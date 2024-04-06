@@ -126,10 +126,11 @@ namespace OriginalCircuit.AltiumSharp
             var pinsWideText = ReadPinWideText(componentStorage);
             var pinsTextData = ReadPinTextData(componentStorage);
             var pinsSymbolLineWidth = ReadPinSymbolLineWidth(componentStorage);
+            var pinsFunctionData = ReadPinFunctionData(componentStorage);
 
             using (var reader = componentStorage.GetStream("Data").GetBinaryReader())
             {
-                var primitives = ReadPrimitives(reader, pinsFrac, pinsWideText, pinsTextData, pinsSymbolLineWidth).ToList();
+                var primitives = ReadPrimitives(reader, pinsFrac, pinsWideText, pinsTextData, pinsSymbolLineWidth, pinsFunctionData).ToList();
 
                 // First primitive read must be the component SchComponent
                 var component = (SchComponent)primitives.First();
@@ -273,6 +274,44 @@ namespace OriginalCircuit.AltiumSharp
                             return ReadBlock(r, s => ReadParameters(r, s, true, Encoding.Unicode));
                         }
                     });
+                    result.Add(int.Parse(id, CultureInfo.InvariantCulture), parameters);
+                }
+                CheckValue(nameof(weight), weight, result.Count);
+            }
+
+            EndContext();
+
+            return result;
+        }
+
+        /// <summary>
+        /// Reads a pin function data for the component at <paramref name="componentStorage"/>.
+        /// </summary>
+        private Dictionary<int, ParameterCollection> ReadPinFunctionData(CFStorage componentStorage)
+        {
+            if (!componentStorage.TryGetStream("PinFunctionData", out var storage)) return null;
+
+            BeginContext("PinFunctionData");
+
+            var result = new Dictionary<int, ParameterCollection>();
+            using (var reader = storage.GetBinaryReader())
+            {
+                var headerParams = ReadBlock(reader, size => ReadParameters(reader, size));
+                var header = headerParams["HEADER"].AsStringOrDefault();
+                var weight = headerParams["WEIGHT"].AsIntOrDefault();
+                AssertValue(nameof(header), header, "PinFunctionData");
+
+                while (reader.BaseStream.Position < reader.BaseStream.Length)
+                {
+                    var (id, parameters) = ReadCompressedStorage(reader, stream =>
+                    {
+                        using (var r = new BinaryReader(stream))
+                        {
+                            return ReadBlock(r, s => ReadParameters(r, s, true, Encoding.Unicode));
+                        }
+                    });
+                    var count = parameters["PINDEFINEDFUNCTIONSCOUNT"].AsIntOrDefault();
+                    CheckValue(nameof(count), count, parameters.Count - 1);
                     result.Add(int.Parse(id, CultureInfo.InvariantCulture), parameters);
                 }
                 CheckValue(nameof(weight), weight, result.Count);
