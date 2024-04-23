@@ -70,6 +70,9 @@ namespace OriginalCircuit.AltiumSharp.BasicTypes
         public int AsIntOrDefault(int defaultValue = default) =>
             int.TryParse(_data, NumberStyles.Integer, Fp, out var result) ? result : defaultValue;
 
+        public long AsLongOrDefault(long defaultValue = default) =>
+            long.TryParse(_data, NumberStyles.Integer, Fp, out var result) ? result : defaultValue;
+
         /// <summary>
         /// Gets the enum value of this parameter, or a default value.
         /// </summary>
@@ -461,6 +464,12 @@ namespace OriginalCircuit.AltiumSharp.BasicTypes
         /// Adds a key with a integer value.
         /// </summary>
         public void Add(string key, int value, bool ignoreDefaultValue = true) =>
+            AddData(key, value, ignoreDefaultValue);
+
+        /// <summary>
+        /// Adds a key with a long value.
+        /// </summary>
+        public void Add(string key, long value, bool ignoreDefaultValue = true) =>
             AddData(key, value, ignoreDefaultValue);
 
         /// <summary>
