@@ -30,7 +30,7 @@ namespace OriginalCircuit.AltiumSharp.Records
         public bool LayerMasterStackV8ShowTopDielectric { get; internal set; }
         public bool LayerMasterStackV8ShowBottomDielectric { get; internal set; }
         public bool LayerMasterStackV8IsFlex { get; internal set; }
-        public List<(string Id, string Name, int LayerId, bool UsedByPrims, int DielType, double DielConst, Coord DielHeight, string DielMaterial, Coord COverLayEXPansiOn, Coord CopThick, int ComponentPlacement, bool MechEnabled)> LayerV8 { get; internal set; }
+        public List<(string Id, string Name, int LayerId, bool UsedByPrims, int DielType, double DielConst, Coord DielHeight, string DielMaterial, Coord COverLayEXPansiOn, Coord CopThick, int ComponentPlacement, bool MechEnabled, string MechKind)> LayerV8 { get; internal set; }
         public int TopType { get; set; }
         public double TopConst { get; set; }
         public Coord TopHeight { get; set; }
@@ -42,8 +42,9 @@ namespace OriginalCircuit.AltiumSharp.Records
         public int LayerStackStyle { get; set; }
         public bool ShowTopDielectric { get; set; }
         public bool ShowBottomDielectric { get; set; }
-        public List<(string Name, int Prev, int Next, bool MechEnabled, Coord CopThick, int DielType, double DielConst, Coord DielHeight, string DielMaterial)> Layer { get; internal set; }
-        public List<(string Name, int Prev, int Next, bool MechEnabled, Coord CopThick, int DielType, double DielConst, Coord DielHeight, string DielMaterial, int LayerId)> LayerV7 { get; internal set; }
+        public List<(string Name, int Prev, int Next, bool MechEnabled, string MechKind, Coord CopThick, int DielType, double DielConst, Coord DielHeight, string DielMaterial)> Layer { get; internal set; }
+        public List<(string Name, int Prev, int Next, bool MechEnabled, string MechKind, Coord CopThick, int DielType, double DielConst, Coord DielHeight, string DielMaterial, int LayerId)> LayerV7 { get; internal set; }
+        public List<(string Layer1, string Layer2)> MechanicalPair { get; set; }
         public Coord BigVisibleGridSize { get; set; }
         public Coord VisibleGridSize { get; set; }
         public Coord SnapGridSize { get; set; }
@@ -190,106 +191,106 @@ namespace OriginalCircuit.AltiumSharp.Records
             BottomConst = 3.5;
             BottomHeight = Coord.FromMils(0.4);
             BottomMaterial = "Solder Resist";
-            Layer = new List<(string Name, int Prev, int Next, bool MechEnabled, Coord CopThick, int DielType, double DielConst, Coord DielHeight, string DielMaterial)>();
-            Layer.Add(("Top Layer", 0, 32, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 1", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 2", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 3", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 4", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 5", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 6", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 7", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 8", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 9", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 10", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 11", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 12", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 13", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 14", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 15", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 16", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 17", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 18", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 19", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 20", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 21", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 22", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 23", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 24", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 25", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 26", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 27", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 28", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 29", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mid-Layer 30", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Bottom Layer", 1, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Top Overlay", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Bottom Overlay", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Top Paste", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Bottom Paste", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Top Solder", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Bottom Solder", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Internal Plane 1", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Internal Plane 2", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Internal Plane 3", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Internal Plane 4", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Internal Plane 5", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Internal Plane 6", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Internal Plane 7", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Internal Plane 8", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Internal Plane 9", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Internal Plane 10", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Internal Plane 11", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Internal Plane 12", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Internal Plane 13", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Internal Plane 14", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Internal Plane 15", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Internal Plane 16", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Drill Guide", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Keep-Out Layer", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mechanical 1", 0, 0, true, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mechanical 2", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mechanical 3", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mechanical 4", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mechanical 5", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mechanical 6", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mechanical 7", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mechanical 8", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mechanical 9", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mechanical 10", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mechanical 11", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mechanical 12", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mechanical 13", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mechanical 14", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mechanical 15", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Mechanical 16", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Drill Drawing", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Multi-Layer", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Connections", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Background", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("DRC Error Markers", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Selections", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Visible Grid 1", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Visible Grid 2", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Pad Holes", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            Layer.Add(("Via Holes", 0, 0, false, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
-            LayerV7 = new List<(string Name, int Prev, int Next, bool MechEnabled, Coord CopThick, int DielType, double DielConst, Coord DielHeight, string DielMaterial, int LayerId)>();
-            LayerV7.Add(("Mechanical 17", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908305)));
-            LayerV7.Add(("Mechanical 18", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908306)));
-            LayerV7.Add(("Mechanical 19", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908307)));
-            LayerV7.Add(("Mechanical 20", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908308)));
-            LayerV7.Add(("Mechanical 21", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908309)));
-            LayerV7.Add(("Mechanical 22", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908310)));
-            LayerV7.Add(("Mechanical 23", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908311)));
-            LayerV7.Add(("Mechanical 24", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908312)));
-            LayerV7.Add(("Mechanical 25", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908313)));
-            LayerV7.Add(("Mechanical 26", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908314)));
-            LayerV7.Add(("Mechanical 27", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908315)));
-            LayerV7.Add(("Mechanical 28", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908316)));
-            LayerV7.Add(("Mechanical 29", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908317)));
-            LayerV7.Add(("Mechanical 30", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908318)));
-            LayerV7.Add(("Mechanical 31", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908319)));
-            LayerV7.Add(("Mechanical 32", 16973824, 16973824, false, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908320)));
+            Layer = new List<(string Name, int Prev, int Next, bool MechEnabled, string MechKind, Coord CopThick, int DielType, double DielConst, Coord DielHeight, string DielMaterial)>();
+            Layer.Add(("Top Layer", 0, 32, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 1", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 2", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 3", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 4", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 5", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 6", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 7", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 8", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 9", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 10", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 11", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 12", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 13", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 14", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 15", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 16", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 17", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 18", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 19", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 20", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 21", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 22", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 23", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 24", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 25", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 26", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 27", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 28", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 29", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mid-Layer 30", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Bottom Layer", 1, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Top Overlay", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Bottom Overlay", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Top Paste", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Bottom Paste", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Top Solder", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Bottom Solder", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 1", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 2", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 3", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 4", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 5", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 6", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 7", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 8", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 9", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 10", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 11", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 12", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 13", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 14", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 15", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Internal Plane 16", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Drill Guide", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Keep-Out Layer", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 1", 0, 0, true, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 2", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 3", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 4", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 5", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 6", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 7", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 8", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 9", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 10", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 11", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 12", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 13", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 14", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 15", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Mechanical 16", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Drill Drawing", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Multi-Layer", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Connections", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Background", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("DRC Error Markers", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Selections", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Visible Grid 1", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Visible Grid 2", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Pad Holes", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            Layer.Add(("Via Holes", 0, 0, false, null, Coord.FromMils(1.4), 0, 4.8, Coord.FromMils(12.6), "FR-4"));
+            LayerV7 = new List<(string Name, int Prev, int Next, bool MechEnabled, string MechKind, Coord CopThick, int DielType, double DielConst, Coord DielHeight, string DielMaterial, int LayerId)>();
+            LayerV7.Add(("Mechanical 17", 16973824, 16973824, false, null, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908305)));
+            LayerV7.Add(("Mechanical 18", 16973824, 16973824, false, null, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908306)));
+            LayerV7.Add(("Mechanical 19", 16973824, 16973824, false, null, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908307)));
+            LayerV7.Add(("Mechanical 20", 16973824, 16973824, false, null, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908308)));
+            LayerV7.Add(("Mechanical 21", 16973824, 16973824, false, null, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908309)));
+            LayerV7.Add(("Mechanical 22", 16973824, 16973824, false, null, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908310)));
+            LayerV7.Add(("Mechanical 23", 16973824, 16973824, false, null, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908311)));
+            LayerV7.Add(("Mechanical 24", 16973824, 16973824, false, null, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908312)));
+            LayerV7.Add(("Mechanical 25", 16973824, 16973824, false, null, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908313)));
+            LayerV7.Add(("Mechanical 26", 16973824, 16973824, false, null, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908314)));
+            LayerV7.Add(("Mechanical 27", 16973824, 16973824, false, null, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908315)));
+            LayerV7.Add(("Mechanical 28", 16973824, 16973824, false, null, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908316)));
+            LayerV7.Add(("Mechanical 29", 16973824, 16973824, false, null, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908317)));
+            LayerV7.Add(("Mechanical 30", 16973824, 16973824, false, null, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908318)));
+            LayerV7.Add(("Mechanical 31", 16973824, 16973824, false, null, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908319)));
+            LayerV7.Add(("Mechanical 32", 16973824, 16973824, false, null, Coord.FromMils(0), 0, 4.8, Coord.FromMils(0), "FR-4", Coord.FromInt32(16908320)));
             /*
             LayerV7.Add(("", 0, 0, false, Coord.FromMils(0), 0, 0, Coord.FromMils(0), "", 0));
             LayerV7.Add(("", 0, 0, false, Coord.FromMils(0), 0, 0, Coord.FromMils(0), "", 0));
@@ -308,9 +309,10 @@ namespace OriginalCircuit.AltiumSharp.Records
             LayerV7.Add(("", 0, 0, false, Coord.FromMils(0), 0, 0, Coord.FromMils(0), "", 0));
             LayerV7.Add(("", 0, 0, false, Coord.FromMils(0), 0, 0, Coord.FromMils(0), "", 0));
             */
-            LayerV8 = new List<(string Id, string Name, int LayerId, bool UsedByPrims, int DielType, double DielConst, Coord DielHeight, string DielMaterial, Coord COverLayEXPansiOn, Coord CopThick, int ComponentPlacement, bool MechEnabled)>();
+            LayerV8 = new List<(string Id, string Name, int LayerId, bool UsedByPrims, int DielType, double DielConst, Coord DielHeight, string DielMaterial, Coord COverLayEXPansiOn, Coord CopThick, int ComponentPlacement, bool MechEnabled, string MechKind)>();
             V9StackLayer = new List<(string Id, string Name, int LayerId, bool UsedByPrims, int DielType, double DielConst, Coord DielHeight, string DielMaterial, Coord COverLayEXPansiOn, Coord CopThick, int ComponentPlacement)>();
             V9CacheLayer = new List<(int LayerId, bool UsedByPrims, string Id, string Name, int DielType, double DielConst, Coord DielHeight, string DielMaterial, Coord COverLayEXPansiOn, Coord CopThick, int ComponentPlacement, Coord PullBackDistance, bool MechEnabled)>();
+            MechanicalPair = new List<(string Layer1, string Layer2)>();
             BigVisibleGridSize = 0;
             VisibleGridSize = 0;
             SnapGridSize = 50000;
@@ -568,7 +570,7 @@ namespace OriginalCircuit.AltiumSharp.Records
             int v8LayerMin = p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}ID", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).DefaultIfEmpty("0").Min(v => int.Parse(v, CultureInfo.InvariantCulture));
             int v8LayerCount = p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "LAYER_V8_{0}ID", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).Count();
 
-            LayerV8 = new List<(string Id, string Name, int LayerId, bool UsedByPrims, int DielType, double DielConst, Coord DielHeight, string DielMaterial, Coord COverLayEXPansiOn, Coord CopThick, int ComponentPlacement, bool MechEnabled)>();
+            LayerV8 = new List<(string Id, string Name, int LayerId, bool UsedByPrims, int DielType, double DielConst, Coord DielHeight, string DielMaterial, Coord COverLayEXPansiOn, Coord CopThick, int ComponentPlacement, bool MechEnabled, string MechKind)>();
 
             for (int i = v8LayerMin; i < v8LayerCount; i++)
             {
@@ -603,7 +605,8 @@ namespace OriginalCircuit.AltiumSharp.Records
                         coverlayExpansion,
                         copperThickness,
                         p[fmt("LAYER_V8_{0}COMPONENTPLACEMENT", i)].AsIntOrDefault(),
-                        p[fmt("LAYER_V8_{0}MECHENABLED", i)].AsBool()
+                        p[fmt("LAYER_V8_{0}MECHENABLED", i)].AsBool(),
+                        p[fmt("LAYER_V8_{0}MECHKIND", i)].AsString()
                     )
                 );
             }
@@ -627,6 +630,7 @@ namespace OriginalCircuit.AltiumSharp.Records
                     p[$"LAYER{i}PREV"].AsIntOrDefault(),
                     p[$"LAYER{i}NEXT"].AsIntOrDefault(),
                     p[$"LAYER{i}MECHENABLED"].AsBool(),
+                    p[$"LAYER{i}MECHKIND"].AsString(),
                     p[$"LAYER{i}COPTHICK"].AsCoord(),
                     p[$"LAYER{i}DIELTYPE"].AsIntOrDefault(),
                     p[$"LAYER{i}DIELCONST"].AsDoubleOrDefault(),
@@ -655,7 +659,7 @@ namespace OriginalCircuit.AltiumSharp.Records
             int v7LayerMin = p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "LAYERV7_{0}NAME", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).DefaultIfEmpty("0").Min(v => int.Parse(v, CultureInfo.InvariantCulture));
             int v7LayerCount = p.Select(kv => Regex.Match(kv.Item1, string.Format(CultureInfo.InvariantCulture, "LAYERV7_{0}NAME", @"(\d+)")).Groups[1].Value).Where(v => !string.IsNullOrEmpty(v)).Count();
 
-            LayerV7 = new List<(string Name, int Prev, int Next, bool MechEnabled, Coord CopThick, int DielType, double DielConst, Coord DielHeight, string DielMaterial, int LayerId)>();
+            LayerV7 = new List<(string Name, int Prev, int Next, bool MechEnabled, string MechKind, Coord CopThick, int DielType, double DielConst, Coord DielHeight, string DielMaterial, int LayerId)>();
 
             for (int i = v7LayerMin; i < v7LayerCount; i++)
             {
@@ -677,6 +681,7 @@ namespace OriginalCircuit.AltiumSharp.Records
                         p[fmt("LAYERV7_{0}PREV", i)].AsIntOrDefault(),
                         p[fmt("LAYERV7_{0}NEXT", i)].AsIntOrDefault(),
                         p[fmt("LAYERV7_{0}MECHENABLED", i)].AsBool(),
+                        p[fmt("LAYERV7_{0}MECHKIND", i)].AsString(),
                         copperThickness,
                         p[fmt("LAYERV7_{0}DIELTYPE", i)].AsIntOrDefault(),
                         p[fmt("LAYERV7_{0}DIELCONST", i)].AsDoubleOrDefault(),
@@ -687,6 +692,9 @@ namespace OriginalCircuit.AltiumSharp.Records
                 );
             }
 
+            MechanicalPair = p.Where(n => Regex.IsMatch(n.key, "MECHPAIR\\d+L1", RegexOptions.CultureInvariant))
+             .Select(n => (n.value.AsString(), p[fmt("MECHPAIR{0}L2", Int32.Parse(Regex.Match(n.key, "MECHPAIR(\\d+)L1", RegexOptions.CultureInvariant).Groups[1].Value))].AsString()))
+             .ToList();
             BigVisibleGridSize = Coord.FromInt32((int)p["BIGVISIBLEGRIDSIZE"].AsDoubleOrDefault());
             VisibleGridSize = Coord.FromInt32((int)p["VISIBLEGRIDSIZE"].AsDoubleOrDefault());
             SnapGridSize = (int)p["SNAPGRIDSIZE"].AsDoubleOrDefault();
@@ -935,6 +943,7 @@ namespace OriginalCircuit.AltiumSharp.Records
                     p.Add(fmt("LAYER_V8_{0}COPTHICK", i), LayerV8[i].CopThick);
                     p.Add(fmt("LAYER_V8_{0}COMPONENTPLACEMENT", i), LayerV8[i].ComponentPlacement);
                     p.Add(fmt("LAYER_V8_{0}MECHENABLED", i), LayerV8[i].MechEnabled, i < 15 || (i > 26 && i < 40));
+                    p.Add(fmt("LAYER_V8_{0}MECHKIND", i), LayerV8[i].MechKind);
                 }
             }
 
@@ -963,6 +972,7 @@ namespace OriginalCircuit.AltiumSharp.Records
                 p.Add($"LAYER{i + 1}DIELCONST", Layer[i].DielConst, false, 3);
                 p.Add($"LAYER{i + 1}DIELHEIGHT", Layer[i].DielHeight, false);
                 p.Add($"LAYER{i + 1}DIELMATERIAL", Layer[i].DielMaterial, false);
+                p.Add($"LAYER{i + 1}MECHKIND", Layer[i].MechKind, false);
             }
             for (var i = 0; i < LayerV7.Count; i++)
             {
@@ -976,6 +986,13 @@ namespace OriginalCircuit.AltiumSharp.Records
                 p.Add($"LAYERV7_{i}DIELCONST", LayerV7[i].DielConst, false, 3);
                 p.Add($"LAYERV7_{i}DIELHEIGHT", LayerV7[i].DielHeight, false);
                 p.Add($"LAYERV7_{i}DIELMATERIAL", LayerV7[i].DielMaterial, false);
+                p.Add($"LAYERV7_{i}MECHKIND", Layer[i].MechKind, false);
+            }
+
+            for (var i = 0; i < MechanicalPair.Count; i++)
+            {
+                p.Add($"MECHPAIR{i}L1", MechanicalPair[i].Layer1);
+                p.Add($"MECHPAIR{i}L2", MechanicalPair[i].Layer2);
             }
 
             AddParamRecord(p);

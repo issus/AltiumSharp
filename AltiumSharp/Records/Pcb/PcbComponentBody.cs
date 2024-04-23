@@ -29,7 +29,8 @@ namespace OriginalCircuit.AltiumSharp.Records
         public CoordPoint TextureSize { get; set; }
         public double TextureRotation { get; set; }
         public string ModelId { get; set; }
-        public int ModelChecksum { get; set; }
+        public long ModelChecksum { get; set; }
+        public string ModelSource{ get; set; }
         public bool ModelEmbed { get; set; }
         public CoordPoint Model2DLocation { get; set; }
         public double Model2DRotation { get; set; }
@@ -82,7 +83,8 @@ namespace OriginalCircuit.AltiumSharp.Records
             TextureSize = new CoordPoint(p["TEXTURESIZEX"].AsCoord(), p["TEXTURESIZEY"].AsCoord());
             TextureRotation = p["TEXTUREROTATION"].AsDouble();
             ModelId = p["MODELID"].AsStringOrDefault();
-            ModelChecksum = p["MODEL.CHECKSUM"].AsIntOrDefault();
+            ModelChecksum = p["MODEL.CHECKSUM"].AsLongOrDefault();
+            ModelSource = p["MODEL.SOURCE"].AsString();
             ModelEmbed = p["MODEL.EMBED"].AsBool();
             Model2DLocation = new CoordPoint(p["MODEL.2D.X"].AsCoord(), p["MODEL.2D.Y"].AsCoord());
             Model2DRotation = p["MODEL.2D.ROTATION"].AsDoubleOrDefault();
@@ -101,37 +103,39 @@ namespace OriginalCircuit.AltiumSharp.Records
             p.UseLongBooleans = true;
 
             p.Add("V7_LAYER", V7Layer);
-            p.Add("NAME", Name);
-            p.Add("KIND", Kind);
+            p.Add("NAME", Name, false);
+            p.Add("KIND", Kind, false);
             p.Add("SUBPOLYINDEX", SubPolyIndex);
             p.Add("UNIONINDEX", UnionIndex);
             p.Add("ARCRESOLUTION", ArcResolution);
-            p.Add("ISSHAPEBASED", IsShapeBased);
-            p.Add("STANDOFFHEIGHT", StandOffHeight);
-            p.Add("OVERALLHEIGHT", OverallHeight);
+            p.Add("ISSHAPEBASED", IsShapeBased, false);
+            p.Add("STANDOFFHEIGHT", StandOffHeight, false);
+            p.Add("OVERALLHEIGHT", OverallHeight, false);
             p.Add("BODYPROJECTION", BodyProjection);
             p.Add("ARCRESOLUTION", ArcResolution);
             p.Add("BODYCOLOR3D", BodyColor3D);
             p.Add("BODYOPACITY3D", BodyOpacity3D);
             p.Add("IDENTIFIER", string.Join(",", Identifier?.Select(c => (int)c) ?? Enumerable.Empty<int>()));
-            p.Add("TEXTURE", Texture);
-            p.Add("TEXTURECENTERX", TextureCenter.X);
-            p.Add("TEXTURECENTERY", TextureCenter.Y);
-            p.Add("TEXTURESIZEX", TextureSize.X);
-            p.Add("TEXTURESIZEY", TextureSize.Y);
-            p.Add("TEXTUREROTATION", TextureRotation);
+            p.Add("TEXTURE", Texture, false);
+            p.Add("TEXTURECENTERX", TextureCenter.X, false);
+            p.Add("TEXTURECENTERY", TextureCenter.Y, false);
+            p.Add("TEXTURESIZEX", TextureSize.X, false);
+            p.Add("TEXTURESIZEY", TextureSize.Y, false);
+            p.Add("TEXTUREROTATION", TextureRotation, false);
             p.Add("MODELID", ModelId);
-            p.Add("MODEL.CHECKSUM", ModelChecksum);
+            p.Add("MODEL.CHECKSUM", ModelChecksum, false);
+            p.Add("MODEL.SOURCE", ModelSource);
             p.Add("MODEL.EMBED", ModelEmbed);
-            p.Add("MODEL.2D.X", Model2DLocation.X);
-            p.Add("MODEL.2D.Y", Model2DLocation.Y);
-            p.Add("MODEL.2D.ROTATION", Model2DRotation);
-            p.Add("MODEL.3D.ROTX", Model3DRotX);
-            p.Add("MODEL.3D.ROTY", Model3DRotY);
-            p.Add("MODEL.3D.ROTZ", Model3DRotZ);
-            p.Add("MODEL.3D.DZ", Model3DDz);
+            p.Add("MODEL.2D.X", Model2DLocation.X, false);
+            p.Add("MODEL.2D.Y", Model2DLocation.Y, false);
+            p.Add("MODEL.2D.ROTATION", Model2DRotation, false);
+            p.Add("MODEL.3D.ROTX", Model3DRotX, false);
+            p.Add("MODEL.3D.ROTY", Model3DRotY, false);
+            p.Add("MODEL.3D.ROTZ", Model3DRotZ, false);
+            p.Add("MODEL.3D.DZ", Model3DDz, false);
             p.Add("MODEL.SNAPCOUNT", ModelSnapCount);
             p.Add("MODEL.MODELTYPE", ModelType);
+            p.Add("MODEL.NAME", Identifier + ".STEP");
         }
 
         public ParameterCollection ExportToParameters()
