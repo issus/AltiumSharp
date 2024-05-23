@@ -13,30 +13,29 @@ Before using AltiumSharp, you will need to add the following NuGet references to
 * [OpenMcdf](https://www.nuget.org/packages/OpenMcdf) by [ironfede](https://github.com/ironfede)
 * [System.Text.Encoding.CodePages](https://www.nuget.org/packages/System.Text.Encoding.CodePages)
 
-Once you have these references added, you can use the AltiumSharp library to read and write Altium library files and render components as images. Check out the examples in the readme for more information on how to use AltiumSharp in your projects.
+Once you have these references added, you can use the AltiumSharp library to read and write Altium library files and render components as images. The LibraryViewer is an example application that implements the AltiumSharp library. You can build and run LibraryViewer to view PcbLib and SchLib files.
+
+To run the viewer, open the cloned repository in Visual Studio 2022, build both projects, and use either Ctrl + F5 or the Green Start button to start an instance of LibraryViewer on your machine.
 
 ## Opening a PcbLib File
 Here's an example of how you can use AltiumSharp to open a PcbLib file and iterate through its components:
 ```csharp
+	// Import the library to your project
+	using OriginalCircuit.AltiumSharp;
+	
 	// Open a PcbLib file.
-	using (var reader = new PcbLibReader(fileName))
+	using (var reader = new PcbLibReader())
 	{
 	    // Read the file.
-	    reader.Read();
+	    var data = reader.Read(filename);
 
 	    // Iterate through each component in the library.
-	    foreach (var component in reader.Components)
-	    {
-	        // Print information about the component.
-	        Console.WriteLine($"Name: {component.Name}");
-	        Console.WriteLine($"Number of Pads: {component.Pads}");
-	        Console.WriteLine($"Number of Primitives: {component.Primitives.Count()}");
-	    }
-
-	    // Retrieve settings from the header.
-	    _displayUnit = reader.Header.DisplayUnit;
-	    _snapGridSize = reader.Header.SnapGridSize;
-	    _components = reader.Components.Cast<IComponent>().ToList();
+	    foreach (var component in data.Items)
+		{
+			Console.WriteLine(component.Pattern);
+			Console.WriteLine(component.Description);
+			Console.WriteLine(component.Height);
+		}
 	}
   ```
 
