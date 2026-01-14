@@ -4,9 +4,9 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyName>JsonDumper</AssemblyName>
-    <RootNamespace>OriginalCircuit.AltiumSharp.JsonDumper</RootNamespace>
-    <Description>Exports Altium SchDoc files to JSON format</Description>
+    <AssemblyName>SchematicReader</AssemblyName>
+    <RootNamespace>OriginalCircuit.AltiumSharp.SchematicReader</RootNamespace>
+    <Description>Reads Altium SchDoc files and exports to JSON format</Description>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\AltiumSharp\OriginalCircuit.AltiumSharp.csproj" />

@@ -11,8 +11,14 @@ class Program
 {
     static void Main(string[] args)
     {
-        string testFile = args.Length > 0 ? args[0] :
-            @"D:\dev\AI_Bridge\Altium\AltiumBridge\Altium_V24.1.2_TestProjetcs\XN8_11\XN8_11.SchDoc";
+        if (args.Length == 0)
+        {
+            Console.Error.WriteLine("Usage: SchematicReader <file.SchDoc>");
+            Console.Error.WriteLine("Reads an Altium SchDoc file and outputs JSON to stdout.");
+            Environment.Exit(1);
+        }
+
+        string testFile = args[0];
 
         try
         {
@@ -26,9 +32,13 @@ class Program
                 Components = schDoc.Items.OfType<SchComponent>().Select(c => new ComponentDump
                 {
                     LibReference = c.LibReference,
+                    SourceLibraryName = c.SourceLibraryName,
+                    LibraryPath = c.LibraryPath,
                     Designator = c.Designator?.Text,
                     X = (int)(c.Location.X.ToMils()),
                     Y = (int)(c.Location.Y.ToMils()),
+                    PrimitivesCount = c.GetAllPrimitives().Count(),
+                    PrimitiveTypes = c.GetAllPrimitives().Select(p => p.GetType().Name).Distinct().ToList(),
                     Pins = c.GetPrimitivesOfType<SchPin>().Select(p => {
                         var corner = p.GetCorner();
                         return new PinDump
@@ -69,7 +79,6 @@ class Program
                     Y = (int)(p.Location.Y.ToMils())
                 }).ToList(),
 
-                // Stats summary
                 Stats = new StatsDump
                 {
                     TotalComponents = schDoc.Items.OfType<SchComponent>().Count(),
@@ -121,9 +130,13 @@ class StatsDump
 class ComponentDump
 {
     public string LibReference { get; set; }
+    public string SourceLibraryName { get; set; }
+    public string LibraryPath { get; set; }
     public string Designator { get; set; }
     public int X { get; set; }
     public int Y { get; set; }
+    public int PrimitivesCount { get; set; }
+    public List<string> PrimitiveTypes { get; set; }
     public List<PinDump> Pins { get; set; }
 }
 
@@ -133,8 +146,8 @@ class PinDump
     public string Designator { get; set; }
     public int X { get; set; }
     public int Y { get; set; }
-    public int ConnX { get; set; }  // Connection point X (wire endpoint)
-    public int ConnY { get; set; }  // Connection point Y (wire endpoint)
+    public int ConnX { get; set; }
+    public int ConnY { get; set; }
     public int Length { get; set; }
     public string Electrical { get; set; }
 }
