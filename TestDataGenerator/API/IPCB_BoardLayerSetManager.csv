@@ -1,5 +1,0 @@
-MemberType,Name,DataType
-property,AllSetsCount,Integer
-property,BoardLayerSetByIndex[AIndex: Integer],IPCB_BoardLayerSet
-property,BoardLayerSetByName[ASetName: WideString],IPCB_BoardLayerSet
-function,MakeCurrent,(const APos : Integer) : Integer

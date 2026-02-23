@@ -1,5 +1,0 @@
-MemberType,Name,DataType
-procedure,Clear,
-property,ShowSignalLayersOnly,Boolean
-property,UseLayer[Id: Cardinal],Boolean
-property,Values[Key: WideString],TPCBString

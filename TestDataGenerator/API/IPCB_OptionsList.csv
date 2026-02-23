@@ -1,5 +1,0 @@
-MemberType,Name,DataType
-procedure,Delete,Options : IPCB_AbstractOptions
-function,GetState_OptionSet,ObjectId : TOptionsObjectId : IPCB_AbstractOptions
-procedure,Insert,Options : IPCB_AbstractOptions
-function,MemoryUsed,Integer

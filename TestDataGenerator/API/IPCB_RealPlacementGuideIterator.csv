@@ -1,6 +1,0 @@
-MemberType,Name,DataType
-function,First,IPCB_RealPlacementGuide
-function,Next,IPCB_RealPlacementGuide
-procedure,SetFilter_IncludeDynamicGuides,AValue : Boolean
-procedure,SetFilter_IncludeGrids,AValue : Boolean
-procedure,SetFilter_IncludeStaticGuides,AValue : Boolean

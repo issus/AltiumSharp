@@ -1,5 +1,0 @@
-MemberType,Name,DataType
-property,Count,Integer
-function,GetState_Point,AStartHeight : Integer; AEndHeight : Integer; ALength : Integer; AIndex : Integer : IDispatch
-function,I_ObjectAddress,Pointer
-property,Standard,TWirebondStandard

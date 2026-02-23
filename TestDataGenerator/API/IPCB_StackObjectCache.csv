@@ -1,8 +1,0 @@
-MemberType,Name,DataType
-property,BottomPasteMaskEnabled,Boolean
-property,InternalPlanes,Word
-property,IsTentingBottom,Boolean
-property,IsTentingBottomValid,TCacheState
-property,IsTentingTop,Boolean
-property,IsTentingTopValid,TCacheState
-property,PasteMaskEnabled,Boolean

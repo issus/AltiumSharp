@@ -1,6 +1,0 @@
-MemberType,Name,DataType
-property,Count,Integer
-function,GetLayerInfo(AIndex : Integer; out ALayer : Integer; out AGeometryLayerType : TGeometryLayerType),Boolean
-function,GetLayerZBottom(ALayer : Integer),Integer
-function,GetLayerZTop(ALayer : Integer),Integer
-function,GetZCoord(AZIndex : Integer),Integer

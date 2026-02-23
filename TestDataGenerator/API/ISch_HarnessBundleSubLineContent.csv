@@ -1,8 +1,0 @@
-MemberType,Name,DataType
-function,GetBundle,AIndex : Integer : ISch_HarnessBundle
-function,GetBundlesCount,Integer
-function,GetName,WideString
-function,GetSubLineData,AIndex : Integer : ISch_HarnessBundleSubLineData
-function,GetSubLinesDataCount,Integer
-function,GetSubWireData,AIndex : Integer : ISch_HarnessWireData
-function,GetSubWiresDataCount,Integer

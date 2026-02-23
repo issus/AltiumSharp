@@ -1,5 +1,0 @@
-MemberType,Name,DataType
-procedure,ClearAll,
-procedure,Delete(Index : Integer),
-function,Get(Index : Integer),IPCB_PrimitiveList
-function,GetCount,Integer

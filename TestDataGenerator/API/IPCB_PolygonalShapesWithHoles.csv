@@ -1,4 +1,0 @@
-MemberType,Name,DataType
-property,Shape[I: Integer],IPCB_PolygonalShape
-property,ShapeCount,Integer
-property,ShapeIsHole[I: Integer],Boolean

@@ -1,9 +1,0 @@
-MemberType,Name,DataType
-function,BorderVertexCount,Integer
-function,CapIndexCount,Integer
-procedure,GetBorderVertex,"(const AIndex : Integer, out ACoordX : Single, out ACoordY : Single, out ANormalX : Byte, out ANormalY : Byte, out ANormalZ : Byte)"
-function,GetCapIndex,(const Index : Integer) : Integer
-function,GetLineIndex,(const Index : Integer) : Integer
-procedure,GetVertex,"(const Index : Integer, out CoordX : Single, out CoordY : Single)"
-function,LineIndexCount,Integer
-function,VertexCount,Integer

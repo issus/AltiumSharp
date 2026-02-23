@@ -1,9 +1,0 @@
-MemberType,Name,DataType
-property,ByIndex[AIndex: Integer],IPCB_Parameter
-property,ByName[AName: WideString],IPCB_Parameter
-procedure,Clear,
-property,Count,Integer
-function,FindByName,const AName : WideString : IPCB_Parameter
-procedure,RemoveByIndex,AIndex : Integer
-procedure,RemoveByName,const AName : WideString
-function,TryRemoveByName,const AName : WideString : Boolean

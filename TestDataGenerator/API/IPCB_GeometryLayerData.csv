@@ -1,9 +1,0 @@
-MemberType,Name,DataType
-procedure,"Arc(IsCutout : Boolean; Index : Integer; out CenterX : Single; out CenterY : Single; out AngleStart : Single; out AngleEnd : Single; out Radius : Single; out Width : Single; out LowZ : Integer; out HighZ : Integer; out ColorID : IPCB_ColorID)",
-function,ArcCount(IsCutout : Boolean),Integer
-procedure,"Mesh(AIndex : Integer; out SrcBody : IPCB_3DBody; out Texture : IPCB_Texture; out m00 : Single; out m01 : Single; out m02 : Single; out m03 : Single; out m10 : Single; out m11 : Single; out m12 : Single; out m13 : Single; out m20 : Single; out m21 : Single; out m22 : Single; out m23 : Single; out m30 : Single; out m31 : Single; out m32 : Single; out m33 : Single)",
-function,MeshCount,Integer
-procedure,"Poly(IsCutout : Boolean; Index : Integer; out CopperPoly : IPCB_CopperPolygon; out IsCore : Boolean; out Outline : Boolean; out m00 : Single; out m01 : Single; out m02 : Single; out m10 : Single; out m11 : Single; out m12 : Single; out m20 : Single; out m21 : Single; out m22 : Single; out LowZ : Integer; out HighZ : Integer; out ColorID : IPCB_ColorID)",
-function,PolyCount(IsCutout : Boolean),Integer
-procedure,"Uni(IsCutout : Boolean; Index : Integer; out PosX : Single; out PosY : Single; out DirX : Single; out DirY : Single; out SizeX : Single; out SizeY : Single; out Radius : Single; out LowZ : Integer; out HighZ : Integer; out ColorID : IPCB_ColorID)",
-function,UniCount(IsCutout : Boolean),Integer

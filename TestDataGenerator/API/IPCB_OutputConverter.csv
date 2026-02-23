@@ -1,4 +1,0 @@
-MemberType,Name,DataType
-function,Convert,const AText : IPCB_Text; out AConvertedString : WideString : Boolean
-function,StringDimensions,const aString : WideString; Size : Integer; Font : SmallInt; Mirror : Boolean; out Width : Integer; out Height : Integer : Boolean
-property,SubstituteFonts,Boolean

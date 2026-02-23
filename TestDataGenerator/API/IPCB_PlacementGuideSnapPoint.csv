@@ -1,9 +1,0 @@
-MemberType,Name,DataType
-property,Color,TColor
-property,Enabled,Boolean
-function,GetOwnerBoard,IPCB_Board
-property,IsMCADSource,Boolean
-function,I_ObjectAddress,Pointer
-property,SourceObject,IPCB_Primitive
-property,x,Integer
-property,y,Integer

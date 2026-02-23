@@ -1,4 +1,0 @@
-MemberType,Name,DataType
-function,GetCount,Integer
-function,GetKey,(AIndex : Integer) : IDispatch
-function,GetValue,(AIndex : Integer) : IPCB_ClearanceConstraint

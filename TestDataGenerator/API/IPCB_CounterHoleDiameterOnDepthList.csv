@@ -1,5 +1,0 @@
-MemberType,Name,DataType
-procedure,Clear,
-procedure,Delete,(Index : Integer)
-function,Get,(Index : Integer) : IDispatch
-function,GetCount,Integer

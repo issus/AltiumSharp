@@ -1,8 +1,0 @@
-MemberType,Name,DataType
-function,GetColorList,IPCB_MeshColorList
-function,GetLayerName,WideString
-function,GetName,WideString
-function,GetTriangleList,IPCB_MeshTriangleList
-function,GetVertexList,IPCB_MeshVertexList
-procedure,SetLayerName(const AValue : WideString),
-procedure,SetName(const AValue : WideString),

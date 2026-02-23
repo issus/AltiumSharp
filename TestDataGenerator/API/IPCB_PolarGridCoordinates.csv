@@ -1,9 +1,0 @@
-MemberType,Name,DataType
-function,GetState_PolarCoordAngle,Double
-function,GetState_PolarCoordAvailable,Boolean
-function,GetState_PolarCoordRadius,Integer
-function,GetState_PolarCoordRotation,Double
-function,GetState_PolarGridName,WideString
-procedure,SetState_PolarCoordAngle,const AValue : Double
-procedure,SetState_PolarCoordRadius,const AValue : Integer
-procedure,SetState_PolarCoordRotation,const AValue : Double

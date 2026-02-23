@@ -1,9 +1,0 @@
-MemberType,Name,DataType
-procedure,BeginUpdate,
-procedure,Clear,
-property,Count,Integer
-property,Duplicates,TDuplicates
-procedure,EndUpdate,
-property,Sorted,Boolean
-property,Strings[Index: Integer],WideString
-function,Text,WideString

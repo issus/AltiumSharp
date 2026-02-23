@@ -1,4 +1,0 @@
-MemberType,Name,DataType
-procedure,Clear,
-function,GetIndex,AObjectId : TObjectId) : Integer
-procedure,SetIndex,AObjectId : TObjectId; AValue : Integer

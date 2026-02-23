@@ -1,9 +1,0 @@
-MemberType,Name,DataType
-property,CheckSum,Cardinal
-property,Dz,TCoord
-property,FileName,WideString
-property,Id,WideString
-function,I_ObjectAddress,Pointer
-property,RotX,TAngle
-property,RotY,TAngle
-property,RotZ,TAngle

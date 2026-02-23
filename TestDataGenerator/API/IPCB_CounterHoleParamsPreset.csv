@@ -1,4 +1,0 @@
-MemberType,Name,DataType
-property,Description,TPCBString
-property,Name,TPCBString
-property,ParamList,IPCB_CounterHoleParamsList

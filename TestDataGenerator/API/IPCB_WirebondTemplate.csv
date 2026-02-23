@@ -1,7 +1,0 @@
-MemberType,Name,DataType
-property,EndStyle,TWirebondConnectStyle
-property,Id,TWirebondTemplateID
-function,I_ObjectAddress,Pointer
-property,Name,TPCBString
-property,StartStyle,TWirebondConnectStyle
-property,WireLoop,IPCB_WireLoop

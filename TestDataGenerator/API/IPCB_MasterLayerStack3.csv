@@ -1,2 +1,0 @@
-MemberType,Name,DataType
-function,FindSubStackIndex(const ASubstack : IPCB_LayerStack),Integer

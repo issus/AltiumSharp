@@ -1,4 +1,0 @@
-MemberType,Name,DataType
-function,"GetColorID(const Layer : Integer; GType : TGeometryLayerType; ObjectId : TObjectId; Hatching : TMaterialHatchStyle; Bordered : Boolean; ADRCState : TDRCState; ColorOverrideR : Byte; ColorOverrideG : Byte; ColorOverrideB : Byte; ColorOverrideA : Byte; const FilterLogic : IPCB_GeometryMakerLayerFilterLogic)",IPCB_ColorID
-function,GetState_ViewConfiguration,IPCB_GM_SimpleViewConfiguration
-procedure,SetState_ViewConfiguration(const AValue : IPCB_GM_SimpleViewConfiguration),

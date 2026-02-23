@@ -1,5 +1,0 @@
-MemberType,Name,DataType
-procedure,CopyTo,(const ADest : IPCB_CustomShapeInfo)
-property,CustomShapeParameters,IUnknown
-function,I_ObjectAddress,Pointer
-property,ShapeKind,TShapeSubKind

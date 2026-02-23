@@ -1,6 +1,0 @@
-MemberType,Name,DataType
-function,ArePrimsConnectedByCopper(const APrimitive1 : IPCB_Primitive; const APrimitive2 : IPCB_Primitive),Boolean
-function,GetCopperPrimsBetweenPad(const AStartPad : IPCB_Pad; const AEndPad : IPCB_Pad),IPCB_Group
-function,GetDifferentNetTouchedPrimitives(const APrimitive1 : IPCB_Primitive; const APrimitive2 : IPCB_Primitive; out AConnectorPrim1 : IPCB_Primitive; out AConnectedPrim1 : IPCB_Primitive; out AConnectorPrim2 : IPCB_Primitive; out AConnectedPrim2 : IPCB_Primitive; out AConnectionLayer1 : Integer; out AConnectionLayer2 : Integer),Boolean
-function,GetPrimsConnectedByCopper(const APrimitive : IPCB_Primitive),IPCB_Group
-function,PrimPrimDistance_IgnoreLayer(const APrimitive1 : IPCB_Primitive; const APrimitive2 : IPCB_Primitive),Integer

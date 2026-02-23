@@ -1,4 +1,0 @@
-MemberType,Name,DataType
-function,GetSegment,(Index : Integer) : IDispatch
-function,OriginPt,IDispatch
-function,SegmentsCount,Integer

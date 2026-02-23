@@ -1,4 +1,0 @@
-MemberType,Name,DataType
-procedure,GetSearchPaths(Project : IProject; AbsoluteSearchPaths : IPCB_WideStrings; UnusedPaths : IPCB_WideStrings),
-function,GetState_MeshDirectory,WideString
-procedure,SetState_MeshDirectory(const AValue : WideString),

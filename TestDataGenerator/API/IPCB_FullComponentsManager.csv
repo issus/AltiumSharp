@@ -1,6 +1,0 @@
-MemberType,Name,DataType
-function,GetDesignVariants,IPCB_DesignVariants
-function,GetFullComponents,IPCB_FullComponents
-procedure,SetBoard,const ABoard : IPCB_Board
-procedure,SetCurrentVariant,const AVariantID : WideString
-procedure,UpdateVariantsFromProject,

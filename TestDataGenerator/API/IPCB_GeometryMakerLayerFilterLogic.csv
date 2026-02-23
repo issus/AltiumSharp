@@ -1,2 +1,0 @@
-MemberType,Name,DataType
-function,DoFilter(const Layer : Integer; GType : TGeometryLayerType),Boolean

@@ -1,7 +1,0 @@
-MemberType,Name,DataType
-procedure,Clear,
-procedure,CopyTo,ADest : IPCB_PadViaTemplateLink
-function,GetFullTemplateID,WideString
-property,LibraryID,WideString
-property,RevisionID,WideString
-property,TemplateID,WideString

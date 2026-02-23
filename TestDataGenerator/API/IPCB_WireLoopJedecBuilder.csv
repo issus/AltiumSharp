@@ -1,6 +1,0 @@
-MemberType,Name,DataType
-property,EndAngle,TAngle
-function,GetWireLoop,IPCB_WireLoop
-property,Height,TCoord
-function,I_ObjectAddress,Pointer
-property,StartAngle,TAngle

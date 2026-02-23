@@ -1,6 +1,0 @@
-MemberType,Name,DataType
-function,Count,Integer
-procedure,Delete,(AIndex : Integer)
-procedure,DisposeAllLayerPairs,
-function,HasMicroViaTypes,Boolean
-property,Items[AIndex: Integer],IPCB_DrillLayerPair

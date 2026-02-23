@@ -1,4 +1,0 @@
-MemberType,Name,DataType
-procedure,CollectCustomShapes,
-property,CustomShape[AIndex: Integer],TPCBObjectHandle
-property,CustomShapeCount,Integer

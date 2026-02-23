@@ -1,3 +1,0 @@
-MemberType,Name,DataType
-function,GetWireLoop,IPCB_WireLoop
-function,I_ObjectAddress,Pointer

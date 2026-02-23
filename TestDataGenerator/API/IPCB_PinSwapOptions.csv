@@ -1,9 +1,0 @@
-MemberType,Name,DataType
-procedure,Export_ToParameters,Parameters : PWideChar
-procedure,Export_ToParameters_Version3,Parameters : PWideChar
-procedure,Export_ToParameters_Version4,Parameters : PWideChar
-procedure,Import_FromParameters,DisplayUnit : TUnit; Parameters : PWideChar
-procedure,Import_FromParameters_Version3,DisplayUnit : TUnit; Parameters : PWideChar
-procedure,Import_FromParameters_Version4,DisplayUnit : TUnit; Parameters : PWideChar
-function,I_ObjectAddress,Pointer
-property,OptionsObjectID,TOptionsObjectId

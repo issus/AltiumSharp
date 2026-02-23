@@ -1,6 +1,0 @@
-MemberType,Name,DataType
-procedure,FixPrimitiveLayerIfNeeded,const Primitive : IPCB_Primitive
-function,GetDestLayerStack,IPCB_LayerStackBase
-function,GetSourceLayerStack,IPCB_LayerStackBase
-function,IsMappingNeeded,Boolean
-function,TryMapLayerByPosition,const SourceLayer : Integer; out DestLayer : Integer) : Boolean

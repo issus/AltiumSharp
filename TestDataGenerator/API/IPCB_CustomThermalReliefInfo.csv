@@ -1,3 +1,0 @@
-MemberType,Name,DataType
-function,GetState_ThermalReliefLocation,(AIndex : Integer) : IDispatch
-function,ThermalReliefsCount,Integer

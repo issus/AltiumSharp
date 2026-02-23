@@ -1,4 +1,0 @@
-MemberType,Name,DataType
-procedure,CleanUp,ATolerance : Integer
-function,GetSmallSegments,ATolerance : Integer : ICoordPointPairList
-procedure,RemoveRedundantVertices,

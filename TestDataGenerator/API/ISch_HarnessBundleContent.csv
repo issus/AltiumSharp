@@ -1,4 +1,0 @@
-MemberType,Name,DataType
-function,GetBundle,ISch_HarnessBundle
-function,GetSubLineContent,AIndex : Integer : ISch_HarnessBundleSubLineContent
-function,GetSubLinesContentCount,Integer

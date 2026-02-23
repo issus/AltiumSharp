@@ -1,7 +1,0 @@
-MemberType,Name,DataType
-property,ClippedTargetRangeStart,TCoord
-property,ClippedTargetRangeStop,TCoord
-property,DriverRule,IPCB_MatchedNetLengthsConstraint
-function,DriverRule_Name,WideString
-property,RangeValid,Boolean
-property,UseTargetSource,Boolean

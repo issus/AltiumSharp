@@ -1,3 +1,0 @@
-MemberType,Name,DataType
-function,Count,Integer
-function,GetState_Unions,AIndex : Integer : IPCB_Union

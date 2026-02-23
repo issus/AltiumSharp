@@ -1,7 +1,0 @@
-MemberType,Name,DataType
-procedure,DeleteSegmentAt(const Index : Integer),
-function,InsertSegmentAt(const Index : Integer),IDispatch
-property,ShapeSegmentCount,Integer
-property,ShapeSegments[I: Integer],TPolySegment
-procedure,UpdateContourFromShape(ConserveExistingHoles : Boolean),
-procedure,UpdateShapeFromContour,

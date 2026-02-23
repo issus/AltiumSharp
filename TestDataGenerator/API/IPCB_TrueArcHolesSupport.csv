@@ -1,6 +1,0 @@
-MemberType,Name,DataType
-function,AddTrueArcHole,IPCB_PolygonalShape
-procedure,ClearTrueArcHoles,
-procedure,DeleteTrueArcHole,AIndex : Integer
-property,TrueArcHoleCount,Integer
-property,TrueArcHoles[AIndex: Integer],IPCB_PolygonalShape

@@ -1,5 +1,0 @@
-MemberType,Name,DataType
-procedure,PostBatchProcess(const AContext : IInterface; AParameters : PWideChar),
-procedure,PostProcess_Clustered(const AContext : IInterface; AParameters : PWideChar),
-procedure,PreBatchProcess(const AContext : IInterface; AParameters : PWideChar),
-procedure,PreProcess_Clustered(const AContext : IInterface; AParameters : PWideChar),

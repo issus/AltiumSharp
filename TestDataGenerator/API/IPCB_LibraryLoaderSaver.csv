@@ -1,3 +1,0 @@
-MemberType,Name,DataType
-function,LoadFromFile,APCBLibrary : IPCB_Library; const AFileName : WideString) : Boolean
-function,SaveToFile,APCBLibrary : IPCB_Library; const AFileName : WideString) : Boolean
