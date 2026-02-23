@@ -198,5 +198,7 @@ public sealed class LabelBuilder
     /// </summary>
     public SchLabel Build() => _label;
 
+    /// <summary>Implicitly converts a <see cref="LabelBuilder"/> to a <see cref="SchLabel"/>.</summary>
+    /// <param name="builder">The builder to convert.</param>
     public static implicit operator SchLabel(LabelBuilder builder) => builder.Build();
 }

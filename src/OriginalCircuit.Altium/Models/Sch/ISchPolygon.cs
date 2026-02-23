@@ -2,6 +2,9 @@ using OriginalCircuit.Altium.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
+/// <summary>
+/// Represents a schematic polygon primitive defined by a closed set of vertices.
+/// </summary>
 public interface ISchPolygon : IPrimitive
 {
     IReadOnlyList<CoordPoint> Vertices { get; }

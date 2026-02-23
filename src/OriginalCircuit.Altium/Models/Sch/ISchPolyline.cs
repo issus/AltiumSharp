@@ -2,6 +2,9 @@ using OriginalCircuit.Altium.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
+/// <summary>
+/// Represents a schematic polyline primitive defined by a series of connected line segments.
+/// </summary>
 public interface ISchPolyline : IPrimitive
 {
     IReadOnlyList<CoordPoint> Vertices { get; }

@@ -298,5 +298,7 @@ public sealed class ParameterBuilder
     /// </summary>
     public SchParameter Build() => _param;
 
+    /// <summary>Implicitly converts a <see cref="ParameterBuilder"/> to a <see cref="SchParameter"/>.</summary>
+    /// <param name="builder">The builder to convert.</param>
     public static implicit operator SchParameter(ParameterBuilder builder) => builder.Build();
 }

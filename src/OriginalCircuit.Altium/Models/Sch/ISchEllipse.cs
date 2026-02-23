@@ -2,6 +2,9 @@ using OriginalCircuit.Altium.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
+/// <summary>
+/// Represents a schematic ellipse primitive defined by a center point and radii.
+/// </summary>
 public interface ISchEllipse : IPrimitive
 {
     CoordPoint Center { get; }

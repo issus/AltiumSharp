@@ -180,5 +180,7 @@ public sealed class ArcBuilder
     /// </summary>
     public SchArc Build() => _arc;
 
+    /// <summary>Implicitly converts a <see cref="ArcBuilder"/> to a <see cref="SchArc"/>.</summary>
+    /// <param name="builder">The builder to convert.</param>
     public static implicit operator SchArc(ArcBuilder builder) => builder.Build();
 }

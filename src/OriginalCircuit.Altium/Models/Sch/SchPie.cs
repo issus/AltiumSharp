@@ -216,5 +216,7 @@ public sealed class PieBuilder
     /// </summary>
     public SchPie Build() => _pie;
 
+    /// <summary>Implicitly converts a <see cref="PieBuilder"/> to a <see cref="SchPie"/>.</summary>
+    /// <param name="builder">The builder to convert.</param>
     public static implicit operator SchPie(PieBuilder builder) => builder.Build();
 }

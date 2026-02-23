@@ -7,6 +7,9 @@ namespace OriginalCircuit.Altium.Primitives;
 /// </summary>
 public readonly struct CoordRect : IEquatable<CoordRect>
 {
+    /// <summary>
+    /// An empty rectangle at the origin.
+    /// </summary>
     public static readonly CoordRect Empty = new(CoordPoint.Zero, CoordPoint.Zero);
 
     /// <summary>
@@ -137,13 +140,27 @@ public readonly struct CoordRect : IEquatable<CoordRect>
             new CoordPoint(Coord.Min(Max.X, other.Max.X), Coord.Min(Max.Y, other.Max.Y)));
     }
 
-    // Equality
+    /// <inheritdoc />
     public bool Equals(CoordRect other) => Min == other.Min && Max == other.Max;
+
+    /// <inheritdoc />
     public override bool Equals(object? obj) => obj is CoordRect other && Equals(other);
+
+    /// <inheritdoc />
     public override int GetHashCode() => HashCode.Combine(Min, Max);
 
+    /// <summary>
+    /// Returns <see langword="true"/> if two rectangles have equal corners.
+    /// </summary>
     public static bool operator ==(CoordRect left, CoordRect right) => left.Equals(right);
+
+    /// <summary>
+    /// Returns <see langword="true"/> if two rectangles have different corners.
+    /// </summary>
     public static bool operator !=(CoordRect left, CoordRect right) => !left.Equals(right);
 
+    /// <summary>
+    /// Returns a string representation in the form "[Min - Max]".
+    /// </summary>
     public override string ToString() => $"[{Min} - {Max}]";
 }

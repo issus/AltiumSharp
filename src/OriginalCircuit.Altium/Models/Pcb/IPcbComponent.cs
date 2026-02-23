@@ -19,6 +19,9 @@ public interface IPcbComponent : IComponent
     IReadOnlyList<IPcbComponentBody> ComponentBodies { get; }
 }
 
+/// <summary>
+/// Represents a PCB pad primitive used for component soldering and through-hole or surface-mount connections.
+/// </summary>
 public interface IPcbPad : IPrimitive
 {
     string? Designator { get; set; }
@@ -37,6 +40,9 @@ public interface IPcbPad : IPrimitive
     int Layer { get; }
 }
 
+/// <summary>
+/// Represents a PCB track (trace) primitive that forms a copper connection between two points.
+/// </summary>
 public interface IPcbTrack : IPrimitive
 {
     CoordPoint Start { get; set; }
@@ -45,6 +51,9 @@ public interface IPcbTrack : IPrimitive
     int Layer { get; }
 }
 
+/// <summary>
+/// Represents a PCB via primitive that provides a copper connection between layers.
+/// </summary>
 public interface IPcbVia : IPrimitive
 {
     CoordPoint Location { get; set; }
@@ -55,6 +64,9 @@ public interface IPcbVia : IPrimitive
     int Layer { get; }
 }
 
+/// <summary>
+/// Represents a PCB arc primitive defined by a center point, radius, and angular range.
+/// </summary>
 public interface IPcbArc : IPrimitive
 {
     CoordPoint Center { get; set; }
@@ -65,6 +77,9 @@ public interface IPcbArc : IPrimitive
     int Layer { get; }
 }
 
+/// <summary>
+/// Represents a PCB text string primitive placed on a copper or silkscreen layer.
+/// </summary>
 public interface IPcbText : IPrimitive
 {
     string Text { get; set; }
@@ -80,6 +95,9 @@ public interface IPcbText : IPrimitive
     bool FontItalic { get; }
 }
 
+/// <summary>
+/// Represents a PCB fill primitive that defines a solid rectangular copper region.
+/// </summary>
 public interface IPcbFill : IPrimitive
 {
     CoordPoint Corner1 { get; }
@@ -88,12 +106,18 @@ public interface IPcbFill : IPrimitive
     double Rotation { get; }
 }
 
+/// <summary>
+/// Represents a PCB region primitive defined by an arbitrary closed polygon outline.
+/// </summary>
 public interface IPcbRegion : IPrimitive
 {
     IReadOnlyList<CoordPoint> Outline { get; }
     int Layer { get; }
 }
 
+/// <summary>
+/// Represents a PCB component body primitive that defines the physical 3D outline of a component.
+/// </summary>
 public interface IPcbComponentBody : IPrimitive
 {
     IReadOnlyList<CoordPoint> Outline { get; }

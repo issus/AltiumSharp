@@ -2,6 +2,9 @@ using OriginalCircuit.Altium.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
+/// <summary>
+/// Represents a schematic pie (filled arc sector) primitive.
+/// </summary>
 public interface ISchPie : IPrimitive
 {
     CoordPoint Center { get; }

@@ -150,5 +150,7 @@ public sealed class BezierBuilder
     /// </summary>
     public SchBezier Build() => _bezier;
 
+    /// <summary>Implicitly converts a <see cref="BezierBuilder"/> to a <see cref="SchBezier"/>.</summary>
+    /// <param name="builder">The builder to convert.</param>
     public static implicit operator SchBezier(BezierBuilder builder) => builder.Build();
 }

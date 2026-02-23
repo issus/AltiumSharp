@@ -2,6 +2,9 @@ using OriginalCircuit.Altium.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
+/// <summary>
+/// Represents a schematic elliptical arc primitive defined by a center, primary and secondary radii, and angular range.
+/// </summary>
 public interface ISchEllipticalArc : IPrimitive
 {
     CoordPoint Center { get; }

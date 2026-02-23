@@ -208,5 +208,7 @@ public sealed class PolylineBuilder
     /// </summary>
     public SchPolyline Build() => _polyline;
 
+    /// <summary>Implicitly converts a <see cref="PolylineBuilder"/> to a <see cref="SchPolyline"/>.</summary>
+    /// <param name="builder">The builder to convert.</param>
     public static implicit operator SchPolyline(PolylineBuilder builder) => builder.Build();
 }

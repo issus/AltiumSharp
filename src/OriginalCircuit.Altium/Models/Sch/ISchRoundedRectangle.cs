@@ -2,6 +2,9 @@ using OriginalCircuit.Altium.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
+/// <summary>
+/// Represents a schematic rounded rectangle primitive with configurable corner radii.
+/// </summary>
 public interface ISchRoundedRectangle : IPrimitive
 {
     CoordPoint Corner1 { get; }

@@ -210,5 +210,7 @@ public sealed class ImageBuilder
     /// </summary>
     public SchImage Build() => _image;
 
+    /// <summary>Implicitly converts a <see cref="ImageBuilder"/> to a <see cref="SchImage"/>.</summary>
+    /// <param name="builder">The builder to convert.</param>
     public static implicit operator SchImage(ImageBuilder builder) => builder.Build();
 }

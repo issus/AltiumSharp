@@ -7,11 +7,26 @@ namespace OriginalCircuit.Altium.Primitives;
 /// </summary>
 public readonly struct CoordPoint : IEquatable<CoordPoint>
 {
+    /// <summary>
+    /// The origin point (0, 0).
+    /// </summary>
     public static readonly CoordPoint Zero = new(Coord.Zero, Coord.Zero);
 
+    /// <summary>
+    /// The X (horizontal) coordinate.
+    /// </summary>
     public Coord X { get; }
+
+    /// <summary>
+    /// The Y (vertical) coordinate.
+    /// </summary>
     public Coord Y { get; }
 
+    /// <summary>
+    /// Creates a new point from X and Y coordinates.
+    /// </summary>
+    /// <param name="x">The X coordinate.</param>
+    /// <param name="y">The Y coordinate.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public CoordPoint(Coord x, Coord y)
     {
@@ -69,29 +84,57 @@ public readonly struct CoordPoint : IEquatable<CoordPoint>
         return new CoordPoint(rotated.X + center.X, rotated.Y + center.Y);
     }
 
-    // Arithmetic operators
+    /// <summary>
+    /// Adds two points component-wise.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static CoordPoint operator +(CoordPoint a, CoordPoint b) => new(a.X + b.X, a.Y + b.Y);
 
+    /// <summary>
+    /// Subtracts one point from another component-wise.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static CoordPoint operator -(CoordPoint a, CoordPoint b) => new(a.X - b.X, a.Y - b.Y);
 
+    /// <summary>
+    /// Negates both components of a point.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static CoordPoint operator -(CoordPoint a) => new(-a.X, -a.Y);
 
+    /// <summary>
+    /// Multiplies both components of a point by a scalar value.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static CoordPoint operator *(CoordPoint a, double scalar) => new(a.X * scalar, a.Y * scalar);
 
+    /// <summary>
+    /// Multiplies a scalar value by both components of a point.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static CoordPoint operator *(double scalar, CoordPoint a) => new(a.X * scalar, a.Y * scalar);
 
-    // Equality
+    /// <inheritdoc />
     public bool Equals(CoordPoint other) => X == other.X && Y == other.Y;
+
+    /// <inheritdoc />
     public override bool Equals(object? obj) => obj is CoordPoint other && Equals(other);
+
+    /// <inheritdoc />
     public override int GetHashCode() => HashCode.Combine(X, Y);
 
+    /// <summary>
+    /// Returns <see langword="true"/> if two points have equal coordinates.
+    /// </summary>
     public static bool operator ==(CoordPoint left, CoordPoint right) => left.Equals(right);
+
+    /// <summary>
+    /// Returns <see langword="true"/> if two points have different coordinates.
+    /// </summary>
     public static bool operator !=(CoordPoint left, CoordPoint right) => !left.Equals(right);
 
+    /// <summary>
+    /// Returns a string representation in the form "(X, Y)".
+    /// </summary>
     public override string ToString() => $"({X}, {Y})";
 }

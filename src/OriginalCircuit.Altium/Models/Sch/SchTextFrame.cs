@@ -265,5 +265,7 @@ public sealed class TextFrameBuilder
     /// </summary>
     public SchTextFrame Build() => _frame;
 
+    /// <summary>Implicitly converts a <see cref="TextFrameBuilder"/> to a <see cref="SchTextFrame"/>.</summary>
+    /// <param name="builder">The builder to convert.</param>
     public static implicit operator SchTextFrame(TextFrameBuilder builder) => builder.Build();
 }

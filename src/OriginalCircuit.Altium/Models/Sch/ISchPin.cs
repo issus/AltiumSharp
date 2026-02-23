@@ -2,6 +2,9 @@ using OriginalCircuit.Altium.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
+/// <summary>
+/// Represents a schematic pin primitive that defines an electrical connection point on a component symbol.
+/// </summary>
 public interface ISchPin : IPrimitive
 {
     string? Name { get; set; }

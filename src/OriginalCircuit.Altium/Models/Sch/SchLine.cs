@@ -137,5 +137,7 @@ public sealed class LineBuilder
     /// </summary>
     public SchLine Build() => _line;
 
+    /// <summary>Implicitly converts a <see cref="LineBuilder"/> to a <see cref="SchLine"/>.</summary>
+    /// <param name="builder">The builder to convert.</param>
     public static implicit operator SchLine(LineBuilder builder) => builder.Build();
 }

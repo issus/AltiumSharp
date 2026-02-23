@@ -129,5 +129,7 @@ public sealed class JunctionBuilder
     /// </summary>
     public SchJunction Build() => _junction;
 
+    /// <summary>Implicitly converts a <see cref="JunctionBuilder"/> to a <see cref="SchJunction"/>.</summary>
+    /// <param name="builder">The builder to convert.</param>
     public static implicit operator SchJunction(JunctionBuilder builder) => builder.Build();
 }

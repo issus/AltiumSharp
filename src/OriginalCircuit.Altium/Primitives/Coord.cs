@@ -139,6 +139,12 @@ public readonly struct Coord : IEquatable<Coord>, IComparable<Coord>, IFormattab
         return false;
     }
 
+    /// <summary>
+    /// Parses a coordinate from a span, handling unit suffixes (mil, mm, in).
+    /// </summary>
+    /// <param name="span">The text to parse.</param>
+    /// <returns>The parsed coordinate value.</returns>
+    /// <exception cref="FormatException">Thrown when the span cannot be parsed as a coordinate.</exception>
     public static Coord Parse(ReadOnlySpan<char> span)
     {
         if (!TryParse(span, out var result))
@@ -146,8 +152,17 @@ public readonly struct Coord : IEquatable<Coord>, IComparable<Coord>, IFormattab
         return result;
     }
 
+    /// <summary>
+    /// Returns the coordinate formatted as mils with invariant culture.
+    /// </summary>
     public override string ToString() => ToString("mil", CultureInfo.InvariantCulture);
 
+    /// <summary>
+    /// Formats the coordinate using the specified format and provider.
+    /// </summary>
+    /// <param name="format">Format specifier: "mil", "mm", "in", or "raw".</param>
+    /// <param name="formatProvider">The format provider for numeric formatting.</param>
+    /// <returns>The formatted coordinate string.</returns>
     public string ToString(string? format, IFormatProvider? formatProvider)
     {
         format ??= "mil";
@@ -163,48 +178,105 @@ public readonly struct Coord : IEquatable<Coord>, IComparable<Coord>, IFormattab
         };
     }
 
-    // Arithmetic operators
+    /// <summary>
+    /// Adds two coordinates.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Coord operator +(Coord a, Coord b) => new(a._value + b._value);
 
+    /// <summary>
+    /// Subtracts one coordinate from another.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Coord operator -(Coord a, Coord b) => new(a._value - b._value);
 
+    /// <summary>
+    /// Negates a coordinate value.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Coord operator -(Coord a) => new(-a._value);
 
+    /// <summary>
+    /// Multiplies a coordinate by a scalar value.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Coord operator *(Coord a, double scalar) => new(checked((int)(a._value * scalar)));
 
+    /// <summary>
+    /// Multiplies a scalar value by a coordinate.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Coord operator *(double scalar, Coord a) => new(checked((int)(a._value * scalar)));
 
+    /// <summary>
+    /// Divides a coordinate by a scalar value.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Coord operator /(Coord a, double scalar) => new(checked((int)(a._value / scalar)));
 
+    /// <summary>
+    /// Divides one coordinate by another, returning the ratio as a double.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double operator /(Coord a, Coord b) => (double)a._value / b._value;
 
-    // Comparison
+    /// <inheritdoc />
     public bool Equals(Coord other) => _value == other._value;
+
+    /// <inheritdoc />
     public override bool Equals(object? obj) => obj is Coord other && Equals(other);
+
+    /// <inheritdoc />
     public override int GetHashCode() => _value;
+
+    /// <inheritdoc />
     public int CompareTo(Coord other) => _value.CompareTo(other._value);
 
+    /// <summary>
+    /// Returns <see langword="true"/> if two coordinates are equal.
+    /// </summary>
     public static bool operator ==(Coord left, Coord right) => left._value == right._value;
+
+    /// <summary>
+    /// Returns <see langword="true"/> if two coordinates are not equal.
+    /// </summary>
     public static bool operator !=(Coord left, Coord right) => left._value != right._value;
+
+    /// <summary>
+    /// Returns <see langword="true"/> if the left coordinate is less than the right.
+    /// </summary>
     public static bool operator <(Coord left, Coord right) => left._value < right._value;
+
+    /// <summary>
+    /// Returns <see langword="true"/> if the left coordinate is less than or equal to the right.
+    /// </summary>
     public static bool operator <=(Coord left, Coord right) => left._value <= right._value;
+
+    /// <summary>
+    /// Returns <see langword="true"/> if the left coordinate is greater than the right.
+    /// </summary>
     public static bool operator >(Coord left, Coord right) => left._value > right._value;
+
+    /// <summary>
+    /// Returns <see langword="true"/> if the left coordinate is greater than or equal to the right.
+    /// </summary>
     public static bool operator >=(Coord left, Coord right) => left._value >= right._value;
 
-    // Math helpers
+    /// <summary>
+    /// Returns the absolute value of a coordinate.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Coord Abs(Coord value) => new(Math.Abs(value._value));
 
+    /// <summary>
+    /// Returns the smaller of two coordinates.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Coord Min(Coord a, Coord b) => new(Math.Min(a._value, b._value));
 
+    /// <summary>
+    /// Returns the larger of two coordinates.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Coord Max(Coord a, Coord b) => new(Math.Max(a._value, b._value));
 }

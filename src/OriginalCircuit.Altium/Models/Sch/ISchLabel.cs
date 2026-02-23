@@ -2,6 +2,9 @@ using OriginalCircuit.Altium.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
+/// <summary>
+/// Represents a schematic text label primitive used for annotation.
+/// </summary>
 public interface ISchLabel : IPrimitive
 {
     string Text { get; set; }

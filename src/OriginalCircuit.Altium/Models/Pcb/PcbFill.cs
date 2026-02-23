@@ -261,5 +261,7 @@ public sealed class FillBuilder
     /// </summary>
     public PcbFill Build() => _fill;
 
+    /// <summary>Implicitly converts a <see cref="FillBuilder"/> to a <see cref="PcbFill"/>.</summary>
+    /// <param name="builder">The builder to convert.</param>
     public static implicit operator PcbFill(FillBuilder builder) => builder.Build();
 }

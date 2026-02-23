@@ -11,11 +11,20 @@ public sealed class PcbComponentRenderer
 {
     private readonly CoordTransform _transform;
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="PcbComponentRenderer"/> with the specified coordinate transform.
+    /// </summary>
+    /// <param name="transform">The coordinate transform used to map world coordinates to screen coordinates.</param>
     public PcbComponentRenderer(CoordTransform transform)
     {
         _transform = transform ?? throw new ArgumentNullException(nameof(transform));
     }
 
+    /// <summary>
+    /// Renders all primitives of a PCB component to the specified context, sorted by layer draw priority.
+    /// </summary>
+    /// <param name="component">The PCB component to render.</param>
+    /// <param name="context">The render context to draw into.</param>
     public void Render(IPcbComponent component, IRenderContext context)
     {
         ArgumentNullException.ThrowIfNull(component);

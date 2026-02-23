@@ -219,6 +219,7 @@ internal sealed class AsyncBinaryFormatReader : IAsyncDisposable
         return ReadStringBlockAsync(encoding, cancellationToken);
     }
 
+    /// <inheritdoc />
     public async ValueTask DisposeAsync()
     {
         if (_disposed)

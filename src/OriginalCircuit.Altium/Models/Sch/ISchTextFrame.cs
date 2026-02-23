@@ -2,6 +2,9 @@ using OriginalCircuit.Altium.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
+/// <summary>
+/// Represents a schematic text frame primitive that displays text within a bordered rectangular area.
+/// </summary>
 public interface ISchTextFrame : IPrimitive
 {
     CoordPoint Corner1 { get; }

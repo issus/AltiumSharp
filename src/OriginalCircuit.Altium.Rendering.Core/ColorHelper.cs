@@ -16,17 +16,29 @@ public static class ColorHelper
         return 0xFF000000 | (r << 16) | (g << 8) | b;
     }
 
+    /// <summary>
+    /// Creates a fully opaque ARGB color from individual red, green, and blue components.
+    /// </summary>
     public static uint FromRgb(byte r, byte g, byte b) => 0xFF000000 | ((uint)r << 16) | ((uint)g << 8) | b;
 
-    // Common colors
+    /// <summary>Black (0xFF000000).</summary>
     public const uint Black = 0xFF000000;
+    /// <summary>White (0xFFFFFFFF).</summary>
     public const uint White = 0xFFFFFFFF;
+    /// <summary>Red (0xFFFF0000).</summary>
     public const uint Red = 0xFFFF0000;
+    /// <summary>Green (0xFF00FF00).</summary>
     public const uint Green = 0xFF00FF00;
+    /// <summary>Blue (0xFF0000FF).</summary>
     public const uint Blue = 0xFF0000FF;
+    /// <summary>Yellow (0xFFFFFF00).</summary>
     public const uint Yellow = 0xFFFFFF00;
+    /// <summary>Dark green (0xFF006400).</summary>
     public const uint DarkGreen = 0xFF006400;
+    /// <summary>Dark blue (0xFF00008B).</summary>
     public const uint DarkBlue = 0xFF00008B;
+    /// <summary>Navy (0xFF000080).</summary>
     public const uint Navy = 0xFF000080;
+    /// <summary>Gray (0xFF808080).</summary>
     public const uint Gray = 0xFF808080;
 }

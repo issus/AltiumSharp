@@ -181,5 +181,7 @@ public sealed class SymbolBuilder
     /// </summary>
     public SchSymbol Build() => _symbol;
 
+    /// <summary>Implicitly converts a <see cref="SymbolBuilder"/> to a <see cref="SchSymbol"/>.</summary>
+    /// <param name="builder">The builder to convert.</param>
     public static implicit operator SchSymbol(SymbolBuilder builder) => builder.Build();
 }

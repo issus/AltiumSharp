@@ -193,5 +193,7 @@ public sealed class EllipseBuilder
     /// </summary>
     public SchEllipse Build() => _ellipse;
 
+    /// <summary>Implicitly converts a <see cref="EllipseBuilder"/> to a <see cref="SchEllipse"/>.</summary>
+    /// <param name="builder">The builder to convert.</param>
     public static implicit operator SchEllipse(EllipseBuilder builder) => builder.Build();
 }

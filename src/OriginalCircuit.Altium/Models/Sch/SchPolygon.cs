@@ -187,5 +187,7 @@ public sealed class PolygonBuilder
     /// </summary>
     public SchPolygon Build() => _polygon;
 
+    /// <summary>Implicitly converts a <see cref="PolygonBuilder"/> to a <see cref="SchPolygon"/>.</summary>
+    /// <param name="builder">The builder to convert.</param>
     public static implicit operator SchPolygon(PolygonBuilder builder) => builder.Build();
 }

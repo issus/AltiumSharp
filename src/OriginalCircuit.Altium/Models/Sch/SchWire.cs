@@ -213,5 +213,7 @@ public sealed class WireBuilder
     /// </summary>
     public SchWire Build() => _wire;
 
+    /// <summary>Implicitly converts a <see cref="WireBuilder"/> to a <see cref="SchWire"/>.</summary>
+    /// <param name="builder">The builder to convert.</param>
     public static implicit operator SchWire(WireBuilder builder) => builder.Build();
 }

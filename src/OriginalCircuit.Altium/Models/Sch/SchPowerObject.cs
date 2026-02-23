@@ -227,5 +227,7 @@ public sealed class PowerObjectBuilder
     /// </summary>
     public SchPowerObject Build() => _power;
 
+    /// <summary>Implicitly converts a <see cref="PowerObjectBuilder"/> to a <see cref="SchPowerObject"/>.</summary>
+    /// <param name="builder">The builder to convert.</param>
     public static implicit operator SchPowerObject(PowerObjectBuilder builder) => builder.Build();
 }

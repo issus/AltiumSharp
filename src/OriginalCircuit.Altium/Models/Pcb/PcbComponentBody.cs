@@ -537,5 +537,7 @@ public sealed class ComponentBodyBuilder
     /// </summary>
     public PcbComponentBody Build() => _body;
 
+    /// <summary>Implicitly converts a <see cref="ComponentBodyBuilder"/> to a <see cref="PcbComponentBody"/>.</summary>
+    /// <param name="builder">The builder to convert.</param>
     public static implicit operator PcbComponentBody(ComponentBodyBuilder builder) => builder.Build();
 }

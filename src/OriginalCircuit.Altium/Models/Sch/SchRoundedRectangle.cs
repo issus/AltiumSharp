@@ -212,5 +212,7 @@ public sealed class RoundedRectangleBuilder
     /// </summary>
     public SchRoundedRectangle Build() => _rect;
 
+    /// <summary>Implicitly converts a <see cref="RoundedRectangleBuilder"/> to a <see cref="SchRoundedRectangle"/>.</summary>
+    /// <param name="builder">The builder to convert.</param>
     public static implicit operator SchRoundedRectangle(RoundedRectangleBuilder builder) => builder.Build();
 }

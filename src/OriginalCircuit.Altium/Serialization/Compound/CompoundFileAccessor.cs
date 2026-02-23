@@ -198,6 +198,7 @@ internal sealed class CompoundFileAccessor : IAsyncDisposable, IDisposable
         return null;
     }
 
+    /// <inheritdoc />
     public void Dispose()
     {
         if (_disposed)
@@ -212,6 +213,7 @@ internal sealed class CompoundFileAccessor : IAsyncDisposable, IDisposable
         }
     }
 
+    /// <inheritdoc />
     public async ValueTask DisposeAsync()
     {
         if (_disposed)

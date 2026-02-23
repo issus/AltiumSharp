@@ -10,6 +10,12 @@ public class AltiumFileException : Exception
     /// </summary>
     public string? FilePath { get; }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="AltiumFileException"/>.
+    /// </summary>
+    /// <param name="message">The error message.</param>
+    /// <param name="filePath">Path of the file being processed, if available.</param>
+    /// <param name="innerException">The inner exception, if any.</param>
     public AltiumFileException(string message, string? filePath = null, Exception? innerException = null)
         : base(message, innerException)
     {
@@ -27,6 +33,13 @@ public class AltiumCorruptFileException : AltiumFileException
     /// </summary>
     public string? StreamName { get; }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="AltiumCorruptFileException"/>.
+    /// </summary>
+    /// <param name="message">The error message.</param>
+    /// <param name="streamName">Name of the OLE stream where corruption was detected.</param>
+    /// <param name="filePath">Path of the file being processed, if available.</param>
+    /// <param name="innerException">The inner exception, if any.</param>
     public AltiumCorruptFileException(string message, string? streamName = null, string? filePath = null, Exception? innerException = null)
         : base(message, filePath, innerException)
     {
@@ -44,6 +57,13 @@ public class AltiumUnsupportedFeatureException : AltiumFileException
     /// </summary>
     public int? RecordType { get; }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="AltiumUnsupportedFeatureException"/>.
+    /// </summary>
+    /// <param name="message">The error message.</param>
+    /// <param name="recordType">The unsupported record type number, if applicable.</param>
+    /// <param name="filePath">Path of the file being processed, if available.</param>
+    /// <param name="innerException">The inner exception, if any.</param>
     public AltiumUnsupportedFeatureException(string message, int? recordType = null, string? filePath = null, Exception? innerException = null)
         : base(message, filePath, innerException)
     {

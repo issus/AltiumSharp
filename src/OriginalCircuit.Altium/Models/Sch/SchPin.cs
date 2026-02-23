@@ -378,5 +378,7 @@ public sealed class PinBuilder
     /// </summary>
     public SchPin Build() => _pin;
 
+    /// <summary>Implicitly converts a <see cref="PinBuilder"/> to a <see cref="SchPin"/>.</summary>
+    /// <param name="builder">The builder to convert.</param>
     public static implicit operator SchPin(PinBuilder builder) => builder.Build();
 }

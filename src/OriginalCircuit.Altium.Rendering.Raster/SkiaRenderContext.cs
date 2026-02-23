@@ -12,6 +12,10 @@ public sealed class SkiaRenderContext : IRenderContext, IDisposable
     private readonly SKCanvas _canvas;
     private readonly Stack<int> _saveStack = new();
 
+    /// <summary>
+    /// Initializes a new instance wrapping the specified <see cref="SKCanvas"/>.
+    /// </summary>
+    /// <param name="canvas">The SkiaSharp canvas to draw on. Ownership is not transferred.</param>
     public SkiaRenderContext(SKCanvas canvas)
     {
         _canvas = canvas ?? throw new ArgumentNullException(nameof(canvas));
@@ -42,11 +46,13 @@ public sealed class SkiaRenderContext : IRenderContext, IDisposable
         return SKFontStyle.Normal;
     }
 
+    /// <inheritdoc />
     public void Clear(uint argbColor)
     {
         _canvas.Clear(ToColor(argbColor));
     }
 
+    /// <inheritdoc />
     public void DrawLine(double x1, double y1, double x2, double y2, uint color, double width,
         LineStyle style = LineStyle.Solid)
     {
@@ -62,6 +68,7 @@ public sealed class SkiaRenderContext : IRenderContext, IDisposable
         _canvas.DrawLine((float)x1, (float)y1, (float)x2, (float)y2, paint);
     }
 
+    /// <inheritdoc />
     public void DrawArc(double cx, double cy, double rx, double ry, double startAngle, double sweepAngle,
         uint color, double width)
     {
@@ -83,6 +90,7 @@ public sealed class SkiaRenderContext : IRenderContext, IDisposable
         _canvas.DrawPath(path, paint);
     }
 
+    /// <inheritdoc />
     public void DrawRectangle(double x, double y, double width, double height, uint color, double lineWidth)
     {
         using var paint = new SKPaint
@@ -95,6 +103,7 @@ public sealed class SkiaRenderContext : IRenderContext, IDisposable
         _canvas.DrawRect((float)x, (float)y, (float)width, (float)height, paint);
     }
 
+    /// <inheritdoc />
     public void FillRectangle(double x, double y, double width, double height, uint color)
     {
         using var paint = new SKPaint
@@ -106,6 +115,7 @@ public sealed class SkiaRenderContext : IRenderContext, IDisposable
         _canvas.DrawRect((float)x, (float)y, (float)width, (float)height, paint);
     }
 
+    /// <inheritdoc />
     public void DrawRoundedRectangle(double x, double y, double width, double height,
         double cornerRadiusX, double cornerRadiusY, uint color, double lineWidth)
     {
@@ -121,6 +131,7 @@ public sealed class SkiaRenderContext : IRenderContext, IDisposable
         _canvas.DrawRoundRect(rr, paint);
     }
 
+    /// <inheritdoc />
     public void FillRoundedRectangle(double x, double y, double width, double height,
         double cornerRadius, uint color)
     {
@@ -135,6 +146,7 @@ public sealed class SkiaRenderContext : IRenderContext, IDisposable
         _canvas.DrawRoundRect(rr, paint);
     }
 
+    /// <inheritdoc />
     public void DrawEllipse(double cx, double cy, double rx, double ry, uint color, double width)
     {
         using var paint = new SKPaint
@@ -147,6 +159,7 @@ public sealed class SkiaRenderContext : IRenderContext, IDisposable
         _canvas.DrawOval((float)cx, (float)cy, (float)rx, (float)ry, paint);
     }
 
+    /// <inheritdoc />
     public void FillEllipse(double cx, double cy, double rx, double ry, uint color)
     {
         using var paint = new SKPaint
@@ -158,6 +171,7 @@ public sealed class SkiaRenderContext : IRenderContext, IDisposable
         _canvas.DrawOval((float)cx, (float)cy, (float)rx, (float)ry, paint);
     }
 
+    /// <inheritdoc />
     public void DrawPolygon(ReadOnlySpan<double> xPoints, ReadOnlySpan<double> yPoints, uint color, double width)
     {
         if (xPoints.Length < 2 || xPoints.Length != yPoints.Length) return;
@@ -175,6 +189,7 @@ public sealed class SkiaRenderContext : IRenderContext, IDisposable
         _canvas.DrawPath(path, paint);
     }
 
+    /// <inheritdoc />
     public void FillPolygon(ReadOnlySpan<double> xPoints, ReadOnlySpan<double> yPoints, uint color)
     {
         if (xPoints.Length < 3 || xPoints.Length != yPoints.Length) return;
@@ -190,6 +205,7 @@ public sealed class SkiaRenderContext : IRenderContext, IDisposable
         _canvas.DrawPath(path, paint);
     }
 
+    /// <inheritdoc />
     public void DrawPolyline(ReadOnlySpan<double> xPoints, ReadOnlySpan<double> yPoints, uint color, double width,
         LineStyle style = LineStyle.Solid)
     {
@@ -214,6 +230,7 @@ public sealed class SkiaRenderContext : IRenderContext, IDisposable
         _canvas.DrawPath(path, paint);
     }
 
+    /// <inheritdoc />
     public void DrawBezier(double x0, double y0, double x1, double y1, double x2, double y2,
         double x3, double y3, uint color, double width)
     {
@@ -232,6 +249,7 @@ public sealed class SkiaRenderContext : IRenderContext, IDisposable
         _canvas.DrawPath(path, paint);
     }
 
+    /// <inheritdoc />
     public void FillPie(double cx, double cy, double rx, double ry, double startAngle, double sweepAngle,
         uint color)
     {
@@ -253,6 +271,7 @@ public sealed class SkiaRenderContext : IRenderContext, IDisposable
         _canvas.DrawPath(path, paint);
     }
 
+    /// <inheritdoc />
     public void DrawPie(double cx, double cy, double rx, double ry, double startAngle, double sweepAngle,
         uint color, double lineWidth)
     {
@@ -276,6 +295,7 @@ public sealed class SkiaRenderContext : IRenderContext, IDisposable
         _canvas.DrawPath(path, paint);
     }
 
+    /// <inheritdoc />
     public void DrawText(string text, double x, double y, double fontSize, uint color,
         string fontFamily = "Arial")
     {
@@ -292,6 +312,7 @@ public sealed class SkiaRenderContext : IRenderContext, IDisposable
         _canvas.DrawText(text, (float)x, (float)y, font, paint);
     }
 
+    /// <inheritdoc />
     public void DrawText(string text, double x, double y, double fontSize, uint color,
         TextRenderOptions options)
     {
@@ -338,6 +359,7 @@ public sealed class SkiaRenderContext : IRenderContext, IDisposable
         _canvas.DrawText(text, drawX, drawY, font, paint);
     }
 
+    /// <inheritdoc />
     public TextMetrics MeasureText(string text, double fontSize, TextRenderOptions? options = null)
     {
         if (string.IsNullOrEmpty(text)) return new TextMetrics(0, 0);
@@ -357,6 +379,7 @@ public sealed class SkiaRenderContext : IRenderContext, IDisposable
         return new TextMetrics(width, height);
     }
 
+    /// <inheritdoc />
     public void DrawImage(ReadOnlySpan<byte> imageData, double x, double y, double width, double height)
     {
         if (imageData.IsEmpty) return;
@@ -369,21 +392,25 @@ public sealed class SkiaRenderContext : IRenderContext, IDisposable
         _canvas.DrawBitmap(bitmap, dest);
     }
 
+    /// <inheritdoc />
     public void SetClipRect(double x, double y, double w, double h)
     {
         _canvas.ClipRect(new SKRect((float)x, (float)y, (float)(x + w), (float)(y + h)));
     }
 
+    /// <inheritdoc />
     public void ResetClip()
     {
         _canvas.RestoreToCount(_canvas.Save());
     }
 
+    /// <inheritdoc />
     public void SaveState()
     {
         _saveStack.Push(_canvas.Save());
     }
 
+    /// <inheritdoc />
     public void RestoreState()
     {
         if (_saveStack.Count > 0)
@@ -396,21 +423,25 @@ public sealed class SkiaRenderContext : IRenderContext, IDisposable
         }
     }
 
+    /// <inheritdoc />
     public void Translate(double dx, double dy)
     {
         _canvas.Translate((float)dx, (float)dy);
     }
 
+    /// <inheritdoc />
     public void Rotate(double angleDegrees)
     {
         _canvas.RotateDegrees((float)angleDegrees);
     }
 
+    /// <inheritdoc />
     public void Scale(double sx, double sy)
     {
         _canvas.Scale((float)sx, (float)sy);
     }
 
+    /// <inheritdoc />
     public void Dispose()
     {
         // We do not own the canvas; the caller disposes it.

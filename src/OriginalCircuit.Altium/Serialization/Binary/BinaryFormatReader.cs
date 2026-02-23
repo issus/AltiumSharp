@@ -436,6 +436,7 @@ internal sealed class BinaryFormatReader : IDisposable
         }
     }
 
+    /// <inheritdoc />
     public void Dispose()
     {
         if (_disposed)

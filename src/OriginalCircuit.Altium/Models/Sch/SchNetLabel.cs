@@ -177,5 +177,7 @@ public sealed class NetLabelBuilder
     /// </summary>
     public SchNetLabel Build() => _label;
 
+    /// <summary>Implicitly converts a <see cref="NetLabelBuilder"/> to a <see cref="SchNetLabel"/>.</summary>
+    /// <param name="builder">The builder to convert.</param>
     public static implicit operator SchNetLabel(NetLabelBuilder builder) => builder.Build();
 }

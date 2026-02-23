@@ -184,5 +184,7 @@ public sealed class EllipticalArcBuilder
     /// </summary>
     public SchEllipticalArc Build() => _arc;
 
+    /// <summary>Implicitly converts a <see cref="EllipticalArcBuilder"/> to a <see cref="SchEllipticalArc"/>.</summary>
+    /// <param name="builder">The builder to convert.</param>
     public static implicit operator SchEllipticalArc(EllipticalArcBuilder builder) => builder.Build();
 }

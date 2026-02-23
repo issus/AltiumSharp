@@ -165,5 +165,7 @@ public sealed class RectangleBuilder
     /// </summary>
     public SchRectangle Build() => _rect;
 
+    /// <summary>Implicitly converts a <see cref="RectangleBuilder"/> to a <see cref="SchRectangle"/>.</summary>
+    /// <param name="builder">The builder to convert.</param>
     public static implicit operator SchRectangle(RectangleBuilder builder) => builder.Build();
 }

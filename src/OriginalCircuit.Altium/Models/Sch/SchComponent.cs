@@ -808,5 +808,8 @@ public sealed class SchComponentBuilder
     /// </summary>
     public SchComponent Build() => _component;
 
+    /// <summary>
+    /// Implicit conversion to <see cref="SchComponent"/>.
+    /// </summary>
     public static implicit operator SchComponent(SchComponentBuilder builder) => builder.Build();
 }

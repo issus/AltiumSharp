@@ -33,11 +33,20 @@ public sealed class SchComponentRenderer
     /// </summary>
     public int? PartFilter { get; set; }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="SchComponentRenderer"/> with the specified coordinate transform.
+    /// </summary>
+    /// <param name="transform">The coordinate transform used to map world coordinates to screen coordinates.</param>
     public SchComponentRenderer(CoordTransform transform)
     {
         _transform = transform ?? throw new ArgumentNullException(nameof(transform));
     }
 
+    /// <summary>
+    /// Renders all visible primitives of a schematic component to the specified context.
+    /// </summary>
+    /// <param name="component">The schematic component to render.</param>
+    /// <param name="context">The render context to draw into.</param>
     public void Render(ISchComponent component, IRenderContext context)
     {
         ArgumentNullException.ThrowIfNull(component);
@@ -104,6 +113,9 @@ public sealed class SchComponentRenderer
 
     // ── Pin ─────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// Renders a schematic pin, including its line, electrical type symbol, name, and designator.
+    /// </summary>
     public void RenderPin(IRenderContext context, ISchPin pin)
     {
         if (pin.IsHidden) return;
@@ -281,6 +293,9 @@ public sealed class SchComponentRenderer
 
     // ── Line ────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// Renders a schematic line primitive with its color, width, and dash style.
+    /// </summary>
     public void RenderLine(IRenderContext context, ISchLine line)
     {
         var (x1, y1) = _transform.WorldToScreen(line.Start.X, line.Start.Y);
@@ -296,6 +311,9 @@ public sealed class SchComponentRenderer
 
     // ── Rectangle ───────────────────────────────────────────────────
 
+    /// <summary>
+    /// Renders a schematic rectangle with optional fill and border.
+    /// </summary>
     public void RenderRectangle(IRenderContext context, ISchRectangle rect)
     {
         var (x1, y1) = _transform.WorldToScreen(rect.Corner1.X, rect.Corner1.Y);
@@ -321,6 +339,9 @@ public sealed class SchComponentRenderer
 
     // ── Arc ─────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// Renders a schematic arc or full circle based on start and end angles.
+    /// </summary>
     public void RenderArc(IRenderContext context, ISchArc arc)
     {
         var (cx, cy) = _transform.WorldToScreen(arc.Center.X, arc.Center.Y);
@@ -343,6 +364,9 @@ public sealed class SchComponentRenderer
 
     // ── Wire ────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// Renders a schematic wire as a polyline through its vertices.
+    /// </summary>
     public void RenderWire(IRenderContext context, ISchWire wire)
     {
         if (wire.Vertices.Count < 2) return;
@@ -361,6 +385,9 @@ public sealed class SchComponentRenderer
 
     // ── Polyline ────────────────────────────────────────────────────
 
+    /// <summary>
+    /// Renders a schematic polyline with optional start and end line shapes (arrows, circles, etc.).
+    /// </summary>
     public void RenderPolyline(IRenderContext context, ISchPolyline polyline)
     {
         if (polyline.Vertices.Count < 2) return;
@@ -441,6 +468,9 @@ public sealed class SchComponentRenderer
 
     // ── Polygon ─────────────────────────────────────────────────────
 
+    /// <summary>
+    /// Renders a schematic polygon with optional fill and border.
+    /// </summary>
     public void RenderPolygon(IRenderContext context, ISchPolygon polygon)
     {
         if (polygon.Vertices.Count < 3) return;
@@ -464,6 +494,9 @@ public sealed class SchComponentRenderer
 
     // ── Bezier ──────────────────────────────────────────────────────
 
+    /// <summary>
+    /// Renders a schematic bezier curve from its cubic control points.
+    /// </summary>
     public void RenderBezier(IRenderContext context, ISchBezier bezier)
     {
         if (bezier.ControlPoints.Count < 4) return;
@@ -485,6 +518,9 @@ public sealed class SchComponentRenderer
 
     // ── Ellipse ─────────────────────────────────────────────────────
 
+    /// <summary>
+    /// Renders a schematic ellipse with optional fill and border.
+    /// </summary>
     public void RenderEllipse(IRenderContext context, ISchEllipse ellipse)
     {
         var (cx, cy) = _transform.WorldToScreen(ellipse.Center.X, ellipse.Center.Y);
@@ -504,6 +540,9 @@ public sealed class SchComponentRenderer
 
     // ── Rounded Rectangle ───────────────────────────────────────────
 
+    /// <summary>
+    /// Renders a schematic rounded rectangle with optional fill, border, and corner radii.
+    /// </summary>
     public void RenderRoundedRectangle(IRenderContext context, ISchRoundedRectangle roundedRect)
     {
         var (x1, y1) = _transform.WorldToScreen(roundedRect.Corner1.X, roundedRect.Corner1.Y);
@@ -537,6 +576,9 @@ public sealed class SchComponentRenderer
 
     // ── Pie ─────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// Renders a schematic pie (arc sector) with optional fill and border.
+    /// </summary>
     public void RenderPie(IRenderContext context, ISchPie pie)
     {
         var (cx, cy) = _transform.WorldToScreen(pie.Center.X, pie.Center.Y);
@@ -557,6 +599,9 @@ public sealed class SchComponentRenderer
 
     // ── Elliptical Arc ──────────────────────────────────────────────
 
+    /// <summary>
+    /// Renders a schematic elliptical arc with independent primary and secondary radii.
+    /// </summary>
     public void RenderEllipticalArc(IRenderContext context, ISchEllipticalArc arc)
     {
         var (cx, cy) = _transform.WorldToScreen(arc.Center.X, arc.Center.Y);
@@ -579,6 +624,9 @@ public sealed class SchComponentRenderer
 
     // ── Text Frame ──────────────────────────────────────────────────
 
+    /// <summary>
+    /// Renders a schematic text frame with optional fill, border, word wrap, and clipping.
+    /// </summary>
     public void RenderTextFrame(IRenderContext context, ISchTextFrame textFrame)
     {
         var (x1, y1) = _transform.WorldToScreen(textFrame.Corner1.X, textFrame.Corner1.Y);
@@ -693,6 +741,9 @@ public sealed class SchComponentRenderer
 
     // ── Label ───────────────────────────────────────────────────────
 
+    /// <summary>
+    /// Renders a schematic label with font, color, rotation, and mirroring support.
+    /// </summary>
     public void RenderLabel(IRenderContext context, ISchLabel label)
     {
         if (label.IsHidden) return;
@@ -733,6 +784,9 @@ public sealed class SchComponentRenderer
 
     // ── Parameter ───────────────────────────────────────────────────
 
+    /// <summary>
+    /// Renders a schematic parameter as text, resolving string indirection and applying rotation.
+    /// </summary>
     public void RenderParameter(IRenderContext context, ISchParameter parameter)
     {
         if (!parameter.IsVisible) return;
@@ -781,6 +835,9 @@ public sealed class SchComponentRenderer
 
     // ── Junction ────────────────────────────────────────────────────
 
+    /// <summary>
+    /// Renders a schematic junction as a filled circle at the connection point.
+    /// </summary>
     public void RenderJunction(IRenderContext context, ISchJunction junction)
     {
         var (sx, sy) = _transform.WorldToScreen(junction.Location.X, junction.Location.Y);
@@ -793,6 +850,9 @@ public sealed class SchComponentRenderer
 
     // ── Net Label ───────────────────────────────────────────────────
 
+    /// <summary>
+    /// Renders a schematic net label as text with font, alignment, and rotation.
+    /// </summary>
     public void RenderNetLabel(IRenderContext context, ISchNetLabel netLabel)
     {
         if (string.IsNullOrEmpty(netLabel.Text)) return;
@@ -829,6 +889,9 @@ public sealed class SchComponentRenderer
 
     // ── Power Object ────────────────────────────────────────────────
 
+    /// <summary>
+    /// Renders a schematic power object with its power port symbol and optional net name text.
+    /// </summary>
     public void RenderPowerObject(IRenderContext context, ISchPowerObject powerObject)
     {
         var (sx, sy) = _transform.WorldToScreen(powerObject.Location.X, powerObject.Location.Y);

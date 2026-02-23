@@ -314,5 +314,7 @@ public sealed class RegionBuilder
     /// </summary>
     public PcbRegion Build() => _region;
 
+    /// <summary>Implicitly converts a <see cref="RegionBuilder"/> to a <see cref="PcbRegion"/>.</summary>
+    /// <param name="builder">The builder to convert.</param>
     public static implicit operator PcbRegion(RegionBuilder builder) => builder.Build();
 }

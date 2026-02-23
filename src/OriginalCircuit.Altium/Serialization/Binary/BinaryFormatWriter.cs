@@ -285,6 +285,7 @@ internal sealed class BinaryFormatWriter : IDisposable
     /// </summary>
     public void Flush() => _writer.Flush();
 
+    /// <inheritdoc />
     public void Dispose()
     {
         if (_disposed) return;
