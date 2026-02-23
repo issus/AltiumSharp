@@ -1,0 +1,226 @@
+{
+  "metadata": {
+    "exportType": "PcbLib",
+    "fileName": "PAD_TH_OBLONG.PcbLib",
+    "exportedBy": "AltiumSharp TestDataGenerator",
+    "version": "1.0"
+  },
+  "footprints": [
+    {
+      "name": "PAD_TH_OBLONG",
+      "description": "Oblong through-hole pad",
+      "height": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "primitives": [
+        {
+          "objectType": "Pad",
+          "name": "1",
+          "pinDescriptor": "Free-1",
+          "x": {
+            "internal": 500000000,
+            "mils": 50000,
+            "mm": 1270
+          },
+          "y": {
+            "internal": 500000000,
+            "mils": 50000,
+            "mm": 1270
+          },
+          "mode": 0,
+          "maxXSignalLayers": {
+            "internal": 800000,
+            "mils": 80,
+            "mm": 2.032
+          },
+          "maxYSignalLayers": {
+            "internal": 500000,
+            "mils": 50,
+            "mm": 1.27
+          },
+          "pinPackageLength": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "xPadOffsetAll": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "yPadOffsetAll": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "topXSize": {
+            "internal": 800000,
+            "mils": 80,
+            "mm": 2.032
+          },
+          "topYSize": {
+            "internal": 500000,
+            "mils": 50,
+            "mm": 1.27
+          },
+          "midXSize": {
+            "internal": 800000,
+            "mils": 80,
+            "mm": 2.032
+          },
+          "midYSize": {
+            "internal": 500000,
+            "mils": 50,
+            "mm": 1.27
+          },
+          "botXSize": {
+            "internal": 800000,
+            "mils": 80,
+            "mm": 2.032
+          },
+          "botYSize": {
+            "internal": 500000,
+            "mils": 50,
+            "mm": 1.27
+          },
+          "topShape": 1,
+          "midShape": 1,
+          "botShape": 1,
+          "holeSize": {
+            "internal": 250000,
+            "mils": 25,
+            "mm": 0.635
+          },
+          "holeWidth": {
+            "internal": 500000,
+            "mils": 50,
+            "mm": 1.27
+          },
+          "holeRotation": 0,
+          "holeType": 2,
+          "drillType": 0,
+          "holePositiveTolerance": {
+            "internal": 2147483647,
+            "mils": 214748.365,
+            "mm": 5454.60846
+          },
+          "holeNegativeTolerance": {
+            "internal": 2147483647,
+            "mils": 214748.365,
+            "mm": 5454.60846
+          },
+          "plated": true,
+          "rotation": 0,
+          "layer": 74,
+          "swapID_Pad": "",
+          "swapID_Part": "",
+          "ownerPartID": 0,
+          "swappedPadName": "",
+          "jumperID": 0,
+          "powerPlaneConnectStyle": 2,
+          "reliefConductorWidth": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefEntries": 4,
+          "reliefAirGap": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "pasteMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "solderMaskExpansion": {
+            "internal": 40000,
+            "mils": 4,
+            "mm": 0.1016
+          },
+          "solderMaskExpansionFromHoleEdge": false,
+          "powerPlaneClearance": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneReliefExpansion": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "isTenting": false,
+          "isTenting_Top": false,
+          "isTenting_Bottom": false,
+          "isTestpoint_Top": false,
+          "isTestpoint_Bottom": false,
+          "isAssyTestpoint_Top": false,
+          "isAssyTestpoint_Bottom": false,
+          "isKeepout": false,
+          "inComponent": false,
+          "inNet": false,
+          "drcError": false,
+          "miscFlag1": false,
+          "miscFlag2": false,
+          "miscFlag3": false,
+          "objectIDString": "Pad",
+          "identifier": "Free-1",
+          "descriptor": "Pad Free-1(0mil,0mil) on Multi-Layer",
+          "detail": "Net: X-Size:88mil Y-Size:58mil Hole Type:Slot Hole:25mil:50mil",
+          "uniqueId": "RRADYRFI",
+          "drawAsPreview": false,
+          "daisyChainStyle": 0,
+          "isBottomPasteEnabled": false,
+          "isTopPasteEnabled": false,
+          "isCounterHole": false,
+          "isPadStack": false,
+          "isSurfaceMount": false,
+          "isVirtualPin": false,
+          "hasCornerRadiusChamfer": false,
+          "hasCustomChamferedRectangle": false,
+          "hasCustomDonut": false,
+          "hasCustomMaskDonutShapes": false,
+          "hasCustomMaskShapes": false,
+          "hasCustomRoundedRectangle": false,
+          "hasCustomShapes": false,
+          "hasRoundedRectangularShapes": false,
+          "multiLayerHighBits": 0,
+          "padHasOffsetOnAny": false,
+          "solderMaskExpansionFromHoleEdgeWithRule": false,
+          "getHoleXSize": 500000,
+          "getHoleYSize": 250000,
+          "getState_BottomLayer": 32,
+          "getState_TopLayer": 1,
+          "getState_HoleString": "Hole Type:Slot Hole:25mil:50mil",
+          "getState_SwapID_Gate": "|&|0",
+          "layer_V6": 74,
+          "inBoard": true,
+          "inCoordinate": false,
+          "inDimension": false,
+          "inPolygon": false,
+          "moveable": true,
+          "selected": false,
+          "used": false,
+          "userRouted": true,
+          "enabled": true,
+          "isPreRoute": false,
+          "polygonOutline": false,
+          "tearDrop": false,
+          "isElectricalPrim": true,
+          "allowGlobalEdit": true,
+          "drawAsPreview": false,
+          "enableDraw": true,
+          "index": 0,
+          "unionIndex": 0,
+          "handle": "DYSANXUB\\RRADYRFI",
+          "isFreePrimitive": true,
+          "isHidden": false,
+          "isHoleSizeValid": true
+        }
+      ]
+    }
+  ]
+}

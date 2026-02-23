@@ -1,0 +1,21 @@
+{
+  "metadata": {
+    "exportType": "PcbLib",
+    "fileName": "DIMENSION_ANGULAR.PcbLib",
+    "exportedBy": "AltiumSharp TestDataGenerator",
+    "version": "1.0"
+  },
+  "footprints": [
+    {
+      "name": "DIMENSION_ANGULAR",
+      "description": "Angular dimension object",
+      "height": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "primitives": [
+      ]
+    }
+  ]
+}

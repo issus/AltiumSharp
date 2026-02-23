@@ -1,0 +1,447 @@
+{
+  "exportType": "SchDoc",
+  "fileName": "TestSchDoc.SchDoc",
+  "documentName": "D:\\src\\AltiumSharp\\TestData\\Generated\\TestSchDoc.SchDoc",
+  "primitives": [
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "CurrentTime",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "BNHIUVBJ"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "CurrentDate",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "GYBRVYEW"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "Time",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "DXWZKTVK"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "Date",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "KEWDCDMN"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "DocumentFullPathAndName",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "CJSJINUQ"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "DocumentName",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "JKEMJMVZ"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "ModifiedDate",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "FLVYTIUH"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "ApprovedBy",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "SXXPZXHD"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "CheckedBy",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "MOPMGUNQ"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "Author",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "DGQAPJAY"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "CompanyName",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "JXYQIOUT"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "DrawnBy",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "OLRLPFQL"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "Engineer",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "DBAVWJSK"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "Organization",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "YEVMRURJ"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "Address1",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "WYGBYQUX"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "Address2",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "TVXUDCAX"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "Address3",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "PFXOIFBZ"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "Address4",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "EOSDTHCU"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "Title",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "TIPQZOMM"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "DocumentNumber",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "GCBBLXHV"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "Revision",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "EXXMXDAR"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "SheetNumber",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "XGXKXREM"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "SheetTotal",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "TDBUNKYA"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "Rule",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "SKHGDAOG"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "ImagePath",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "HWZWJPWQ"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "ProjectName",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "IXTTRCOP"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 0,
+      "y": 0,
+      "name": "Application_BuildNumber",
+      "text": "*",
+      "isHidden": true,
+      "color": 8388608,
+      "uniqueId": "YPIIWMIT"
+    },
+    {
+      "objectType": "Wire",
+      "x1": 0,
+      "y1": 0,
+      "vertexCount": 0,
+      "lineWidth": 1,
+      "color": 8388608,
+      "uniqueId": "YWTMVUOX"
+    },
+    {
+      "objectType": "Wire",
+      "x1": 0,
+      "y1": 0,
+      "vertexCount": 0,
+      "lineWidth": 1,
+      "color": 8388608,
+      "uniqueId": "SRDBRHCD"
+    },
+    {
+      "objectType": "Bus",
+      "x1": 0,
+      "y1": 0,
+      "vertexCount": 0,
+      "lineWidth": 2,
+      "color": 8388608,
+      "uniqueId": "GKLPRFJQ"
+    },
+    {
+      "objectType": "BusEntry",
+      "x1": 20000000,
+      "y1": 10000000,
+      "x2": 21000000,
+      "y2": 11000000,
+      "color": 8388608,
+      "uniqueId": "VRHNRFJU"
+    },
+    {
+      "objectType": "Junction",
+      "x": 15000000,
+      "y": 10000000,
+      "size": 2,
+      "color": 128,
+      "uniqueId": "NFXNVJUO"
+    },
+    {
+      "objectType": "NetLabel",
+      "x": 12000000,
+      "y": 10000000,
+      "text": "NET1",
+      "orientation": 0,
+      "color": 128,
+      "uniqueId": "JWAAYNYQ"
+    },
+    {
+      "objectType": "NetLabel",
+      "x": 22000000,
+      "y": 10000000,
+      "text": "BUS[0..7]",
+      "orientation": 0,
+      "color": 128,
+      "uniqueId": "NEBLBTCS"
+    },
+    {
+      "objectType": "Port",
+      "x": 5000000,
+      "y": 10000000,
+      "name": "INPUT_PORT",
+      "ioType": 2,
+      "style": 1,
+      "alignment": 1,
+      "width": 5000000,
+      "height": 1000000,
+      "Color": 128,
+      "areaColor": 8454143,
+      "textColor": 128,
+      "uniqueId": "NDREMAFM"
+    },
+    {
+      "objectType": "Port",
+      "x": 30000000,
+      "y": 10000000,
+      "name": "OUTPUT_PORT",
+      "ioType": 1,
+      "style": 2,
+      "alignment": 1,
+      "width": 5000000,
+      "height": 1000000,
+      "Color": 128,
+      "areaColor": 8454143,
+      "textColor": 128,
+      "uniqueId": "HJNLKOIX"
+    },
+    {
+      "objectType": "Port",
+      "x": 15000000,
+      "y": 20000000,
+      "name": "BIDIR_PORT",
+      "ioType": 3,
+      "style": 3,
+      "alignment": 1,
+      "width": 5000000,
+      "height": 1000000,
+      "Color": 128,
+      "areaColor": 8454143,
+      "textColor": 128,
+      "uniqueId": "QXFUEJRI"
+    },
+    {
+      "objectType": "PowerObject",
+      "x": 5000000,
+      "y": 5000000,
+      "text": "VCC",
+      "style": 2,
+      "orientation": 0,
+      "color": 128,
+      "showNetName": true,
+      "uniqueId": "TRZMEXTU"
+    },
+    {
+      "objectType": "PowerObject",
+      "x": 10000000,
+      "y": 5000000,
+      "text": "GND",
+      "style": 4,
+      "orientation": 0,
+      "color": 128,
+      "showNetName": true,
+      "uniqueId": "DFZSSQBI"
+    },
+    {
+      "objectType": "PowerObject",
+      "x": 15000000,
+      "y": 5000000,
+      "text": "EARTH",
+      "style": 6,
+      "orientation": 0,
+      "color": 128,
+      "showNetName": true,
+      "uniqueId": "QOSPAMGY"
+    },
+    {
+      "objectType": "PowerObject",
+      "x": 20000000,
+      "y": 5000000,
+      "text": "+5V",
+      "style": 0,
+      "orientation": 0,
+      "color": 128,
+      "showNetName": true,
+      "uniqueId": "WEVDOHND"
+    },
+    {
+      "objectType": "NoERC",
+      "x": 25000000,
+      "y": 15000000,
+      "symbol": 35,
+      "orientation": 1,
+      "color": 255,
+      "uniqueId": "VWEQQBIH"
+    },
+    {
+      "objectType": "Parameter",
+      "x": 1000000,
+      "y": 1000000,
+      "name": "TestParameter",
+      "text": "TestValue",
+      "isHidden": false,
+      "color": 8388608,
+      "uniqueId": "KAPZBPGV"
+    }
+  ]
+}

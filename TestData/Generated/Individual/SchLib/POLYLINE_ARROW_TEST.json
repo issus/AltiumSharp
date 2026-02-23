@@ -1,0 +1,505 @@
+{
+  "metadata": {
+    "exportType": "SchLib",
+    "fileName": "POLYLINE_ARROW_TEST.SchLib",
+    "exportedBy": "AltiumSharp TestDataGenerator",
+    "version": "1.0"
+  },
+  "symbols": [
+    {
+      "objectType": "Component",
+      "designator": "X?",
+      "comment": "POLYLINE_ARROW_TEST",
+      "libReference": "POLYLINE_ARROW_TEST",
+      "description": "Test polyline arrow shapes",
+      "libraryPath": "*",
+      "libraryIdentifier": "*",
+      "sourceLibraryName": "*",
+      "libIdentifierKind": 1,
+      "databaseLibraryName": "*",
+      "databaseTableName": "",
+      "designItemId": "",
+      "vaultGUID": "",
+      "vaultHRID": "Unavailable",
+      "itemGUID": "",
+      "revisionGUID": "",
+      "revisionHRID": "Unavailable",
+      "revisionState": "Unknown",
+      "revisionStatus": "",
+      "symbolReference": "POLYLINE_ARROW_TEST",
+      "symbolItemGUID": "",
+      "symbolRevisionGUID": "",
+      "x": 0,
+      "y": 0,
+      "orientation": 0,
+      "isMirrored": false,
+      "displayMode": 0,
+      "displayModeCount": 1,
+      "partCount": 0,
+      "currentPartId": 1,
+      "isMultiPart": false,
+      "showHiddenFields": false,
+      "showHiddenPins": false,
+      "overideColors": false,
+      "pinColor": 0,
+      "color": 128,
+      "areaColor": 11599871,
+      "componentKind": 0,
+      "configurationParameters": "",
+      "configuratorName": "",
+      "variantOption": 0,
+      "designatorLocked": false,
+      "partIdLocked": true,
+      "pinsMoveable": false,
+      "inLibrary": true,
+      "inSheet": false,
+      "isUnmanaged": true,
+      "graphicallyLocked": false,
+      "uniqueId": "IZNIQBJF",
+      "handle": "LLOADWNG\\IZNIQBJF",
+      "primitives": [
+        {
+          "objectType": "Polyline",
+          "lineWidth": 2,
+          "lineStyle": 0,
+          "startLineShape": 0,
+          "endLineShape": 0,
+          "lineShapeSize": 2,
+          "isSolid": true,
+          "transparent": false,
+          "color": 0,
+          "areaColor": 12632256,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "MQNNQEWK",
+          "handle": "LLOADWNG\\MQNNQEWK",
+          "vertexCount": 4,
+          "vertices": [
+            {
+              "x": -3000000,
+              "y": 3000000
+            },
+            {
+              "x": -1000000,
+              "y": 3000000
+            },
+            {
+              "x": -1000000,
+              "y": 2500000
+            },
+            {
+              "x": 1000000,
+              "y": 2500000
+            }
+          ]
+        },
+        {
+          "objectType": "Label",
+          "text": "None",
+          "formula": "",
+          "calculatedValueString": "None",
+          "displayString": "None",
+          "overrideDisplayString": "",
+          "x": -3500000,
+          "y": 2750000,
+          "orientation": 0,
+          "isMirrored": false,
+          "fontID": 1,
+          "justification": 3,
+          "color": 0,
+          "areaColor": 12632256,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "JTSQHCUH",
+          "handle": "LLOADWNG\\JTSQHCUH"
+        },
+        {
+          "objectType": "Polyline",
+          "lineWidth": 2,
+          "lineStyle": 0,
+          "startLineShape": 1,
+          "endLineShape": 0,
+          "lineShapeSize": 2,
+          "isSolid": true,
+          "transparent": false,
+          "color": 255,
+          "areaColor": 12632256,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "LXOQXJYU",
+          "handle": "LLOADWNG\\LXOQXJYU",
+          "vertexCount": 4,
+          "vertices": [
+            {
+              "x": -3000000,
+              "y": 2000000
+            },
+            {
+              "x": -1000000,
+              "y": 2000000
+            },
+            {
+              "x": -1000000,
+              "y": 1500000
+            },
+            {
+              "x": 1000000,
+              "y": 1500000
+            }
+          ]
+        },
+        {
+          "objectType": "Label",
+          "text": "Start Arrow",
+          "formula": "",
+          "calculatedValueString": "Start Arrow",
+          "displayString": "Start Arrow",
+          "overrideDisplayString": "",
+          "x": -3500000,
+          "y": 1750000,
+          "orientation": 0,
+          "isMirrored": false,
+          "fontID": 1,
+          "justification": 3,
+          "color": 0,
+          "areaColor": 12632256,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "BBDXJOYR",
+          "handle": "LLOADWNG\\BBDXJOYR"
+        },
+        {
+          "objectType": "Polyline",
+          "lineWidth": 2,
+          "lineStyle": 0,
+          "startLineShape": 0,
+          "endLineShape": 1,
+          "lineShapeSize": 2,
+          "isSolid": true,
+          "transparent": false,
+          "color": 32768,
+          "areaColor": 12632256,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "AKGRQNAH",
+          "handle": "LLOADWNG\\AKGRQNAH",
+          "vertexCount": 4,
+          "vertices": [
+            {
+              "x": -3000000,
+              "y": 1000000
+            },
+            {
+              "x": -1000000,
+              "y": 1000000
+            },
+            {
+              "x": -1000000,
+              "y": 500000
+            },
+            {
+              "x": 1000000,
+              "y": 500000
+            }
+          ]
+        },
+        {
+          "objectType": "Label",
+          "text": "End Arrow",
+          "formula": "",
+          "calculatedValueString": "End Arrow",
+          "displayString": "End Arrow",
+          "overrideDisplayString": "",
+          "x": -3500000,
+          "y": 750000,
+          "orientation": 0,
+          "isMirrored": false,
+          "fontID": 1,
+          "justification": 3,
+          "color": 0,
+          "areaColor": 12632256,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "ROUOPMFG",
+          "handle": "LLOADWNG\\ROUOPMFG"
+        },
+        {
+          "objectType": "Polyline",
+          "lineWidth": 2,
+          "lineStyle": 0,
+          "startLineShape": 1,
+          "endLineShape": 1,
+          "lineShapeSize": 2,
+          "isSolid": true,
+          "transparent": false,
+          "color": 16711680,
+          "areaColor": 12632256,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "FFXTMTHD",
+          "handle": "LLOADWNG\\FFXTMTHD",
+          "vertexCount": 4,
+          "vertices": [
+            {
+              "x": -3000000,
+              "y": 0
+            },
+            {
+              "x": -1000000,
+              "y": 0
+            },
+            {
+              "x": -1000000,
+              "y": -500000
+            },
+            {
+              "x": 1000000,
+              "y": -500000
+            }
+          ]
+        },
+        {
+          "objectType": "Label",
+          "text": "Both Arrows",
+          "formula": "",
+          "calculatedValueString": "Both Arrows",
+          "displayString": "Both Arrows",
+          "overrideDisplayString": "",
+          "x": -3500000,
+          "y": -250000,
+          "orientation": 0,
+          "isMirrored": false,
+          "fontID": 1,
+          "justification": 3,
+          "color": 0,
+          "areaColor": 12632256,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "RTMPBYBU",
+          "handle": "LLOADWNG\\RTMPBYBU"
+        },
+        {
+          "objectType": "Polyline",
+          "lineWidth": 2,
+          "lineStyle": 0,
+          "startLineShape": 4,
+          "endLineShape": 0,
+          "lineShapeSize": 2,
+          "isSolid": true,
+          "transparent": false,
+          "color": 16711935,
+          "areaColor": 12632256,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "UBPXVDQY",
+          "handle": "LLOADWNG\\UBPXVDQY",
+          "vertexCount": 4,
+          "vertices": [
+            {
+              "x": -3000000,
+              "y": -1000000
+            },
+            {
+              "x": -1000000,
+              "y": -1000000
+            },
+            {
+              "x": -1000000,
+              "y": -1500000
+            },
+            {
+              "x": 1000000,
+              "y": -1500000
+            }
+          ]
+        },
+        {
+          "objectType": "Label",
+          "text": "Solid Tail Start",
+          "formula": "",
+          "calculatedValueString": "Solid Tail Start",
+          "displayString": "Solid Tail Start",
+          "overrideDisplayString": "",
+          "x": -3500000,
+          "y": -1250000,
+          "orientation": 0,
+          "isMirrored": false,
+          "fontID": 1,
+          "justification": 3,
+          "color": 0,
+          "areaColor": 12632256,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "XHYIPKEP",
+          "handle": "LLOADWNG\\XHYIPKEP"
+        },
+        {
+          "objectType": "Polyline",
+          "lineWidth": 2,
+          "lineStyle": 0,
+          "startLineShape": 0,
+          "endLineShape": 2,
+          "lineShapeSize": 2,
+          "isSolid": true,
+          "transparent": false,
+          "color": 16776960,
+          "areaColor": 12632256,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "WXSDRFEG",
+          "handle": "LLOADWNG\\WXSDRFEG",
+          "vertexCount": 4,
+          "vertices": [
+            {
+              "x": -3000000,
+              "y": -2000000
+            },
+            {
+              "x": -1000000,
+              "y": -2000000
+            },
+            {
+              "x": -1000000,
+              "y": -2500000
+            },
+            {
+              "x": 1000000,
+              "y": -2500000
+            }
+          ]
+        },
+        {
+          "objectType": "Label",
+          "text": "Solid Arrow End",
+          "formula": "",
+          "calculatedValueString": "Solid Arrow End",
+          "displayString": "Solid Arrow End",
+          "overrideDisplayString": "",
+          "x": -3500000,
+          "y": -2250000,
+          "orientation": 0,
+          "isMirrored": false,
+          "fontID": 1,
+          "justification": 3,
+          "color": 0,
+          "areaColor": 12632256,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "CDZXAKGS",
+          "handle": "LLOADWNG\\CDZXAKGS"
+        },
+        {
+          "objectType": "Polyline",
+          "lineWidth": 3,
+          "lineStyle": 1,
+          "startLineShape": 1,
+          "endLineShape": 1,
+          "lineShapeSize": 3,
+          "isSolid": true,
+          "transparent": false,
+          "color": 32896,
+          "areaColor": 12632256,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "NZUOWIKB",
+          "handle": "LLOADWNG\\NZUOWIKB",
+          "vertexCount": 4,
+          "vertices": [
+            {
+              "x": -3000000,
+              "y": -3000000
+            },
+            {
+              "x": -1000000,
+              "y": -3000000
+            },
+            {
+              "x": -1000000,
+              "y": -3500000
+            },
+            {
+              "x": 1000000,
+              "y": -3500000
+            }
+          ]
+        },
+        {
+          "objectType": "Label",
+          "text": "Dashed + Arrows",
+          "formula": "",
+          "calculatedValueString": "Dashed + Arrows",
+          "displayString": "Dashed + Arrows",
+          "overrideDisplayString": "",
+          "x": -3500000,
+          "y": -3250000,
+          "orientation": 0,
+          "isMirrored": false,
+          "fontID": 1,
+          "justification": 3,
+          "color": 0,
+          "areaColor": 12632256,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "OYVFUZNH",
+          "handle": "LLOADWNG\\OYVFUZNH"
+        }
+      ]
+    }
+  ]
+}

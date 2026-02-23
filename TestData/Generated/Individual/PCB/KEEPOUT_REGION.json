@@ -1,0 +1,325 @@
+{
+  "metadata": {
+    "exportType": "PcbLib",
+    "fileName": "KEEPOUT_REGION.PcbLib",
+    "exportedBy": "AltiumSharp TestDataGenerator",
+    "version": "1.0"
+  },
+  "footprints": [
+    {
+      "name": "KEEPOUT_REGION",
+      "description": "Keepout region test",
+      "height": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "primitives": [
+        {
+          "objectType": "Track",
+          "x1": {
+            "internal": 499000000,
+            "mils": 49900,
+            "mm": 1267.46
+          },
+          "y1": {
+            "internal": 499400000,
+            "mils": 49940,
+            "mm": 1268.476
+          },
+          "x2": {
+            "internal": 501000000,
+            "mils": 50100,
+            "mm": 1272.54
+          },
+          "y2": {
+            "internal": 499400000,
+            "mils": 49940,
+            "mm": 1268.476
+          },
+          "width": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "length": {
+            "internal": 2000000,
+            "mils": 200,
+            "mm": 5.08
+          },
+          "layer": 56,
+          "isKeepout": true,
+          "inComponent": false,
+          "inNet": false,
+          "moveable": true,
+          "drcError": false,
+          "miscFlag1": false,
+          "miscFlag2": false,
+          "miscFlag3": false,
+          "objectIDString": "Track",
+          "identifier": "Track[49900mil,49940mil]",
+          "descriptor": "Track (-100mil,-60mil)(100mil,-60mil) on Keep-Out Layer",
+          "detail": "Track: ( Width:10mil Length:200mil)",
+          "layer_V6": 56,
+          "pasteMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "solderMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "powerPlaneClearance": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneReliefExpansion": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneConnectStyle": 2,
+          "reliefAirGap": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefConductorWidth": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefEntries": 4,
+          "inBoard": true,
+          "inCoordinate": false,
+          "inDimension": false,
+          "inPolygon": false,
+          "selected": false,
+          "used": false,
+          "userRouted": true,
+          "enabled": true,
+          "isPreRoute": false,
+          "polygonOutline": false,
+          "tearDrop": false,
+          "isTestpoint_Bottom": false,
+          "isTestpoint_Top": false,
+          "isAssyTestpoint_Bottom": false,
+          "isAssyTestpoint_Top": false,
+          "isTenting": false,
+          "isTenting_Bottom": false,
+          "isTenting_Top": false,
+          "isElectricalPrim": false,
+          "allowGlobalEdit": true,
+          "drawAsPreview": false,
+          "enableDraw": true,
+          "index": 0,
+          "unionIndex": 0,
+          "uniqueId": "",
+          "handle": "",
+          "isFreePrimitive": true,
+          "isHidden": false
+        },
+        {
+          "objectType": "Region",
+          "layer": 56,
+          "layer_V6": 56,
+          "kind": 0,
+          "name": "",
+          "holeCount": 0,
+          "area": 947500000000,
+          "cavityHeight": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "pasteMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "solderMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "powerPlaneClearance": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneReliefExpansion": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneConnectStyle": 2,
+          "reliefAirGap": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefConductorWidth": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefEntries": 4,
+          "isKeepout": true,
+          "tearDrop": false,
+          "polygonOutline": false,
+          "inPolygon": false,
+          "inComponent": false,
+          "inNet": false,
+          "inBoard": true,
+          "inCoordinate": false,
+          "inDimension": false,
+          "isElectricalPrim": false,
+          "moveable": true,
+          "selected": false,
+          "used": false,
+          "userRouted": true,
+          "drcError": false,
+          "enabled": true,
+          "isPreRoute": false,
+          "isTestpoint_Bottom": false,
+          "isTestpoint_Top": false,
+          "isAssyTestpoint_Bottom": false,
+          "isAssyTestpoint_Top": false,
+          "isTenting": false,
+          "isTenting_Bottom": false,
+          "isTenting_Top": false,
+          "allowGlobalEdit": true,
+          "drawAsPreview": false,
+          "enableDraw": true,
+          "miscFlag1": false,
+          "miscFlag2": false,
+          "miscFlag3": false,
+          "index": 0,
+          "unionIndex": 0,
+          "handle": "",
+          "objectIDString": "PolyRegion",
+          "identifier": "PolyRegion[50000mil,50000mil]",
+          "descriptor": "Region (0 hole(s)) Keep-Out Layer",
+          "detail": "Region (0 hole(s)) Keep-Out Layer",
+          "uniqueId": "",
+          "contourPoints": [
+            {
+              "x": {
+                "internal": 500000000,
+                "mils": 50000,
+                "mm": 1270
+              },
+              "y": {
+                "internal": 500000000,
+                "mils": 50000,
+                "mm": 1270
+              },
+            },
+            {
+              "x": {
+                "internal": 500000000,
+                "mils": 50000,
+                "mm": 1270
+              },
+              "y": {
+                "internal": 500000000,
+                "mils": 50000,
+                "mm": 1270
+              },
+            },
+            {
+              "x": {
+                "internal": 500100000,
+                "mils": 50010,
+                "mm": 1270.254
+              },
+              "y": {
+                "internal": 500000000,
+                "mils": 50000,
+                "mm": 1270
+              },
+            },
+            {
+              "x": {
+                "internal": 500100000,
+                "mils": 50010,
+                "mm": 1270.254
+              },
+              "y": {
+                "internal": 500100000,
+                "mils": 50010,
+                "mm": 1270.254
+              },
+            },
+            {
+              "x": {
+                "internal": 500000000,
+                "mils": 50000,
+                "mm": 1270
+              },
+              "y": {
+                "internal": 500100000,
+                "mils": 50010,
+                "mm": 1270.254
+              },
+            },
+            {
+              "x": {
+                "internal": 499250000,
+                "mils": 49925,
+                "mm": 1268.095
+              },
+              "y": {
+                "internal": 499600000,
+                "mils": 49960,
+                "mm": 1268.984
+              },
+            },
+            {
+              "x": {
+                "internal": 500750000,
+                "mils": 50075,
+                "mm": 1271.905
+              },
+              "y": {
+                "internal": 499600000,
+                "mils": 49960,
+                "mm": 1268.984
+              },
+            },
+            {
+              "x": {
+                "internal": 500750000,
+                "mils": 50075,
+                "mm": 1271.905
+              },
+              "y": {
+                "internal": 500400000,
+                "mils": 50040,
+                "mm": 1271.016
+              },
+            },
+            {
+              "x": {
+                "internal": 499250000,
+                "mils": 49925,
+                "mm": 1268.095
+              },
+              "y": {
+                "internal": 500400000,
+                "mils": 50040,
+                "mm": 1271.016
+              },
+            }
+          ]
+          "isSimpleRegion": true,
+          "isFreePrimitive": true,
+          "isHidden": false
+        }
+      ]
+    }
+  ]
+}

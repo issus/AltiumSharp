@@ -1,0 +1,381 @@
+{
+  "metadata": {
+    "exportType": "PcbLib",
+    "fileName": "VIA_TENTING.PcbLib",
+    "exportedBy": "AltiumSharp TestDataGenerator",
+    "version": "1.0"
+  },
+  "footprints": [
+    {
+      "name": "VIA_TENTING",
+      "description": "Vias with all tenting options",
+      "height": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "primitives": [
+        {
+          "objectType": "Via",
+          "x": {
+            "internal": 501000000,
+            "mils": 50100,
+            "mm": 1272.54
+          },
+          "y": {
+            "internal": 500000000,
+            "mils": 50000,
+            "mm": 1270
+          },
+          "mode": 0,
+          "size": {
+            "internal": 300000,
+            "mils": 30,
+            "mm": 0.762
+          },
+          "holeSize": {
+            "internal": 150000,
+            "mils": 15,
+            "mm": 0.381
+          },
+          "height": {
+            "internal": 154000,
+            "mils": 15.4,
+            "mm": 0.39116
+          },
+          "lowLayer": 1,
+          "highLayer": 32,
+          "layer": 74,
+          "holePositiveTolerance": {
+            "internal": 2147483647,
+            "mils": 214748.365,
+            "mm": 5454.60846
+          },
+          "holeNegativeTolerance": {
+            "internal": 2147483647,
+            "mils": 214748.365,
+            "mm": 5454.60846
+          },
+          "powerPlaneConnectStyle": 2,
+          "reliefConductorWidth": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefEntries": 4,
+          "reliefAirGap": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "pasteMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "solderMaskExpansion": {
+            "internal": 40000,
+            "mils": 4,
+            "mm": 0.1016
+          },
+          "solderMaskExpansionFromHoleEdge": false,
+          "powerPlaneClearance": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneReliefExpansion": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "isTenting": false,
+          "isTenting_Top": false,
+          "isTenting_Bottom": false,
+          "isTestpoint_Top": false,
+          "isTestpoint_Bottom": false,
+          "isAssyTestpoint_Top": false,
+          "isAssyTestpoint_Bottom": false,
+          "inComponent": false,
+          "inNet": false,
+          "isElectricalPrim": true,
+          "moveable": true,
+          "isBackdrill": false,
+          "isKeepout": false,
+          "drcError": false,
+          "miscFlag1": false,
+          "miscFlag2": false,
+          "miscFlag3": false,
+          "objectIDString": "Via",
+          "identifier": "Via[50100mil,50000mil]",
+          "descriptor": "Via (100mil,0mil) from Top Layer to Bottom Layer",
+          "detail": "Net: Size: 30mil Hole: 15mil",
+          "inCoordinate": false,
+          "inDimension": false,
+          "isPreRoute": false,
+          "drillLayerPairType": 0,
+          "isCounterHole": false,
+          "layer_V6": 74,
+          "inBoard": true,
+          "inPolygon": false,
+          "selected": false,
+          "used": false,
+          "userRouted": true,
+          "enabled": true,
+          "polygonOutline": false,
+          "tearDrop": false,
+          "allowGlobalEdit": true,
+          "drawAsPreview": false,
+          "enableDraw": true,
+          "index": 0,
+          "unionIndex": 0,
+          "uniqueId": "",
+          "handle": "",
+          "isFreePrimitive": true,
+          "isHidden": false,
+          "plated": true
+        },
+        {
+          "objectType": "Via",
+          "x": {
+            "internal": 500000000,
+            "mils": 50000,
+            "mm": 1270
+          },
+          "y": {
+            "internal": 500000000,
+            "mils": 50000,
+            "mm": 1270
+          },
+          "mode": 0,
+          "size": {
+            "internal": 300000,
+            "mils": 30,
+            "mm": 0.762
+          },
+          "holeSize": {
+            "internal": 150000,
+            "mils": 15,
+            "mm": 0.381
+          },
+          "height": {
+            "internal": 154000,
+            "mils": 15.4,
+            "mm": 0.39116
+          },
+          "lowLayer": 1,
+          "highLayer": 32,
+          "layer": 74,
+          "holePositiveTolerance": {
+            "internal": 2147483647,
+            "mils": 214748.365,
+            "mm": 5454.60846
+          },
+          "holeNegativeTolerance": {
+            "internal": 2147483647,
+            "mils": 214748.365,
+            "mm": 5454.60846
+          },
+          "powerPlaneConnectStyle": 2,
+          "reliefConductorWidth": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefEntries": 4,
+          "reliefAirGap": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "pasteMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "solderMaskExpansion": {
+            "internal": 40000,
+            "mils": 4,
+            "mm": 0.1016
+          },
+          "solderMaskExpansionFromHoleEdge": false,
+          "powerPlaneClearance": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneReliefExpansion": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "isTenting": false,
+          "isTenting_Top": false,
+          "isTenting_Bottom": false,
+          "isTestpoint_Top": false,
+          "isTestpoint_Bottom": false,
+          "isAssyTestpoint_Top": false,
+          "isAssyTestpoint_Bottom": false,
+          "inComponent": false,
+          "inNet": false,
+          "isElectricalPrim": true,
+          "moveable": true,
+          "isBackdrill": false,
+          "isKeepout": false,
+          "drcError": false,
+          "miscFlag1": false,
+          "miscFlag2": false,
+          "miscFlag3": false,
+          "objectIDString": "Via",
+          "identifier": "Via[50000mil,50000mil]",
+          "descriptor": "Via (0mil,0mil) from Top Layer to Bottom Layer",
+          "detail": "Net: Size: 30mil Hole: 15mil",
+          "inCoordinate": false,
+          "inDimension": false,
+          "isPreRoute": false,
+          "drillLayerPairType": 0,
+          "isCounterHole": false,
+          "layer_V6": 74,
+          "inBoard": true,
+          "inPolygon": false,
+          "selected": false,
+          "used": false,
+          "userRouted": true,
+          "enabled": true,
+          "polygonOutline": false,
+          "tearDrop": false,
+          "allowGlobalEdit": true,
+          "drawAsPreview": false,
+          "enableDraw": true,
+          "index": 0,
+          "unionIndex": 0,
+          "uniqueId": "",
+          "handle": "",
+          "isFreePrimitive": true,
+          "isHidden": false,
+          "plated": true
+        },
+        {
+          "objectType": "Via",
+          "x": {
+            "internal": 499000000,
+            "mils": 49900,
+            "mm": 1267.46
+          },
+          "y": {
+            "internal": 500000000,
+            "mils": 50000,
+            "mm": 1270
+          },
+          "mode": 0,
+          "size": {
+            "internal": 300000,
+            "mils": 30,
+            "mm": 0.762
+          },
+          "holeSize": {
+            "internal": 150000,
+            "mils": 15,
+            "mm": 0.381
+          },
+          "height": {
+            "internal": 154000,
+            "mils": 15.4,
+            "mm": 0.39116
+          },
+          "lowLayer": 1,
+          "highLayer": 32,
+          "layer": 74,
+          "holePositiveTolerance": {
+            "internal": 2147483647,
+            "mils": 214748.365,
+            "mm": 5454.60846
+          },
+          "holeNegativeTolerance": {
+            "internal": 2147483647,
+            "mils": 214748.365,
+            "mm": 5454.60846
+          },
+          "powerPlaneConnectStyle": 2,
+          "reliefConductorWidth": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefEntries": 4,
+          "reliefAirGap": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "pasteMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "solderMaskExpansion": {
+            "internal": 40000,
+            "mils": 4,
+            "mm": 0.1016
+          },
+          "solderMaskExpansionFromHoleEdge": false,
+          "powerPlaneClearance": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneReliefExpansion": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "isTenting": false,
+          "isTenting_Top": false,
+          "isTenting_Bottom": false,
+          "isTestpoint_Top": false,
+          "isTestpoint_Bottom": false,
+          "isAssyTestpoint_Top": false,
+          "isAssyTestpoint_Bottom": false,
+          "inComponent": false,
+          "inNet": false,
+          "isElectricalPrim": true,
+          "moveable": true,
+          "isBackdrill": false,
+          "isKeepout": false,
+          "drcError": false,
+          "miscFlag1": false,
+          "miscFlag2": false,
+          "miscFlag3": false,
+          "objectIDString": "Via",
+          "identifier": "Via[49900mil,50000mil]",
+          "descriptor": "Via (-100mil,0mil) from Top Layer to Bottom Layer",
+          "detail": "Net: Size: 30mil Hole: 15mil",
+          "inCoordinate": false,
+          "inDimension": false,
+          "isPreRoute": false,
+          "drillLayerPairType": 0,
+          "isCounterHole": false,
+          "layer_V6": 74,
+          "inBoard": true,
+          "inPolygon": false,
+          "selected": false,
+          "used": false,
+          "userRouted": true,
+          "enabled": true,
+          "polygonOutline": false,
+          "tearDrop": false,
+          "allowGlobalEdit": true,
+          "drawAsPreview": false,
+          "enableDraw": true,
+          "index": 0,
+          "unionIndex": 0,
+          "uniqueId": "",
+          "handle": "",
+          "isFreePrimitive": true,
+          "isHidden": false,
+          "plated": true
+        }
+      ]
+    }
+  ]
+}

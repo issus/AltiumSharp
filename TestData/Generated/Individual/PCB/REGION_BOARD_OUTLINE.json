@@ -1,0 +1,21 @@
+{
+  "metadata": {
+    "exportType": "PcbLib",
+    "fileName": "REGION_BOARD_OUTLINE.PcbLib",
+    "exportedBy": "AltiumSharp TestDataGenerator",
+    "version": "1.0"
+  },
+  "footprints": [
+    {
+      "name": "REGION_BOARD_OUTLINE",
+      "description": "Board outline region",
+      "height": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "primitives": [
+      ]
+    }
+  ]
+}

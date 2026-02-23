@@ -1,0 +1,21 @@
+{
+  "metadata": {
+    "exportType": "PcbLib",
+    "fileName": "DIMENSION_DATUM.PcbLib",
+    "exportedBy": "AltiumSharp TestDataGenerator",
+    "version": "1.0"
+  },
+  "footprints": [
+    {
+      "name": "DIMENSION_DATUM",
+      "description": "Datum dimension object",
+      "height": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "primitives": [
+      ]
+    }
+  ]
+}

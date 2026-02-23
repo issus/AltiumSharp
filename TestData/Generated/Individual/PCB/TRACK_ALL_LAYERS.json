@@ -1,0 +1,663 @@
+{
+  "metadata": {
+    "exportType": "PcbLib",
+    "fileName": "TRACK_ALL_LAYERS.PcbLib",
+    "exportedBy": "AltiumSharp TestDataGenerator",
+    "version": "1.0"
+  },
+  "footprints": [
+    {
+      "name": "TRACK_ALL_LAYERS",
+      "description": "Tracks on all signal layers",
+      "height": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "primitives": [
+        {
+          "objectType": "Track",
+          "x1": {
+            "internal": 498000000,
+            "mils": 49800,
+            "mm": 1264.92
+          },
+          "y1": {
+            "internal": 501500000,
+            "mils": 50150,
+            "mm": 1273.81
+          },
+          "x2": {
+            "internal": 502000000,
+            "mils": 50200,
+            "mm": 1275.08
+          },
+          "y2": {
+            "internal": 501500000,
+            "mils": 50150,
+            "mm": 1273.81
+          },
+          "width": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "length": {
+            "internal": 4000000,
+            "mils": 400,
+            "mm": 10.16
+          },
+          "layer": 1,
+          "isKeepout": false,
+          "inComponent": false,
+          "inNet": false,
+          "moveable": true,
+          "drcError": false,
+          "miscFlag1": false,
+          "miscFlag2": false,
+          "miscFlag3": false,
+          "objectIDString": "Track",
+          "identifier": "Track[49800mil,50150mil]",
+          "descriptor": "Track (-200mil,150mil)(200mil,150mil) on Top Layer",
+          "detail": "Track: ( Width:10mil Length:400mil)",
+          "layer_V6": 1,
+          "pasteMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "solderMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "powerPlaneClearance": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneReliefExpansion": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneConnectStyle": 2,
+          "reliefAirGap": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefConductorWidth": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefEntries": 4,
+          "inBoard": true,
+          "inCoordinate": false,
+          "inDimension": false,
+          "inPolygon": false,
+          "selected": false,
+          "used": false,
+          "userRouted": true,
+          "enabled": true,
+          "isPreRoute": false,
+          "polygonOutline": false,
+          "tearDrop": false,
+          "isTestpoint_Bottom": false,
+          "isTestpoint_Top": false,
+          "isAssyTestpoint_Bottom": false,
+          "isAssyTestpoint_Top": false,
+          "isTenting": false,
+          "isTenting_Bottom": false,
+          "isTenting_Top": false,
+          "isElectricalPrim": true,
+          "allowGlobalEdit": true,
+          "drawAsPreview": false,
+          "enableDraw": true,
+          "index": 0,
+          "unionIndex": 0,
+          "uniqueId": "",
+          "handle": "",
+          "isFreePrimitive": true,
+          "isHidden": false
+        },
+        {
+          "objectType": "Track",
+          "x1": {
+            "internal": 498000000,
+            "mils": 49800,
+            "mm": 1264.92
+          },
+          "y1": {
+            "internal": 499500000,
+            "mils": 49950,
+            "mm": 1268.73
+          },
+          "x2": {
+            "internal": 502000000,
+            "mils": 50200,
+            "mm": 1275.08
+          },
+          "y2": {
+            "internal": 499500000,
+            "mils": 49950,
+            "mm": 1268.73
+          },
+          "width": {
+            "internal": 80000,
+            "mils": 8,
+            "mm": 0.2032
+          },
+          "length": {
+            "internal": 4000000,
+            "mils": 400,
+            "mm": 10.16
+          },
+          "layer": 33,
+          "isKeepout": false,
+          "inComponent": false,
+          "inNet": false,
+          "moveable": true,
+          "drcError": false,
+          "miscFlag1": false,
+          "miscFlag2": false,
+          "miscFlag3": false,
+          "objectIDString": "Track",
+          "identifier": "Track[49800mil,49950mil]",
+          "descriptor": "Track (-200mil,-50mil)(200mil,-50mil) on Top Overlay",
+          "detail": "Track: ( Width:8mil Length:400mil)",
+          "layer_V6": 33,
+          "pasteMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "solderMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "powerPlaneClearance": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneReliefExpansion": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneConnectStyle": 2,
+          "reliefAirGap": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefConductorWidth": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefEntries": 4,
+          "inBoard": true,
+          "inCoordinate": false,
+          "inDimension": false,
+          "inPolygon": false,
+          "selected": false,
+          "used": false,
+          "userRouted": true,
+          "enabled": true,
+          "isPreRoute": false,
+          "polygonOutline": false,
+          "tearDrop": false,
+          "isTestpoint_Bottom": false,
+          "isTestpoint_Top": false,
+          "isAssyTestpoint_Bottom": false,
+          "isAssyTestpoint_Top": false,
+          "isTenting": false,
+          "isTenting_Bottom": false,
+          "isTenting_Top": false,
+          "isElectricalPrim": false,
+          "allowGlobalEdit": true,
+          "drawAsPreview": false,
+          "enableDraw": true,
+          "index": 0,
+          "unionIndex": 0,
+          "uniqueId": "",
+          "handle": "",
+          "isFreePrimitive": true,
+          "isHidden": false
+        },
+        {
+          "objectType": "Track",
+          "x1": {
+            "internal": 498000000,
+            "mils": 49800,
+            "mm": 1264.92
+          },
+          "y1": {
+            "internal": 501000000,
+            "mils": 50100,
+            "mm": 1272.54
+          },
+          "x2": {
+            "internal": 502000000,
+            "mils": 50200,
+            "mm": 1275.08
+          },
+          "y2": {
+            "internal": 501000000,
+            "mils": 50100,
+            "mm": 1272.54
+          },
+          "width": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "length": {
+            "internal": 4000000,
+            "mils": 400,
+            "mm": 10.16
+          },
+          "layer": 2,
+          "isKeepout": false,
+          "inComponent": false,
+          "inNet": false,
+          "moveable": true,
+          "drcError": false,
+          "miscFlag1": false,
+          "miscFlag2": false,
+          "miscFlag3": false,
+          "objectIDString": "Track",
+          "identifier": "Track[49800mil,50100mil]",
+          "descriptor": "Track (-200mil,100mil)(200mil,100mil) on Mid-Layer 1",
+          "detail": "Track: ( Width:10mil Length:400mil)",
+          "layer_V6": 2,
+          "pasteMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "solderMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "powerPlaneClearance": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneReliefExpansion": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneConnectStyle": 2,
+          "reliefAirGap": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefConductorWidth": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefEntries": 4,
+          "inBoard": true,
+          "inCoordinate": false,
+          "inDimension": false,
+          "inPolygon": false,
+          "selected": false,
+          "used": false,
+          "userRouted": true,
+          "enabled": true,
+          "isPreRoute": false,
+          "polygonOutline": false,
+          "tearDrop": false,
+          "isTestpoint_Bottom": false,
+          "isTestpoint_Top": false,
+          "isAssyTestpoint_Bottom": false,
+          "isAssyTestpoint_Top": false,
+          "isTenting": false,
+          "isTenting_Bottom": false,
+          "isTenting_Top": false,
+          "isElectricalPrim": true,
+          "allowGlobalEdit": true,
+          "drawAsPreview": false,
+          "enableDraw": true,
+          "index": 0,
+          "unionIndex": 0,
+          "uniqueId": "",
+          "handle": "",
+          "isFreePrimitive": true,
+          "isHidden": false
+        },
+        {
+          "objectType": "Track",
+          "x1": {
+            "internal": 498000000,
+            "mils": 49800,
+            "mm": 1264.92
+          },
+          "y1": {
+            "internal": 499000000,
+            "mils": 49900,
+            "mm": 1267.46
+          },
+          "x2": {
+            "internal": 502000000,
+            "mils": 50200,
+            "mm": 1275.08
+          },
+          "y2": {
+            "internal": 499000000,
+            "mils": 49900,
+            "mm": 1267.46
+          },
+          "width": {
+            "internal": 80000,
+            "mils": 8,
+            "mm": 0.2032
+          },
+          "length": {
+            "internal": 4000000,
+            "mils": 400,
+            "mm": 10.16
+          },
+          "layer": 34,
+          "isKeepout": false,
+          "inComponent": false,
+          "inNet": false,
+          "moveable": true,
+          "drcError": false,
+          "miscFlag1": false,
+          "miscFlag2": false,
+          "miscFlag3": false,
+          "objectIDString": "Track",
+          "identifier": "Track[49800mil,49900mil]",
+          "descriptor": "Track (-200mil,-100mil)(200mil,-100mil) on Bottom Overlay",
+          "detail": "Track: ( Width:8mil Length:400mil)",
+          "layer_V6": 34,
+          "pasteMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "solderMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "powerPlaneClearance": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneReliefExpansion": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneConnectStyle": 2,
+          "reliefAirGap": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefConductorWidth": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefEntries": 4,
+          "inBoard": true,
+          "inCoordinate": false,
+          "inDimension": false,
+          "inPolygon": false,
+          "selected": false,
+          "used": false,
+          "userRouted": true,
+          "enabled": true,
+          "isPreRoute": false,
+          "polygonOutline": false,
+          "tearDrop": false,
+          "isTestpoint_Bottom": false,
+          "isTestpoint_Top": false,
+          "isAssyTestpoint_Bottom": false,
+          "isAssyTestpoint_Top": false,
+          "isTenting": false,
+          "isTenting_Bottom": false,
+          "isTenting_Top": false,
+          "isElectricalPrim": false,
+          "allowGlobalEdit": true,
+          "drawAsPreview": false,
+          "enableDraw": true,
+          "index": 0,
+          "unionIndex": 0,
+          "uniqueId": "",
+          "handle": "",
+          "isFreePrimitive": true,
+          "isHidden": false
+        },
+        {
+          "objectType": "Track",
+          "x1": {
+            "internal": 498000000,
+            "mils": 49800,
+            "mm": 1264.92
+          },
+          "y1": {
+            "internal": 500500000,
+            "mils": 50050,
+            "mm": 1271.27
+          },
+          "x2": {
+            "internal": 502000000,
+            "mils": 50200,
+            "mm": 1275.08
+          },
+          "y2": {
+            "internal": 500500000,
+            "mils": 50050,
+            "mm": 1271.27
+          },
+          "width": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "length": {
+            "internal": 4000000,
+            "mils": 400,
+            "mm": 10.16
+          },
+          "layer": 3,
+          "isKeepout": false,
+          "inComponent": false,
+          "inNet": false,
+          "moveable": true,
+          "drcError": false,
+          "miscFlag1": false,
+          "miscFlag2": false,
+          "miscFlag3": false,
+          "objectIDString": "Track",
+          "identifier": "Track[49800mil,50050mil]",
+          "descriptor": "Track (-200mil,50mil)(200mil,50mil) on Mid-Layer 2",
+          "detail": "Track: ( Width:10mil Length:400mil)",
+          "layer_V6": 3,
+          "pasteMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "solderMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "powerPlaneClearance": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneReliefExpansion": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneConnectStyle": 2,
+          "reliefAirGap": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefConductorWidth": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefEntries": 4,
+          "inBoard": true,
+          "inCoordinate": false,
+          "inDimension": false,
+          "inPolygon": false,
+          "selected": false,
+          "used": false,
+          "userRouted": true,
+          "enabled": true,
+          "isPreRoute": false,
+          "polygonOutline": false,
+          "tearDrop": false,
+          "isTestpoint_Bottom": false,
+          "isTestpoint_Top": false,
+          "isAssyTestpoint_Bottom": false,
+          "isAssyTestpoint_Top": false,
+          "isTenting": false,
+          "isTenting_Bottom": false,
+          "isTenting_Top": false,
+          "isElectricalPrim": true,
+          "allowGlobalEdit": true,
+          "drawAsPreview": false,
+          "enableDraw": true,
+          "index": 0,
+          "unionIndex": 0,
+          "uniqueId": "",
+          "handle": "",
+          "isFreePrimitive": true,
+          "isHidden": false
+        },
+        {
+          "objectType": "Track",
+          "x1": {
+            "internal": 498000000,
+            "mils": 49800,
+            "mm": 1264.92
+          },
+          "y1": {
+            "internal": 500000000,
+            "mils": 50000,
+            "mm": 1270
+          },
+          "x2": {
+            "internal": 502000000,
+            "mils": 50200,
+            "mm": 1275.08
+          },
+          "y2": {
+            "internal": 500000000,
+            "mils": 50000,
+            "mm": 1270
+          },
+          "width": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "length": {
+            "internal": 4000000,
+            "mils": 400,
+            "mm": 10.16
+          },
+          "layer": 32,
+          "isKeepout": false,
+          "inComponent": false,
+          "inNet": false,
+          "moveable": true,
+          "drcError": false,
+          "miscFlag1": false,
+          "miscFlag2": false,
+          "miscFlag3": false,
+          "objectIDString": "Track",
+          "identifier": "Track[49800mil,50000mil]",
+          "descriptor": "Track (-200mil,0mil)(200mil,0mil) on Bottom Layer",
+          "detail": "Track: ( Width:10mil Length:400mil)",
+          "layer_V6": 32,
+          "pasteMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "solderMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "powerPlaneClearance": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneReliefExpansion": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneConnectStyle": 2,
+          "reliefAirGap": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefConductorWidth": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefEntries": 4,
+          "inBoard": true,
+          "inCoordinate": false,
+          "inDimension": false,
+          "inPolygon": false,
+          "selected": false,
+          "used": false,
+          "userRouted": true,
+          "enabled": true,
+          "isPreRoute": false,
+          "polygonOutline": false,
+          "tearDrop": false,
+          "isTestpoint_Bottom": false,
+          "isTestpoint_Top": false,
+          "isAssyTestpoint_Bottom": false,
+          "isAssyTestpoint_Top": false,
+          "isTenting": false,
+          "isTenting_Bottom": false,
+          "isTenting_Top": false,
+          "isElectricalPrim": true,
+          "allowGlobalEdit": true,
+          "drawAsPreview": false,
+          "enableDraw": true,
+          "index": 0,
+          "unionIndex": 0,
+          "uniqueId": "",
+          "handle": "",
+          "isFreePrimitive": true,
+          "isHidden": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,343 @@
+{
+  "metadata": {
+    "exportType": "SchLib",
+    "fileName": "POLYGON_COLORS_TEST.SchLib",
+    "exportedBy": "AltiumSharp TestDataGenerator",
+    "version": "1.0"
+  },
+  "symbols": [
+    {
+      "objectType": "Component",
+      "designator": "X?",
+      "comment": "POLYGON_COLORS_TEST",
+      "libReference": "POLYGON_COLORS_TEST",
+      "description": "Test polygon colors",
+      "libraryPath": "*",
+      "libraryIdentifier": "*",
+      "sourceLibraryName": "*",
+      "libIdentifierKind": 1,
+      "databaseLibraryName": "*",
+      "databaseTableName": "",
+      "designItemId": "",
+      "vaultGUID": "",
+      "vaultHRID": "Unavailable",
+      "itemGUID": "",
+      "revisionGUID": "",
+      "revisionHRID": "Unavailable",
+      "revisionState": "Unknown",
+      "revisionStatus": "",
+      "symbolReference": "POLYGON_COLORS_TEST",
+      "symbolItemGUID": "",
+      "symbolRevisionGUID": "",
+      "x": 0,
+      "y": 0,
+      "orientation": 0,
+      "isMirrored": false,
+      "displayMode": 0,
+      "displayModeCount": 1,
+      "partCount": 0,
+      "currentPartId": 1,
+      "isMultiPart": false,
+      "showHiddenFields": false,
+      "showHiddenPins": false,
+      "overideColors": false,
+      "pinColor": 0,
+      "color": 128,
+      "areaColor": 11599871,
+      "componentKind": 0,
+      "configurationParameters": "",
+      "configuratorName": "",
+      "variantOption": 0,
+      "designatorLocked": false,
+      "partIdLocked": true,
+      "pinsMoveable": false,
+      "inLibrary": true,
+      "inSheet": false,
+      "isUnmanaged": true,
+      "graphicallyLocked": false,
+      "uniqueId": "BPMFXIOF",
+      "handle": "CLISEOUS\\BPMFXIOF",
+      "primitives": [
+        {
+          "objectType": "Polygon",
+          "lineWidth": 3,
+          "isSolid": true,
+          "transparent": false,
+          "color": 0,
+          "areaColor": 255,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "DUDSTNHC",
+          "handle": "CLISEOUS\\DUDSTNHC",
+          "vertexCount": 3,
+          "vertices": [
+            {
+              "x": -3500000,
+              "y": 1000000
+            },
+            {
+              "x": -2500000,
+              "y": 3000000
+            },
+            {
+              "x": -1500000,
+              "y": 1000000
+            }
+          ]
+        },
+        {
+          "objectType": "Polygon",
+          "lineWidth": 3,
+          "isSolid": true,
+          "transparent": false,
+          "color": 0,
+          "areaColor": 32768,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "AJDUOKFU",
+          "handle": "CLISEOUS\\AJDUOKFU",
+          "vertexCount": 3,
+          "vertices": [
+            {
+              "x": -1000000,
+              "y": 1000000
+            },
+            {
+              "x": 0,
+              "y": 3000000
+            },
+            {
+              "x": 1000000,
+              "y": 1000000
+            }
+          ]
+        },
+        {
+          "objectType": "Polygon",
+          "lineWidth": 3,
+          "isSolid": true,
+          "transparent": false,
+          "color": 0,
+          "areaColor": 16711680,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "QRPCJKLQ",
+          "handle": "CLISEOUS\\QRPCJKLQ",
+          "vertexCount": 3,
+          "vertices": [
+            {
+              "x": 1500000,
+              "y": 1000000
+            },
+            {
+              "x": 2500000,
+              "y": 3000000
+            },
+            {
+              "x": 3500000,
+              "y": 1000000
+            }
+          ]
+        },
+        {
+          "objectType": "Polygon",
+          "lineWidth": 3,
+          "isSolid": false,
+          "transparent": false,
+          "color": 255,
+          "areaColor": 16777215,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "FCRTBZOP",
+          "handle": "CLISEOUS\\FCRTBZOP",
+          "vertexCount": 3,
+          "vertices": [
+            {
+              "x": -3500000,
+              "y": -2000000
+            },
+            {
+              "x": -2500000,
+              "y": 0
+            },
+            {
+              "x": -1500000,
+              "y": -2000000
+            }
+          ]
+        },
+        {
+          "objectType": "Polygon",
+          "lineWidth": 3,
+          "isSolid": false,
+          "transparent": false,
+          "color": 32768,
+          "areaColor": 16777215,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "XZBBECXO",
+          "handle": "CLISEOUS\\XZBBECXO",
+          "vertexCount": 3,
+          "vertices": [
+            {
+              "x": -1000000,
+              "y": -2000000
+            },
+            {
+              "x": 0,
+              "y": 0
+            },
+            {
+              "x": 1000000,
+              "y": -2000000
+            }
+          ]
+        },
+        {
+          "objectType": "Polygon",
+          "lineWidth": 3,
+          "isSolid": false,
+          "transparent": false,
+          "color": 16711680,
+          "areaColor": 16777215,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "VCKYMBQQ",
+          "handle": "CLISEOUS\\VCKYMBQQ",
+          "vertexCount": 3,
+          "vertices": [
+            {
+              "x": 1500000,
+              "y": -2000000
+            },
+            {
+              "x": 2500000,
+              "y": 0
+            },
+            {
+              "x": 3500000,
+              "y": -2000000
+            }
+          ]
+        },
+        {
+          "objectType": "Polygon",
+          "lineWidth": 3,
+          "isSolid": true,
+          "transparent": false,
+          "color": 16711935,
+          "areaColor": 65535,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "JRPGSLVT",
+          "handle": "CLISEOUS\\JRPGSLVT",
+          "vertexCount": 3,
+          "vertices": [
+            {
+              "x": -3500000,
+              "y": -5000000
+            },
+            {
+              "x": -2500000,
+              "y": -3000000
+            },
+            {
+              "x": -1500000,
+              "y": -5000000
+            }
+          ]
+        },
+        {
+          "objectType": "Polygon",
+          "lineWidth": 3,
+          "isSolid": true,
+          "transparent": false,
+          "color": 16776960,
+          "areaColor": 32896,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "IMMQVNAA",
+          "handle": "CLISEOUS\\IMMQVNAA",
+          "vertexCount": 3,
+          "vertices": [
+            {
+              "x": -1000000,
+              "y": -5000000
+            },
+            {
+              "x": 0,
+              "y": -3000000
+            },
+            {
+              "x": 1000000,
+              "y": -5000000
+            }
+          ]
+        },
+        {
+          "objectType": "Polygon",
+          "lineWidth": 3,
+          "isSolid": true,
+          "transparent": false,
+          "color": 8388608,
+          "areaColor": 65280,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "UNWPIEQN",
+          "handle": "CLISEOUS\\UNWPIEQN",
+          "vertexCount": 3,
+          "vertices": [
+            {
+              "x": 1500000,
+              "y": -5000000
+            },
+            {
+              "x": 2500000,
+              "y": -3000000
+            },
+            {
+              "x": 3500000,
+              "y": -5000000
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

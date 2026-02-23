@@ -1,0 +1,21 @@
+{
+  "metadata": {
+    "exportType": "PcbLib",
+    "fileName": "POLYGON_THERMAL.PcbLib",
+    "exportedBy": "AltiumSharp TestDataGenerator",
+    "version": "1.0"
+  },
+  "footprints": [
+    {
+      "name": "POLYGON_THERMAL",
+      "description": "Polygon with thermal relief entries",
+      "height": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "primitives": [
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "metadata": {
+    "exportType": "PcbLib",
+    "fileName": "POLYGON_DIRECT_CONNECT.PcbLib",
+    "exportedBy": "AltiumSharp TestDataGenerator",
+    "version": "1.0"
+  },
+  "footprints": [
+    {
+      "name": "POLYGON_DIRECT_CONNECT",
+      "description": "Polygon with direct connect style",
+      "height": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "primitives": [
+      ]
+    }
+  ]
+}

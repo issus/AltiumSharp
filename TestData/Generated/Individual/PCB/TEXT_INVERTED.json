@@ -1,0 +1,370 @@
+{
+  "metadata": {
+    "exportType": "PcbLib",
+    "fileName": "TEXT_INVERTED.PcbLib",
+    "exportedBy": "AltiumSharp TestDataGenerator",
+    "version": "1.0"
+  },
+  "footprints": [
+    {
+      "name": "TEXT_INVERTED",
+      "description": "Inverted (knockout) text test",
+      "height": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "primitives": [
+        {
+          "objectType": "Text",
+          "text": "INVERTED",
+          "x": {
+            "internal": 499000000,
+            "mils": 49900,
+            "mm": 1267.46
+          },
+          "y": {
+            "internal": 500000000,
+            "mils": 50000,
+            "mm": 1270
+          },
+          "size": {
+            "internal": 500000,
+            "mils": 50,
+            "mm": 1.27
+          },
+          "width": {
+            "internal": 50000,
+            "mils": 5,
+            "mm": 0.127
+          },
+          "rotation": 0,
+          "mirrorFlag": false,
+          "layer": 1,
+          "useTTFonts": true,
+          "fontName": "Arial",
+          "fontID": 1,
+          "bold": false,
+          "italic": false,
+          "textKind": 1,
+          "inverted": true,
+          "useInvertedRectangle": true,
+          "wordWrap": false,
+          "multiLine": false,
+          "multilineTextAutoPosition": 3,
+          "multilineTextHeight": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "multilineTextWidth": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "multilineTextResizeEnabled": false,
+          "ttfTextWidth": {
+            "internal": 2193360,
+            "mils": 219.336,
+            "mm": 5.57113
+          },
+          "ttfTextHeight": {
+            "internal": 319800,
+            "mils": 31.98,
+            "mm": 0.81229
+          },
+          "ttfInvertedTextJustify": 3,
+          "advanceSnapping": false,
+          "snapPointX": {
+            "internal": 499000000,
+            "mils": 49900,
+            "mm": 1267.46
+          },
+          "snapPointY": {
+            "internal": 500000000,
+            "mils": 50000,
+            "mm": 1270
+          },
+          "moveable": true,
+          "allowGlobalEdit": true,
+          "enableDraw": true,
+          "padCacheRobotFlag": false,
+          "miscFlag1": false,
+          "miscFlag2": false,
+          "miscFlag3": false,
+          "borderSpaceType": 0,
+          "objectIDString": "Text",
+          "identifier": "Text[49900mil,50000mil]",
+          "descriptor": "Text \"INVERTED\" (-100mil,0mil) on Top Layer",
+          "detail": "",
+          "barCodeKind": 0,
+          "barCodeRenderMode": 1,
+          "barCodeFullWidth": {
+            "internal": 10500000,
+            "mils": 1050,
+            "mm": 26.67
+          },
+          "barCodeFullHeight": {
+            "internal": 2100000,
+            "mils": 210,
+            "mm": 5.334
+          },
+          "barCodeXMargin": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "barCodeYMargin": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "barCodeMinWidth": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "barCodeShowText": true,
+          "barCodeInverted": true,
+          "barCodeFontName": "Arial",
+          "barCodeBitPattern": "100101101101010110100110101010110100110100110101011011010110010101101010110010101011011001011010110010101010110010110100101101101",
+          "charSet": 1,
+          "convertedString": "INVERTED",
+          "disableSpecialStringConversion": false,
+          "getDesignatorDisplayString": "",
+          "inAutoDimension": false,
+          "invertedTTTextBorder": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "invRectHeight": 319800,
+          "invRectWidth": 2193360,
+          "isComment": false,
+          "isDesignator": false,
+          "isRedundant": false,
+          "ttfOffsetFromInvertedRect": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "underlyingString": "INVERTED",
+          "x1Location": {
+            "internal": 499000000,
+            "mils": 49900,
+            "mm": 1267.46
+          },
+          "y1Location": {
+            "internal": 500000000,
+            "mils": 50000,
+            "mm": 1270
+          },
+          "x2Location": {
+            "internal": 501193360,
+            "mils": 50119.336,
+            "mm": 1273.03113
+          },
+          "y2Location": {
+            "internal": 500319800,
+            "mils": 50031.98,
+            "mm": 1270.81229
+          },
+          "layer_V6": 1,
+          "pasteMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "solderMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "powerPlaneClearance": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneReliefExpansion": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneConnectStyle": 2,
+          "reliefAirGap": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefConductorWidth": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefEntries": 4,
+          "isKeepout": false,
+          "inComponent": false,
+          "inNet": false,
+          "inBoard": true,
+          "inCoordinate": false,
+          "inDimension": false,
+          "inPolygon": false,
+          "selected": false,
+          "used": false,
+          "userRouted": true,
+          "drcError": false,
+          "enabled": true,
+          "isPreRoute": false,
+          "polygonOutline": false,
+          "tearDrop": false,
+          "isTestpoint_Bottom": false,
+          "isTestpoint_Top": false,
+          "isAssyTestpoint_Bottom": false,
+          "isAssyTestpoint_Top": false,
+          "isTenting": false,
+          "isTenting_Bottom": false,
+          "isTenting_Top": false,
+          "isElectricalPrim": false,
+          "drawAsPreview": false,
+          "index": 0,
+          "unionIndex": 0,
+          "uniqueId": "",
+          "handle": "",
+          "isFreePrimitive": true,
+          "isHidden": false,
+          "canEditMultilineRectSize": true,
+          "getState_BarCodeMinPixelSize": 0
+        },
+        {
+          "objectType": "Fill",
+          "xLocation": {
+            "internal": 498500000,
+            "mils": 49850,
+            "mm": 1266.19
+          },
+          "yLocation": {
+            "internal": 499700000,
+            "mils": 49970,
+            "mm": 1269.238
+          },
+          "x1": {
+            "internal": 498500000,
+            "mils": 49850,
+            "mm": 1266.19
+          },
+          "y1": {
+            "internal": 499700000,
+            "mils": 49970,
+            "mm": 1269.238
+          },
+          "x2": {
+            "internal": 501500000,
+            "mils": 50150,
+            "mm": 1273.81
+          },
+          "y2": {
+            "internal": 500700000,
+            "mils": 50070,
+            "mm": 1271.778
+          },
+          "width": {
+            "internal": 1000000,
+            "mils": 100,
+            "mm": 2.54
+          },
+          "length": {
+            "internal": 3000000,
+            "mils": 300,
+            "mm": 7.62
+          },
+          "rotation": 0,
+          "layer": 1,
+          "layer_V6": 1,
+          "pasteMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "solderMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "powerPlaneClearance": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneReliefExpansion": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneConnectStyle": 2,
+          "reliefAirGap": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefConductorWidth": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefEntries": 4,
+          "isKeepout": false,
+          "inComponent": false,
+          "inNet": false,
+          "inBoard": true,
+          "inCoordinate": false,
+          "inDimension": false,
+          "inPolygon": false,
+          "moveable": true,
+          "selected": false,
+          "used": false,
+          "userRouted": true,
+          "drcError": false,
+          "enabled": true,
+          "isPreRoute": false,
+          "polygonOutline": false,
+          "tearDrop": false,
+          "isTestpoint_Bottom": false,
+          "isTestpoint_Top": false,
+          "isAssyTestpoint_Bottom": false,
+          "isAssyTestpoint_Top": false,
+          "isTenting": false,
+          "isTenting_Bottom": false,
+          "isTenting_Top": false,
+          "isElectricalPrim": true,
+          "allowGlobalEdit": true,
+          "drawAsPreview": false,
+          "enableDraw": true,
+          "miscFlag1": false,
+          "miscFlag2": false,
+          "miscFlag3": false,
+          "index": 0,
+          "unionIndex": 0,
+          "uniqueId": "",
+          "handle": "",
+          "objectIDString": "Fill",
+          "identifier": "Fill[49850mil,49970mil]",
+          "descriptor": "Area Fill (-150mil,-30mil) (150mil,70mil) on Top Layer",
+          "detail": "Net: X-Size:300mil Y-Size:100mil",
+          "isFreePrimitive": true,
+          "isHidden": false,
+          "isRedundant": false,
+          "getState_LocationX": {
+            "internal": 500000000,
+            "mils": 50000,
+            "mm": 1270
+          },
+          "getState_LocationY": {
+            "internal": 500200000,
+            "mils": 50020,
+            "mm": 1270.508
+          }
+        }
+      ]
+    }
+  ]
+}

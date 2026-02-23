@@ -1,0 +1,99 @@
+{
+  "metadata": {
+    "exportType": "SchLib",
+    "fileName": "POLYGON_TEST.SchLib",
+    "exportedBy": "AltiumSharp TestDataGenerator",
+    "version": "1.0"
+  },
+  "symbols": [
+    {
+      "objectType": "Component",
+      "designator": "X?",
+      "comment": "POLYGON_TEST",
+      "libReference": "POLYGON_TEST",
+      "description": "Polygon test",
+      "libraryPath": "*",
+      "libraryIdentifier": "*",
+      "sourceLibraryName": "*",
+      "libIdentifierKind": 1,
+      "databaseLibraryName": "*",
+      "databaseTableName": "",
+      "designItemId": "",
+      "vaultGUID": "",
+      "vaultHRID": "Unavailable",
+      "itemGUID": "",
+      "revisionGUID": "",
+      "revisionHRID": "Unavailable",
+      "revisionState": "Unknown",
+      "revisionStatus": "",
+      "symbolReference": "POLYGON_TEST",
+      "symbolItemGUID": "",
+      "symbolRevisionGUID": "",
+      "x": 0,
+      "y": 0,
+      "orientation": 0,
+      "isMirrored": false,
+      "displayMode": 0,
+      "displayModeCount": 1,
+      "partCount": 0,
+      "currentPartId": 1,
+      "isMultiPart": false,
+      "showHiddenFields": false,
+      "showHiddenPins": false,
+      "overideColors": false,
+      "pinColor": 0,
+      "color": 128,
+      "areaColor": 11599871,
+      "componentKind": 0,
+      "configurationParameters": "",
+      "configuratorName": "",
+      "variantOption": 0,
+      "designatorLocked": false,
+      "partIdLocked": true,
+      "pinsMoveable": false,
+      "inLibrary": true,
+      "inSheet": false,
+      "isUnmanaged": true,
+      "graphicallyLocked": false,
+      "uniqueId": "ANOIBBMJ",
+      "handle": "IRQRZKAD\\ANOIBBMJ",
+      "primitives": [
+        {
+          "objectType": "Polygon",
+          "lineWidth": 2,
+          "isSolid": true,
+          "transparent": false,
+          "color": 0,
+          "areaColor": 16777215,
+          "ownerPartId": 1,
+          "ownerPartDisplayMode": 0,
+          "graphicallyLocked": false,
+          "disabled": false,
+          "dimmed": false,
+          "compilationMasked": false,
+          "uniqueId": "QIRPISPS",
+          "handle": "IRQRZKAD\\QIRPISPS",
+          "vertexCount": 4,
+          "vertices": [
+            {
+              "x": 0,
+              "y": -1500000
+            },
+            {
+              "x": -1500000,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 1500000
+            },
+            {
+              "x": 1500000,
+              "y": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

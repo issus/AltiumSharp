@@ -1,0 +1,184 @@
+{
+  "metadata": {
+    "exportType": "PcbLib",
+    "fileName": "BODY_3D_STEP.PcbLib",
+    "exportedBy": "AltiumSharp TestDataGenerator",
+    "version": "1.0"
+  },
+  "footprints": [
+    {
+      "name": "BODY_3D_STEP",
+      "description": "3D body loaded from STEP file",
+      "height": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "primitives": [
+        {
+          "objectType": "ComponentBody",
+          "layer": 57,
+          "standoffHeight": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "overallHeight": {
+            "internal": 314961,
+            "mils": 31.496,
+            "mm": 0.8
+          },
+          "bodyProjection": 0,
+          "bodyColor3D": 8421504,
+          "bodyOpacity3D": 0,
+          "overrideColor": false,
+          "texture": "",
+          "textureCenter": 0,
+          "textureSize": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "textureRotation": 0,
+          "kind": 0,
+          "name": "",
+          "holeCount": 0,
+          "area": 0,
+          "cavityHeight": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "modelHasChanged": false,
+          "enableDraw": true,
+          "moveable": true,
+          "inBoard": true,
+          "inComponent": false,
+          "drcError": false,
+          "miscFlag1": false,
+          "miscFlag2": false,
+          "miscFlag3": false,
+          "objectIDString": "ComponentBody",
+          "identifier": "",
+          "descriptor": "3D STEP  (Mechanical 1)  Standoff=0mil  Overall=31.496mil  (50000mil, 50000mil)",
+          "detail": "3D STEP  (Mechanical 1)  Standoff=0mil  Overall=31.496mil  (50000mil, 50000mil)",
+          "uniqueId": "",
+          "contourPoints": [
+            {
+              "x": {
+                "internal": 499208661,
+                "mils": 49920.866,
+                "mm": 1267.99
+              },
+              "y": {
+                "internal": 499208661,
+                "mils": 49920.866,
+                "mm": 1267.99
+              },
+            },
+            {
+              "x": {
+                "internal": 500791339,
+                "mils": 50079.134,
+                "mm": 1272.01
+              },
+              "y": {
+                "internal": 499208661,
+                "mils": 49920.866,
+                "mm": 1267.99
+              },
+            },
+            {
+              "x": {
+                "internal": 500791339,
+                "mils": 50079.134,
+                "mm": 1272.01
+              },
+              "y": {
+                "internal": 500791339,
+                "mils": 50079.134,
+                "mm": 1272.01
+              },
+            },
+            {
+              "x": {
+                "internal": 499208661,
+                "mils": 49920.866,
+                "mm": 1267.99
+              },
+              "y": {
+                "internal": 500791339,
+                "mils": 50079.134,
+                "mm": 1272.01
+              },
+            }
+          ]
+          "layer_V6": 57,
+          "pasteMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "solderMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "powerPlaneClearance": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneReliefExpansion": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneConnectStyle": 2,
+          "reliefAirGap": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefConductorWidth": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefEntries": 4,
+          "isKeepout": false,
+          "inNet": false,
+          "inCoordinate": false,
+          "inDimension": false,
+          "inPolygon": false,
+          "selected": false,
+          "used": false,
+          "userRouted": true,
+          "enabled": true,
+          "isPreRoute": false,
+          "polygonOutline": false,
+          "tearDrop": false,
+          "isTestpoint_Bottom": false,
+          "isTestpoint_Top": false,
+          "isAssyTestpoint_Bottom": false,
+          "isAssyTestpoint_Top": false,
+          "isTenting": false,
+          "isTenting_Bottom": false,
+          "isTenting_Top": false,
+          "isElectricalPrim": false,
+          "allowGlobalEdit": true,
+          "drawAsPreview": false,
+          "index": 0,
+          "unionIndex": 0,
+          "handle": "",
+          "isSimpleRegion": true,
+          "getState_ModelType": 1,
+          "axisCount": 0,
+          "isFreePrimitive": true,
+          "isHidden": false,
+          "getState_SnapCount": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "metadata": {
+    "exportType": "PcbLib",
+    "fileName": "REGION_SLOT.PcbLib",
+    "exportedBy": "AltiumSharp TestDataGenerator",
+    "version": "1.0"
+  },
+  "footprints": [
+    {
+      "name": "REGION_SLOT",
+      "description": "Slot-shaped cutout region",
+      "height": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "primitives": [
+        {
+          "objectType": "Region",
+          "layer": 74,
+          "layer_V6": 74,
+          "kind": 1,
+          "name": "",
+          "holeCount": 0,
+          "area": 1000000000000,
+          "cavityHeight": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "pasteMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "solderMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "powerPlaneClearance": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneReliefExpansion": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneConnectStyle": 2,
+          "reliefAirGap": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefConductorWidth": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefEntries": 4,
+          "isKeepout": false,
+          "tearDrop": false,
+          "polygonOutline": false,
+          "inPolygon": false,
+          "inComponent": false,
+          "inNet": false,
+          "inBoard": true,
+          "inCoordinate": false,
+          "inDimension": false,
+          "isElectricalPrim": true,
+          "moveable": true,
+          "selected": false,
+          "used": false,
+          "userRouted": true,
+          "drcError": false,
+          "enabled": true,
+          "isPreRoute": false,
+          "isTestpoint_Bottom": false,
+          "isTestpoint_Top": false,
+          "isAssyTestpoint_Bottom": false,
+          "isAssyTestpoint_Top": false,
+          "isTenting": false,
+          "isTenting_Bottom": false,
+          "isTenting_Top": false,
+          "allowGlobalEdit": true,
+          "drawAsPreview": false,
+          "enableDraw": true,
+          "miscFlag1": false,
+          "miscFlag2": false,
+          "miscFlag3": false,
+          "index": 0,
+          "unionIndex": 0,
+          "handle": "",
+          "objectIDString": "PolyRegion",
+          "identifier": "PolyRegion[49900mil,49975mil]",
+          "descriptor": "Polygon Pour Cutout (Multi-Layer)Region (0 hole(s)) Multi-Layer",
+          "detail": "Polygon Pour Cutout (Multi-Layer)Region (0 hole(s)) Multi-Layer",
+          "uniqueId": "",
+          "contourPoints": [
+            {
+              "x": {
+                "internal": 499000000,
+                "mils": 49900,
+                "mm": 1267.46
+              },
+              "y": {
+                "internal": 499750000,
+                "mils": 49975,
+                "mm": 1269.365
+              },
+            },
+            {
+              "x": {
+                "internal": 501000000,
+                "mils": 50100,
+                "mm": 1272.54
+              },
+              "y": {
+                "internal": 499750000,
+                "mils": 49975,
+                "mm": 1269.365
+              },
+            },
+            {
+              "x": {
+                "internal": 501000000,
+                "mils": 50100,
+                "mm": 1272.54
+              },
+              "y": {
+                "internal": 500250000,
+                "mils": 50025,
+                "mm": 1270.635
+              },
+            },
+            {
+              "x": {
+                "internal": 499000000,
+                "mils": 49900,
+                "mm": 1267.46
+              },
+              "y": {
+                "internal": 500250000,
+                "mils": 50025,
+                "mm": 1270.635
+              },
+            }
+          ]
+          "isSimpleRegion": true,
+          "isFreePrimitive": true,
+          "isHidden": false
+        }
+      ]
+    }
+  ]
+}

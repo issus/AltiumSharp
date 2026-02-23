@@ -1,0 +1,6350 @@
+{
+  "metadata": {
+    "exportType": "PcbDoc",
+    "fileName": "POWER ADAPTER PANEL.PCBDOC",
+    "exportedBy": "AltiumSharp FileToJsonConverter",
+    "version": "2.0"
+  },
+  "boardOutline": {
+    "xOrigin": {
+      "internal": 11811024,
+      "mils": 1181.1024,
+      "mm": 29.9999847600082
+    },
+    "yOrigin": {
+      "internal": 12795276,
+      "mils": 1279.5276,
+      "mm": 32.4999834900089
+    },
+    "width": {
+      "internal": 63971120,
+      "mils": 6397.112,
+      "mm": 162.486557057259
+    },
+    "height": {
+      "internal": 51653543,
+      "mils": 5165.3543,
+      "mm": 131.199928372039
+    }
+  },
+  "boardProperties": {
+    "automaticSplitPlanes": true,
+    "bigVisibleGridSize": 0,
+    "bigVisibleGridUnit": 1,
+    "boardID": 71,
+    "boardVersion": 5.01,
+    "componentGridSize": 39370.07874,
+    "componentGridSizeX": 39370.07874,
+    "componentGridSizeY": 39370.07874,
+    "currentLayer": 64,
+    "layer": 0,
+    "objectId": 25,
+    "displayUnit": 0,
+    "drillLayerPairsCount": 1,
+    "internalPlane1NetName": "(No Net)",
+    "internalPlane2NetName": "(No Net)",
+    "internalPlane3NetName": "(No Net)",
+    "internalPlane4NetName": "(No Net)"
+  },
+  "routingOptions": {
+    "showSignalLayersOnly": true
+  },
+  "designVariants": {
+    "count": 0
+  },
+  "boardLayerSetManager": {
+    "allSetsCount": 5
+  },
+  "boardExObjectRefs": {
+    "fullComponents_ref": "present",
+    "viaManager_ref": "present",
+    "viaStructureManager_ref": "present",
+    "drillLayerPairManager_ref": "present",
+    "silkscreenClipperSettings_ref": "present"
+  },
+  "boardObjectRefs": {
+    "board_ref": "",
+    "component_ref": "",
+    "coordinate_ref": "",
+    "dimension_ref": "",
+    "ecoOptions_ref": "present",
+    "layerStack_V7_ref": "present",
+    "masterLayerStack_ref": "present",
+    "mechanicalPairs_ref": "present",
+    "net_ref": "",
+    "outputOptions_ref": "present",
+    "padViaCache_ref": "present",
+    "padViaLibrary_ref": "present",
+    "pcb3DMovieManager_ref": "present",
+    "pcbSheet_ref": "present",
+    "pinPairsManager_ref": "present",
+    "placerOptions_ref": "present",
+    "polygon_ref": "",
+    "primitiveCounter_ref": "present",
+    "printerOptions_ref": "present",
+    "routeBody_ref": "",
+    "routeCore_ref": "",
+    "viewport_ref": "",
+  },
+  "boardIndexedProps": {
+    "inSelectionMemory_0": false,
+    "internalPlaneNetName_1": "",
+    "layerColor_top": 255,
+    "layerIsDisplayed_top": true,
+    "layerIsUsed_top": true,
+    "layerPair_0_ref": "present",
+  },
+  "objects": [
+    {
+      "objectType": "Arc",
+      "xCenter": {
+        "internal": 13241024,
+        "mils": 1324.1024,
+        "mm": 33.6321827986213
+      },
+      "yCenter": {
+        "internal": 58609374,
+        "mils": 5860.9374,
+        "mm": 148.867729571426
+      },
+      "radius": {
+        "internal": 1430000,
+        "mils": 143,
+        "mm": 3.63219803861306
+      },
+      "startAngle": 90,
+      "endAngle": 180,
+      "lineWidth": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "layer": 56,
+      "startX": {
+        "internal": 13241024,
+        "mils": 1324.1024,
+        "mm": 33.6321827986213
+      },
+      "startY": {
+        "internal": 60039374,
+        "mils": 6003.9374,
+        "mm": 152.499927610039
+      },
+      "endX": {
+        "internal": 11811024,
+        "mils": 1181.1024,
+        "mm": 29.9999847600082
+      },
+      "endY": {
+        "internal": 58609374,
+        "mils": 5860.9374,
+        "mm": 148.867729571426
+      },
+      "net": "",
+      "objectId": 1,
+      "objectIDString": "Arc",
+      "identifier": "Arc[1324.102mil,5860.937mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Arc (3.632mm,116.368mm) on Keep-Out Layer",
+      "detail": "Net:  Radius:3.632mm Angle1:90.00 Angle2:180.00",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": true,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 56,
+      "layer_V6": 56,
+      "viewableObjectId": 1,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Arc",
+      "xCenter": {
+        "internal": 56444016,
+        "mils": 5644.4016,
+        "mm": 143.367723221429
+      },
+      "yCenter": {
+        "internal": 58609374,
+        "mils": 5860.9374,
+        "mm": 148.867729571426
+      },
+      "radius": {
+        "internal": 1430000,
+        "mils": 143,
+        "mm": 3.63219803861306
+      },
+      "startAngle": 0,
+      "endAngle": 90,
+      "lineWidth": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "layer": 56,
+      "startX": {
+        "internal": 57874016,
+        "mils": 5787.4016,
+        "mm": 146.999921260042
+      },
+      "startY": {
+        "internal": 58609374,
+        "mils": 5860.9374,
+        "mm": 148.867729571426
+      },
+      "endX": {
+        "internal": 56444016,
+        "mils": 5644.4016,
+        "mm": 143.367723221429
+      },
+      "endY": {
+        "internal": 60039374,
+        "mils": 6003.9374,
+        "mm": 152.499927610039
+      },
+      "net": "",
+      "objectId": 1,
+      "objectIDString": "Arc",
+      "identifier": "Arc[5644.402mil,5860.937mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Arc (113.368mm,116.368mm) on Keep-Out Layer",
+      "detail": "Net:  Radius:3.632mm Angle1:0.00 Angle2:90.00",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": true,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 56,
+      "layer_V6": 56,
+      "viewableObjectId": 1,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Arc",
+      "xCenter": {
+        "internal": 56444016,
+        "mils": 5644.4016,
+        "mm": 143.367723221429
+      },
+      "yCenter": {
+        "internal": 14225276,
+        "mils": 1422.5276,
+        "mm": 36.132181528622
+      },
+      "radius": {
+        "internal": 1430000,
+        "mils": 143,
+        "mm": 3.63219803861306
+      },
+      "startAngle": 270,
+      "endAngle": 360,
+      "lineWidth": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "layer": 56,
+      "startX": {
+        "internal": 56444016,
+        "mils": 5644.4016,
+        "mm": 143.367723221429
+      },
+      "startY": {
+        "internal": 12795276,
+        "mils": 1279.5276,
+        "mm": 32.4999834900089
+      },
+      "endX": {
+        "internal": 57874016,
+        "mils": 5787.4016,
+        "mm": 146.999921260042
+      },
+      "endY": {
+        "internal": 14225276,
+        "mils": 1422.5276,
+        "mm": 36.132181528622
+      },
+      "net": "",
+      "objectId": 1,
+      "objectIDString": "Arc",
+      "identifier": "Arc[5644.402mil,1422.528mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Arc (113.368mm,3.632mm) on Keep-Out Layer",
+      "detail": "Net:  Radius:3.632mm Angle1:270.00 Angle2:360.00",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": true,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 56,
+      "layer_V6": 56,
+      "viewableObjectId": 1,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Arc",
+      "xCenter": {
+        "internal": 12992126,
+        "mils": 1299.2126,
+        "mm": 32.9999822200096
+      },
+      "yCenter": {
+        "internal": 13976378,
+        "mils": 1397.6378,
+        "mm": 35.4999809500103
+      },
+      "radius": {
+        "internal": 1181102,
+        "mils": 118.1102,
+        "mm": 2.99999746000137
+      },
+      "startAngle": 180,
+      "endAngle": 270,
+      "lineWidth": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "layer": 56,
+      "startX": {
+        "internal": 11811024,
+        "mils": 1181.1024,
+        "mm": 29.9999847600082
+      },
+      "startY": {
+        "internal": 13976378,
+        "mils": 1397.6378,
+        "mm": 35.4999809500103
+      },
+      "endX": {
+        "internal": 12992126,
+        "mils": 1299.2126,
+        "mm": 32.9999822200096
+      },
+      "endY": {
+        "internal": 12795276,
+        "mils": 1279.5276,
+        "mm": 32.4999834900089
+      },
+      "net": "",
+      "objectId": 1,
+      "objectIDString": "Arc",
+      "identifier": "Arc[1299.213mil,1397.638mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Arc (3mm,3mm) on Keep-Out Layer",
+      "detail": "Net:  Radius:3mm Angle1:180.00 Angle2:270.00",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": true,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 56,
+      "layer_V6": 56,
+      "viewableObjectId": 1,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Pad",
+      "name": "NEG4",
+      "x": {
+        "internal": 15748032,
+        "mils": 1574.8032,
+        "mm": 39.999979680011
+      },
+      "y": {
+        "internal": 58070866,
+        "mils": 5807.0866,
+        "mm": 147.499919990043
+      },
+      "topXSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "topYSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "holeSize": {
+        "internal": 1259843,
+        "mils": 125.9843,
+        "mm": 3.19999949200027
+      },
+      "topShape": 2,
+      "holeType": 0,
+      "rotation": 0,
+      "layer": 74,
+      "plated": false,
+      "mode": 0,
+      "midXSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "midYSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "botXSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "botYSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "midShape": 2,
+      "botShape": 2,
+      "holeRotation": 0,
+      "holeWidth": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "drillType": 0,
+      "swapID_Pad": "",
+      "swapID_Part": "",
+      "holePositiveTolerance": {
+        "internal": 196850,
+        "mils": 19.685,
+        "mm": 0.499998730000686
+      },
+      "holeNegativeTolerance": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "drawAsPreview": false,
+      "isSurfaceMount": false,
+      "isVirtualPin": false,
+      "jumperID": 0,
+      "ownerPart_ID": 0,
+      "pinDescriptor": "Free-NEG4",
+      "solderMaskExpansionFromHoleEdge": false,
+      "swappedPadName": "",
+      "pinPackageLength": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "daisyChainStyle": 0,
+      "maxCSignalLayers": {
+        "internal": 1259843,
+        "mils": 125.9843,
+        "mm": 3.19999949200027
+      },
+      "maxYSignalLayers": {
+        "internal": 1259843,
+        "mils": 125.9843,
+        "mm": 3.19999949200027
+      },
+      "multiLayerHighBits": 0,
+      "padHasOffsetOnAny": false,
+      "xPadOffsetAll": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "yPadOffsetAll": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "isBottomPasteEnabled": false,
+      "isTopPasteEnabled": false,
+      "maxXSignalLayers": {
+        "internal": 1259843,
+        "mils": 125.9843,
+        "mm": 3.19999949200027
+      },
+      "multiLayerHighBits": 0,
+      "isFreePrimitive": true,
+      "objectId": 2,
+      "objectIDString": "Pad",
+      "identifier": "Free-NEG4",
+      "handle": "TORZUIMD\\XXPDOKEX",
+      "uniqueId": "XXPDOKEX",
+      "descriptor": "Pad Free-NEG4(10mm,115mm) on Multi-Layer",
+      "detail": "Net: X-Size:3.2mm Y-Size:3.2mm Hole Type:Round Hole:3.2mm",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": true,
+      "isKeepout": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 74,
+      "layer_V6": 74,
+      "viewableObjectId": 2,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 19685,
+        "mils": 1.9685,
+        "mm": 0.0499998730000686
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 1,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 1,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Pad",
+      "name": "NEG4",
+      "x": {
+        "internal": 53937008,
+        "mils": 5393.7008,
+        "mm": 136.99992634004
+      },
+      "y": {
+        "internal": 58070866,
+        "mils": 5807.0866,
+        "mm": 147.499919990043
+      },
+      "topXSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "topYSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "holeSize": {
+        "internal": 1259843,
+        "mils": 125.9843,
+        "mm": 3.19999949200027
+      },
+      "topShape": 2,
+      "holeType": 0,
+      "rotation": 180,
+      "layer": 74,
+      "plated": false,
+      "mode": 0,
+      "midXSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "midYSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "botXSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "botYSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "midShape": 2,
+      "botShape": 2,
+      "holeRotation": 0,
+      "holeWidth": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "drillType": 0,
+      "swapID_Pad": "",
+      "swapID_Part": "",
+      "holePositiveTolerance": {
+        "internal": 196850,
+        "mils": 19.685,
+        "mm": 0.499998730000686
+      },
+      "holeNegativeTolerance": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "drawAsPreview": false,
+      "isSurfaceMount": false,
+      "isVirtualPin": false,
+      "jumperID": 0,
+      "ownerPart_ID": 0,
+      "pinDescriptor": "Free-NEG4",
+      "solderMaskExpansionFromHoleEdge": false,
+      "swappedPadName": "",
+      "pinPackageLength": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "daisyChainStyle": 0,
+      "maxCSignalLayers": {
+        "internal": 1259843,
+        "mils": 125.9843,
+        "mm": 3.19999949200027
+      },
+      "maxYSignalLayers": {
+        "internal": 1259843,
+        "mils": 125.9843,
+        "mm": 3.19999949200027
+      },
+      "multiLayerHighBits": 0,
+      "padHasOffsetOnAny": false,
+      "xPadOffsetAll": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "yPadOffsetAll": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "isBottomPasteEnabled": false,
+      "isTopPasteEnabled": false,
+      "maxXSignalLayers": {
+        "internal": 1259843,
+        "mils": 125.9843,
+        "mm": 3.19999949200027
+      },
+      "multiLayerHighBits": 0,
+      "isFreePrimitive": true,
+      "objectId": 2,
+      "objectIDString": "Pad",
+      "identifier": "Free-NEG4",
+      "handle": "TORZUIMD\\KQLQBRLB",
+      "uniqueId": "KQLQBRLB",
+      "descriptor": "Pad Free-NEG4(107mm,115mm) on Multi-Layer",
+      "detail": "Net: X-Size:3.2mm Y-Size:3.2mm Hole Type:Round Hole:3.2mm",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": true,
+      "isKeepout": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 74,
+      "layer_V6": 74,
+      "viewableObjectId": 2,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 19685,
+        "mils": 1.9685,
+        "mm": 0.0499998730000686
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 1,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 1,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Pad",
+      "name": "NEG4",
+      "x": {
+        "internal": 53937008,
+        "mils": 5393.7008,
+        "mm": 136.99992634004
+      },
+      "y": {
+        "internal": 14763780,
+        "mils": 1476.378,
+        "mm": 37.4999809500103
+      },
+      "topXSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "topYSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "holeSize": {
+        "internal": 1259843,
+        "mils": 125.9843,
+        "mm": 3.19999949200027
+      },
+      "topShape": 2,
+      "holeType": 0,
+      "rotation": 180,
+      "layer": 74,
+      "plated": false,
+      "mode": 0,
+      "midXSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "midYSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "botXSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "botYSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "midShape": 2,
+      "botShape": 2,
+      "holeRotation": 0,
+      "holeWidth": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "drillType": 0,
+      "swapID_Pad": "",
+      "swapID_Part": "",
+      "holePositiveTolerance": {
+        "internal": 196850,
+        "mils": 19.685,
+        "mm": 0.499998730000686
+      },
+      "holeNegativeTolerance": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "drawAsPreview": false,
+      "isSurfaceMount": false,
+      "isVirtualPin": false,
+      "jumperID": 0,
+      "ownerPart_ID": 0,
+      "pinDescriptor": "Free-NEG4",
+      "solderMaskExpansionFromHoleEdge": false,
+      "swappedPadName": "",
+      "pinPackageLength": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "daisyChainStyle": 0,
+      "maxCSignalLayers": {
+        "internal": 1259843,
+        "mils": 125.9843,
+        "mm": 3.19999949200027
+      },
+      "maxYSignalLayers": {
+        "internal": 1259843,
+        "mils": 125.9843,
+        "mm": 3.19999949200027
+      },
+      "multiLayerHighBits": 0,
+      "padHasOffsetOnAny": false,
+      "xPadOffsetAll": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "yPadOffsetAll": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "isBottomPasteEnabled": false,
+      "isTopPasteEnabled": false,
+      "maxXSignalLayers": {
+        "internal": 1259843,
+        "mils": 125.9843,
+        "mm": 3.19999949200027
+      },
+      "multiLayerHighBits": 0,
+      "isFreePrimitive": true,
+      "objectId": 2,
+      "objectIDString": "Pad",
+      "identifier": "Free-NEG4",
+      "handle": "TORZUIMD\\QILPEDOO",
+      "uniqueId": "QILPEDOO",
+      "descriptor": "Pad Free-NEG4(107mm,5mm) on Multi-Layer",
+      "detail": "Net: X-Size:3.2mm Y-Size:3.2mm Hole Type:Round Hole:3.2mm",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": true,
+      "isKeepout": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 74,
+      "layer_V6": 74,
+      "viewableObjectId": 2,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 19685,
+        "mils": 1.9685,
+        "mm": 0.0499998730000686
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 1,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 1,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Pad",
+      "name": "NEG4",
+      "x": {
+        "internal": 15748032,
+        "mils": 1574.8032,
+        "mm": 39.999979680011
+      },
+      "y": {
+        "internal": 14763780,
+        "mils": 1476.378,
+        "mm": 37.4999809500103
+      },
+      "topXSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "topYSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "holeSize": {
+        "internal": 1259843,
+        "mils": 125.9843,
+        "mm": 3.19999949200027
+      },
+      "topShape": 2,
+      "holeType": 0,
+      "rotation": 0,
+      "layer": 74,
+      "plated": false,
+      "mode": 0,
+      "midXSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "midYSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "botXSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "botYSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "midShape": 2,
+      "botShape": 2,
+      "holeRotation": 0,
+      "holeWidth": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "drillType": 0,
+      "swapID_Pad": "",
+      "swapID_Part": "",
+      "holePositiveTolerance": {
+        "internal": 196850,
+        "mils": 19.685,
+        "mm": 0.499998730000686
+      },
+      "holeNegativeTolerance": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "drawAsPreview": false,
+      "isSurfaceMount": false,
+      "isVirtualPin": false,
+      "jumperID": 0,
+      "ownerPart_ID": 0,
+      "pinDescriptor": "Free-NEG4",
+      "solderMaskExpansionFromHoleEdge": false,
+      "swappedPadName": "",
+      "pinPackageLength": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "daisyChainStyle": 0,
+      "maxCSignalLayers": {
+        "internal": 1259843,
+        "mils": 125.9843,
+        "mm": 3.19999949200027
+      },
+      "maxYSignalLayers": {
+        "internal": 1259843,
+        "mils": 125.9843,
+        "mm": 3.19999949200027
+      },
+      "multiLayerHighBits": 0,
+      "padHasOffsetOnAny": false,
+      "xPadOffsetAll": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "yPadOffsetAll": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "isBottomPasteEnabled": false,
+      "isTopPasteEnabled": false,
+      "maxXSignalLayers": {
+        "internal": 1259843,
+        "mils": 125.9843,
+        "mm": 3.19999949200027
+      },
+      "multiLayerHighBits": 0,
+      "isFreePrimitive": true,
+      "objectId": 2,
+      "objectIDString": "Pad",
+      "identifier": "Free-NEG4",
+      "handle": "TORZUIMD\\XIPQQDNW",
+      "uniqueId": "XIPQQDNW",
+      "descriptor": "Pad Free-NEG4(10mm,5mm) on Multi-Layer",
+      "detail": "Net: X-Size:3.2mm Y-Size:3.2mm Hole Type:Round Hole:3.2mm",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": true,
+      "isKeepout": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 74,
+      "layer_V6": 74,
+      "viewableObjectId": 2,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 19685,
+        "mils": 1.9685,
+        "mm": 0.0499998730000686
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 1,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 1,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Track",
+      "x1": {
+        "internal": 57874016,
+        "mils": 5787.4016,
+        "mm": 146.999921260042
+      },
+      "y1": {
+        "internal": 14225276,
+        "mils": 1422.5276,
+        "mm": 36.132181528622
+      },
+      "x2": {
+        "internal": 57874016,
+        "mils": 5787.4016,
+        "mm": 146.999921260042
+      },
+      "y2": {
+        "internal": 58609374,
+        "mils": 5860.9374,
+        "mm": 148.867729571426
+      },
+      "width": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "layer": 56,
+      "net": "",
+      "faceIdx1": -1,
+      "faceIdx2": 0,
+      "faceU1": 0,
+      "faceU2": 0,
+      "faceV1": 0,
+      "faceV2": 0,
+      "objectId": 4,
+      "objectIDString": "Track",
+      "identifier": "Track[5787.402mil,1422.528mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Track (117mm,3.632mm)(117mm,116.368mm) on Keep-Out Layer",
+      "detail": "",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": true,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 56,
+      "layer_V6": 56,
+      "viewableObjectId": 4,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Track",
+      "x1": {
+        "internal": 11811024,
+        "mils": 1181.1024,
+        "mm": 29.9999847600082
+      },
+      "y1": {
+        "internal": 13976378,
+        "mils": 1397.6378,
+        "mm": 35.4999809500103
+      },
+      "x2": {
+        "internal": 11811024,
+        "mils": 1181.1024,
+        "mm": 29.9999847600082
+      },
+      "y2": {
+        "internal": 58609374,
+        "mils": 5860.9374,
+        "mm": 148.867729571426
+      },
+      "width": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "layer": 56,
+      "net": "",
+      "faceIdx1": -1,
+      "faceIdx2": 0,
+      "faceU1": 0,
+      "faceU2": 0,
+      "faceV1": 0,
+      "faceV2": 0,
+      "objectId": 4,
+      "objectIDString": "Track",
+      "identifier": "Track[1181.102mil,1397.638mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Track (0mm,3mm)(0mm,116.368mm) on Keep-Out Layer",
+      "detail": "",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": true,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 56,
+      "layer_V6": 56,
+      "viewableObjectId": 4,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Track",
+      "x1": {
+        "internal": 13241024,
+        "mils": 1324.1024,
+        "mm": 33.6321827986213
+      },
+      "y1": {
+        "internal": 60039374,
+        "mils": 6003.9374,
+        "mm": 152.499927610039
+      },
+      "x2": {
+        "internal": 56444016,
+        "mils": 5644.4016,
+        "mm": 143.367723221429
+      },
+      "y2": {
+        "internal": 60039374,
+        "mils": 6003.9374,
+        "mm": 152.499927610039
+      },
+      "width": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "layer": 56,
+      "net": "",
+      "faceIdx1": -1,
+      "faceIdx2": 0,
+      "faceU1": 0,
+      "faceU2": 0,
+      "faceV1": 0,
+      "faceV2": 0,
+      "objectId": 4,
+      "objectIDString": "Track",
+      "identifier": "Track[1324.102mil,6003.937mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Track (3.632mm,120mm)(113.368mm,120mm) on Keep-Out Layer",
+      "detail": "",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": true,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 56,
+      "layer_V6": 56,
+      "viewableObjectId": 4,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Track",
+      "x1": {
+        "internal": 12992126,
+        "mils": 1299.2126,
+        "mm": 32.9999822200096
+      },
+      "y1": {
+        "internal": 12795276,
+        "mils": 1279.5276,
+        "mm": 32.4999834900089
+      },
+      "x2": {
+        "internal": 56444016,
+        "mils": 5644.4016,
+        "mm": 143.367723221429
+      },
+      "y2": {
+        "internal": 12795276,
+        "mils": 1279.5276,
+        "mm": 32.4999834900089
+      },
+      "width": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "layer": 56,
+      "net": "",
+      "faceIdx1": -1,
+      "faceIdx2": 0,
+      "faceU1": 0,
+      "faceU2": 0,
+      "faceV1": 0,
+      "faceV2": 0,
+      "objectId": 4,
+      "objectIDString": "Track",
+      "identifier": "Track[1299.213mil,1279.528mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Track (3mm,0mm)(113.368mm,0mm) on Keep-Out Layer",
+      "detail": "",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": true,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 56,
+      "layer_V6": 56,
+      "viewableObjectId": 4,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Track",
+      "x1": {
+        "internal": 13385825,
+        "mils": 1338.5825,
+        "mm": 33.9999771400123
+      },
+      "y1": {
+        "internal": 10826772,
+        "mils": 1082.6772,
+        "mm": 27.4999860300075
+      },
+      "x2": {
+        "internal": 13385827,
+        "mils": 1338.5827,
+        "mm": 33.9999822200096
+      },
+      "y2": {
+        "internal": 62007874,
+        "mils": 6200.7874,
+        "mm": 157.499914910046
+      },
+      "width": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "layer": 64,
+      "net": "",
+      "faceIdx1": -1,
+      "faceIdx2": 0,
+      "faceU1": 0,
+      "faceU2": 0,
+      "faceV1": 0,
+      "faceV2": 0,
+      "objectId": 4,
+      "objectIDString": "Track",
+      "identifier": "Track[1338.582mil,1082.677mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Track (4mm,-5mm)(4mm,125mm) on V Cut",
+      "detail": "",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 64,
+      "layer_V6": 64,
+      "viewableObjectId": 4,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Track",
+      "x1": {
+        "internal": 56299213,
+        "mils": 5629.9213,
+        "mm": 142.999923800041
+      },
+      "y1": {
+        "internal": 10433071,
+        "mils": 1043.3071,
+        "mm": 26.4999860300075
+      },
+      "x2": {
+        "internal": 56299213,
+        "mils": 5629.9213,
+        "mm": 142.999923800041
+      },
+      "y2": {
+        "internal": 62007874,
+        "mils": 6200.7874,
+        "mm": 157.499914910046
+      },
+      "width": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "layer": 64,
+      "net": "",
+      "faceIdx1": -1,
+      "faceIdx2": 0,
+      "faceU1": 0,
+      "faceU2": 0,
+      "faceV1": 0,
+      "faceV2": 0,
+      "objectId": 4,
+      "objectIDString": "Track",
+      "identifier": "Track[5629.921mil,1043.307mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Track (113mm,-6mm)(113mm,125mm) on V Cut",
+      "detail": "",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 64,
+      "layer_V6": 64,
+      "viewableObjectId": 4,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Track",
+      "x1": {
+        "internal": 41732284,
+        "mils": 4173.2284,
+        "mm": 105.99994412003
+      },
+      "y1": {
+        "internal": 10433071,
+        "mils": 1043.3071,
+        "mm": 26.4999860300075
+      },
+      "x2": {
+        "internal": 41732284,
+        "mils": 4173.2284,
+        "mm": 105.99994412003
+      },
+      "y2": {
+        "internal": 62007874,
+        "mils": 6200.7874,
+        "mm": 157.499914910046
+      },
+      "width": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "layer": 64,
+      "net": "",
+      "faceIdx1": -1,
+      "faceIdx2": 0,
+      "faceU1": 0,
+      "faceU2": 0,
+      "faceV1": 0,
+      "faceV2": 0,
+      "objectId": 4,
+      "objectIDString": "Track",
+      "identifier": "Track[4173.228mil,1043.307mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Track (76mm,-6mm)(76mm,125mm) on V Cut",
+      "detail": "",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 64,
+      "layer_V6": 64,
+      "viewableObjectId": 4,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Track",
+      "x1": {
+        "internal": 42519685,
+        "mils": 4251.9685,
+        "mm": 107.999941580032
+      },
+      "y1": {
+        "internal": 10433071,
+        "mils": 1043.3071,
+        "mm": 26.4999860300075
+      },
+      "x2": {
+        "internal": 42519685,
+        "mils": 4251.9685,
+        "mm": 107.999941580032
+      },
+      "y2": {
+        "internal": 62007874,
+        "mils": 6200.7874,
+        "mm": 157.499914910046
+      },
+      "width": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "layer": 64,
+      "net": "",
+      "faceIdx1": -1,
+      "faceIdx2": 0,
+      "faceU1": 0,
+      "faceU2": 0,
+      "faceV1": 0,
+      "faceV2": 0,
+      "objectId": 4,
+      "objectIDString": "Track",
+      "identifier": "Track[4251.968mil,1043.307mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Track (78mm,-6mm)(78mm,125mm) on V Cut",
+      "detail": "",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 64,
+      "layer_V6": 64,
+      "viewableObjectId": 4,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Track",
+      "x1": {
+        "internal": 27952756,
+        "mils": 2795.2756,
+        "mm": 70.9999619000206
+      },
+      "y1": {
+        "internal": 10433071,
+        "mils": 1043.3071,
+        "mm": 26.4999860300075
+      },
+      "x2": {
+        "internal": 27952756,
+        "mils": 2795.2756,
+        "mm": 70.9999619000206
+      },
+      "y2": {
+        "internal": 62007874,
+        "mils": 6200.7874,
+        "mm": 157.499914910046
+      },
+      "width": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "layer": 64,
+      "net": "",
+      "faceIdx1": -1,
+      "faceIdx2": 0,
+      "faceU1": 0,
+      "faceU2": 0,
+      "faceV1": 0,
+      "faceV2": 0,
+      "objectId": 4,
+      "objectIDString": "Track",
+      "identifier": "Track[2795.276mil,1043.307mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Track (41mm,-6mm)(41mm,125mm) on V Cut",
+      "detail": "",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 64,
+      "layer_V6": 64,
+      "viewableObjectId": 4,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Track",
+      "x1": {
+        "internal": 27165355,
+        "mils": 2716.5355,
+        "mm": 68.9999644400192
+      },
+      "y1": {
+        "internal": 10433071,
+        "mils": 1043.3071,
+        "mm": 26.4999860300075
+      },
+      "x2": {
+        "internal": 27165355,
+        "mils": 2716.5355,
+        "mm": 68.9999644400192
+      },
+      "y2": {
+        "internal": 62007874,
+        "mils": 6200.7874,
+        "mm": 157.499914910046
+      },
+      "width": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "layer": 64,
+      "net": "",
+      "faceIdx1": -1,
+      "faceIdx2": 0,
+      "faceU1": 0,
+      "faceU2": 0,
+      "faceV1": 0,
+      "faceV2": 0,
+      "objectId": 4,
+      "objectIDString": "Track",
+      "identifier": "Track[2716.535mil,1043.307mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Track (39mm,-6mm)(39mm,125mm) on V Cut",
+      "detail": "",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 64,
+      "layer_V6": 64,
+      "viewableObjectId": 4,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Text",
+      "text": "ROUTE TOOLPATH LAYER",
+      "x": {
+        "internal": 59055118,
+        "mils": 5905.5118,
+        "mm": 149.999918720044
+      },
+      "y": {
+        "internal": 51394681,
+        "mils": 5139.4681,
+        "mm": 130.542419247094
+      },
+      "size": {
+        "internal": 1574803,
+        "mils": 157.4803,
+        "mm": 3.99999746000137
+      },
+      "rotation": 0,
+      "layer": 63,
+      "mirrored": false,
+      "inverted": false,
+      "wordWrap": false,
+      "width": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "useTTFonts": true,
+      "fontName": "Trebuchet MS",
+      "textKind": 1,
+      "bold": true,
+      "italic": false,
+      "charSet": 1,
+      "multiLine": false,
+      "multilineTextHeight": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "multilineTextWidth": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "multilineTextAutoPosition": 3,
+      "multilineTextResizeEnabled": false,
+      "useInvertedRectangle": false,
+      "invertedTTTextBorder": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "invRectWidth": 15974256,
+      "invRectHeight": 1003680,
+      "ttfInvertedTextJustify": 0,
+      "ttfOffsetFromInvertedRect": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "ttfTextWidth": 15974256,
+      "ttfTextHeight": 1003680,
+      "borderSpaceType": 1,
+      "disableSpecialStringConversion": false,
+      "underlyingString": "ROUTE TOOLPATH LAYER",
+      "convertedString": "ROUTE TOOLPATH LAYER",
+      "isRedundant": false,
+      "x1Location": {
+        "internal": 59055118,
+        "mils": 5905.5118,
+        "mm": 149.999918720044
+      },
+      "y1Location": {
+        "internal": 51377953,
+        "mils": 5137.7953,
+        "mm": 130.499930150038
+      },
+      "x2Location": {
+        "internal": 75029374,
+        "mils": 7502.9374,
+        "mm": 190.574507049766
+      },
+      "y2Location": {
+        "internal": 52381633,
+        "mils": 5238.1633,
+        "mm": 133.049275973391
+      },
+      "barCodeKind": 1,
+      "barCodeInverted": true,
+      "barCodeShowText": false,
+      "barCodeRenderMode": 1,
+      "barCodeMinWidth": {
+        "internal": 47297,
+        "mils": 4.7297,
+        "mm": 0.12013431512747
+      },
+      "barCodeFullWidth": {
+        "internal": 10500000,
+        "mils": 1050,
+        "mm": 26.6699855982078
+      },
+      "barCodeFullHeight": {
+        "internal": 1181102,
+        "mils": 118.1102,
+        "mm": 2.99999746000137
+      },
+      "barCodeXMargin": {
+        "internal": 1574803,
+        "mils": 157.4803,
+        "mm": 3.99999746000137
+      },
+      "barCodeYMargin": {
+        "internal": 196850,
+        "mils": 19.685,
+        "mm": 0.499998730000686
+      },
+      "barCodeFontName": "Trebuchet MS",
+      "getDesignatorDisplayString": "",
+      "advanceSnapping": true,
+      "snapPointX": {
+        "internal": 59055118,
+        "mils": 5905.5118,
+        "mm": 149.999918720044
+      },
+      "snapPointY": {
+        "internal": 51377953,
+        "mils": 5137.7953,
+        "mm": 130.499930150038
+      },
+      "stringXPosition": 59055118,
+      "stringYPosition": 51394681,
+      "objectId": 5,
+      "objectIDString": "Text",
+      "identifier": "Text[5905.512mil,5139.468mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Text \"ROUTE TOOLPATH LAYER\" (120mm,98.042mm) on Route Tool Path",
+      "detail": "",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 63,
+      "layer_V6": 63,
+      "viewableObjectId": 5,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Text",
+      "text": "VSCORE TOOLPATH LAYER",
+      "x": {
+        "internal": 59055118,
+        "mils": 5905.5118,
+        "mm": 149.999918720044
+      },
+      "y": {
+        "internal": 53363185,
+        "mils": 5336.3185,
+        "mm": 135.542416707095
+      },
+      "size": {
+        "internal": 1574803,
+        "mils": 157.4803,
+        "mm": 3.99999746000137
+      },
+      "rotation": 0,
+      "layer": 64,
+      "mirrored": false,
+      "inverted": false,
+      "wordWrap": false,
+      "width": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "useTTFonts": true,
+      "fontName": "Trebuchet MS",
+      "textKind": 1,
+      "bold": true,
+      "italic": false,
+      "charSet": 1,
+      "multiLine": false,
+      "multilineTextHeight": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "multilineTextWidth": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "multilineTextAutoPosition": 3,
+      "multilineTextResizeEnabled": false,
+      "useInvertedRectangle": false,
+      "invertedTTTextBorder": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "invRectWidth": 16687656,
+      "invRectHeight": 1003680,
+      "ttfInvertedTextJustify": 0,
+      "ttfOffsetFromInvertedRect": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "ttfTextWidth": 16687656,
+      "ttfTextHeight": 1003680,
+      "borderSpaceType": 1,
+      "disableSpecialStringConversion": false,
+      "underlyingString": "VSCORE TOOLPATH LAYER",
+      "convertedString": "VSCORE TOOLPATH LAYER",
+      "isRedundant": false,
+      "x1Location": {
+        "internal": 59055118,
+        "mils": 5905.5118,
+        "mm": 149.999918720044
+      },
+      "y1Location": {
+        "internal": 53346457,
+        "mils": 5334.6457,
+        "mm": 135.499927610039
+      },
+      "x2Location": {
+        "internal": 75742774,
+        "mils": 7574.2774,
+        "mm": 192.386542071267
+      },
+      "y2Location": {
+        "internal": 54350137,
+        "mils": 5435.0137,
+        "mm": 138.049273433392
+      },
+      "barCodeKind": 1,
+      "barCodeInverted": true,
+      "barCodeShowText": false,
+      "barCodeRenderMode": 1,
+      "barCodeMinWidth": {
+        "internal": 47297,
+        "mils": 4.7297,
+        "mm": 0.12013431512747
+      },
+      "barCodeFullWidth": {
+        "internal": 10500000,
+        "mils": 1050,
+        "mm": 26.6699855982078
+      },
+      "barCodeFullHeight": {
+        "internal": 1181102,
+        "mils": 118.1102,
+        "mm": 2.99999746000137
+      },
+      "barCodeXMargin": {
+        "internal": 1574803,
+        "mils": 157.4803,
+        "mm": 3.99999746000137
+      },
+      "barCodeYMargin": {
+        "internal": 196850,
+        "mils": 19.685,
+        "mm": 0.499998730000686
+      },
+      "barCodeFontName": "Trebuchet MS",
+      "getDesignatorDisplayString": "",
+      "advanceSnapping": true,
+      "snapPointX": {
+        "internal": 59055118,
+        "mils": 5905.5118,
+        "mm": 149.999918720044
+      },
+      "snapPointY": {
+        "internal": 53346457,
+        "mils": 5334.6457,
+        "mm": 135.499927610039
+      },
+      "stringXPosition": 59055118,
+      "stringYPosition": 53363185,
+      "objectId": 5,
+      "objectIDString": "Text",
+      "identifier": "Text[5905.512mil,5336.319mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Text \"VSCORE TOOLPATH LAYER\" (120mm,103.042mm) on V Cut",
+      "detail": "",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 64,
+      "layer_V6": 64,
+      "viewableObjectId": 5,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Text",
+      "text": "O",
+      "x": {
+        "internal": 50251239,
+        "mils": 5025.1239,
+        "mm": 127.638078135438
+      },
+      "y": {
+        "internal": 56647751,
+        "mils": 5664.7751,
+        "mm": 143.885209841987
+      },
+      "size": {
+        "internal": 3937008,
+        "mils": 393.7008,
+        "mm": 9.99999492000274
+      },
+      "rotation": 360,
+      "layer": 33,
+      "mirrored": false,
+      "inverted": false,
+      "wordWrap": true,
+      "width": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "useTTFonts": true,
+      "fontName": "Mooretronics",
+      "textKind": 1,
+      "bold": false,
+      "italic": false,
+      "charSet": 1,
+      "multiLine": true,
+      "multilineTextHeight": {
+        "internal": 2806860,
+        "mils": 280.686,
+        "mm": 7.1294205501129
+      },
+      "multilineTextWidth": {
+        "internal": 1977840,
+        "mils": 197.784,
+        "mm": 5.02371088719612
+      },
+      "multilineTextAutoPosition": 5,
+      "multilineTextResizeEnabled": true,
+      "useInvertedRectangle": false,
+      "invertedTTTextBorder": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "invRectWidth": 1977840,
+      "invRectHeight": 2806860,
+      "ttfInvertedTextJustify": 0,
+      "ttfOffsetFromInvertedRect": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "ttfTextWidth": 0,
+      "ttfTextHeight": 0,
+      "borderSpaceType": 0,
+      "disableSpecialStringConversion": false,
+      "underlyingString": "O",
+      "convertedString": "O",
+      "isRedundant": false,
+      "x1Location": {
+        "internal": 50251239,
+        "mils": 5025.1239,
+        "mm": 127.638078135438
+      },
+      "y1Location": {
+        "internal": 56647751,
+        "mils": 5664.7751,
+        "mm": 143.885209841987
+      },
+      "x2Location": {
+        "internal": 52229079,
+        "mils": 5222.9079,
+        "mm": 132.661789022634
+      },
+      "y2Location": {
+        "internal": 59454611,
+        "mils": 5945.4611,
+        "mm": 151.0146303921
+      },
+      "barCodeKind": 0,
+      "barCodeInverted": true,
+      "barCodeShowText": false,
+      "barCodeRenderMode": 1,
+      "barCodeMinWidth": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "barCodeFullWidth": {
+        "internal": 1977840,
+        "mils": 197.784,
+        "mm": 5.02371088719612
+      },
+      "barCodeFullHeight": {
+        "internal": 2806860,
+        "mils": 280.686,
+        "mm": 7.1294205501129
+      },
+      "barCodeXMargin": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "barCodeYMargin": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "barCodeFontName": "Arial",
+      "getDesignatorDisplayString": "",
+      "advanceSnapping": true,
+      "snapPointX": {
+        "internal": 51240159,
+        "mils": 5124.0159,
+        "mm": 130.149933579036
+      },
+      "snapPointY": {
+        "internal": 58051181,
+        "mils": 5805.1181,
+        "mm": 147.449920117043
+      },
+      "stringXPosition": 50251239,
+      "stringYPosition": 56647751,
+      "objectId": 5,
+      "objectIDString": "Text",
+      "identifier": "Text[5025.124mil,5664.775mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Text \"O\" (97.638mm,111.385mm) on Top Overlay",
+      "detail": "",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 33,
+      "layer_V6": 33,
+      "viewableObjectId": 5,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Text",
+      "text": "PSU - USB ADAPTER",
+      "x": {
+        "internal": 16929134,
+        "mils": 1692.9134,
+        "mm": 42.9999771400123
+      },
+      "y": {
+        "internal": 57677166,
+        "mils": 5767.7166,
+        "mm": 146.499922530042
+      },
+      "size": {
+        "internal": 984252,
+        "mils": 98.4252,
+        "mm": 2.49999873000069
+      },
+      "rotation": 360,
+      "layer": 33,
+      "mirrored": false,
+      "inverted": true,
+      "wordWrap": true,
+      "width": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "useTTFonts": true,
+      "fontName": "Trebuchet MS",
+      "textKind": 1,
+      "bold": true,
+      "italic": false,
+      "charSet": 1,
+      "multiLine": true,
+      "multilineTextHeight": {
+        "internal": 2362204,
+        "mils": 236.2204,
+        "mm": 5.99999492000274
+      },
+      "multilineTextWidth": {
+        "internal": 9842520,
+        "mils": 984.252,
+        "mm": 24.9999873000069
+      },
+      "multilineTextAutoPosition": 5,
+      "multilineTextResizeEnabled": true,
+      "useInvertedRectangle": true,
+      "invertedTTTextBorder": {
+        "internal": 393701,
+        "mils": 39.3701,
+        "mm": 1
+      },
+      "invRectWidth": 9842520,
+      "invRectHeight": 2362204,
+      "ttfInvertedTextJustify": 78740,
+      "ttfOffsetFromInvertedRect": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "ttfTextWidth": 0,
+      "ttfTextHeight": 0,
+      "borderSpaceType": 0,
+      "disableSpecialStringConversion": false,
+      "underlyingString": "PSU - USB ADAPTER",
+      "convertedString": "PSU - USB ADAPTER",
+      "isRedundant": false,
+      "x1Location": {
+        "internal": 16929134,
+        "mils": 1692.9134,
+        "mm": 42.9999771400123
+      },
+      "y1Location": {
+        "internal": 57677166,
+        "mils": 5767.7166,
+        "mm": 146.499922530042
+      },
+      "x2Location": {
+        "internal": 26771654,
+        "mils": 2677.1654,
+        "mm": 67.9999644400192
+      },
+      "y2Location": {
+        "internal": 60039370,
+        "mils": 6003.937,
+        "mm": 152.499917450045
+      },
+      "barCodeKind": 1,
+      "barCodeInverted": true,
+      "barCodeShowText": false,
+      "barCodeRenderMode": 1,
+      "barCodeMinWidth": {
+        "internal": 88142,
+        "mils": 8.8142,
+        "mm": 0.223880559104498
+      },
+      "barCodeFullWidth": {
+        "internal": 9842520,
+        "mils": 984.252,
+        "mm": 24.9999873000069
+      },
+      "barCodeFullHeight": {
+        "internal": 2362204,
+        "mils": 236.2204,
+        "mm": 5.99999492000274
+      },
+      "barCodeXMargin": {
+        "internal": 787402,
+        "mils": 78.7402,
+        "mm": 2
+      },
+      "barCodeYMargin": {
+        "internal": 196850,
+        "mils": 19.685,
+        "mm": 0.499998730000686
+      },
+      "barCodeFontName": "Trebuchet MS",
+      "getDesignatorDisplayString": "",
+      "advanceSnapping": true,
+      "snapPointX": {
+        "internal": 21850394,
+        "mils": 2185.0394,
+        "mm": 55.4999707900158
+      },
+      "snapPointY": {
+        "internal": 58858268,
+        "mils": 5885.8268,
+        "mm": 149.499919990043
+      },
+      "stringXPosition": 16929134,
+      "stringYPosition": 57677166,
+      "objectId": 5,
+      "objectIDString": "Text",
+      "identifier": "Text[1692.913mil,5767.717mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Text \"PSU - USB ADAPTER\" (13mm,114mm) on Top Overlay",
+      "detail": "",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 33,
+      "layer_V6": 33,
+      "viewableObjectId": 5,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Text",
+      "text": "DPUSBV1R0",
+      "x": {
+        "internal": 28346457,
+        "mils": 2834.6457,
+        "mm": 71.9999619000206
+      },
+      "y": {
+        "internal": 57677166,
+        "mils": 5767.7166,
+        "mm": 146.499922530042
+      },
+      "size": {
+        "internal": 787402,
+        "mils": 78.7402,
+        "mm": 2
+      },
+      "rotation": 360,
+      "layer": 33,
+      "mirrored": false,
+      "inverted": false,
+      "wordWrap": true,
+      "width": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "useTTFonts": false,
+      "strokeFont": 1,
+      "textKind": 2,
+      "bold": true,
+      "italic": false,
+      "charSet": 1,
+      "multiLine": true,
+      "multilineTextHeight": {
+        "internal": 2322834,
+        "mils": 232.2834,
+        "mm": 5.89999517400261
+      },
+      "multilineTextWidth": {
+        "internal": 12992126,
+        "mils": 1299.2126,
+        "mm": 32.9999822200096
+      },
+      "multilineTextAutoPosition": 1,
+      "multilineTextResizeEnabled": true,
+      "useInvertedRectangle": false,
+      "invertedTTTextBorder": {
+        "internal": 98425,
+        "mils": 9.8425,
+        "mm": 0.249999365000343
+      },
+      "invRectWidth": 12992126,
+      "invRectHeight": 2322834,
+      "ttfInvertedTextJustify": 78740,
+      "ttfOffsetFromInvertedRect": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "ttfTextWidth": 0,
+      "ttfTextHeight": 0,
+      "borderSpaceType": 0,
+      "disableSpecialStringConversion": false,
+      "underlyingString": "DPUSBV1R0",
+      "convertedString": "DPUSBV1R0",
+      "isRedundant": false,
+      "x1Location": {
+        "internal": 28346457,
+        "mils": 2834.6457,
+        "mm": 71.9999619000206
+      },
+      "y1Location": {
+        "internal": 57677166,
+        "mils": 5767.7166,
+        "mm": 146.499922530042
+      },
+      "x2Location": {
+        "internal": 41338583,
+        "mils": 4133.8583,
+        "mm": 104.99994412003
+      },
+      "y2Location": {
+        "internal": 60000000,
+        "mils": 6000,
+        "mm": 152.399917704044
+      },
+      "barCodeKind": 1,
+      "barCodeInverted": true,
+      "barCodeShowText": false,
+      "barCodeRenderMode": 1,
+      "barCodeMinWidth": {
+        "internal": 88142,
+        "mils": 8.8142,
+        "mm": 0.223880559104498
+      },
+      "barCodeFullWidth": {
+        "internal": 12992126,
+        "mils": 1299.2126,
+        "mm": 32.9999822200096
+      },
+      "barCodeFullHeight": {
+        "internal": 2322834,
+        "mils": 232.2834,
+        "mm": 5.89999517400261
+      },
+      "barCodeXMargin": {
+        "internal": 787402,
+        "mils": 78.7402,
+        "mm": 2
+      },
+      "barCodeYMargin": {
+        "internal": 196850,
+        "mils": 19.685,
+        "mm": 0.499998730000686
+      },
+      "barCodeFontName": "Trebuchet MS",
+      "getDesignatorDisplayString": "",
+      "advanceSnapping": true,
+      "snapPointX": {
+        "internal": 28346457,
+        "mils": 2834.6457,
+        "mm": 71.9999619000206
+      },
+      "snapPointY": {
+        "internal": 60000000,
+        "mils": 6000,
+        "mm": 152.399917704044
+      },
+      "stringXPosition": 29133859,
+      "stringYPosition": 57874016,
+      "objectId": 5,
+      "objectIDString": "Text",
+      "identifier": "Text[2834.646mil,5767.717mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Text \"DPUSBV1R0\" (42mm,114mm) on Top Overlay",
+      "detail": "",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 33,
+      "layer_V6": 33,
+      "viewableObjectId": 5,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Text",
+      "text": "V1R0",
+      "x": {
+        "internal": 42913386,
+        "mils": 4291.3386,
+        "mm": 108.999941580032
+      },
+      "y": {
+        "internal": 57677166,
+        "mils": 5767.7166,
+        "mm": 146.499922530042
+      },
+      "size": {
+        "internal": 1574803,
+        "mils": 157.4803,
+        "mm": 3.99999746000137
+      },
+      "rotation": 360,
+      "layer": 33,
+      "mirrored": false,
+      "inverted": true,
+      "wordWrap": true,
+      "width": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "useTTFonts": true,
+      "fontName": "Trebuchet MS",
+      "textKind": 1,
+      "bold": true,
+      "italic": false,
+      "charSet": 1,
+      "multiLine": true,
+      "multilineTextHeight": {
+        "internal": 2362204,
+        "mils": 236.2204,
+        "mm": 5.99999492000274
+      },
+      "multilineTextWidth": {
+        "internal": 5944882,
+        "mils": 594.4882,
+        "mm": 15.0999921260043
+      },
+      "multilineTextAutoPosition": 5,
+      "multilineTextResizeEnabled": true,
+      "useInvertedRectangle": true,
+      "invertedTTTextBorder": {
+        "internal": 98425,
+        "mils": 9.8425,
+        "mm": 0.249999365000343
+      },
+      "invRectWidth": 5944882,
+      "invRectHeight": 2362204,
+      "ttfInvertedTextJustify": 78740,
+      "ttfOffsetFromInvertedRect": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "ttfTextWidth": 0,
+      "ttfTextHeight": 0,
+      "borderSpaceType": 0,
+      "disableSpecialStringConversion": false,
+      "underlyingString": "V1R0",
+      "convertedString": "V1R0",
+      "isRedundant": false,
+      "x1Location": {
+        "internal": 42913386,
+        "mils": 4291.3386,
+        "mm": 108.999941580032
+      },
+      "y1Location": {
+        "internal": 57677166,
+        "mils": 5767.7166,
+        "mm": 146.499922530042
+      },
+      "x2Location": {
+        "internal": 48858268,
+        "mils": 4885.8268,
+        "mm": 124.099933706036
+      },
+      "y2Location": {
+        "internal": 60039370,
+        "mils": 6003.937,
+        "mm": 152.499917450045
+      },
+      "barCodeKind": 1,
+      "barCodeInverted": true,
+      "barCodeShowText": false,
+      "barCodeRenderMode": 1,
+      "barCodeMinWidth": {
+        "internal": 88142,
+        "mils": 8.8142,
+        "mm": 0.223880559104498
+      },
+      "barCodeFullWidth": {
+        "internal": 5944882,
+        "mils": 594.4882,
+        "mm": 15.0999921260043
+      },
+      "barCodeFullHeight": {
+        "internal": 2362204,
+        "mils": 236.2204,
+        "mm": 5.99999492000274
+      },
+      "barCodeXMargin": {
+        "internal": 787402,
+        "mils": 78.7402,
+        "mm": 2
+      },
+      "barCodeYMargin": {
+        "internal": 196850,
+        "mils": 19.685,
+        "mm": 0.499998730000686
+      },
+      "barCodeFontName": "Trebuchet MS",
+      "getDesignatorDisplayString": "",
+      "advanceSnapping": true,
+      "snapPointX": {
+        "internal": 45885827,
+        "mils": 4588.5827,
+        "mm": 116.549937643034
+      },
+      "snapPointY": {
+        "internal": 58858268,
+        "mils": 5885.8268,
+        "mm": 149.499919990043
+      },
+      "stringXPosition": 42913386,
+      "stringYPosition": 57677166,
+      "objectId": 5,
+      "objectIDString": "Text",
+      "identifier": "Text[4291.339mil,5767.717mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Text \"V1R0\" (79mm,114mm) on Top Overlay",
+      "detail": "",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 33,
+      "layer_V6": 33,
+      "viewableObjectId": 5,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Text",
+      "text": "Export: 15/02/2026 20:41:18",
+      "x": {
+        "internal": 28248030,
+        "mils": 2824.803,
+        "mm": 71.749957455023
+      },
+      "y": {
+        "internal": 13338619,
+        "mils": 1333.8619,
+        "mm": 33.8800739647601
+      },
+      "size": {
+        "internal": 984252,
+        "mils": 98.4252,
+        "mm": 2.49999873000069
+      },
+      "rotation": 360,
+      "layer": 33,
+      "mirrored": false,
+      "inverted": false,
+      "wordWrap": false,
+      "width": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "useTTFonts": true,
+      "fontName": "Trebuchet MS",
+      "textKind": 1,
+      "bold": true,
+      "italic": false,
+      "charSet": 1,
+      "multiLine": false,
+      "multilineTextHeight": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "multilineTextWidth": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "multilineTextAutoPosition": 1,
+      "multilineTextResizeEnabled": false,
+      "useInvertedRectangle": false,
+      "invertedTTTextBorder": {
+        "internal": 98425,
+        "mils": 9.8425,
+        "mm": 0.249999365000343
+      },
+      "invRectWidth": 11790215,
+      "invRectHeight": 988970,
+      "ttfInvertedTextJustify": 78740,
+      "ttfOffsetFromInvertedRect": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "ttfTextWidth": 11593365,
+      "ttfTextHeight": 792120,
+      "borderSpaceType": 0,
+      "disableSpecialStringConversion": false,
+      "underlyingString": "Export: '.Print_Date' '.Print_Time'",
+      "convertedString": "Export: 15/02/2026 20:41:18",
+      "isRedundant": false,
+      "x1Location": {
+        "internal": 28149605,
+        "mils": 2814.9605,
+        "mm": 71.4999580900226
+      },
+      "y1Location": {
+        "internal": 13066149,
+        "mils": 1306.6149,
+        "mm": 33.1880005384797
+      },
+      "x2Location": {
+        "internal": 39939820,
+        "mils": 3993.982,
+        "mm": 101.447088018572
+      },
+      "y2Location": {
+        "internal": 14055119,
+        "mils": 1405.5119,
+        "mm": 35.6999829820092
+      },
+      "barCodeKind": 1,
+      "barCodeInverted": true,
+      "barCodeShowText": false,
+      "barCodeRenderMode": 1,
+      "barCodeMinWidth": {
+        "internal": 88142,
+        "mils": 8.8142,
+        "mm": 0.223880559104498
+      },
+      "barCodeFullWidth": {
+        "internal": 10500000,
+        "mils": 1050,
+        "mm": 26.6699855982078
+      },
+      "barCodeFullHeight": {
+        "internal": 2362205,
+        "mils": 236.2205,
+        "mm": 5.99999746000137
+      },
+      "barCodeXMargin": {
+        "internal": 787402,
+        "mils": 78.7402,
+        "mm": 2
+      },
+      "barCodeYMargin": {
+        "internal": 196850,
+        "mils": 19.685,
+        "mm": 0.499998730000686
+      },
+      "barCodeFontName": "Trebuchet MS",
+      "getDesignatorDisplayString": "",
+      "advanceSnapping": true,
+      "snapPointX": {
+        "internal": 28149605,
+        "mils": 2814.9605,
+        "mm": 71.4999580900226
+      },
+      "snapPointY": {
+        "internal": 14055119,
+        "mils": 1405.5119,
+        "mm": 35.6999829820092
+      },
+      "stringXPosition": 28248030,
+      "stringYPosition": 13338619,
+      "objectId": 5,
+      "objectIDString": "Text",
+      "identifier": "Text[2824.803mil,1333.862mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Text \"Export: '.Print_Date' '.Print_Time'\" (41.75mm,1.38mm) on Top Overlay",
+      "detail": "",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 33,
+      "layer_V6": 33,
+      "viewableObjectId": 5,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Text",
+      "text": "POWER ADAPTER PANEL.PCBDOC",
+      "x": {
+        "internal": 28248030,
+        "mils": 2824.803,
+        "mm": 71.749957455023
+      },
+      "y": {
+        "internal": 14363471,
+        "mils": 1436.3471,
+        "mm": 36.4831966390738
+      },
+      "size": {
+        "internal": 984252,
+        "mils": 98.4252,
+        "mm": 2.49999873000069
+      },
+      "rotation": 360,
+      "layer": 33,
+      "mirrored": false,
+      "inverted": false,
+      "wordWrap": false,
+      "width": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "useTTFonts": true,
+      "fontName": "Trebuchet MS",
+      "textKind": 1,
+      "bold": true,
+      "italic": false,
+      "charSet": 1,
+      "multiLine": false,
+      "multilineTextHeight": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "multilineTextWidth": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "multilineTextAutoPosition": 1,
+      "multilineTextResizeEnabled": false,
+      "useInvertedRectangle": false,
+      "invertedTTTextBorder": {
+        "internal": 98425,
+        "mils": 9.8425,
+        "mm": 0.249999365000343
+      },
+      "invRectWidth": 13138295,
+      "invRectHeight": 834605,
+      "ttfInvertedTextJustify": 78740,
+      "ttfOffsetFromInvertedRect": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "ttfTextWidth": 12941445,
+      "ttfTextHeight": 637755,
+      "borderSpaceType": 0,
+      "disableSpecialStringConversion": false,
+      "underlyingString": ".Pcb_File_Name_No_Path",
+      "convertedString": "POWER ADAPTER PANEL.PCBDOC",
+      "isRedundant": false,
+      "x1Location": {
+        "internal": 28149605,
+        "mils": 2814.9605,
+        "mm": 71.4999580900226
+      },
+      "y1Location": {
+        "internal": 14244136,
+        "mils": 1424.4136,
+        "mm": 36.1800859027536
+      },
+      "x2Location": {
+        "internal": 41287900,
+        "mils": 4128.79,
+        "mm": 104.871209369547
+      },
+      "y2Location": {
+        "internal": 15078741,
+        "mils": 1507.8741,
+        "mm": 38.29998145801
+      },
+      "barCodeKind": 1,
+      "barCodeInverted": true,
+      "barCodeShowText": false,
+      "barCodeRenderMode": 1,
+      "barCodeMinWidth": {
+        "internal": 88142,
+        "mils": 8.8142,
+        "mm": 0.223880559104498
+      },
+      "barCodeFullWidth": {
+        "internal": 10500000,
+        "mils": 1050,
+        "mm": 26.6699855982078
+      },
+      "barCodeFullHeight": {
+        "internal": 2362205,
+        "mils": 236.2205,
+        "mm": 5.99999746000137
+      },
+      "barCodeXMargin": {
+        "internal": 787402,
+        "mils": 78.7402,
+        "mm": 2
+      },
+      "barCodeYMargin": {
+        "internal": 196850,
+        "mils": 19.685,
+        "mm": 0.499998730000686
+      },
+      "barCodeFontName": "Trebuchet MS",
+      "getDesignatorDisplayString": "",
+      "advanceSnapping": true,
+      "snapPointX": {
+        "internal": 28149605,
+        "mils": 2814.9605,
+        "mm": 71.4999580900226
+      },
+      "snapPointY": {
+        "internal": 15078741,
+        "mils": 1507.8741,
+        "mm": 38.29998145801
+      },
+      "stringXPosition": 28248030,
+      "stringYPosition": 14363471,
+      "objectId": 5,
+      "objectIDString": "Text",
+      "identifier": "Text[2824.803mil,1436.347mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Text \".Pcb_File_Name_No_Path\" (41.75mm,3.983mm) on Top Overlay",
+      "detail": "",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 33,
+      "layer_V6": 33,
+      "viewableObjectId": 5,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Text",
+      "text": "Altium 26.2.0.7",
+      "x": {
+        "internal": 42696850,
+        "mils": 4269.685,
+        "mm": 108.449940437032
+      },
+      "y": {
+        "internal": 13323859,
+        "mils": 1332.3859,
+        "mm": 33.8425835850049
+      },
+      "size": {
+        "internal": 984252,
+        "mils": 98.4252,
+        "mm": 2.49999873000069
+      },
+      "rotation": 360,
+      "layer": 33,
+      "mirrored": false,
+      "inverted": false,
+      "wordWrap": false,
+      "width": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "useTTFonts": true,
+      "fontName": "Trebuchet MS",
+      "textKind": 1,
+      "bold": true,
+      "italic": false,
+      "charSet": 1,
+      "multiLine": false,
+      "multilineTextHeight": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "multilineTextWidth": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "multilineTextAutoPosition": 1,
+      "multilineTextResizeEnabled": false,
+      "useInvertedRectangle": false,
+      "invertedTTTextBorder": {
+        "internal": 98425,
+        "mils": 9.8425,
+        "mm": 0.249999365000343
+      },
+      "invRectWidth": 6449555,
+      "invRectHeight": 850595,
+      "ttfInvertedTextJustify": 78740,
+      "ttfOffsetFromInvertedRect": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "ttfTextWidth": 6252705,
+      "ttfTextHeight": 653745,
+      "borderSpaceType": 0,
+      "disableSpecialStringConversion": false,
+      "underlyingString": "Altium '.Application_BuildNumber'",
+      "convertedString": "Altium 26.2.0.7",
+      "isRedundant": false,
+      "x1Location": {
+        "internal": 42598425,
+        "mils": 4259.8425,
+        "mm": 108.199941072032
+      },
+      "y1Location": {
+        "internal": 13204524,
+        "mils": 1320.4524,
+        "mm": 33.5394728486847
+      },
+      "x2Location": {
+        "internal": 49047980,
+        "mils": 4904.798,
+        "mm": 124.581801925827
+      },
+      "y2Location": {
+        "internal": 14055119,
+        "mils": 1405.5119,
+        "mm": 35.6999829820092
+      },
+      "barCodeKind": 1,
+      "barCodeInverted": true,
+      "barCodeShowText": false,
+      "barCodeRenderMode": 1,
+      "barCodeMinWidth": {
+        "internal": 88142,
+        "mils": 8.8142,
+        "mm": 0.223880559104498
+      },
+      "barCodeFullWidth": {
+        "internal": 10500000,
+        "mils": 1050,
+        "mm": 26.6699855982078
+      },
+      "barCodeFullHeight": {
+        "internal": 2362205,
+        "mils": 236.2205,
+        "mm": 5.99999746000137
+      },
+      "barCodeXMargin": {
+        "internal": 787402,
+        "mils": 78.7402,
+        "mm": 2
+      },
+      "barCodeYMargin": {
+        "internal": 196850,
+        "mils": 19.685,
+        "mm": 0.499998730000686
+      },
+      "barCodeFontName": "Trebuchet MS",
+      "getDesignatorDisplayString": "",
+      "advanceSnapping": true,
+      "snapPointX": {
+        "internal": 42598425,
+        "mils": 4259.8425,
+        "mm": 108.199941072032
+      },
+      "snapPointY": {
+        "internal": 14055119,
+        "mils": 1405.5119,
+        "mm": 35.6999829820092
+      },
+      "stringXPosition": 42696850,
+      "stringYPosition": 13323859,
+      "objectId": 5,
+      "objectIDString": "Text",
+      "identifier": "Text[4269.685mil,1332.386mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Text \"Altium '.Application_BuildNumber'\" (78.45mm,1.343mm) on Top Overlay",
+      "detail": "",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 33,
+      "layer_V6": 33,
+      "viewableObjectId": 5,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Text",
+      "text": "© 2023 ORIGINAL \r\nCIRCUIT LIMITED",
+      "x": {
+        "internal": 18110236,
+        "mils": 1811.0236,
+        "mm": 45.9999746000137
+      },
+      "y": {
+        "internal": 13262983,
+        "mils": 1326.2983,
+        "mm": 33.6879586285023
+      },
+      "size": {
+        "internal": 787402,
+        "mils": 78.7402,
+        "mm": 2
+      },
+      "rotation": 360,
+      "layer": 1,
+      "mirrored": false,
+      "inverted": false,
+      "wordWrap": true,
+      "width": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "useTTFonts": true,
+      "fontName": "Trebuchet MS",
+      "textKind": 1,
+      "bold": true,
+      "italic": false,
+      "charSet": 1,
+      "multiLine": true,
+      "multilineTextHeight": {
+        "internal": 1303948,
+        "mils": 130.3948,
+        "mm": 3.31202613150589
+      },
+      "multilineTextWidth": {
+        "internal": 6102362,
+        "mils": 610.2362,
+        "mm": 15.4999911100048
+      },
+      "multilineTextAutoPosition": 1,
+      "multilineTextResizeEnabled": true,
+      "useInvertedRectangle": false,
+      "invertedTTTextBorder": {
+        "internal": 98425,
+        "mils": 9.8425,
+        "mm": 0.249999365000343
+      },
+      "invRectWidth": 6102362,
+      "invRectHeight": 1303948,
+      "ttfInvertedTextJustify": 78740,
+      "ttfOffsetFromInvertedRect": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "ttfTextWidth": 0,
+      "ttfTextHeight": 0,
+      "borderSpaceType": 0,
+      "disableSpecialStringConversion": false,
+      "underlyingString": "© 2023 ORIGINAL \r\nCIRCUIT LIMITED",
+      "convertedString": "© 2023 ORIGINAL \r\nCIRCUIT LIMITED",
+      "isRedundant": false,
+      "x1Location": {
+        "internal": 18110236,
+        "mils": 1811.0236,
+        "mm": 45.9999746000137
+      },
+      "y1Location": {
+        "internal": 13262983,
+        "mils": 1326.2983,
+        "mm": 33.6879586285023
+      },
+      "x2Location": {
+        "internal": 24212598,
+        "mils": 2421.2598,
+        "mm": 61.4999657100185
+      },
+      "y2Location": {
+        "internal": 14566931,
+        "mils": 1456.6931,
+        "mm": 36.9999847600082
+      },
+      "barCodeKind": 1,
+      "barCodeInverted": true,
+      "barCodeShowText": true,
+      "barCodeRenderMode": 1,
+      "barCodeMinWidth": {
+        "internal": 116941,
+        "mils": 11.6941,
+        "mm": 0.297029979603811
+      },
+      "barCodeFullWidth": {
+        "internal": 6102362,
+        "mils": 610.2362,
+        "mm": 15.4999911100048
+      },
+      "barCodeFullHeight": {
+        "internal": 1303948,
+        "mils": 130.3948,
+        "mm": 3.31202613150589
+      },
+      "barCodeXMargin": {
+        "internal": 787402,
+        "mils": 78.7402,
+        "mm": 2
+      },
+      "barCodeYMargin": {
+        "internal": 196850,
+        "mils": 19.685,
+        "mm": 0.499998730000686
+      },
+      "barCodeFontName": "Trebuchet MS",
+      "getDesignatorDisplayString": "",
+      "advanceSnapping": true,
+      "snapPointX": {
+        "internal": 18110236,
+        "mils": 1811.0236,
+        "mm": 45.9999746000137
+      },
+      "snapPointY": {
+        "internal": 14566931,
+        "mils": 1456.6931,
+        "mm": 36.9999847600082
+      },
+      "stringXPosition": 18110236,
+      "stringYPosition": 13262983,
+      "objectId": 5,
+      "objectIDString": "Text",
+      "identifier": "Text[1811.024mil,1326.298mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Text \"© 2023 ORIGINAL \r\nCIRCUIT LIMITED\" (16mm,1.188mm) on Top Layer",
+      "detail": "",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 1,
+      "layer_V6": 1,
+      "viewableObjectId": 5,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Text",
+      "text": "© 2023 ORIGINAL \r\nCIRCUIT LIMITED",
+      "x": {
+        "internal": 18110236,
+        "mils": 1811.0236,
+        "mm": 45.9999746000137
+      },
+      "y": {
+        "internal": 13262983,
+        "mils": 1326.2983,
+        "mm": 33.6879586285023
+      },
+      "size": {
+        "internal": 787402,
+        "mils": 78.7402,
+        "mm": 2
+      },
+      "rotation": 360,
+      "layer": 37,
+      "mirrored": false,
+      "inverted": false,
+      "wordWrap": true,
+      "width": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "useTTFonts": true,
+      "fontName": "Trebuchet MS",
+      "textKind": 1,
+      "bold": true,
+      "italic": false,
+      "charSet": 1,
+      "multiLine": true,
+      "multilineTextHeight": {
+        "internal": 1303948,
+        "mils": 130.3948,
+        "mm": 3.31202613150589
+      },
+      "multilineTextWidth": {
+        "internal": 6102362,
+        "mils": 610.2362,
+        "mm": 15.4999911100048
+      },
+      "multilineTextAutoPosition": 1,
+      "multilineTextResizeEnabled": true,
+      "useInvertedRectangle": false,
+      "invertedTTTextBorder": {
+        "internal": 98425,
+        "mils": 9.8425,
+        "mm": 0.249999365000343
+      },
+      "invRectWidth": 6102362,
+      "invRectHeight": 1303948,
+      "ttfInvertedTextJustify": 78740,
+      "ttfOffsetFromInvertedRect": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "ttfTextWidth": 0,
+      "ttfTextHeight": 0,
+      "borderSpaceType": 0,
+      "disableSpecialStringConversion": false,
+      "underlyingString": "© 2023 ORIGINAL \r\nCIRCUIT LIMITED",
+      "convertedString": "© 2023 ORIGINAL \r\nCIRCUIT LIMITED",
+      "isRedundant": false,
+      "x1Location": {
+        "internal": 18110236,
+        "mils": 1811.0236,
+        "mm": 45.9999746000137
+      },
+      "y1Location": {
+        "internal": 13262983,
+        "mils": 1326.2983,
+        "mm": 33.6879586285023
+      },
+      "x2Location": {
+        "internal": 24212598,
+        "mils": 2421.2598,
+        "mm": 61.4999657100185
+      },
+      "y2Location": {
+        "internal": 14566931,
+        "mils": 1456.6931,
+        "mm": 36.9999847600082
+      },
+      "barCodeKind": 1,
+      "barCodeInverted": true,
+      "barCodeShowText": true,
+      "barCodeRenderMode": 1,
+      "barCodeMinWidth": {
+        "internal": 116941,
+        "mils": 11.6941,
+        "mm": 0.297029979603811
+      },
+      "barCodeFullWidth": {
+        "internal": 6102362,
+        "mils": 610.2362,
+        "mm": 15.4999911100048
+      },
+      "barCodeFullHeight": {
+        "internal": 1303948,
+        "mils": 130.3948,
+        "mm": 3.31202613150589
+      },
+      "barCodeXMargin": {
+        "internal": 787402,
+        "mils": 78.7402,
+        "mm": 2
+      },
+      "barCodeYMargin": {
+        "internal": 196850,
+        "mils": 19.685,
+        "mm": 0.499998730000686
+      },
+      "barCodeFontName": "Trebuchet MS",
+      "getDesignatorDisplayString": "",
+      "advanceSnapping": true,
+      "snapPointX": {
+        "internal": 18110236,
+        "mils": 1811.0236,
+        "mm": 45.9999746000137
+      },
+      "snapPointY": {
+        "internal": 14566931,
+        "mils": 1456.6931,
+        "mm": 36.9999847600082
+      },
+      "stringXPosition": 18110236,
+      "stringYPosition": 13262983,
+      "objectId": 5,
+      "objectIDString": "Text",
+      "identifier": "Text[1811.024mil,1326.298mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Text \"© 2023 ORIGINAL \r\nCIRCUIT LIMITED\" (16mm,1.188mm) on Top Solder",
+      "detail": "",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 37,
+      "layer_V6": 37,
+      "viewableObjectId": 5,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "Region",
+      "kind": 3,
+      "layer": 74,
+      "net": "",
+      "holeCount": 0,
+      "mainContour": [
+        {
+          "x": 12992126,
+          "y": 12795271
+        },
+        {
+          "x": 12914712,
+          "y": 12795271
+        },
+        {
+          "x": 12761209,
+          "y": 12815479
+        },
+        {
+          "x": 12611656,
+          "y": 12855552
+        },
+        {
+          "x": 12468615,
+          "y": 12914802
+        },
+        {
+          "x": 12334529,
+          "y": 12992216
+        },
+        {
+          "x": 12211697,
+          "y": 13086469
+        },
+        {
+          "x": 12102217,
+          "y": 13195949
+        },
+        {
+          "x": 12007964,
+          "y": 13318781
+        },
+        {
+          "x": 11930550,
+          "y": 13452867
+        },
+        {
+          "x": 11871300,
+          "y": 13595908
+        },
+        {
+          "x": 11831227,
+          "y": 13745461
+        },
+        {
+          "x": 11811019,
+          "y": 13898964
+        },
+        {
+          "x": 11811019,
+          "y": 13976378
+        },
+        {
+          "x": 11811019,
+          "y": 58609374
+        },
+        {
+          "x": 11811019,
+          "y": 58703101
+        },
+        {
+          "x": 11835486,
+          "y": 58888952
+        },
+        {
+          "x": 11884003,
+          "y": 59070020
+        },
+        {
+          "x": 11955740,
+          "y": 59243205
+        },
+        {
+          "x": 12049467,
+          "y": 59405547
+        },
+        {
+          "x": 12163582,
+          "y": 59554264
+        },
+        {
+          "x": 12296133,
+          "y": 59686815
+        },
+        {
+          "x": 12444850,
+          "y": 59800930
+        },
+        {
+          "x": 12607192,
+          "y": 59894657
+        },
+        {
+          "x": 12780377,
+          "y": 59966394
+        },
+        {
+          "x": 12961445,
+          "y": 60014911
+        },
+        {
+          "x": 13147296,
+          "y": 60039379
+        },
+        {
+          "x": 13241024,
+          "y": 60039379
+        },
+        {
+          "x": 56444016,
+          "y": 60039379
+        },
+        {
+          "x": 56537743,
+          "y": 60039379
+        },
+        {
+          "x": 56723594,
+          "y": 60014911
+        },
+        {
+          "x": 56904662,
+          "y": 59966394
+        },
+        {
+          "x": 57077847,
+          "y": 59894657
+        },
+        {
+          "x": 57240189,
+          "y": 59800930
+        },
+        {
+          "x": 57388906,
+          "y": 59686815
+        },
+        {
+          "x": 57521457,
+          "y": 59554264
+        },
+        {
+          "x": 57635572,
+          "y": 59405547
+        },
+        {
+          "x": 57729299,
+          "y": 59243205
+        },
+        {
+          "x": 57801036,
+          "y": 59070020
+        },
+        {
+          "x": 57849553,
+          "y": 58888952
+        },
+        {
+          "x": 57874021,
+          "y": 58703101
+        },
+        {
+          "x": 57874021,
+          "y": 58609374
+        },
+        {
+          "x": 57874021,
+          "y": 14225276
+        },
+        {
+          "x": 57874021,
+          "y": 14131548
+        },
+        {
+          "x": 57849553,
+          "y": 13945697
+        },
+        {
+          "x": 57801036,
+          "y": 13764629
+        },
+        {
+          "x": 57729299,
+          "y": 13591444
+        },
+        {
+          "x": 57635572,
+          "y": 13429102
+        },
+        {
+          "x": 57521457,
+          "y": 13280385
+        },
+        {
+          "x": 57388906,
+          "y": 13147834
+        },
+        {
+          "x": 57240189,
+          "y": 13033719
+        },
+        {
+          "x": 57077847,
+          "y": 12939992
+        },
+        {
+          "x": 56904662,
+          "y": 12868255
+        },
+        {
+          "x": 56723594,
+          "y": 12819738
+        },
+        {
+          "x": 56537743,
+          "y": 12795271
+        },
+        {
+          "x": 56444016,
+          "y": 12795271
+        }
+      ],
+      "name": "Layer Stack Region 1",
+      "cavityHeight": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "area": 2174597999491423,
+      "arcApproximation": {
+        "internal": 5000,
+        "mils": 0.5,
+        "mm": 0.0126999931420037
+      },
+      "totalVertexCount": 0,
+      "virtualCutout": false,
+      "objectId": 11,
+      "objectIDString": "PolyRegion",
+      "identifier": "PolyRegion[1299.213mil,1279.527mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "",
+      "detail": "",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": true,
+      "isKeepout": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 74,
+      "layer_V6": 74,
+      "viewableObjectId": 98,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+    },
+    {
+      "objectType": "EmbeddedBoard",
+      "layer": 1,
+      "xLocation": {
+        "internal": 13385827,
+        "mils": 1338.5827,
+        "mm": 33.9999822200096
+      },
+      "x1Location": {
+        "internal": 13385827,
+        "mils": 1338.5827,
+        "mm": 33.9999822200096
+      },
+      "x2Location": {
+        "internal": 56299215,
+        "mils": 5629.9215,
+        "mm": 142.999928880038
+      },
+      "yLocation": {
+        "internal": 17519685,
+        "mils": 1751.9685,
+        "mm": 44.499975870013
+      },
+      "y1Location": {
+        "internal": 17519685,
+        "mils": 1751.9685,
+        "mm": 44.499975870013
+      },
+      "y2Location": {
+        "internal": 55314971,
+        "mils": 5531.4971,
+        "mm": 140.499950470027
+      },
+      "documentPath": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\USB Power Adapter.PcbDoc",
+      "rotation": 0,
+      "rowSpacing": {
+        "internal": 9645672,
+        "mils": 964.5672,
+        "mm": 24.4999936500034
+      },
+      "colSpacing": {
+        "internal": 14566930,
+        "mils": 1456.693,
+        "mm": 36.9999822200096
+      },
+      "rowCount": 4,
+      "colCount": 3,
+      "isViewport": true,
+      "mirrorFlag": false,
+      "originMode": 1,
+      "scale": 4.76559516625283E-317,
+      "titleFontColor": 0,
+      "titleFontName": "",
+      "titleFontSize": 0,
+      "titleObject": 0,
+      "transmitBoardShape": true,
+      "transmitDimensions": true,
+      "transmitDrillTable": true,
+      "transmitLayerStackTable": true,
+      "transmitParametersCount": 0,
+      "viewConfig": "",
+      "viewConfigType": "",
+      "viewportRect": null,
+      "viewportTitle": "",
+      "viewportVisible": true,
+      "x1Location": {
+        "internal": 13385827,
+        "mils": 1338.5827,
+        "mm": 33.9999822200096
+      },
+      "x2Location": {
+        "internal": 56299215,
+        "mils": 5629.9215,
+        "mm": 142.999928880038
+      },
+      "xLocation": {
+        "internal": 13385827,
+        "mils": 1338.5827,
+        "mm": 33.9999822200096
+      },
+      "y1Location": {
+        "internal": 17519685,
+        "mils": 1751.9685,
+        "mm": 44.499975870013
+      },
+      "y2Location": {
+        "internal": 55314971,
+        "mils": 5531.4971,
+        "mm": 140.499950470027
+      },
+      "yLocation": {
+        "internal": 17519685,
+        "mils": 1751.9685,
+        "mm": 44.499975870013
+      },
+      "objectId": 21,
+      "objectIDString": "EmbeddedBoard",
+      "identifier": "EmbeddedBoard[1338.583mil,1751.968mil]",
+      "handle": "",
+      "uniqueId": "",
+      "descriptor": "Embedded Board Array \"D:\\SRC\\ALTIUMSHARP\\TESTDATA\\\" (4mm,12mm) on Top Layer",
+      "detail": "",
+      "inBoard": true,
+      "inComponent": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inNet": false,
+      "inPolygon": false,
+      "enabled": true,
+      "used": false,
+      "selected": false,
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "drcError": false,
+      "isPreRoute": false,
+      "userRouted": true,
+      "isElectricalPrim": false,
+      "isKeepout": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "unionIndex": 0,
+      "layer": 1,
+      "layer_V6": 1,
+      "viewableObjectId": 88,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "enabled_Direct": true,
+      "enabled_vComponent": false,
+      "enabled_vCoordinate": false,
+      "enabled_vDimension": false,
+      "enabled_vNet": false,
+      "enabled_vPolygon": false,
+      "index": 0,
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 78740,
+        "mils": 7.874,
+        "mm": 0.199999492000274
+      },
+      "powerPlaneConnectStyle": 0,
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.507999725680148
+      },
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.253999862840074
+      },
+      "reliefEntries": 4,
+      "net_ref": "",
+      "component_ref": "",
+      "board_ref": "D:\\SRC\\ALTIUMSHARP\\TESTDATA\\POWER ADAPTER PANEL.PCBDOC",
+      "coordinate_ref": "",
+      "dimension_ref": "",
+      "polygon_ref": "",
+      "inSelectionMemory_0": false,
+      "isEmbeddedComponentCavity": false,
+      "pasteMaskEnabled": false,
+      "pasteMaskExpansionMode": 0,
+      "pasteMaskManualEnabled": false,
+      "pasteMaskManualPercent": 0,
+      "pasteMaskPercent": 0,
+      "pasteMaskUsePercent": false,
+      "routingMinWidth": {
+        "internal": 35433,
+        "mils": 3.5433,
+        "mm": 0.0899997714001234
+      },
+      "routingViaWidth": {
+        "internal": 236220,
+        "mils": 23.622,
+        "mm": 0.599998476000823
+      },
+      "solderMaskExpansionMode": 0,
+      "faceIdx": -1,
+      "faceRotation": 0,
+      "faceU": 0,
+      "faceV": 0
+      "childBoard_ref": "",
+      "visibleLayers_ref": "",
+      "transmitLayersEnabled_top": true
+    }
+  ]
+}

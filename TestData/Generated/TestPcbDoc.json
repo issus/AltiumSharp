@@ -1,0 +1,2483 @@
+{
+  "exportType": "PcbDoc",
+  "fileName": "TestPcbDoc.PcbDoc",
+  "displayUnit": "1",
+  "boardXOrigin": {
+    "internal": 0,
+    "mils": 0,
+    "mm": 0
+  },
+  "boardYOrigin": {
+    "internal": 0,
+    "mils": 0,
+    "mm": 0
+  },
+  "boardInfo": {
+    "boundingRectLeft": {
+      "internal": 0,
+      "mils": 0,
+      "mm": 0
+    },
+    "boundingRectBottom": {
+      "internal": 0,
+      "mils": 0,
+      "mm": 0
+    },
+    "boundingRectRight": {
+      "internal": 999990000,
+      "mils": 99999,
+      "mm": 2539.9746
+    },
+    "boundingRectTop": {
+      "internal": 999990000,
+      "mils": 99999,
+      "mm": 2539.9746
+    },
+  },
+  "primitives": [
+    {
+      "objectType": "Arc",
+      "xCenter": {
+        "internal": 20000000,
+        "mils": 2000,
+        "mm": 50.8
+      },
+      "yCenter": {
+        "internal": 15000000,
+        "mils": 1500,
+        "mm": 38.1
+      },
+      "radius": {
+        "internal": 1500000,
+        "mils": 150,
+        "mm": 3.81
+      },
+      "lineWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "startAngle": 0,
+      "endAngle": 360,
+      "startX": {
+        "internal": 21500000,
+        "mils": 2150,
+        "mm": 54.61
+      },
+      "startY": {
+        "internal": 15000000,
+        "mils": 1500,
+        "mm": 38.1
+      },
+      "endX": {
+        "internal": 21500000,
+        "mils": 2150,
+        "mm": 54.61
+      },
+      "endY": {
+        "internal": 15000000,
+        "mils": 1500,
+        "mm": 38.1
+      },
+      "layer": 1,
+      "layer_V6": 1,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneConnectStyle": 0,
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefEntries": 4,
+      "isKeepout": false,
+      "inComponent": false,
+      "inNet": false,
+      "inBoard": true,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inPolygon": false,
+      "moveable": true,
+      "selected": false,
+      "used": false,
+      "userRouted": true,
+      "drcError": false,
+      "enabled": true,
+      "isPreRoute": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "isTestpoint_Bottom": false,
+      "isTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "isAssyTestpoint_Top": false,
+      "isTenting": false,
+      "isTenting_Bottom": false,
+      "isTenting_Top": false,
+      "isElectricalPrim": true,
+      "allowGlobalEdit": true,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "index": 0,
+      "unionIndex": 0,
+      "uniqueId": "",
+      "handle": "",
+      "objectIDString": "Arc",
+      "identifier": "Arc[2000mil,1500mil]",
+      "descriptor": "Arc (2000mil,1500mil) on Top Layer",
+      "detail": "Net:  Radius:150mil Angle1:0.00 Angle2:360.00",
+      "isFreePrimitive": true,
+      "isHidden": false
+    },
+    {
+      "objectType": "Arc",
+      "xCenter": {
+        "internal": 15000000,
+        "mils": 1500,
+        "mm": 38.1
+      },
+      "yCenter": {
+        "internal": 15000000,
+        "mils": 1500,
+        "mm": 38.1
+      },
+      "radius": {
+        "internal": 2000000,
+        "mils": 200,
+        "mm": 5.08
+      },
+      "lineWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "startAngle": 0,
+      "endAngle": 90,
+      "startX": {
+        "internal": 17000000,
+        "mils": 1700,
+        "mm": 43.18
+      },
+      "startY": {
+        "internal": 15000000,
+        "mils": 1500,
+        "mm": 38.1
+      },
+      "endX": {
+        "internal": 15000000,
+        "mils": 1500,
+        "mm": 38.1
+      },
+      "endY": {
+        "internal": 17000000,
+        "mils": 1700,
+        "mm": 43.18
+      },
+      "layer": 1,
+      "layer_V6": 1,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneConnectStyle": 0,
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefEntries": 4,
+      "isKeepout": false,
+      "inComponent": false,
+      "inNet": false,
+      "inBoard": true,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inPolygon": false,
+      "moveable": true,
+      "selected": false,
+      "used": false,
+      "userRouted": true,
+      "drcError": false,
+      "enabled": true,
+      "isPreRoute": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "isTestpoint_Bottom": false,
+      "isTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "isAssyTestpoint_Top": false,
+      "isTenting": false,
+      "isTenting_Bottom": false,
+      "isTenting_Top": false,
+      "isElectricalPrim": true,
+      "allowGlobalEdit": true,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "index": 0,
+      "unionIndex": 0,
+      "uniqueId": "",
+      "handle": "",
+      "objectIDString": "Arc",
+      "identifier": "Arc[1500mil,1500mil]",
+      "descriptor": "Arc (1500mil,1500mil) on Top Layer",
+      "detail": "Net:  Radius:200mil Angle1:0.00 Angle2:90.00",
+      "isFreePrimitive": true,
+      "isHidden": false
+    },
+    {
+      "objectType": "Pad",
+      "name": "1",
+      "pinDescriptor": "Free-1",
+      "x": {
+        "internal": 25000000,
+        "mils": 2500,
+        "mm": 63.5
+      },
+      "y": {
+        "internal": 10000000,
+        "mils": 1000,
+        "mm": 25.4
+      },
+      "mode": 0,
+      "maxXSignalLayers": {
+        "internal": 600000,
+        "mils": 60,
+        "mm": 1.524
+      },
+      "maxYSignalLayers": {
+        "internal": 600000,
+        "mils": 60,
+        "mm": 1.524
+      },
+      "pinPackageLength": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "xPadOffsetAll": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "yPadOffsetAll": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "topXSize": {
+        "internal": 600000,
+        "mils": 60,
+        "mm": 1.524
+      },
+      "topYSize": {
+        "internal": 600000,
+        "mils": 60,
+        "mm": 1.524
+      },
+      "midXSize": {
+        "internal": 600000,
+        "mils": 60,
+        "mm": 1.524
+      },
+      "midYSize": {
+        "internal": 600000,
+        "mils": 60,
+        "mm": 1.524
+      },
+      "botXSize": {
+        "internal": 600000,
+        "mils": 60,
+        "mm": 1.524
+      },
+      "botYSize": {
+        "internal": 600000,
+        "mils": 60,
+        "mm": 1.524
+      },
+      "topShape": 1,
+      "midShape": 1,
+      "botShape": 1,
+      "holeSize": {
+        "internal": 300000,
+        "mils": 30,
+        "mm": 0.762
+      },
+      "holeWidth": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "holeRotation": 0,
+      "holeType": 0,
+      "drillType": 0,
+      "holePositiveTolerance": {
+        "internal": 2147483647,
+        "mils": 214748.365,
+        "mm": 5454.60846
+      },
+      "holeNegativeTolerance": {
+        "internal": 2147483647,
+        "mils": 214748.365,
+        "mm": 5454.60846
+      },
+      "plated": true,
+      "rotation": 0,
+      "layer": 74,
+      "swapID_Pad": "",
+      "swapID_Part": "",
+      "ownerPartID": 0,
+      "swappedPadName": "",
+      "jumperID": 0,
+      "powerPlaneConnectStyle": 0,
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefEntries": 4,
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 40000,
+        "mils": 4,
+        "mm": 0.1016
+      },
+      "solderMaskExpansionFromHoleEdge": false,
+      "powerPlaneClearance": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "isKeepout": false,
+      "inComponent": false,
+      "inNet": false,
+      "drcError": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "objectIDString": "Pad",
+      "identifier": "Free-1",
+      "descriptor": "Pad Free-1(2500mil,1000mil) on Multi-Layer",
+      "detail": "Net: X-Size:68mil Y-Size:68mil Hole Type:Round Hole:30mil",
+      "uniqueId": "MHCUSVCM",
+      "drawAsPreview": false,
+      "daisyChainStyle": 0,
+      "isBottomPasteEnabled": false,
+      "isTopPasteEnabled": false,
+      "isCounterHole": false,
+      "isPadStack": false,
+      "isSurfaceMount": false,
+      "isVirtualPin": false,
+      "hasCornerRadiusChamfer": false,
+      "hasCustomChamferedRectangle": false,
+      "hasCustomDonut": false,
+      "hasCustomMaskDonutShapes": false,
+      "hasCustomMaskShapes": false,
+      "hasCustomRoundedRectangle": false,
+      "hasCustomShapes": false,
+      "hasRoundedRectangularShapes": false,
+      "multiLayerHighBits": 0,
+      "padHasOffsetOnAny": false,
+      "solderMaskExpansionFromHoleEdgeWithRule": false,
+      "getHoleXSize": 300000,
+      "getHoleYSize": 300000,
+      "getState_BottomLayer": 32,
+      "getState_TopLayer": 1,
+      "getState_HoleString": "Hole Type:Round Hole:30mil",
+      "getState_SwapID_Gate": "|&|0",
+      "layer_V6": 74,
+      "inBoard": true,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inPolygon": false,
+      "moveable": true,
+      "selected": false,
+      "used": false,
+      "userRouted": true,
+      "enabled": true,
+      "isPreRoute": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "isElectricalPrim": true,
+      "allowGlobalEdit": true,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "index": 0,
+      "unionIndex": 0,
+      "handle": "QCPQKGSI\\MHCUSVCM",
+      "isFreePrimitive": true,
+      "isHidden": false,
+      "isHoleSizeValid": true
+    },
+    {
+      "objectType": "Pad",
+      "name": "2",
+      "pinDescriptor": "Free-2",
+      "x": {
+        "internal": 27000000,
+        "mils": 2700,
+        "mm": 68.58
+      },
+      "y": {
+        "internal": 10000000,
+        "mils": 1000,
+        "mm": 25.4
+      },
+      "mode": 0,
+      "maxXSignalLayers": {
+        "internal": 500000,
+        "mils": 50,
+        "mm": 1.27
+      },
+      "maxYSignalLayers": {
+        "internal": 300000,
+        "mils": 30,
+        "mm": 0.762
+      },
+      "pinPackageLength": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "xPadOffsetAll": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "yPadOffsetAll": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "topXSize": {
+        "internal": 500000,
+        "mils": 50,
+        "mm": 1.27
+      },
+      "topYSize": {
+        "internal": 300000,
+        "mils": 30,
+        "mm": 0.762
+      },
+      "midXSize": {
+        "internal": 500000,
+        "mils": 50,
+        "mm": 1.27
+      },
+      "midYSize": {
+        "internal": 300000,
+        "mils": 30,
+        "mm": 0.762
+      },
+      "botXSize": {
+        "internal": 500000,
+        "mils": 50,
+        "mm": 1.27
+      },
+      "botYSize": {
+        "internal": 300000,
+        "mils": 30,
+        "mm": 0.762
+      },
+      "topShape": 2,
+      "midShape": 2,
+      "botShape": 2,
+      "holeSize": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "holeWidth": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "holeRotation": 0,
+      "holeType": 0,
+      "drillType": 0,
+      "holePositiveTolerance": {
+        "internal": 2147483647,
+        "mils": 214748.365,
+        "mm": 5454.60846
+      },
+      "holeNegativeTolerance": {
+        "internal": 2147483647,
+        "mils": 214748.365,
+        "mm": 5454.60846
+      },
+      "plated": true,
+      "rotation": 0,
+      "layer": 1,
+      "swapID_Pad": "",
+      "swapID_Part": "",
+      "ownerPartID": 0,
+      "swappedPadName": "",
+      "jumperID": 0,
+      "powerPlaneConnectStyle": 0,
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefEntries": 4,
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 40000,
+        "mils": 4,
+        "mm": 0.1016
+      },
+      "solderMaskExpansionFromHoleEdge": false,
+      "powerPlaneClearance": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "isKeepout": false,
+      "inComponent": false,
+      "inNet": false,
+      "drcError": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "objectIDString": "Pad",
+      "identifier": "Free-2",
+      "descriptor": "Pad Free-2(2700mil,1000mil) on Top Layer",
+      "detail": "Net: X-Size:58mil Y-Size:38mil Hole Type:Round Hole:0mil",
+      "uniqueId": "KKWIKJTQ",
+      "drawAsPreview": false,
+      "daisyChainStyle": 0,
+      "isBottomPasteEnabled": true,
+      "isTopPasteEnabled": true,
+      "isCounterHole": false,
+      "isPadStack": false,
+      "isSurfaceMount": true,
+      "isVirtualPin": false,
+      "hasCornerRadiusChamfer": false,
+      "hasCustomChamferedRectangle": false,
+      "hasCustomDonut": false,
+      "hasCustomMaskDonutShapes": false,
+      "hasCustomMaskShapes": false,
+      "hasCustomRoundedRectangle": false,
+      "hasCustomShapes": false,
+      "hasRoundedRectangularShapes": false,
+      "multiLayerHighBits": 0,
+      "padHasOffsetOnAny": false,
+      "solderMaskExpansionFromHoleEdgeWithRule": false,
+      "getHoleXSize": 0,
+      "getHoleYSize": 0,
+      "getState_BottomLayer": 32,
+      "getState_TopLayer": 1,
+      "getState_HoleString": "Hole Type:Round Hole:0mil",
+      "getState_SwapID_Gate": "|&|0",
+      "layer_V6": 1,
+      "inBoard": true,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inPolygon": false,
+      "moveable": true,
+      "selected": false,
+      "used": false,
+      "userRouted": true,
+      "enabled": true,
+      "isPreRoute": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "isElectricalPrim": true,
+      "allowGlobalEdit": true,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "index": 0,
+      "unionIndex": 0,
+      "handle": "QCPQKGSI\\KKWIKJTQ",
+      "isFreePrimitive": true,
+      "isHidden": false,
+      "isHoleSizeValid": false
+    },
+    {
+      "objectType": "Via",
+      "x": {
+        "internal": 14000000,
+        "mils": 1400,
+        "mm": 35.56
+      },
+      "y": {
+        "internal": 10000000,
+        "mils": 1000,
+        "mm": 25.4
+      },
+      "mode": 0,
+      "size": {
+        "internal": 300000,
+        "mils": 30,
+        "mm": 0.762
+      },
+      "holeSize": {
+        "internal": 150000,
+        "mils": 15,
+        "mm": 0.381
+      },
+      "height": {
+        "internal": 154000,
+        "mils": 15.4,
+        "mm": 0.39116
+      },
+      "lowLayer": 1,
+      "highLayer": 32,
+      "layer": 74,
+      "holePositiveTolerance": {
+        "internal": 2147483647,
+        "mils": 214748.365,
+        "mm": 5454.60846
+      },
+      "holeNegativeTolerance": {
+        "internal": 2147483647,
+        "mils": 214748.365,
+        "mm": 5454.60846
+      },
+      "powerPlaneConnectStyle": 0,
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefEntries": 4,
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 40000,
+        "mils": 4,
+        "mm": 0.1016
+      },
+      "solderMaskExpansionFromHoleEdge": false,
+      "powerPlaneClearance": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "inComponent": false,
+      "inNet": false,
+      "isElectricalPrim": true,
+      "moveable": true,
+      "isBackdrill": false,
+      "isKeepout": false,
+      "drcError": true,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "objectIDString": "Via",
+      "identifier": "Via[1400mil,1000mil]",
+      "descriptor": "Via (1400mil,1000mil) from Top Layer to Bottom Layer",
+      "detail": "Net: Size: 30mil Hole: 15mil",
+      "inCoordinate": false,
+      "inDimension": false,
+      "isPreRoute": false,
+      "drillLayerPairType": 0,
+      "isCounterHole": false,
+      "layer_V6": 74,
+      "inBoard": true,
+      "inPolygon": false,
+      "selected": false,
+      "used": false,
+      "userRouted": true,
+      "enabled": true,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "allowGlobalEdit": true,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "index": 0,
+      "unionIndex": 0,
+      "uniqueId": "",
+      "handle": "",
+      "isFreePrimitive": true,
+      "isHidden": false,
+      "plated": true
+    },
+    {
+      "objectType": "Via",
+      "x": {
+        "internal": 12000000,
+        "mils": 1200,
+        "mm": 30.48
+      },
+      "y": {
+        "internal": 10000000,
+        "mils": 1000,
+        "mm": 25.4
+      },
+      "mode": 0,
+      "size": {
+        "internal": 400000,
+        "mils": 40,
+        "mm": 1.016
+      },
+      "holeSize": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "height": {
+        "internal": 154000,
+        "mils": 15.4,
+        "mm": 0.39116
+      },
+      "lowLayer": 1,
+      "highLayer": 32,
+      "layer": 74,
+      "holePositiveTolerance": {
+        "internal": 2147483647,
+        "mils": 214748.365,
+        "mm": 5454.60846
+      },
+      "holeNegativeTolerance": {
+        "internal": 2147483647,
+        "mils": 214748.365,
+        "mm": 5454.60846
+      },
+      "powerPlaneConnectStyle": 0,
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefEntries": 4,
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 40000,
+        "mils": 4,
+        "mm": 0.1016
+      },
+      "solderMaskExpansionFromHoleEdge": false,
+      "powerPlaneClearance": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "isTenting": false,
+      "isTenting_Top": false,
+      "isTenting_Bottom": false,
+      "isTestpoint_Top": false,
+      "isTestpoint_Bottom": false,
+      "isAssyTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "inComponent": false,
+      "inNet": false,
+      "isElectricalPrim": true,
+      "moveable": true,
+      "isBackdrill": false,
+      "isKeepout": false,
+      "drcError": true,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "objectIDString": "Via",
+      "identifier": "Via[1200mil,1000mil]",
+      "descriptor": "Via (1200mil,1000mil) from Top Layer to Bottom Layer",
+      "detail": "Net: Size: 40mil Hole: 20mil",
+      "inCoordinate": false,
+      "inDimension": false,
+      "isPreRoute": false,
+      "drillLayerPairType": 0,
+      "isCounterHole": false,
+      "layer_V6": 74,
+      "inBoard": true,
+      "inPolygon": false,
+      "selected": false,
+      "used": false,
+      "userRouted": true,
+      "enabled": true,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "allowGlobalEdit": true,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "index": 0,
+      "unionIndex": 0,
+      "uniqueId": "",
+      "handle": "",
+      "isFreePrimitive": true,
+      "isHidden": false,
+      "plated": true
+    },
+    {
+      "objectType": "Track",
+      "x1": {
+        "internal": 10000000,
+        "mils": 1000,
+        "mm": 25.4
+      },
+      "y1": {
+        "internal": 10000000,
+        "mils": 1000,
+        "mm": 25.4
+      },
+      "x2": {
+        "internal": 20000000,
+        "mils": 2000,
+        "mm": 50.8
+      },
+      "y2": {
+        "internal": 10000000,
+        "mils": 1000,
+        "mm": 25.4
+      },
+      "width": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "length": {
+        "internal": 10000000,
+        "mils": 1000,
+        "mm": 25.4
+      },
+      "layer": 1,
+      "isKeepout": false,
+      "inComponent": false,
+      "inNet": false,
+      "moveable": true,
+      "drcError": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "objectIDString": "Track",
+      "identifier": "Track[1000mil,1000mil]",
+      "descriptor": "Track (1000mil,1000mil)(2000mil,1000mil) on Top Layer",
+      "detail": "Track: ( Width:10mil Length:1000mil)",
+      "layer_V6": 1,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneConnectStyle": 0,
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefEntries": 4,
+      "inBoard": true,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inPolygon": false,
+      "selected": false,
+      "used": false,
+      "userRouted": true,
+      "enabled": true,
+      "isPreRoute": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "isTestpoint_Bottom": false,
+      "isTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "isAssyTestpoint_Top": false,
+      "isTenting": false,
+      "isTenting_Bottom": false,
+      "isTenting_Top": false,
+      "isElectricalPrim": true,
+      "allowGlobalEdit": true,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "index": 0,
+      "unionIndex": 0,
+      "uniqueId": "",
+      "handle": "",
+      "isFreePrimitive": true,
+      "isHidden": false
+    },
+    {
+      "objectType": "Track",
+      "x1": {
+        "internal": 10000000,
+        "mils": 1000,
+        "mm": 25.4
+      },
+      "y1": {
+        "internal": 8000000,
+        "mils": 800,
+        "mm": 20.32
+      },
+      "x2": {
+        "internal": 20000000,
+        "mils": 2000,
+        "mm": 50.8
+      },
+      "y2": {
+        "internal": 8000000,
+        "mils": 800,
+        "mm": 20.32
+      },
+      "width": {
+        "internal": 80000,
+        "mils": 8,
+        "mm": 0.2032
+      },
+      "length": {
+        "internal": 10000000,
+        "mils": 1000,
+        "mm": 25.4
+      },
+      "layer": 33,
+      "isKeepout": false,
+      "inComponent": false,
+      "inNet": false,
+      "moveable": true,
+      "drcError": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "objectIDString": "Track",
+      "identifier": "Track[1000mil,800mil]",
+      "descriptor": "Track (1000mil,800mil)(2000mil,800mil) on Top Overlay",
+      "detail": "Track: ( Width:8mil Length:1000mil)",
+      "layer_V6": 33,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneConnectStyle": 0,
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefEntries": 4,
+      "inBoard": true,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inPolygon": false,
+      "selected": false,
+      "used": false,
+      "userRouted": true,
+      "enabled": true,
+      "isPreRoute": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "isTestpoint_Bottom": false,
+      "isTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "isAssyTestpoint_Top": false,
+      "isTenting": false,
+      "isTenting_Bottom": false,
+      "isTenting_Top": false,
+      "isElectricalPrim": false,
+      "allowGlobalEdit": true,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "index": 0,
+      "unionIndex": 0,
+      "uniqueId": "",
+      "handle": "",
+      "isFreePrimitive": true,
+      "isHidden": false
+    },
+    {
+      "objectType": "Track",
+      "x1": {
+        "internal": 10000000,
+        "mils": 1000,
+        "mm": 25.4
+      },
+      "y1": {
+        "internal": 9000000,
+        "mils": 900,
+        "mm": 22.86
+      },
+      "x2": {
+        "internal": 20000000,
+        "mils": 2000,
+        "mm": 50.8
+      },
+      "y2": {
+        "internal": 9000000,
+        "mils": 900,
+        "mm": 22.86
+      },
+      "width": {
+        "internal": 150000,
+        "mils": 15,
+        "mm": 0.381
+      },
+      "length": {
+        "internal": 10000000,
+        "mils": 1000,
+        "mm": 25.4
+      },
+      "layer": 32,
+      "isKeepout": false,
+      "inComponent": false,
+      "inNet": false,
+      "moveable": true,
+      "drcError": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "objectIDString": "Track",
+      "identifier": "Track[1000mil,900mil]",
+      "descriptor": "Track (1000mil,900mil)(2000mil,900mil) on Bottom Layer",
+      "detail": "Track: ( Width:15mil Length:1000mil)",
+      "layer_V6": 32,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneConnectStyle": 0,
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefEntries": 4,
+      "inBoard": true,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inPolygon": false,
+      "selected": false,
+      "used": false,
+      "userRouted": true,
+      "enabled": true,
+      "isPreRoute": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "isTestpoint_Bottom": false,
+      "isTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "isAssyTestpoint_Top": false,
+      "isTenting": false,
+      "isTenting_Bottom": false,
+      "isTenting_Top": false,
+      "isElectricalPrim": true,
+      "allowGlobalEdit": true,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "index": 0,
+      "unionIndex": 0,
+      "uniqueId": "",
+      "handle": "",
+      "isFreePrimitive": true,
+      "isHidden": false
+    },
+    {
+      "objectType": "Text",
+      "text": "TrueType Font",
+      "x": {
+        "internal": 10000000,
+        "mils": 1000,
+        "mm": 25.4
+      },
+      "y": {
+        "internal": 22000000,
+        "mils": 2200,
+        "mm": 55.88
+      },
+      "size": {
+        "internal": 800000,
+        "mils": 80,
+        "mm": 2.032
+      },
+      "width": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "rotation": 0,
+      "mirrorFlag": false,
+      "layer": 33,
+      "useTTFonts": true,
+      "fontName": "Arial",
+      "fontID": 1,
+      "bold": true,
+      "italic": false,
+      "textKind": 1,
+      "inverted": false,
+      "useInvertedRectangle": false,
+      "wordWrap": false,
+      "multiLine": false,
+      "multilineTextAutoPosition": 3,
+      "multilineTextHeight": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "multilineTextWidth": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "multilineTextResizeEnabled": false,
+      "ttfTextWidth": {
+        "internal": 4947000,
+        "mils": 494.7,
+        "mm": 12.56538
+      },
+      "ttfTextHeight": {
+        "internal": 663000,
+        "mils": 66.3,
+        "mm": 1.68402
+      },
+      "ttfInvertedTextJustify": 3,
+      "advanceSnapping": false,
+      "snapPointX": {
+        "internal": 10000000,
+        "mils": 1000,
+        "mm": 25.4
+      },
+      "snapPointY": {
+        "internal": 22000000,
+        "mils": 2200,
+        "mm": 55.88
+      },
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "enableDraw": true,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "borderSpaceType": 0,
+      "objectIDString": "Text",
+      "identifier": "Text[1000mil,2200mil]",
+      "descriptor": "Text \"TrueType Font\" (1000mil,2200mil) on Top Overlay",
+      "detail": "",
+      "barCodeKind": 0,
+      "barCodeRenderMode": 1,
+      "barCodeFullWidth": {
+        "internal": 10500000,
+        "mils": 1050,
+        "mm": 26.67
+      },
+      "barCodeFullHeight": {
+        "internal": 2100000,
+        "mils": 210,
+        "mm": 5.334
+      },
+      "barCodeXMargin": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "barCodeYMargin": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "barCodeMinWidth": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "barCodeShowText": true,
+      "barCodeInverted": true,
+      "barCodeFontName": "Arial",
+      "barCodeBitPattern": "10010110110101010110110010100101001001011010101100101001010010010110010101011010010100100101101011001010101011011001010010100100101100101101010100101001001010110110100101001010010010110101100101010011010110101011011001010100101001001011010110100101001010010010101011010011010010100100101010110110010100101101101",
+      "charSet": 1,
+      "convertedString": "TrueType Font",
+      "disableSpecialStringConversion": false,
+      "getDesignatorDisplayString": "",
+      "inAutoDimension": false,
+      "invertedTTTextBorder": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "invRectHeight": 663000,
+      "invRectWidth": 4947000,
+      "isComment": false,
+      "isDesignator": false,
+      "isRedundant": false,
+      "ttfOffsetFromInvertedRect": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "underlyingString": "TrueType Font",
+      "x1Location": {
+        "internal": 10000000,
+        "mils": 1000,
+        "mm": 25.4
+      },
+      "y1Location": {
+        "internal": 21849500,
+        "mils": 2184.95,
+        "mm": 55.49773
+      },
+      "x2Location": {
+        "internal": 14947000,
+        "mils": 1494.7,
+        "mm": 37.96538
+      },
+      "y2Location": {
+        "internal": 22512500,
+        "mils": 2251.25,
+        "mm": 57.18175
+      },
+      "layer_V6": 33,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneConnectStyle": 0,
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefEntries": 4,
+      "isKeepout": false,
+      "inComponent": false,
+      "inNet": false,
+      "inBoard": true,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inPolygon": false,
+      "selected": false,
+      "used": false,
+      "userRouted": true,
+      "drcError": false,
+      "enabled": true,
+      "isPreRoute": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "isTestpoint_Bottom": false,
+      "isTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "isAssyTestpoint_Top": false,
+      "isTenting": false,
+      "isTenting_Bottom": false,
+      "isTenting_Top": false,
+      "isElectricalPrim": false,
+      "drawAsPreview": false,
+      "index": 0,
+      "unionIndex": 0,
+      "uniqueId": "",
+      "handle": "",
+      "isFreePrimitive": true,
+      "isHidden": false,
+      "canEditMultilineRectSize": true,
+      "getState_BarCodeMinPixelSize": 0
+    },
+    {
+      "objectType": "Text",
+      "text": "Test PCB Document",
+      "x": {
+        "internal": 10000000,
+        "mils": 1000,
+        "mm": 25.4
+      },
+      "y": {
+        "internal": 20000000,
+        "mils": 2000,
+        "mm": 50.8
+      },
+      "size": {
+        "internal": 1000000,
+        "mils": 100,
+        "mm": 2.54
+      },
+      "width": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "rotation": 0,
+      "mirrorFlag": false,
+      "layer": 33,
+      "useTTFonts": false,
+      "fontName": "Arial",
+      "fontID": 1,
+      "bold": false,
+      "italic": false,
+      "textKind": 0,
+      "inverted": false,
+      "useInvertedRectangle": false,
+      "wordWrap": false,
+      "multiLine": false,
+      "multilineTextAutoPosition": 3,
+      "multilineTextHeight": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "multilineTextWidth": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "multilineTextResizeEnabled": false,
+      "ttfTextWidth": {
+        "internal": 16361445,
+        "mils": 1636.145,
+        "mm": 41.55807
+      },
+      "ttfTextHeight": {
+        "internal": 1199677,
+        "mils": 119.968,
+        "mm": 3.04718
+      },
+      "ttfInvertedTextJustify": 3,
+      "advanceSnapping": false,
+      "snapPointX": {
+        "internal": 10000000,
+        "mils": 1000,
+        "mm": 25.4
+      },
+      "snapPointY": {
+        "internal": 20000000,
+        "mils": 2000,
+        "mm": 50.8
+      },
+      "moveable": true,
+      "allowGlobalEdit": true,
+      "enableDraw": true,
+      "padCacheRobotFlag": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "borderSpaceType": 0,
+      "objectIDString": "Text",
+      "identifier": "Text[1000mil,2000mil]",
+      "descriptor": "Text \"Test PCB Document\" (1000mil,2000mil) on Top Overlay",
+      "detail": "",
+      "barCodeKind": 0,
+      "barCodeRenderMode": 1,
+      "barCodeFullWidth": {
+        "internal": 10500000,
+        "mils": 1050,
+        "mm": 26.67
+      },
+      "barCodeFullHeight": {
+        "internal": 2100000,
+        "mils": 210,
+        "mm": 5.334
+      },
+      "barCodeXMargin": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "barCodeYMargin": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "barCodeMinWidth": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "barCodeShowText": true,
+      "barCodeInverted": true,
+      "barCodeFontName": "Arial",
+      "barCodeBitPattern": "1001011011010101011011001010010100100101101011001010100101001001010110101100101001010010010101011011001010011010110101011011010010110110100101010110100101101001101011010101011001011010010100100101101011010010100101001001011011010010101001010010010110010101011010010100100101101101010010100101001001011010110010101001010010010101011010011010010100100101010110110010100101101101",
+      "charSet": 1,
+      "convertedString": "Test PCB Document",
+      "disableSpecialStringConversion": false,
+      "getDesignatorDisplayString": "",
+      "inAutoDimension": false,
+      "invertedTTTextBorder": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "invRectHeight": 1199677,
+      "invRectWidth": 16361445,
+      "isComment": false,
+      "isDesignator": false,
+      "isRedundant": false,
+      "ttfOffsetFromInvertedRect": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "underlyingString": "Test PCB Document",
+      "x1Location": {
+        "internal": 9900000,
+        "mils": 990,
+        "mm": 25.146
+      },
+      "y1Location": {
+        "internal": 19900000,
+        "mils": 1990,
+        "mm": 50.546
+      },
+      "x2Location": {
+        "internal": 26261445,
+        "mils": 2626.144,
+        "mm": 66.70407
+      },
+      "y2Location": {
+        "internal": 21099677,
+        "mils": 2109.968,
+        "mm": 53.59318
+      },
+      "layer_V6": 33,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneConnectStyle": 0,
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefEntries": 4,
+      "isKeepout": false,
+      "inComponent": false,
+      "inNet": false,
+      "inBoard": true,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inPolygon": false,
+      "selected": false,
+      "used": false,
+      "userRouted": true,
+      "drcError": false,
+      "enabled": true,
+      "isPreRoute": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "isTestpoint_Bottom": false,
+      "isTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "isAssyTestpoint_Top": false,
+      "isTenting": false,
+      "isTenting_Bottom": false,
+      "isTenting_Top": false,
+      "isElectricalPrim": false,
+      "drawAsPreview": false,
+      "index": 0,
+      "unionIndex": 0,
+      "uniqueId": "",
+      "handle": "",
+      "isFreePrimitive": true,
+      "isHidden": false,
+      "canEditMultilineRectSize": true,
+      "getState_BarCodeMinPixelSize": 0
+    },
+    {
+      "objectType": "Fill",
+      "xLocation": {
+        "internal": 30000000,
+        "mils": 3000,
+        "mm": 76.2
+      },
+      "yLocation": {
+        "internal": 10000000,
+        "mils": 1000,
+        "mm": 25.4
+      },
+      "x1": {
+        "internal": 30000000,
+        "mils": 3000,
+        "mm": 76.2
+      },
+      "y1": {
+        "internal": 10000000,
+        "mils": 1000,
+        "mm": 25.4
+      },
+      "x2": {
+        "internal": 32000000,
+        "mils": 3200,
+        "mm": 81.28
+      },
+      "y2": {
+        "internal": 12000000,
+        "mils": 1200,
+        "mm": 30.48
+      },
+      "width": {
+        "internal": 2000000,
+        "mils": 200,
+        "mm": 5.08
+      },
+      "length": {
+        "internal": 2000000,
+        "mils": 200,
+        "mm": 5.08
+      },
+      "rotation": 0,
+      "layer": 1,
+      "layer_V6": 1,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneConnectStyle": 0,
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefEntries": 4,
+      "isKeepout": false,
+      "inComponent": false,
+      "inNet": false,
+      "inBoard": true,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inPolygon": false,
+      "moveable": true,
+      "selected": false,
+      "used": false,
+      "userRouted": true,
+      "drcError": false,
+      "enabled": true,
+      "isPreRoute": false,
+      "polygonOutline": false,
+      "tearDrop": false,
+      "isTestpoint_Bottom": false,
+      "isTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "isAssyTestpoint_Top": false,
+      "isTenting": false,
+      "isTenting_Bottom": false,
+      "isTenting_Top": false,
+      "isElectricalPrim": true,
+      "allowGlobalEdit": true,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "index": 0,
+      "unionIndex": 0,
+      "uniqueId": "",
+      "handle": "",
+      "objectIDString": "Fill",
+      "identifier": "Fill[3000mil,1000mil]",
+      "descriptor": "Area Fill (3000mil,1000mil) (3200mil,1200mil) on Top Layer",
+      "detail": "Net: X-Size:200mil Y-Size:200mil",
+      "isFreePrimitive": true,
+      "isHidden": false,
+      "isRedundant": false,
+      "getState_LocationX": {
+        "internal": 31000000,
+        "mils": 3100,
+        "mm": 78.74
+      },
+      "getState_LocationY": {
+        "internal": 11000000,
+        "mils": 1100,
+        "mm": 27.94
+      }
+    },
+    {
+      "objectType": "Net",
+      "name": "GND"
+    },
+    {
+      "objectType": "Net",
+      "name": "VCC"
+    },
+    {
+      "objectType": "Net",
+      "name": "NET1"
+    },
+    {
+      "objectType": "Polygon",
+      "name": "",
+      "layer": 1,
+      "x": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "y": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "polyHatchStyle": 5,
+      "polygonType": 0,
+      "pourOver": 2,
+      "pourInvalid": false,
+      "poured": true,
+      "pourIndex": 0,
+      "grid": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "trackSize": {
+        "internal": 80000,
+        "mils": 8,
+        "mm": 0.2032
+      },
+      "minTrack": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "borderWidth": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "arcApproximation": {
+        "internal": 10000,
+        "mils": 1,
+        "mm": 0.0254
+      },
+      "removeIslandsByArea": true,
+      "islandAreaThreshold": 10,
+      "removeNarrowNecks": true,
+      "neckWidthThreshold": {
+        "internal": 50000,
+        "mils": 5,
+        "mm": 0.127
+      },
+      "removeDead": false,
+      "useOctagons": false,
+      "avoidObsticles": true,
+      "expandOutline": false,
+      "clipAcuteCorners": false,
+      "mitreCorners": false,
+      "arcPourMode": false,
+      "drawRemovedNecks": false,
+      "drawRemovedIslands": false,
+      "drawDeadCopper": false,
+      "areaSize": 125000000000000,
+      "pointCount": 4,
+      "autoGenerateName": false,
+      "ignoreViolations": false,
+      "primitiveLock": true,
+      "polygonOutline": false,
+      "inNet": false,
+      "moveable": true,
+      "drcError": false,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "objectIDString": "Poly",
+      "identifier": "Abstract polygon ID",
+      "descriptor": "Polygon  () on Top Layer",
+      "detail": "",
+      "uniqueId": "",
+      "segments": [
+        {
+          "kind": 0,
+          "vx": {
+            "internal": 40000000,
+            "mils": 4000,
+            "mm": 101.6
+          },
+          "vy": {
+            "internal": 10000000,
+            "mils": 1000,
+            "mm": 25.4
+          },
+          "cx": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "cy": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          }
+        },
+        {
+          "kind": 0,
+          "vx": {
+            "internal": 45000000,
+            "mils": 4500,
+            "mm": 114.3
+          },
+          "vy": {
+            "internal": 10000000,
+            "mils": 1000,
+            "mm": 25.4
+          },
+          "cx": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "cy": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          }
+        },
+        {
+          "kind": 0,
+          "vx": {
+            "internal": 45000000,
+            "mils": 4500,
+            "mm": 114.3
+          },
+          "vy": {
+            "internal": 15000000,
+            "mils": 1500,
+            "mm": 38.1
+          },
+          "cx": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "cy": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          }
+        },
+        {
+          "kind": 0,
+          "vx": {
+            "internal": 40000000,
+            "mils": 4000,
+            "mm": 101.6
+          },
+          "vy": {
+            "internal": 15000000,
+            "mils": 1500,
+            "mm": 38.1
+          },
+          "cx": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "cy": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          }
+        }
+      ],
+      "layer_V6": 1,
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneConnectStyle": 0,
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefEntries": 4,
+      "isKeepout": false,
+      "inCoordinate": false,
+      "inDimension": false,
+      "inPolygon": false,
+      "selected": false,
+      "used": false,
+      "userRouted": true,
+      "enabled": true,
+      "isPreRoute": false,
+      "tearDrop": false,
+      "isTestpoint_Bottom": false,
+      "isTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "isAssyTestpoint_Top": false,
+      "isTenting": false,
+      "isTenting_Bottom": false,
+      "isTenting_Top": false,
+      "isElectricalPrim": true,
+      "allowGlobalEdit": true,
+      "drawAsPreview": false,
+      "index": 0,
+      "unionIndex": 0,
+      "handle": "",
+      "getDefaultName": "Top Layer-No Net",
+      "getState_CopperPourInvalid": false,
+      "copperPourValidate": false,
+      "inComponent": false,
+      "inBoard": true,
+      "enableDraw": true,
+      "isFreePrimitive": true,
+      "isHidden": false,
+      "avoidObstacles": true,
+      "obeyPolygonCutout": false,
+      "optimalVoidRotation": false,
+      "drawRemovedNecks": false
+    },
+    {
+      "objectType": "Region",
+      "layer": 74,
+      "layer_V6": 74,
+      "kind": 3,
+      "name": "Default Layer Stack Region",
+      "holeCount": 0,
+      "area": 2400000000000000,
+      "cavityHeight": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneConnectStyle": 0,
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefEntries": 4,
+      "isKeepout": false,
+      "tearDrop": false,
+      "polygonOutline": false,
+      "inPolygon": false,
+      "inComponent": false,
+      "inNet": false,
+      "inBoard": true,
+      "inCoordinate": false,
+      "inDimension": false,
+      "isElectricalPrim": true,
+      "moveable": true,
+      "selected": false,
+      "used": false,
+      "userRouted": true,
+      "drcError": false,
+      "enabled": true,
+      "isPreRoute": false,
+      "isTestpoint_Bottom": false,
+      "isTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "isAssyTestpoint_Top": false,
+      "isTenting": false,
+      "isTenting_Bottom": false,
+      "isTenting_Top": false,
+      "allowGlobalEdit": true,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "index": 0,
+      "unionIndex": 0,
+      "handle": "",
+      "objectIDString": "PolyRegion",
+      "identifier": "PolyRegion[1000mil,1000mil]",
+      "descriptor": "",
+      "detail": "",
+      "uniqueId": "",
+      "contourPoints": [
+        {
+          "x": {
+            "internal": 10000000,
+            "mils": 1000,
+            "mm": 25.4
+          },
+          "y": {
+            "internal": 10000000,
+            "mils": 1000,
+            "mm": 25.4
+          },
+        },
+        {
+          "x": {
+            "internal": 70000000,
+            "mils": 7000,
+            "mm": 177.8
+          },
+          "y": {
+            "internal": 10000000,
+            "mils": 1000,
+            "mm": 25.4
+          },
+        },
+        {
+          "x": {
+            "internal": 70000000,
+            "mils": 7000,
+            "mm": 177.8
+          },
+          "y": {
+            "internal": 50000000,
+            "mils": 5000,
+            "mm": 127
+          },
+        },
+        {
+          "x": {
+            "internal": 10000000,
+            "mils": 1000,
+            "mm": 25.4
+          },
+          "y": {
+            "internal": 50000000,
+            "mils": 5000,
+            "mm": 127
+          },
+        }
+      ]
+      "isSimpleRegion": false,
+      "isFreePrimitive": true,
+      "isHidden": false
+    },
+    {
+      "objectType": "Region",
+      "layer": 1,
+      "layer_V6": 1,
+      "kind": 0,
+      "name": "",
+      "holeCount": 0,
+      "area": 25000000000000,
+      "cavityHeight": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneConnectStyle": 0,
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefEntries": 4,
+      "isKeepout": false,
+      "tearDrop": false,
+      "polygonOutline": false,
+      "inPolygon": true,
+      "inComponent": false,
+      "inNet": false,
+      "inBoard": true,
+      "inCoordinate": false,
+      "inDimension": false,
+      "isElectricalPrim": true,
+      "moveable": true,
+      "selected": false,
+      "used": false,
+      "userRouted": true,
+      "drcError": false,
+      "enabled": true,
+      "isPreRoute": false,
+      "isTestpoint_Bottom": false,
+      "isTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "isAssyTestpoint_Top": false,
+      "isTenting": false,
+      "isTenting_Bottom": false,
+      "isTenting_Top": false,
+      "allowGlobalEdit": true,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "index": 0,
+      "unionIndex": 0,
+      "handle": "",
+      "objectIDString": "PolyRegion",
+      "identifier": "PolyRegion[4500mil,1000mil]",
+      "descriptor": "Polygon Region (0 hole(s)) Top Layer",
+      "detail": "Polygon Region (0 hole(s)) Top Layer",
+      "uniqueId": "",
+      "contourPoints": [
+        {
+          "x": {
+            "internal": 45000000,
+            "mils": 4500,
+            "mm": 114.3
+          },
+          "y": {
+            "internal": 10000000,
+            "mils": 1000,
+            "mm": 25.4
+          },
+        },
+        {
+          "x": {
+            "internal": 40000000,
+            "mils": 4000,
+            "mm": 101.6
+          },
+          "y": {
+            "internal": 10000000,
+            "mils": 1000,
+            "mm": 25.4
+          },
+        },
+        {
+          "x": {
+            "internal": 40000000,
+            "mils": 4000,
+            "mm": 101.6
+          },
+          "y": {
+            "internal": 15000000,
+            "mils": 1500,
+            "mm": 38.1
+          },
+        },
+        {
+          "x": {
+            "internal": 45000000,
+            "mils": 4500,
+            "mm": 114.3
+          },
+          "y": {
+            "internal": 15000000,
+            "mils": 1500,
+            "mm": 38.1
+          },
+        }
+      ]
+      "isSimpleRegion": true,
+      "isFreePrimitive": false,
+      "isHidden": false
+    },
+    {
+      "objectType": "Region",
+      "layer": 1,
+      "layer_V6": 1,
+      "kind": 0,
+      "name": "",
+      "holeCount": 0,
+      "area": 9000000000000,
+      "cavityHeight": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "pasteMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "solderMaskExpansion": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "powerPlaneClearance": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneReliefExpansion": {
+        "internal": 200000,
+        "mils": 20,
+        "mm": 0.508
+      },
+      "powerPlaneConnectStyle": 0,
+      "reliefAirGap": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefConductorWidth": {
+        "internal": 100000,
+        "mils": 10,
+        "mm": 0.254
+      },
+      "reliefEntries": 4,
+      "isKeepout": false,
+      "tearDrop": false,
+      "polygonOutline": false,
+      "inPolygon": false,
+      "inComponent": false,
+      "inNet": false,
+      "inBoard": true,
+      "inCoordinate": false,
+      "inDimension": false,
+      "isElectricalPrim": true,
+      "moveable": true,
+      "selected": false,
+      "used": false,
+      "userRouted": true,
+      "drcError": false,
+      "enabled": true,
+      "isPreRoute": false,
+      "isTestpoint_Bottom": false,
+      "isTestpoint_Top": false,
+      "isAssyTestpoint_Bottom": false,
+      "isAssyTestpoint_Top": false,
+      "isTenting": false,
+      "isTenting_Bottom": false,
+      "isTenting_Top": false,
+      "allowGlobalEdit": true,
+      "drawAsPreview": false,
+      "enableDraw": true,
+      "miscFlag1": false,
+      "miscFlag2": false,
+      "miscFlag3": false,
+      "index": 0,
+      "unionIndex": 0,
+      "handle": "",
+      "objectIDString": "PolyRegion",
+      "identifier": "PolyRegion[3500mil,1000mil]",
+      "descriptor": "Region (0 hole(s)) Top Layer",
+      "detail": "Region (0 hole(s)) Top Layer",
+      "uniqueId": "",
+      "contourPoints": [
+        {
+          "x": {
+            "internal": 35000000,
+            "mils": 3500,
+            "mm": 88.9
+          },
+          "y": {
+            "internal": 10000000,
+            "mils": 1000,
+            "mm": 25.4
+          },
+        },
+        {
+          "x": {
+            "internal": 38000000,
+            "mils": 3800,
+            "mm": 96.52
+          },
+          "y": {
+            "internal": 10000000,
+            "mils": 1000,
+            "mm": 25.4
+          },
+        },
+        {
+          "x": {
+            "internal": 38000000,
+            "mils": 3800,
+            "mm": 96.52
+          },
+          "y": {
+            "internal": 13000000,
+            "mils": 1300,
+            "mm": 33.02
+          },
+        },
+        {
+          "x": {
+            "internal": 35000000,
+            "mils": 3500,
+            "mm": 88.9
+          },
+          "y": {
+            "internal": 13000000,
+            "mils": 1300,
+            "mm": 33.02
+          },
+        }
+      ]
+      "isSimpleRegion": true,
+      "isFreePrimitive": true,
+      "isHidden": false
+    }
+  ]
+}

@@ -1,0 +1,681 @@
+{
+  "metadata": {
+    "exportType": "PcbLib",
+    "fileName": "TEXT_TRUETYPE.PcbLib",
+    "exportedBy": "AltiumSharp TestDataGenerator",
+    "version": "1.0"
+  },
+  "footprints": [
+    {
+      "name": "TEXT_TRUETYPE",
+      "description": "TrueType font text objects",
+      "height": {
+        "internal": 0,
+        "mils": 0,
+        "mm": 0
+      },
+      "primitives": [
+        {
+          "objectType": "Text",
+          "text": "Arial Italic",
+          "x": {
+            "internal": 500000000,
+            "mils": 50000,
+            "mm": 1270
+          },
+          "y": {
+            "internal": 498500000,
+            "mils": 49850,
+            "mm": 1266.19
+          },
+          "size": {
+            "internal": 500000,
+            "mils": 50,
+            "mm": 1.27
+          },
+          "width": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "rotation": 0,
+          "mirrorFlag": false,
+          "layer": 33,
+          "useTTFonts": true,
+          "fontName": "Arial",
+          "fontID": 1,
+          "bold": false,
+          "italic": true,
+          "textKind": 1,
+          "inverted": false,
+          "useInvertedRectangle": false,
+          "wordWrap": false,
+          "multiLine": false,
+          "multilineTextAutoPosition": 3,
+          "multilineTextHeight": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "multilineTextWidth": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "multilineTextResizeEnabled": false,
+          "ttfTextWidth": {
+            "internal": 1949688,
+            "mils": 194.969,
+            "mm": 4.95221
+          },
+          "ttfTextHeight": {
+            "internal": 325104,
+            "mils": 32.51,
+            "mm": 0.82576
+          },
+          "ttfInvertedTextJustify": 3,
+          "advanceSnapping": false,
+          "snapPointX": {
+            "internal": 500000000,
+            "mils": 50000,
+            "mm": 1270
+          },
+          "snapPointY": {
+            "internal": 498500000,
+            "mils": 49850,
+            "mm": 1266.19
+          },
+          "moveable": true,
+          "allowGlobalEdit": true,
+          "enableDraw": true,
+          "padCacheRobotFlag": false,
+          "miscFlag1": false,
+          "miscFlag2": false,
+          "miscFlag3": false,
+          "borderSpaceType": 0,
+          "objectIDString": "Text",
+          "identifier": "Text[50000mil,49850mil]",
+          "descriptor": "Text \"Arial Italic\" (0mil,-150mil) on Top Overlay",
+          "detail": "",
+          "barCodeKind": 0,
+          "barCodeRenderMode": 1,
+          "barCodeFullWidth": {
+            "internal": 10500000,
+            "mils": 1050,
+            "mm": 26.67
+          },
+          "barCodeFullHeight": {
+            "internal": 2100000,
+            "mils": 210,
+            "mm": 5.334
+          },
+          "barCodeXMargin": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "barCodeYMargin": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "barCodeMinWidth": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "barCodeShowText": true,
+          "barCodeInverted": true,
+          "barCodeFontName": "Arial",
+          "barCodeBitPattern": "1001011011010110101001011010010100100101101010110010100101001001010110100110101001010010010110101001011010010100100101011010100110100110101101010110100110101001010010010101011011001010010100100101101010010110100101001001010110101001101001010010010101101001101010010100100101101101001010100101101101",
+          "charSet": 1,
+          "convertedString": "Arial Italic",
+          "disableSpecialStringConversion": false,
+          "getDesignatorDisplayString": "",
+          "inAutoDimension": false,
+          "invertedTTTextBorder": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "invRectHeight": 325104,
+          "invRectWidth": 1949688,
+          "isComment": false,
+          "isDesignator": false,
+          "isRedundant": false,
+          "ttfOffsetFromInvertedRect": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "underlyingString": "Arial Italic",
+          "x1Location": {
+            "internal": 500000312,
+            "mils": 50000.031,
+            "mm": 1270.00079
+          },
+          "y1Location": {
+            "internal": 498494696,
+            "mils": 49849.47,
+            "mm": 1266.17653
+          },
+          "x2Location": {
+            "internal": 501950000,
+            "mils": 50195,
+            "mm": 1274.953
+          },
+          "y2Location": {
+            "internal": 498819800,
+            "mils": 49881.98,
+            "mm": 1267.00229
+          },
+          "layer_V6": 33,
+          "pasteMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "solderMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "powerPlaneClearance": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneReliefExpansion": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneConnectStyle": 2,
+          "reliefAirGap": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefConductorWidth": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefEntries": 4,
+          "isKeepout": false,
+          "inComponent": false,
+          "inNet": false,
+          "inBoard": true,
+          "inCoordinate": false,
+          "inDimension": false,
+          "inPolygon": false,
+          "selected": false,
+          "used": false,
+          "userRouted": true,
+          "drcError": false,
+          "enabled": true,
+          "isPreRoute": false,
+          "polygonOutline": false,
+          "tearDrop": false,
+          "isTestpoint_Bottom": false,
+          "isTestpoint_Top": false,
+          "isAssyTestpoint_Bottom": false,
+          "isAssyTestpoint_Top": false,
+          "isTenting": false,
+          "isTenting_Bottom": false,
+          "isTenting_Top": false,
+          "isElectricalPrim": false,
+          "drawAsPreview": false,
+          "index": 0,
+          "unionIndex": 0,
+          "uniqueId": "",
+          "handle": "",
+          "isFreePrimitive": true,
+          "isHidden": false,
+          "canEditMultilineRectSize": true,
+          "getState_BarCodeMinPixelSize": 0
+        },
+        {
+          "objectType": "Text",
+          "text": "Arial Bold",
+          "x": {
+            "internal": 500000000,
+            "mils": 50000,
+            "mm": 1270
+          },
+          "y": {
+            "internal": 499250000,
+            "mils": 49925,
+            "mm": 1268.095
+          },
+          "size": {
+            "internal": 500000,
+            "mils": 50,
+            "mm": 1.27
+          },
+          "width": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "rotation": 0,
+          "mirrorFlag": false,
+          "layer": 33,
+          "useTTFonts": true,
+          "fontName": "Arial",
+          "fontID": 1,
+          "bold": true,
+          "italic": false,
+          "textKind": 1,
+          "inverted": false,
+          "useInvertedRectangle": false,
+          "wordWrap": false,
+          "multiLine": false,
+          "multilineTextAutoPosition": 3,
+          "multilineTextHeight": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "multilineTextWidth": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "multilineTextResizeEnabled": false,
+          "ttfTextWidth": {
+            "internal": 2081664,
+            "mils": 208.166,
+            "mm": 5.28743
+          },
+          "ttfTextHeight": {
+            "internal": 325104,
+            "mils": 32.51,
+            "mm": 0.82576
+          },
+          "ttfInvertedTextJustify": 3,
+          "advanceSnapping": false,
+          "snapPointX": {
+            "internal": 500000000,
+            "mils": 50000,
+            "mm": 1270
+          },
+          "snapPointY": {
+            "internal": 499250000,
+            "mils": 49925,
+            "mm": 1268.095
+          },
+          "moveable": true,
+          "allowGlobalEdit": true,
+          "enableDraw": true,
+          "padCacheRobotFlag": false,
+          "miscFlag1": false,
+          "miscFlag2": false,
+          "miscFlag3": false,
+          "borderSpaceType": 0,
+          "objectIDString": "Text",
+          "identifier": "Text[50000mil,49925mil]",
+          "descriptor": "Text \"Arial Bold\" (0mil,-75mil) on Top Overlay",
+          "detail": "",
+          "barCodeKind": 0,
+          "barCodeRenderMode": 1,
+          "barCodeFullWidth": {
+            "internal": 10500000,
+            "mils": 1050,
+            "mm": 26.67
+          },
+          "barCodeFullHeight": {
+            "internal": 2100000,
+            "mils": 210,
+            "mm": 5.334
+          },
+          "barCodeXMargin": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "barCodeYMargin": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "barCodeMinWidth": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "barCodeShowText": true,
+          "barCodeInverted": true,
+          "barCodeFontName": "Arial",
+          "barCodeBitPattern": "100101101101011010100101101001010010010110101011001010010100100101011010011010100101001001011010100101101001010010010101101010011010011010110101011010010110100101001001011010110100101001010010010101101010011010010100100101010110010110100101101101",
+          "charSet": 1,
+          "convertedString": "Arial Bold",
+          "disableSpecialStringConversion": false,
+          "getDesignatorDisplayString": "",
+          "inAutoDimension": false,
+          "invertedTTTextBorder": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "invRectHeight": 325104,
+          "invRectWidth": 2081664,
+          "isComment": false,
+          "isDesignator": false,
+          "isRedundant": false,
+          "ttfOffsetFromInvertedRect": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "underlyingString": "Arial Bold",
+          "x1Location": {
+            "internal": 500000000,
+            "mils": 50000,
+            "mm": 1270
+          },
+          "y1Location": {
+            "internal": 499244696,
+            "mils": 49924.47,
+            "mm": 1268.08153
+          },
+          "x2Location": {
+            "internal": 502081664,
+            "mils": 50208.166,
+            "mm": 1275.28743
+          },
+          "y2Location": {
+            "internal": 499569800,
+            "mils": 49956.98,
+            "mm": 1268.90729
+          },
+          "layer_V6": 33,
+          "pasteMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "solderMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "powerPlaneClearance": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneReliefExpansion": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneConnectStyle": 2,
+          "reliefAirGap": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefConductorWidth": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefEntries": 4,
+          "isKeepout": false,
+          "inComponent": false,
+          "inNet": false,
+          "inBoard": true,
+          "inCoordinate": false,
+          "inDimension": false,
+          "inPolygon": false,
+          "selected": false,
+          "used": false,
+          "userRouted": true,
+          "drcError": false,
+          "enabled": true,
+          "isPreRoute": false,
+          "polygonOutline": false,
+          "tearDrop": false,
+          "isTestpoint_Bottom": false,
+          "isTestpoint_Top": false,
+          "isAssyTestpoint_Bottom": false,
+          "isAssyTestpoint_Top": false,
+          "isTenting": false,
+          "isTenting_Bottom": false,
+          "isTenting_Top": false,
+          "isElectricalPrim": false,
+          "drawAsPreview": false,
+          "index": 0,
+          "unionIndex": 0,
+          "uniqueId": "",
+          "handle": "",
+          "isFreePrimitive": true,
+          "isHidden": false,
+          "canEditMultilineRectSize": true,
+          "getState_BarCodeMinPixelSize": 0
+        },
+        {
+          "objectType": "Text",
+          "text": "Arial Normal",
+          "x": {
+            "internal": 500000000,
+            "mils": 50000,
+            "mm": 1270
+          },
+          "y": {
+            "internal": 500000000,
+            "mils": 50000,
+            "mm": 1270
+          },
+          "size": {
+            "internal": 500000,
+            "mils": 50,
+            "mm": 1.27
+          },
+          "width": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "rotation": 0,
+          "mirrorFlag": false,
+          "layer": 33,
+          "useTTFonts": true,
+          "fontName": "Arial",
+          "fontID": 1,
+          "bold": false,
+          "italic": false,
+          "textKind": 1,
+          "inverted": false,
+          "useInvertedRectangle": false,
+          "wordWrap": false,
+          "multiLine": false,
+          "multilineTextAutoPosition": 3,
+          "multilineTextHeight": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "multilineTextWidth": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "multilineTextResizeEnabled": false,
+          "ttfTextWidth": {
+            "internal": 2426424,
+            "mils": 242.642,
+            "mm": 6.16312
+          },
+          "ttfTextHeight": {
+            "internal": 325104,
+            "mils": 32.51,
+            "mm": 0.82576
+          },
+          "ttfInvertedTextJustify": 3,
+          "advanceSnapping": false,
+          "snapPointX": {
+            "internal": 500000000,
+            "mils": 50000,
+            "mm": 1270
+          },
+          "snapPointY": {
+            "internal": 500000000,
+            "mils": 50000,
+            "mm": 1270
+          },
+          "moveable": true,
+          "allowGlobalEdit": true,
+          "enableDraw": true,
+          "padCacheRobotFlag": false,
+          "miscFlag1": false,
+          "miscFlag2": false,
+          "miscFlag3": false,
+          "borderSpaceType": 0,
+          "objectIDString": "Text",
+          "identifier": "Text[50000mil,50000mil]",
+          "descriptor": "Text \"Arial Normal\" (0mil,0mil) on Top Overlay",
+          "detail": "",
+          "barCodeKind": 0,
+          "barCodeRenderMode": 1,
+          "barCodeFullWidth": {
+            "internal": 10500000,
+            "mils": 1050,
+            "mm": 26.67
+          },
+          "barCodeFullHeight": {
+            "internal": 2100000,
+            "mils": 210,
+            "mm": 5.334
+          },
+          "barCodeXMargin": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "barCodeYMargin": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "barCodeMinWidth": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "barCodeShowText": true,
+          "barCodeInverted": true,
+          "barCodeFontName": "Arial",
+          "barCodeBitPattern": "1001011011010110101001011010010100100101101010110010100101001001010110100110101001010010010110101001011010010100100101011010100110100110101101010101101001101001010010010110101101001010010100100101101010110010100101001001011011010100101001010010010110101001011010010100100101011010100110100101101101",
+          "charSet": 1,
+          "convertedString": "Arial Normal",
+          "disableSpecialStringConversion": false,
+          "getDesignatorDisplayString": "",
+          "inAutoDimension": false,
+          "invertedTTTextBorder": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "invRectHeight": 325104,
+          "invRectWidth": 2426424,
+          "isComment": false,
+          "isDesignator": false,
+          "isRedundant": false,
+          "ttfOffsetFromInvertedRect": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "underlyingString": "Arial Normal",
+          "x1Location": {
+            "internal": 500000312,
+            "mils": 50000.031,
+            "mm": 1270.00079
+          },
+          "y1Location": {
+            "internal": 499994696,
+            "mils": 49999.47,
+            "mm": 1269.98653
+          },
+          "x2Location": {
+            "internal": 502426736,
+            "mils": 50242.674,
+            "mm": 1276.16391
+          },
+          "y2Location": {
+            "internal": 500319800,
+            "mils": 50031.98,
+            "mm": 1270.81229
+          },
+          "layer_V6": 33,
+          "pasteMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "solderMaskExpansion": {
+            "internal": 0,
+            "mils": 0,
+            "mm": 0
+          },
+          "powerPlaneClearance": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneReliefExpansion": {
+            "internal": 200000,
+            "mils": 20,
+            "mm": 0.508
+          },
+          "powerPlaneConnectStyle": 2,
+          "reliefAirGap": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefConductorWidth": {
+            "internal": 100000,
+            "mils": 10,
+            "mm": 0.254
+          },
+          "reliefEntries": 4,
+          "isKeepout": false,
+          "inComponent": false,
+          "inNet": false,
+          "inBoard": true,
+          "inCoordinate": false,
+          "inDimension": false,
+          "inPolygon": false,
+          "selected": false,
+          "used": false,
+          "userRouted": true,
+          "drcError": false,
+          "enabled": true,
+          "isPreRoute": false,
+          "polygonOutline": false,
+          "tearDrop": false,
+          "isTestpoint_Bottom": false,
+          "isTestpoint_Top": false,
+          "isAssyTestpoint_Bottom": false,
+          "isAssyTestpoint_Top": false,
+          "isTenting": false,
+          "isTenting_Bottom": false,
+          "isTenting_Top": false,
+          "isElectricalPrim": false,
+          "drawAsPreview": false,
+          "index": 0,
+          "unionIndex": 0,
+          "uniqueId": "",
+          "handle": "",
+          "isFreePrimitive": true,
+          "isHidden": false,
+          "canEditMultilineRectSize": true,
+          "getState_BarCodeMinPixelSize": 0
+        }
+      ]
+    }
+  ]
+}
