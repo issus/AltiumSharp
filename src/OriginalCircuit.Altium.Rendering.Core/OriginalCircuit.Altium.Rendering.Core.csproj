@@ -5,7 +5,12 @@
 
     <PackageId>OriginalCircuit.Altium.Rendering.Core</PackageId>
     <Description>Core rendering abstractions for Altium Designer file visualization</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\OriginalCircuit.Altium\OriginalCircuit.Altium.csproj" />

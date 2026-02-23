@@ -5,7 +5,12 @@
 
     <PackageId>OriginalCircuit.Altium.Rendering.Svg</PackageId>
     <Description>SVG vector rendering for Altium Designer files</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\OriginalCircuit.Altium.Rendering.Core\OriginalCircuit.Altium.Rendering.Core.csproj" />

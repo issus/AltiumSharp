@@ -4,7 +4,12 @@
     <TargetFramework>net10.0</TargetFramework>
     <PackageId>OriginalCircuit.Altium</PackageId>
     <Description>High-performance library for reading and writing Altium Designer files (.PcbLib, .SchLib, .PcbDoc, .SchDoc)</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\OriginalCircuit.Altium.Generators\OriginalCircuit.Altium.Generators.csproj"
