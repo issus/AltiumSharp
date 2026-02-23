@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+    <PackageReference Include="Xunit.SkippableFact" Version="1.5.61" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\OriginalCircuit.Altium\OriginalCircuit.Altium.csproj" />
+    <ProjectReference Include="..\..\src\OriginalCircuit.Altium.Rendering.Core\OriginalCircuit.Altium.Rendering.Core.csproj" />
+    <ProjectReference Include="..\..\src\OriginalCircuit.Altium.Rendering.Raster\OriginalCircuit.Altium.Rendering.Raster.csproj" />
+    <ProjectReference Include="..\..\src\OriginalCircuit.Altium.Rendering.Svg\OriginalCircuit.Altium.Rendering.Svg.csproj" />
+    <!-- Reference old library for round-trip comparison tests -->
+    <ProjectReference Include="..\..\AltiumSharp\OriginalCircuit.AltiumSharp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>
