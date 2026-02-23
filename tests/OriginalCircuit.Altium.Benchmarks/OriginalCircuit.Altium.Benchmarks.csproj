@@ -11,8 +11,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\OriginalCircuit.Altium\OriginalCircuit.Altium.csproj" />
-    <!-- Reference old library for comparison benchmarks -->
-    <ProjectReference Include="..\..\AltiumSharp\OriginalCircuit.AltiumSharp.csproj" />
   </ItemGroup>
 
 </Project>

@@ -18,8 +18,6 @@
     <ProjectReference Include="..\..\src\OriginalCircuit.Altium.Rendering.Core\OriginalCircuit.Altium.Rendering.Core.csproj" />
     <ProjectReference Include="..\..\src\OriginalCircuit.Altium.Rendering.Raster\OriginalCircuit.Altium.Rendering.Raster.csproj" />
     <ProjectReference Include="..\..\src\OriginalCircuit.Altium.Rendering.Svg\OriginalCircuit.Altium.Rendering.Svg.csproj" />
-    <!-- Reference old library for round-trip comparison tests -->
-    <ProjectReference Include="..\..\AltiumSharp\OriginalCircuit.AltiumSharp.csproj" />
   </ItemGroup>
 
   <ItemGroup>

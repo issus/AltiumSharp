@@ -1,8 +1,6 @@
 using BenchmarkDotNet.Attributes;
 
-using V1SchLibReader = OriginalCircuit.AltiumSharp.SchLibReader;
 using V2SchLibReader = OriginalCircuit.Altium.Serialization.Readers.SchLibReader;
-using V1PcbLibReader = OriginalCircuit.AltiumSharp.PcbLibReader;
 using V2PcbLibReader = OriginalCircuit.Altium.Serialization.Readers.PcbLibReader;
 
 namespace OriginalCircuit.Altium.Benchmarks;
@@ -26,21 +24,7 @@ public class SchLibReaderBenchmarks
         }
     }
 
-    [Benchmark(Baseline = true, Description = "v1 SchLibReader")]
-    public int V1_ReadSchLib()
-    {
-        int totalComponents = 0;
-        foreach (var fileBytes in _schLibFiles)
-        {
-            using var reader = new V1SchLibReader();
-            using var ms = new MemoryStream(fileBytes);
-            var lib = reader.Read(ms);
-            totalComponents += lib.Items.Count;
-        }
-        return totalComponents;
-    }
-
-    [Benchmark(Description = "v2 SchLibReader")]
+    [Benchmark(Baseline = true, Description = "SchLibReader")]
     public int V2_ReadSchLib()
     {
         int totalComponents = 0;
@@ -58,7 +42,6 @@ public class SchLibReaderBenchmarks
         var dirs = new[]
         {
             GetDataPath("TestData", "Generated", "Individual", "SchLib"),
-            GetDataPath("AltiumScriptExamples")
         };
 
         foreach (var dir in dirs)
@@ -96,21 +79,7 @@ public class PcbLibReaderBenchmarks
         }
     }
 
-    [Benchmark(Baseline = true, Description = "v1 PcbLibReader")]
-    public int V1_ReadPcbLib()
-    {
-        int totalComponents = 0;
-        foreach (var fileBytes in _pcbLibFiles)
-        {
-            using var reader = new V1PcbLibReader();
-            using var ms = new MemoryStream(fileBytes);
-            var lib = reader.Read(ms);
-            totalComponents += lib.Items.Count;
-        }
-        return totalComponents;
-    }
-
-    [Benchmark(Description = "v2 PcbLibReader")]
+    [Benchmark(Baseline = true, Description = "PcbLibReader")]
     public int V2_ReadPcbLib()
     {
         int totalComponents = 0;
@@ -128,7 +97,6 @@ public class PcbLibReaderBenchmarks
         var dirs = new[]
         {
             GetDataPath("TestData", "Generated", "Individual", "PCB"),
-            GetDataPath("AltiumScriptExamples")
         };
 
         foreach (var dir in dirs)
