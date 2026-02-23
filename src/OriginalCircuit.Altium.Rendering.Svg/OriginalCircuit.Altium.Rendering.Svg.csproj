@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+
+    <PackageId>OriginalCircuit.Altium.Rendering.Svg</PackageId>
+    <Version>2.0.0-alpha.1</Version>
+    <Description>SVG vector rendering for Altium Designer files</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OriginalCircuit.Altium.Rendering.Core\OriginalCircuit.Altium.Rendering.Core.csproj" />
+  </ItemGroup>
+
+</Project>

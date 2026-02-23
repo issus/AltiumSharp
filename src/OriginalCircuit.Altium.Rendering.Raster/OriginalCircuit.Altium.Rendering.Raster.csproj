@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+
+    <PackageId>OriginalCircuit.Altium.Rendering.Raster</PackageId>
+    <Version>2.0.0-alpha.1</Version>
+    <Description>Raster (PNG/JPG) rendering for Altium Designer files</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OriginalCircuit.Altium.Rendering.Core\OriginalCircuit.Altium.Rendering.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- SkiaSharp for cross-platform raster rendering -->
+    <PackageReference Include="SkiaSharp" Version="3.116.1" />
+  </ItemGroup>
+
+</Project>
