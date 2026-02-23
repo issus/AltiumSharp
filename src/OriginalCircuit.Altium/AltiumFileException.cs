@@ -1,0 +1,52 @@
+namespace OriginalCircuit.Altium;
+
+/// <summary>
+/// Base exception for all Altium file processing errors.
+/// </summary>
+public class AltiumFileException : Exception
+{
+    /// <summary>
+    /// Path of the file being processed, if available.
+    /// </summary>
+    public string? FilePath { get; }
+
+    public AltiumFileException(string message, string? filePath = null, Exception? innerException = null)
+        : base(message, innerException)
+    {
+        FilePath = filePath;
+    }
+}
+
+/// <summary>
+/// Thrown when an Altium file is structurally corrupt (missing streams, invalid headers, etc.).
+/// </summary>
+public class AltiumCorruptFileException : AltiumFileException
+{
+    /// <summary>
+    /// Name of the OLE stream where corruption was detected.
+    /// </summary>
+    public string? StreamName { get; }
+
+    public AltiumCorruptFileException(string message, string? streamName = null, string? filePath = null, Exception? innerException = null)
+        : base(message, filePath, innerException)
+    {
+        StreamName = streamName;
+    }
+}
+
+/// <summary>
+/// Thrown when an Altium file contains a record type or feature that is not supported.
+/// </summary>
+public class AltiumUnsupportedFeatureException : AltiumFileException
+{
+    /// <summary>
+    /// The unsupported record type number, if applicable.
+    /// </summary>
+    public int? RecordType { get; }
+
+    public AltiumUnsupportedFeatureException(string message, int? recordType = null, string? filePath = null, Exception? innerException = null)
+        : base(message, filePath, innerException)
+    {
+        RecordType = recordType;
+    }
+}
