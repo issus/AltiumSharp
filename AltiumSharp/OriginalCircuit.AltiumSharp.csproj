@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <LangVersion>default</LangVersion>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>AltiumSharp</Title>
     <Authors>OriginalCircuit</Authors>
