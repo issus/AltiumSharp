@@ -1,11 +1,11 @@
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
 /// <summary>
 /// Represents a schematic sheet symbol (reference to a sub-sheet in hierarchical designs).
 /// </summary>
-public sealed class SchSheetSymbol : ISchSheetSymbol
+public sealed class SchSheetSymbol : ISchSheet
 {
     private readonly List<SchSheetEntry> _entries = new();
 
@@ -106,6 +106,27 @@ public sealed class SchSheetSymbol : ISchSheetSymbol
     /// Sheet entries (connection points on this symbol).
     /// </summary>
     public IReadOnlyList<SchSheetEntry> Entries => _entries;
+
+    /// <inheritdoc />
+    CoordPoint ISchSheet.Size => new(XSize, YSize);
+
+    /// <inheritdoc />
+    string ISchSheet.SheetName => SheetName ?? string.Empty;
+
+    /// <inheritdoc />
+    string ISchSheet.FileName => FileName ?? string.Empty;
+
+    /// <inheritdoc />
+    IReadOnlyList<ISchSheetPin> ISchSheet.Pins => _entries;
+
+    /// <inheritdoc />
+    EdaColor ISchSheet.Color => AltiumColorHelper.BgrToEdaColor(Color);
+
+    /// <inheritdoc />
+    EdaColor ISchSheet.FillColor => AltiumColorHelper.BgrToEdaColor(AreaColor);
+
+    /// <inheritdoc />
+    Coord ISchSheet.LineWidth => AltiumLineWidthHelper.IndexToCoord(LineWidth);
 
     /// <summary>
     /// Adds a sheet entry to this symbol.

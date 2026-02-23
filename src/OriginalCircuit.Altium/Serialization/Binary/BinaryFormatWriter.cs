@@ -1,4 +1,4 @@
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 using System.Buffers;
 using System.Text;
 

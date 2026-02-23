@@ -1,4 +1,4 @@
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
@@ -21,6 +21,12 @@ public sealed class SchBezier : ISchBezier
     /// Line color (RGB).
     /// </summary>
     public int Color { get; set; }
+
+    /// <inheritdoc />
+    EdaColor ISchBezier.Color => AltiumColorHelper.BgrToEdaColor(Color);
+
+    /// <inheritdoc />
+    Coord ISchBezier.LineWidth => AltiumLineWidthHelper.IndexToCoord(LineWidth);
 
     /// <summary>
     /// Area/background color (RGB).

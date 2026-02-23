@@ -1,24 +1,6 @@
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
-
-/// <summary>
-/// Power port symbol styles.
-/// </summary>
-public enum PowerPortStyle
-{
-    Circle = 0,
-    Arrow = 1,
-    Bar = 2,
-    Wave = 3,
-    PowerGround = 4,
-    SignalGround = 5,
-    Earth = 6,
-    GostArrow = 7,
-    GostPowerGround = 8,
-    GostEarth = 9,
-    GostBar = 10
-}
 
 /// <summary>
 /// Represents a schematic power port/object (GND, VCC, etc.).
@@ -57,6 +39,9 @@ public sealed class SchPowerObject : ISchPowerObject
     /// Text color (RGB).
     /// </summary>
     public int Color { get; set; }
+
+    /// <inheritdoc />
+    EdaColor ISchPowerObject.Color => AltiumColorHelper.BgrToEdaColor(Color);
 
     /// <summary>
     /// Font ID for the net name text.

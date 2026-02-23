@@ -1,4 +1,4 @@
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
@@ -31,6 +31,15 @@ public sealed class SchPolygon : ISchPolygon
     /// Whether the polygon is filled.
     /// </summary>
     public bool IsFilled { get; set; }
+
+    /// <inheritdoc />
+    EdaColor ISchPolygon.Color => AltiumColorHelper.BgrToEdaColor(Color);
+
+    /// <inheritdoc />
+    EdaColor ISchPolygon.FillColor => AltiumColorHelper.BgrToEdaColor(FillColor);
+
+    /// <inheritdoc />
+    Coord ISchPolygon.LineWidth => AltiumLineWidthHelper.IndexToCoord(LineWidth);
 
     /// <summary>
     /// Whether the fill is transparent.

@@ -32,7 +32,7 @@ public class RawDataPreservationTest
 
         // Save to a new file next to the original
         var outPath = GetDataPath("TestData", "Generated", "Individual", "PCB", "BODY_3D_STEP_CHECKSUM0.PcbLib");
-        await library.SaveAsync(outPath, new OriginalCircuit.Altium.Models.SaveOptions { Overwrite = true });
+        await library.SaveAsync(outPath, new OriginalCircuit.Eda.Models.SaveOptions());
         _output.WriteLine($"Saved to: {outPath}");
     }
 

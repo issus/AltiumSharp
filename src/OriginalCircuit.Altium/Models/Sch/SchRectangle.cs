@@ -1,4 +1,4 @@
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
@@ -32,6 +32,12 @@ public sealed class SchRectangle : ISchRectangle
     /// Fill color (RGB).
     /// </summary>
     public int FillColor { get; set; }
+
+    /// <inheritdoc />
+    EdaColor ISchRectangle.Color => AltiumColorHelper.BgrToEdaColor(Color);
+
+    /// <inheritdoc />
+    EdaColor ISchRectangle.FillColor => AltiumColorHelper.BgrToEdaColor(FillColor);
 
     /// <summary>
     /// Whether the fill is transparent.

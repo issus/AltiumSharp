@@ -1,5 +1,5 @@
 using OriginalCircuit.Altium.Models.Sch;
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 using OriginalCircuit.Altium.Serialization.Readers;
 using OriginalCircuit.Altium.Serialization.Writers;
 
@@ -300,7 +300,7 @@ public sealed class SchLibRoundTripTests
         original.Add(component);
 
         var readBack = RoundTrip(original);
-        var ellipse = (SchEllipse)readBack.Components.First().Ellipses.First();
+        var ellipse = (SchEllipse)((SchComponent)readBack.Components.First()).Ellipses.First();
 
         Assert.Equal(0, ellipse.Center.X.ToMils(), 1);
         Assert.Equal(80, ellipse.RadiusX.ToMils(), 1);
@@ -335,7 +335,7 @@ public sealed class SchLibRoundTripTests
         original.Add(component);
 
         var readBack = RoundTrip(original);
-        var rrect = (SchRoundedRectangle)readBack.Components.First().RoundedRectangles.First();
+        var rrect = (SchRoundedRectangle)((SchComponent)readBack.Components.First()).RoundedRectangles.First();
 
         Assert.Equal(-50, rrect.Corner1.X.ToMils(), 1);
         Assert.Equal(50, rrect.Corner2.X.ToMils(), 1);
@@ -371,7 +371,7 @@ public sealed class SchLibRoundTripTests
         original.Add(component);
 
         var readBack = RoundTrip(original);
-        var pie = (SchPie)readBack.Components.First().Pies.First();
+        var pie = (SchPie)((SchComponent)readBack.Components.First()).Pies.First();
 
         Assert.Equal(0, pie.Center.X.ToMils(), 1);
         Assert.Equal(75, pie.Radius.ToMils(), 1);
@@ -405,7 +405,7 @@ public sealed class SchLibRoundTripTests
         original.Add(component);
 
         var readBack = RoundTrip(original);
-        var earc = (SchEllipticalArc)readBack.Components.First().EllipticalArcs.First();
+        var earc = (SchEllipticalArc)((SchComponent)readBack.Components.First()).EllipticalArcs.First();
 
         Assert.Equal(0, earc.Center.X.ToMils(), 1);
         Assert.Equal(100, earc.PrimaryRadius.ToMils(), 1);
@@ -540,7 +540,7 @@ public sealed class SchLibRoundTripTests
         original.Add(component);
 
         var readBack = RoundTrip(original);
-        var tf = (SchTextFrame)readBack.Components.First().TextFrames.First();
+        var tf = (SchTextFrame)((SchComponent)readBack.Components.First()).TextFrames.First();
 
         Assert.Equal(0, tf.Corner1.X.ToMils(), 1);
         Assert.Equal(0, tf.Corner1.Y.ToMils(), 1);
@@ -610,7 +610,7 @@ public sealed class SchLibRoundTripTests
         original.Add(component);
 
         var readBack = RoundTrip(original);
-        var sym = (SchSymbol)readBack.Components.First().Symbols.First();
+        var sym = (SchSymbol)((SchComponent)readBack.Components.First()).Symbols.First();
 
         Assert.Equal(50, sym.Location.X.ToMils(), 1);
         Assert.Equal(75, sym.Location.Y.ToMils(), 1);
@@ -643,7 +643,7 @@ public sealed class SchLibRoundTripTests
         original.Add(component);
 
         var readBack = RoundTrip(original);
-        var po = (SchPowerObject)readBack.Components.First().PowerObjects.First();
+        var po = (SchPowerObject)((SchComponent)readBack.Components.First()).PowerObjects.First();
 
         Assert.Equal(100, po.Location.X.ToMils(), 1);
         Assert.Equal(100, po.Location.Y.ToMils(), 1);
@@ -680,7 +680,7 @@ public sealed class SchLibRoundTripTests
         original.Add(component);
 
         var readBack = RoundTrip(original);
-        var comp = readBack.Components.First();
+        var comp = (SchComponent)readBack.Components.First();
 
         Assert.Equal("RESISTOR", comp.Name);
         Assert.Equal("Standard resistor", comp.Description);

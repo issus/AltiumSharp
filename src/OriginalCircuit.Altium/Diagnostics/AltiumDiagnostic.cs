@@ -1,14 +1,6 @@
-namespace OriginalCircuit.Altium.Diagnostics;
+using OriginalCircuit.Eda.Enums;
 
-/// <summary>
-/// Severity levels for diagnostics emitted during file processing.
-/// </summary>
-public enum DiagnosticSeverity
-{
-    Info,
-    Warning,
-    Error
-}
+namespace OriginalCircuit.Altium.Diagnostics;
 
 /// <summary>
 /// A diagnostic message emitted during Altium file reading/writing.

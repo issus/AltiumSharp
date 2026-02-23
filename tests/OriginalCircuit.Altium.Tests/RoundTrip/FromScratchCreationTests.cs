@@ -1,6 +1,6 @@
 using OriginalCircuit.Altium.Models.Pcb;
 using OriginalCircuit.Altium.Models.Sch;
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 using OriginalCircuit.Altium.Serialization.Readers;
 using OriginalCircuit.Altium.Serialization.Writers;
 
@@ -61,7 +61,7 @@ public sealed class FromScratchCreationTests
         var readBack = (PcbLibrary)new PcbLibReader().Read(ms);
 
         Assert.Equal(1, readBack.Count);
-        var comp = readBack.Components.First();
+        var comp = (PcbComponent)readBack.Components.First();
         Assert.Equal("QFP48", comp.Name);
         Assert.Equal("48-pin QFP footprint", comp.Description);
         Assert.Equal(1, comp.Pads.Count);
@@ -662,8 +662,8 @@ public sealed class FromScratchCreationTests
         ms.Position = 0;
         var readBack = (SchLibrary)new SchLibReader().Read(ms);
 
-        Assert.Single(readBack.Components.First().Ellipses);
-        var e = (SchEllipse)readBack.Components.First().Ellipses[0];
+        Assert.Single(((SchComponent)readBack.Components.First()).Ellipses);
+        var e = (SchEllipse)((SchComponent)readBack.Components.First()).Ellipses[0];
         Assert.Equal(100, e.RadiusX.ToMils(), 1);
         Assert.Equal(50, e.RadiusY.ToMils(), 1);
     }
@@ -690,8 +690,8 @@ public sealed class FromScratchCreationTests
         ms.Position = 0;
         var readBack = (SchLibrary)new SchLibReader().Read(ms);
 
-        Assert.Single(readBack.Components.First().Pies);
-        var p = (SchPie)readBack.Components.First().Pies[0];
+        Assert.Single(((SchComponent)readBack.Components.First()).Pies);
+        var p = (SchPie)((SchComponent)readBack.Components.First()).Pies[0];
         Assert.Equal(100, p.Radius.ToMils(), 1);
         Assert.Equal(0, p.StartAngle, 1);
         Assert.Equal(90, p.EndAngle, 1);
@@ -719,8 +719,8 @@ public sealed class FromScratchCreationTests
         ms.Position = 0;
         var readBack = (SchLibrary)new SchLibReader().Read(ms);
 
-        Assert.Single(readBack.Components.First().TextFrames);
-        var tf = (SchTextFrame)readBack.Components.First().TextFrames[0];
+        Assert.Single(((SchComponent)readBack.Components.First()).TextFrames);
+        var tf = (SchTextFrame)((SchComponent)readBack.Components.First()).TextFrames[0];
         Assert.Equal("Hello World", tf.Text);
         Assert.True(tf.ShowBorder);
     }
@@ -747,8 +747,8 @@ public sealed class FromScratchCreationTests
         ms.Position = 0;
         var readBack = (SchLibrary)new SchLibReader().Read(ms);
 
-        Assert.Single(readBack.Components.First().RoundedRectangles);
-        var rr = (SchRoundedRectangle)readBack.Components.First().RoundedRectangles[0];
+        Assert.Single(((SchComponent)readBack.Components.First()).RoundedRectangles);
+        var rr = (SchRoundedRectangle)((SchComponent)readBack.Components.First()).RoundedRectangles[0];
         Assert.Equal(20, rr.CornerRadiusX.ToMils(), 1);
     }
 
@@ -798,8 +798,8 @@ public sealed class FromScratchCreationTests
         ms.Position = 0;
         var readBack = (SchLibrary)new SchLibReader().Read(ms);
 
-        Assert.Single(readBack.Components.First().EllipticalArcs);
-        var ea = (SchEllipticalArc)readBack.Components.First().EllipticalArcs[0];
+        Assert.Single(((SchComponent)readBack.Components.First()).EllipticalArcs);
+        var ea = (SchEllipticalArc)((SchComponent)readBack.Components.First()).EllipticalArcs[0];
         Assert.Equal(100, ea.PrimaryRadius.ToMils(), 1);
         Assert.Equal(50, ea.SecondaryRadius.ToMils(), 1);
     }

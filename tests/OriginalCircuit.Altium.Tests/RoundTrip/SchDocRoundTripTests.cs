@@ -1,5 +1,5 @@
 using OriginalCircuit.Altium.Models.Sch;
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 using OriginalCircuit.Altium.Serialization.Readers;
 using OriginalCircuit.Altium.Serialization.Writers;
 

@@ -1,4 +1,4 @@
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
@@ -351,6 +351,9 @@ public sealed class SchComponent : ISchComponent
 
     /// <inheritdoc />
     public IReadOnlyList<ISchArc> Arcs => _arcs;
+
+    /// <inheritdoc />
+    public IReadOnlyList<ISchCircle> Circles => Array.Empty<ISchCircle>();
 
     /// <inheritdoc />
     public IReadOnlyList<ISchBezier> Beziers => _beziers;

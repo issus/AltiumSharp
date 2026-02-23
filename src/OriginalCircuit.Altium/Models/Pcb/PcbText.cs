@@ -1,35 +1,9 @@
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Pcb;
 
 /// <summary>
-/// Text justification options.
-/// </summary>
-public enum TextJustification
-{
-    BottomLeft = 0,
-    BottomCenter = 1,
-    BottomRight = 2,
-    MiddleLeft = 3,
-    MiddleCenter = 4,
-    MiddleRight = 5,
-    TopLeft = 6,
-    TopCenter = 7,
-    TopRight = 8
-}
-
-/// <summary>
-/// Text kind (stroke, TrueType, or barcode).
-/// </summary>
-public enum PcbTextKind
-{
-    Stroke = 0,
-    TrueType = 1,
-    BarCode = 2
-}
-
-/// <summary>
-/// Stroke font type.
+/// Stroke font type. This is an Altium-specific enum.
 /// </summary>
 public enum PcbStrokeFont
 {

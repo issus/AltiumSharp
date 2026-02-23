@@ -1,11 +1,11 @@
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
 /// <summary>
 /// Represents a schematic sheet entry (connection point on a sheet symbol).
 /// </summary>
-public sealed class SchSheetEntry : ISchSheetEntry
+public sealed class SchSheetEntry : ISchSheetPin
 {
     /// <summary>
     /// Which side of the sheet symbol this entry is on (0=Left, 1=Right, 2=Top, 3=Bottom).
@@ -114,6 +114,9 @@ public sealed class SchSheetEntry : ISchSheetEntry
     /// Unique identifier for this primitive.
     /// </summary>
     public string? UniqueId { get; set; }
+
+    /// <inheritdoc />
+    CoordPoint ISchSheetPin.Location => default;
 
     /// <inheritdoc />
     public CoordRect Bounds

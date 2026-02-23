@@ -1,5 +1,5 @@
 using OriginalCircuit.Altium.Diagnostics;
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 using OriginalCircuit.Altium.Serialization.Writers;
 
 namespace OriginalCircuit.Altium.Models.Pcb;
@@ -213,16 +213,14 @@ public sealed class PcbDocument : IPcbDocument
     public void AddRoom(PcbRoom room) => _rooms.Add(room);
 
     /// <inheritdoc />
-    public async ValueTask SaveAsync(string path, SaveOptions? options = null, CancellationToken cancellationToken = default)
+    public async ValueTask SaveAsync(string path, OriginalCircuit.Eda.Models.SaveOptions? options = null, CancellationToken cancellationToken = default)
     {
-        options ??= new SaveOptions();
-        var mode = options.Overwrite ? FileMode.Create : FileMode.CreateNew;
-        await using var stream = new FileStream(path, mode, FileAccess.Write, FileShare.None, 4096, useAsync: true);
+        await using var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true);
         await SaveAsync(stream, options, cancellationToken);
     }
 
     /// <inheritdoc />
-    public async ValueTask SaveAsync(Stream stream, SaveOptions? options = null, CancellationToken cancellationToken = default)
+    public async ValueTask SaveAsync(Stream stream, OriginalCircuit.Eda.Models.SaveOptions? options = null, CancellationToken cancellationToken = default)
     {
         var writer = new PcbDocWriter();
         await writer.WriteAsync(this, stream, cancellationToken);

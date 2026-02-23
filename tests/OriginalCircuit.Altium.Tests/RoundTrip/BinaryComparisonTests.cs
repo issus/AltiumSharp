@@ -45,8 +45,8 @@ public sealed class BinaryComparisonTests
 
             for (int i = 0; i < original.Components.Count; i++)
             {
-                var origComp = original.Components[i];
-                var rtComp = roundTripped.Components[i];
+                var origComp = (SchComponent)original.Components[i];
+                var rtComp = (SchComponent)roundTripped.Components[i];
 
                 Assert.Equal(origComp.Name, rtComp.Name);
                 Assert.Equal(origComp.Pins.Count, rtComp.Pins.Count);
@@ -123,8 +123,8 @@ public sealed class BinaryComparisonTests
 
             for (int i = 0; i < original.Components.Count; i++)
             {
-                var origComp = original.Components[i];
-                var rtComp = roundTripped.Components[i];
+                var origComp = (PcbComponent)original.Components[i];
+                var rtComp = (PcbComponent)roundTripped.Components[i];
 
                 Assert.Equal(origComp.Name, rtComp.Name);
                 Assert.Equal(origComp.Pads.Count, rtComp.Pads.Count);

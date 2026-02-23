@@ -1,12 +1,14 @@
 using OpenMcdf;
 using OriginalCircuit.Altium.Diagnostics;
 using OriginalCircuit.Altium.Models.Sch;
+using OriginalCircuit.Eda.Primitives;
 using OriginalCircuit.Altium.Primitives;
 using OriginalCircuit.Altium.Serialization.Binary;
 using OriginalCircuit.Altium.Serialization.Compound;
 using OriginalCircuit.Altium.Serialization.Dto.Sch;
 using System.IO.Compression;
 using System.Text;
+using PinElectricalType = OriginalCircuit.Altium.Models.Sch.PinElectricalType;
 
 namespace OriginalCircuit.Altium.Serialization.Readers;
 
@@ -1116,7 +1118,7 @@ public sealed class SchLibReader
             Text = dto.Text ?? string.Empty,
             Location = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
             FontId = dto.FontId,
-            Justification = (SchTextJustification)dto.Justification,
+            Justification = (TextJustification)dto.Justification,
             Rotation = dto.Orientation * 90.0,
             Color = dto.Color,
             IsMirrored = dto.IsMirrored,
@@ -1435,7 +1437,7 @@ public sealed class SchLibReader
             Text = dto.Text ?? string.Empty,
             Location = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
             Orientation = dto.Orientation,
-            Justification = (SchTextJustification)dto.Justification,
+            Justification = (TextJustification)dto.Justification,
             FontId = dto.FontId,
             Color = dto.Color,
             IsMirrored = dto.IsMirrored,
@@ -1485,7 +1487,7 @@ public sealed class SchLibReader
             Value = dto.Text ?? string.Empty,
             Location = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
             Orientation = dto.Orientation,
-            Justification = (SchTextJustification)dto.Justification,
+            Justification = (TextJustification)dto.Justification,
             FontId = dto.FontId,
             Color = dto.Color,
             IsVisible = !dto.IsHidden,
@@ -1531,7 +1533,7 @@ public sealed class SchLibReader
             Corner1 = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
             Corner2 = new CoordPoint(CoordFromDxp(dto.CornerX, dto.CornerXFrac), CoordFromDxp(dto.CornerY, dto.CornerYFrac)),
             Orientation = dto.Orientation,
-            Alignment = (SchTextJustification)dto.Alignment,
+            Alignment = (TextJustification)dto.Alignment,
             FontId = dto.FontId,
             TextColor = dto.TextColor,
             BorderColor = dto.Color,

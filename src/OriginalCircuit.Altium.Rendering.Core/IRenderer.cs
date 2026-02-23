@@ -1,7 +1,10 @@
 using OriginalCircuit.Altium.Models;
 using OriginalCircuit.Altium.Models.Pcb;
 using OriginalCircuit.Altium.Models.Sch;
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Models;
+using OriginalCircuit.Eda.Models.Sch;
+using OriginalCircuit.Eda.Models.Pcb;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Rendering;
 
@@ -127,12 +130,12 @@ public interface ISchPrimitiveVisitor<in TContext> : IPrimitiveVisitor<TContext>
     void Visit(ISchImage image, TContext context);
     void Visit(ISchEllipticalArc ellipticalArc, TContext context);
     void Visit(ISchPowerObject powerObject, TContext context);
-    void Visit(ISchNoErc noErc, TContext context);
+    void Visit(ISchNoConnect noErc, TContext context);
     void Visit(ISchBusEntry busEntry, TContext context);
     void Visit(ISchBus bus, TContext context);
     void Visit(ISchPort port, TContext context);
-    void Visit(ISchSheetSymbol sheetSymbol, TContext context);
-    void Visit(ISchSheetEntry sheetEntry, TContext context);
+    void Visit(ISchSheet sheetSymbol, TContext context);
+    void Visit(ISchSheetPin sheetEntry, TContext context);
 }
 
 /// <summary>

@@ -1,5 +1,5 @@
 using OriginalCircuit.Altium.Diagnostics;
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 using OriginalCircuit.Altium.Serialization.Writers;
 
 namespace OriginalCircuit.Altium.Models.Sch;
@@ -143,15 +143,24 @@ public sealed class SchDocument : ISchDocument
     /// </summary>
     public IReadOnlyList<SchNoErc> NoErcs => _noErcs;
 
+    /// <inheritdoc />
+    public IReadOnlyList<ISchNoConnect> NoConnects => _noErcs;
+
     /// <summary>
     /// All bus entries in this document (top-level).
     /// </summary>
     public IReadOnlyList<SchBusEntry> BusEntries => _busEntries;
 
+    /// <inheritdoc />
+    IReadOnlyList<ISchBusEntry> ISchDocument.BusEntries => _busEntries;
+
     /// <summary>
     /// All buses in this document (top-level).
     /// </summary>
     public IReadOnlyList<SchBus> Buses => _buses;
+
+    /// <inheritdoc />
+    IReadOnlyList<ISchBus> ISchDocument.Buses => _buses;
 
     /// <summary>
     /// All ports in this document (top-level).
@@ -241,14 +250,13 @@ public sealed class SchDocument : ISchDocument
     }
 
     /// <inheritdoc />
-    public async ValueTask SaveAsync(string path, SaveOptions? options = null, CancellationToken cancellationToken = default)
+    public async ValueTask SaveAsync(string path, OriginalCircuit.Eda.Models.SaveOptions? options = null, CancellationToken cancellationToken = default)
     {
-        var overwrite = options?.Overwrite ?? false;
-        await new SchDocWriter().WriteAsync(this, path, overwrite, cancellationToken);
+        await new SchDocWriter().WriteAsync(this, path, overwrite: true, cancellationToken);
     }
 
     /// <inheritdoc />
-    public async ValueTask SaveAsync(Stream stream, SaveOptions? options = null, CancellationToken cancellationToken = default)
+    public async ValueTask SaveAsync(Stream stream, OriginalCircuit.Eda.Models.SaveOptions? options = null, CancellationToken cancellationToken = default)
     {
         await new SchDocWriter().WriteAsync(this, stream, cancellationToken);
     }

@@ -1,4 +1,4 @@
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
@@ -24,7 +24,7 @@ public sealed class SchParameter : ISchParameter
     /// <summary>
     /// Text justification.
     /// </summary>
-    public SchTextJustification Justification { get; set; } = SchTextJustification.BottomLeft;
+    public TextJustification Justification { get; set; } = TextJustification.BottomLeft;
 
     /// <summary>
     /// Font ID reference.
@@ -35,6 +35,9 @@ public sealed class SchParameter : ISchParameter
     /// Parameter color (RGB).
     /// </summary>
     public int Color { get; set; }
+
+    /// <inheritdoc />
+    EdaColor ISchParameter.Color => AltiumColorHelper.BgrToEdaColor(Color);
 
     /// <summary>
     /// Whether the parameter is visible.
@@ -242,7 +245,7 @@ public sealed class ParameterBuilder
     /// <summary>
     /// Sets the text justification.
     /// </summary>
-    public ParameterBuilder Justify(SchTextJustification justification)
+    public ParameterBuilder Justify(TextJustification justification)
     {
         _param.Justification = justification;
         return this;

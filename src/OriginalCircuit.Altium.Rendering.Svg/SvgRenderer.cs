@@ -2,6 +2,9 @@ using OriginalCircuit.Altium.Models;
 using OriginalCircuit.Altium.Models.Pcb;
 using OriginalCircuit.Altium.Models.Sch;
 using OriginalCircuit.Altium.Rendering;
+using OriginalCircuit.Eda.Models;
+using OriginalCircuit.Eda.Models.Pcb;
+using OriginalCircuit.Eda.Models.Sch;
 
 namespace OriginalCircuit.Altium.Rendering.Svg;
 
@@ -40,12 +43,12 @@ public sealed class SvgRenderer : IRenderer
             transform.AutoZoom(component.Bounds);
         }
 
-        if (component is IPcbComponent pcbComponent)
+        if (component is PcbComponent pcbComponent)
         {
             var renderer = new PcbComponentRenderer(transform);
             renderer.Render(pcbComponent, ctx);
         }
-        else if (component is ISchComponent schComponent)
+        else if (component is SchComponent schComponent)
         {
             var renderer = new SchComponentRenderer(transform);
             renderer.Render(schComponent, ctx);

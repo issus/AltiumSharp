@@ -1,22 +1,6 @@
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
-
-/// <summary>
-/// Text justification for schematic labels.
-/// </summary>
-public enum SchTextJustification
-{
-    BottomLeft = 0,
-    BottomCenter = 1,
-    BottomRight = 2,
-    MiddleLeft = 3,
-    MiddleCenter = 4,
-    MiddleRight = 5,
-    TopLeft = 6,
-    TopCenter = 7,
-    TopRight = 8
-}
 
 /// <summary>
 /// Represents a schematic text label.
@@ -37,7 +21,7 @@ public sealed class SchLabel : ISchLabel
     /// <summary>
     /// Text justification.
     /// </summary>
-    public SchTextJustification Justification { get; set; } = SchTextJustification.BottomLeft;
+    public TextJustification Justification { get; set; } = TextJustification.BottomLeft;
 
     /// <summary>
     /// Rotation angle in degrees.
@@ -48,6 +32,9 @@ public sealed class SchLabel : ISchLabel
     /// Text color (RGB).
     /// </summary>
     public int Color { get; set; }
+
+    /// <inheritdoc />
+    EdaColor ISchLabel.Color => AltiumColorHelper.BgrToEdaColor(Color);
 
     /// <summary>
     /// Whether the label text is mirrored.
@@ -160,7 +147,7 @@ public sealed class LabelBuilder
     /// <summary>
     /// Sets the justification.
     /// </summary>
-    public LabelBuilder Justify(SchTextJustification justification)
+    public LabelBuilder Justify(TextJustification justification)
     {
         _label.Justification = justification;
         return this;

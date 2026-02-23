@@ -1,4 +1,4 @@
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
@@ -24,7 +24,7 @@ public sealed class SchTextFrame : ISchTextFrame
     /// <summary>
     /// Text alignment within the frame.
     /// </summary>
-    public SchTextJustification Alignment { get; set; } = SchTextJustification.BottomLeft;
+    public TextJustification Alignment { get; set; } = TextJustification.BottomLeft;
 
     /// <summary>
     /// Font ID reference.
@@ -182,7 +182,7 @@ public sealed class TextFrameBuilder
     /// <summary>
     /// Sets the text alignment.
     /// </summary>
-    public TextFrameBuilder Align(SchTextJustification alignment)
+    public TextFrameBuilder Align(TextJustification alignment)
     {
         _frame.Alignment = alignment;
         return this;

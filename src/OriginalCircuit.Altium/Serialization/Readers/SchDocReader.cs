@@ -1,10 +1,12 @@
 using OriginalCircuit.Altium.Diagnostics;
 using OriginalCircuit.Altium.Models.Sch;
+using OriginalCircuit.Eda.Primitives;
 using OriginalCircuit.Altium.Primitives;
 using OriginalCircuit.Altium.Serialization.Binary;
 using OriginalCircuit.Altium.Serialization.Compound;
 using OriginalCircuit.Altium.Serialization.Dto.Sch;
 using System.Text;
+using PinElectricalType = OriginalCircuit.Altium.Models.Sch.PinElectricalType;
 
 namespace OriginalCircuit.Altium.Serialization.Readers;
 
@@ -247,7 +249,7 @@ public sealed class SchDocReader
             Comment = dto.DesignItemId,
             PartCount = Math.Max(0, dto.PartCount - 1),
             UniqueId = dto.UniqueId,
-            Location = new Primitives.CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
+            Location = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
             Orientation = dto.Orientation,
             CurrentPartId = dto.CurrentPartId,
             DisplayModeCount = dto.DisplayModeCount,
@@ -365,7 +367,7 @@ public sealed class SchDocReader
         {
             Name = dto.Name,
             Designator = dto.Designator,
-            Location = new Primitives.CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
+            Location = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
             Length = CoordFromDxp(dto.PinLength, dto.PinLengthFrac),
             ElectricalType = (PinElectricalType)dto.Electrical
         };
@@ -423,8 +425,8 @@ public sealed class SchDocReader
         var dto = Dto.Sch.SchLineDto.FromParameters(p);
         return new SchLine
         {
-            Start = new Primitives.CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
-            End = new Primitives.CoordPoint(CoordFromDxp(dto.CornerX, dto.CornerXFrac), CoordFromDxp(dto.CornerY, dto.CornerYFrac)),
+            Start = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
+            End = new CoordPoint(CoordFromDxp(dto.CornerX, dto.CornerXFrac), CoordFromDxp(dto.CornerY, dto.CornerYFrac)),
             Width = LineWidthFromIndex(dto.LineWidth),
             Color = dto.Color,
             LineStyle = dto.LineStyle,
@@ -446,8 +448,8 @@ public sealed class SchDocReader
         var dto = Dto.Sch.SchRectangleDto.FromParameters(p);
         return new SchRectangle
         {
-            Corner1 = new Primitives.CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
-            Corner2 = new Primitives.CoordPoint(CoordFromDxp(dto.CornerX, dto.CornerXFrac), CoordFromDxp(dto.CornerY, dto.CornerYFrac)),
+            Corner1 = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
+            Corner2 = new CoordPoint(CoordFromDxp(dto.CornerX, dto.CornerXFrac), CoordFromDxp(dto.CornerY, dto.CornerYFrac)),
             LineWidth = LineWidthFromIndex(dto.LineWidth),
             LineStyle = dto.LineStyle,
             IsFilled = dto.IsSolid,
@@ -472,9 +474,9 @@ public sealed class SchDocReader
         return new SchLabel
         {
             Text = dto.Text ?? string.Empty,
-            Location = new Primitives.CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
+            Location = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
             FontId = dto.FontId,
-            Justification = (SchTextJustification)dto.Justification,
+            Justification = (TextJustification)dto.Justification,
             Rotation = dto.Orientation * 90.0,
             Color = dto.Color,
             IsMirrored = dto.IsMirrored,
@@ -609,7 +611,7 @@ public sealed class SchDocReader
         var dto = Dto.Sch.SchArcDto.FromParameters(p);
         return new SchArc
         {
-            Center = new Primitives.CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
+            Center = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
             Radius = CoordFromDxp(dto.Radius, dto.RadiusFrac),
             StartAngle = dto.StartAngle,
             EndAngle = dto.EndAngle,
@@ -666,7 +668,7 @@ public sealed class SchDocReader
         var dto = Dto.Sch.SchEllipseDto.FromParameters(p);
         return new SchEllipse
         {
-            Center = new Primitives.CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
+            Center = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
             RadiusX = CoordFromDxp(dto.Radius, dto.RadiusFrac),
             RadiusY = dto.SecondaryRadius != 0 ? CoordFromDxp(dto.SecondaryRadius, dto.SecondaryRadiusFrac) : CoordFromDxp(dto.Radius, dto.RadiusFrac),
             LineWidth = dto.LineWidth,
@@ -691,8 +693,8 @@ public sealed class SchDocReader
         var dto = Dto.Sch.SchRoundedRectangleDto.FromParameters(p);
         return new SchRoundedRectangle
         {
-            Corner1 = new Primitives.CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
-            Corner2 = new Primitives.CoordPoint(CoordFromDxp(dto.CornerX, dto.CornerXFrac), CoordFromDxp(dto.CornerY, dto.CornerYFrac)),
+            Corner1 = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
+            Corner2 = new CoordPoint(CoordFromDxp(dto.CornerX, dto.CornerXFrac), CoordFromDxp(dto.CornerY, dto.CornerYFrac)),
             CornerRadiusX = CoordFromDxp(dto.CornerXRadius),
             CornerRadiusY = CoordFromDxp(dto.CornerYRadius),
             LineWidth = dto.LineWidth,
@@ -718,7 +720,7 @@ public sealed class SchDocReader
         var dto = Dto.Sch.SchPieDto.FromParameters(p);
         return new SchPie
         {
-            Center = new Primitives.CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
+            Center = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
             Radius = CoordFromDxp(dto.Radius, dto.RadiusFrac),
             StartAngle = dto.StartAngle,
             EndAngle = dto.EndAngle,
@@ -745,9 +747,9 @@ public sealed class SchDocReader
         return new SchNetLabel
         {
             Text = dto.Text ?? string.Empty,
-            Location = new Primitives.CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
+            Location = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
             Orientation = dto.Orientation,
-            Justification = (SchTextJustification)dto.Justification,
+            Justification = (TextJustification)dto.Justification,
             FontId = dto.FontId,
             Color = dto.Color,
             IsMirrored = dto.IsMirrored,
@@ -769,7 +771,7 @@ public sealed class SchDocReader
         var dto = Dto.Sch.SchJunctionDto.FromParameters(p);
         return new SchJunction
         {
-            Location = new Primitives.CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
+            Location = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
             Color = dto.Color,
             Locked = dto.Locked,
             OwnerIndex = dto.OwnerIndex,
@@ -791,9 +793,9 @@ public sealed class SchDocReader
         {
             Name = dto.Name ?? string.Empty,
             Value = dto.Text ?? string.Empty,
-            Location = new Primitives.CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
+            Location = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
             Orientation = dto.Orientation,
-            Justification = (SchTextJustification)dto.Justification,
+            Justification = (TextJustification)dto.Justification,
             FontId = dto.FontId,
             Color = dto.Color,
             IsVisible = !dto.IsHidden,
@@ -834,10 +836,10 @@ public sealed class SchDocReader
         return new SchTextFrame
         {
             Text = dto.Text ?? string.Empty,
-            Corner1 = new Primitives.CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
-            Corner2 = new Primitives.CoordPoint(CoordFromDxp(dto.CornerX, dto.CornerXFrac), CoordFromDxp(dto.CornerY, dto.CornerYFrac)),
+            Corner1 = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
+            Corner2 = new CoordPoint(CoordFromDxp(dto.CornerX, dto.CornerXFrac), CoordFromDxp(dto.CornerY, dto.CornerYFrac)),
             Orientation = dto.Orientation,
-            Alignment = (SchTextJustification)dto.Alignment,
+            Alignment = (TextJustification)dto.Alignment,
             FontId = dto.FontId,
             TextColor = dto.TextColor,
             BorderColor = dto.Color,
@@ -867,8 +869,8 @@ public sealed class SchDocReader
         var dto = Dto.Sch.SchImageDto.FromParameters(p);
         return new SchImage
         {
-            Corner1 = new Primitives.CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
-            Corner2 = new Primitives.CoordPoint(CoordFromDxp(dto.CornerX, dto.CornerXFrac), CoordFromDxp(dto.CornerY, dto.CornerYFrac)),
+            Corner1 = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
+            Corner2 = new CoordPoint(CoordFromDxp(dto.CornerX, dto.CornerXFrac), CoordFromDxp(dto.CornerY, dto.CornerYFrac)),
             KeepAspect = dto.KeepAspect,
             EmbedImage = dto.EmbedImage,
             Filename = dto.FileName,
@@ -896,7 +898,7 @@ public sealed class SchDocReader
         var dto = Dto.Sch.SchSymbolDto.FromParameters(p);
         return new SchSymbol
         {
-            Location = new Primitives.CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
+            Location = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
             SymbolType = dto.Symbol,
             IsMirrored = dto.IsMirrored,
             Orientation = dto.Orientation,
@@ -920,7 +922,7 @@ public sealed class SchDocReader
         var dto = Dto.Sch.SchEllipticalArcDto.FromParameters(p);
         return new SchEllipticalArc
         {
-            Center = new Primitives.CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
+            Center = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
             PrimaryRadius = CoordFromDxp(dto.Radius, dto.RadiusFrac),
             SecondaryRadius = CoordFromDxp(dto.SecondaryRadius, dto.SecondaryRadiusFrac),
             StartAngle = dto.StartAngle,
@@ -946,7 +948,7 @@ public sealed class SchDocReader
         return new SchPowerObject
         {
             Text = dto.Text ?? string.Empty,
-            Location = new Primitives.CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
+            Location = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
             Style = (PowerPortStyle)dto.Style,
             Rotation = dto.Orientation * 90.0,
             ShowNetName = dto.ShowNetName,
@@ -974,7 +976,7 @@ public sealed class SchDocReader
         var dto = Dto.Sch.SchNoErcDto.FromParameters(p);
         return new SchNoErc
         {
-            Location = new Primitives.CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
+            Location = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
             Orientation = dto.Orientation,
             Color = dto.Color,
             IsActive = dto.IsActive,
@@ -997,8 +999,8 @@ public sealed class SchDocReader
         var dto = Dto.Sch.SchBusEntryDto.FromParameters(p);
         return new SchBusEntry
         {
-            Location = new Primitives.CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
-            Corner = new Primitives.CoordPoint(CoordFromDxp(dto.CornerX, dto.CornerXFrac), CoordFromDxp(dto.CornerY, dto.CornerYFrac)),
+            Location = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
+            Corner = new CoordPoint(CoordFromDxp(dto.CornerX, dto.CornerXFrac), CoordFromDxp(dto.CornerY, dto.CornerYFrac)),
             LineWidth = dto.LineWidth,
             Color = dto.Color,
             OwnerIndex = dto.OwnerIndex,
@@ -1036,12 +1038,12 @@ public sealed class SchDocReader
         var vertexCount = dto.LocationCount;
         for (var i = 1; i <= Math.Max(vertexCount, 10); i++)
         {
-            Primitives.Coord x = default, y = default;
+            Coord x = default, y = default;
             var hasX = parameters.TryGetValue($"X{i}", out var xStr) && TryParseCoord(xStr, out x);
             var hasY = parameters.TryGetValue($"Y{i}", out var yStr) && TryParseCoord(yStr, out y);
             if (hasX || hasY || i <= vertexCount)
             {
-                bus.AddVertex(new Primitives.CoordPoint(hasX ? x : default, hasY ? y : default));
+                bus.AddVertex(new CoordPoint(hasX ? x : default, hasY ? y : default));
             }
             else break;
         }
@@ -1053,7 +1055,7 @@ public sealed class SchDocReader
         var dto = Dto.Sch.SchPortDto.FromParameters(p);
         return new SchPort
         {
-            Location = new Primitives.CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
+            Location = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
             Name = dto.Name ?? string.Empty,
             IoType = dto.IoType,
             Style = dto.Style,
@@ -1089,7 +1091,7 @@ public sealed class SchDocReader
         var dto = Dto.Sch.SchSheetSymbolDto.FromParameters(p);
         return new SchSheetSymbol
         {
-            Location = new Primitives.CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
+            Location = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
             XSize = CoordFromDxp(dto.XSize),
             YSize = CoordFromDxp(dto.YSize),
             IsMirrored = dto.IsMirrored,
@@ -1177,12 +1179,12 @@ public sealed class SchDocReader
         var vertexCount = dto.LocationCount;
         for (var i = 1; i <= Math.Max(vertexCount, 50); i++)
         {
-            Primitives.Coord x = default, y = default;
+            Coord x = default, y = default;
             var hasX = parameters.TryGetValue($"X{i}", out var xStr) && TryParseCoord(xStr, out x);
             var hasY = parameters.TryGetValue($"Y{i}", out var yStr) && TryParseCoord(yStr, out y);
             if (hasX || hasY || i <= vertexCount)
             {
-                blanket.AddVertex(new Primitives.CoordPoint(hasX ? x : default, hasY ? y : default));
+                blanket.AddVertex(new CoordPoint(hasX ? x : default, hasY ? y : default));
             }
             else break;
         }
@@ -1196,7 +1198,7 @@ public sealed class SchDocReader
 
         return new SchParameterSet
         {
-            Location = new Primitives.CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
+            Location = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),
             Orientation = dto.Orientation,
             Style = dto.Style,
             Color = dto.Color,
@@ -1318,25 +1320,25 @@ public sealed class SchDocReader
     /// DXP units are 10-mil increments; 1 mil = 10,000 raw units.
     /// So 1 DXP = 100,000 raw. The optional frac parameter adds sub-DXP precision.
     /// </summary>
-    private static Primitives.Coord CoordFromDxp(int dxpValue, int frac = 0) => Primitives.Coord.FromRaw(dxpValue * 100_000 + frac);
+    private static Coord CoordFromDxp(int dxpValue, int frac = 0) => Coord.FromRaw(dxpValue * 100_000 + frac);
 
-    private static readonly Primitives.Coord[] LineWidths =
+    private static readonly Coord[] LineWidths =
     {
-        Primitives.Coord.FromMils(1),
-        Primitives.Coord.FromMils(2),
-        Primitives.Coord.FromMils(4)
+        Coord.FromMils(1),
+        Coord.FromMils(2),
+        Coord.FromMils(4)
     };
 
-    private static Primitives.Coord LineWidthFromIndex(int index) =>
+    private static Coord LineWidthFromIndex(int index) =>
         index >= 0 && index < LineWidths.Length ? LineWidths[index] : LineWidths[0];
 
-    private static bool TryParseCoord(string value, out Primitives.Coord result)
+    private static bool TryParseCoord(string value, out Coord result)
     {
         result = default;
         if (string.IsNullOrEmpty(value)) return false;
         if (int.TryParse(value, out var intValue))
         {
-            result = Primitives.Coord.FromRaw(intValue * 1000);
+            result = Coord.FromRaw(intValue * 1000);
             return true;
         }
         return false;

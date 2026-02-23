@@ -1,6 +1,6 @@
 using OpenMcdf;
 using OriginalCircuit.Altium.Models.Sch;
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 using OriginalCircuit.Altium.Serialization.Binary;
 using System.IO.Compression;
 using System.Text;
@@ -57,7 +57,7 @@ public sealed class SchLibWriter
         WriteFileHeader(cf, library);
         WriteSectionKeys(cf, library, sectionKeys);
 
-        foreach (var component in library.Components)
+        foreach (var component in library.Components.Cast<SchComponent>())
         {
             cancellationToken.ThrowIfCancellationRequested();
             WriteComponent(cf, component, sectionKeys);
@@ -149,7 +149,7 @@ public sealed class SchLibWriter
         sectionKeysStream.SetData(ms.ToArray());
     }
 
-    private static void WriteComponent(CompoundFile cf, ISchComponent component, Dictionary<string, string> sectionKeys)
+    private static void WriteComponent(CompoundFile cf, SchComponent component, Dictionary<string, string> sectionKeys)
     {
         var sectionKey = sectionKeys.TryGetValue(component.Name, out var key)
             ? key
@@ -305,7 +305,7 @@ public sealed class SchLibWriter
         WritePinSymbolLineWidth(componentStorage, pinsSymbolLineWidth);
     }
 
-    internal static void WriteComponentRecord(BinaryFormatWriter writer, ISchComponent component, ref int index)
+    internal static void WriteComponentRecord(BinaryFormatWriter writer, SchComponent component, ref int index)
     {
         // Parameter keys match Altium's exact mixed-case convention
         var parameters = new Dictionary<string, string>
@@ -1303,7 +1303,7 @@ public sealed class SchLibWriter
         index++;
     }
 
-    internal static void WriteImplementationRecords(BinaryFormatWriter writer, ISchComponent component, ref int index)
+    internal static void WriteImplementationRecords(BinaryFormatWriter writer, SchComponent component, ref int index)
     {
         if (component.Implementations.Count == 0)
         {

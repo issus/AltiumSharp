@@ -1,3 +1,5 @@
+using OriginalCircuit.Eda.Primitives;
+
 namespace OriginalCircuit.Altium.Rendering;
 
 /// <summary>
@@ -5,6 +7,19 @@ namespace OriginalCircuit.Altium.Rendering;
 /// </summary>
 public static class ColorHelper
 {
+    /// <summary>
+    /// Converts an EdaColor (R, G, B, A) to ARGB uint (0xAARRGGBB).
+    /// </summary>
+    public static uint EdaColorToArgb(EdaColor color)
+    {
+        return ((uint)color.A << 24) | ((uint)color.R << 16) | ((uint)color.G << 8) | color.B;
+    }
+
+    /// <summary>
+    /// Returns true if the EdaColor is non-zero (not default black).
+    /// </summary>
+    public static bool IsNonZero(EdaColor color) => color.R != 0 || color.G != 0 || color.B != 0;
+
     /// <summary>
     /// Converts Altium BGR color (0x00BBGGRR) to ARGB (0xFFRRGGBB).
     /// </summary>

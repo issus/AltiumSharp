@@ -1,6 +1,9 @@
 using OriginalCircuit.Altium.Models;
 using OriginalCircuit.Altium.Models.Pcb;
 using OriginalCircuit.Altium.Models.Sch;
+using OriginalCircuit.Eda.Models;
+using OriginalCircuit.Eda.Models.Pcb;
+using OriginalCircuit.Eda.Models.Sch;
 using SkiaSharp;
 
 namespace OriginalCircuit.Altium.Rendering.Raster;
@@ -40,12 +43,12 @@ public sealed class RasterRenderer : IRenderer, IPcbLibRenderer
             transform.AutoZoom(component.Bounds);
         }
 
-        if (component is IPcbComponent pcb)
+        if (component is PcbComponent pcb)
         {
             var renderer = new PcbComponentRenderer(transform);
             renderer.Render(pcb, context);
         }
-        else if (component is ISchComponent sch)
+        else if (component is SchComponent sch)
         {
             var renderer = new SchComponentRenderer(transform);
             renderer.Render(sch, context);

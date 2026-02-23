@@ -2,7 +2,7 @@ using OriginalCircuit.Altium;
 using OriginalCircuit.Altium.Models;
 using OriginalCircuit.Altium.Models.Pcb;
 using OriginalCircuit.Altium.Models.Sch;
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Tests;
 
@@ -22,7 +22,7 @@ public class CancellationTokenTests
         using var stream = new MemoryStream();
 
         await Assert.ThrowsAnyAsync<OperationCanceledException>(
-            () => library.SaveAsync(stream, cancellationToken: CancelledToken).AsTask());
+            () => library.SaveAsync(stream, ct: CancelledToken).AsTask());
     }
 
     [Fact]
@@ -32,7 +32,7 @@ public class CancellationTokenTests
         using var stream = new MemoryStream();
 
         await Assert.ThrowsAnyAsync<OperationCanceledException>(
-            () => library.SaveAsync(stream, cancellationToken: CancelledToken).AsTask());
+            () => library.SaveAsync(stream, ct: CancelledToken).AsTask());
     }
 
     // --- Read tests (reader) ---
@@ -57,7 +57,7 @@ public class CancellationTokenTests
         var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N") + ".PcbLib");
         try
         {
-            await library.SaveAsync(tempPath, new SaveOptions { Overwrite = true });
+            await library.SaveAsync(tempPath, new OriginalCircuit.Eda.Models.SaveOptions());
 
             // Act & Assert
             await Assert.ThrowsAnyAsync<OperationCanceledException>(
@@ -80,7 +80,7 @@ public class CancellationTokenTests
         var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N") + ".SchLib");
         try
         {
-            await library.SaveAsync(tempPath, new SaveOptions { Overwrite = true });
+            await library.SaveAsync(tempPath, new OriginalCircuit.Eda.Models.SaveOptions());
 
             // Act & Assert
             await Assert.ThrowsAnyAsync<OperationCanceledException>(

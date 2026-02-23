@@ -1,4 +1,4 @@
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
@@ -6,7 +6,7 @@ namespace OriginalCircuit.Altium.Models.Sch;
 /// Represents a schematic No-ERC (No Electrical Rule Check) marker.
 /// Suppresses ERC violations at a specific location.
 /// </summary>
-public sealed class SchNoErc : ISchNoErc
+public sealed class SchNoErc : ISchNoConnect
 {
     /// <inheritdoc />
     public CoordPoint Location { get; set; }
@@ -17,9 +17,12 @@ public sealed class SchNoErc : ISchNoErc
     public int Orientation { get; set; }
 
     /// <summary>
-    /// Marker color (RGB).
+    /// Marker color as packed BGR integer.
     /// </summary>
     public int Color { get; set; }
+
+    /// <inheritdoc />
+    EdaColor ISchNoConnect.Color => AltiumColorHelper.BgrToEdaColor(Color);
 
     /// <summary>
     /// Whether the marker is active.

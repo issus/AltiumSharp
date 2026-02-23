@@ -393,7 +393,7 @@ public class BinaryFormatReaderTests
     [Fact]
     public void RoundTrip_Coord_PreservesValue()
     {
-        var coord = OriginalCircuit.Altium.Primitives.Coord.FromMils(100);
+        var coord = OriginalCircuit.Eda.Primitives.Coord.FromMils(100);
         using var ms = new MemoryStream();
         using (var writer = new BinaryFormatWriter(ms, leaveOpen: true))
         {
@@ -403,7 +403,7 @@ public class BinaryFormatReaderTests
         ms.Position = 0;
         using var reader = new BinaryFormatReader(ms);
         var rawValue = reader.ReadInt32();
-        var result = OriginalCircuit.Altium.Primitives.Coord.FromRaw(rawValue);
+        var result = OriginalCircuit.Eda.Primitives.Coord.FromRaw(rawValue);
         Assert.Equal(coord, result);
     }
 

@@ -1,5 +1,9 @@
 using OriginalCircuit.Altium.Models.Pcb;
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Enums;
+using OriginalCircuit.Eda.Models.Pcb;
+using OriginalCircuit.Eda.Primitives;
+using PadShape = OriginalCircuit.Altium.Models.Pcb.PadShape;
+using PadHoleType = OriginalCircuit.Altium.Models.Pcb.PadHoleType;
 
 namespace OriginalCircuit.Altium.Rendering;
 
@@ -25,7 +29,7 @@ public sealed class PcbComponentRenderer
     /// </summary>
     /// <param name="component">The PCB component to render.</param>
     /// <param name="context">The render context to draw into.</param>
-    public void Render(IPcbComponent component, IRenderContext context)
+    public void Render(PcbComponent component, IRenderContext context)
     {
         ArgumentNullException.ThrowIfNull(component);
         ArgumentNullException.ThrowIfNull(context);
@@ -33,28 +37,28 @@ public sealed class PcbComponentRenderer
         // Collect all primitives with their layer and draw priority
         var primitives = new List<(int layer, int priority, Action render)>();
 
-        foreach (var track in component.Tracks)
+        foreach (var track in component.Tracks.Cast<PcbTrack>())
             primitives.Add((track.Layer, LayerColors.GetDrawPriority(track.Layer), () => RenderTrack(context, track)));
 
-        foreach (var arc in component.Arcs)
+        foreach (var arc in component.Arcs.Cast<PcbArc>())
             primitives.Add((arc.Layer, LayerColors.GetDrawPriority(arc.Layer), () => RenderArc(context, arc)));
 
-        foreach (var fill in component.Fills)
+        foreach (var fill in component.Fills.Cast<PcbFill>())
             primitives.Add((fill.Layer, LayerColors.GetDrawPriority(fill.Layer), () => RenderFill(context, fill)));
 
-        foreach (var region in component.Regions)
+        foreach (var region in component.Regions.Cast<PcbRegion>())
             primitives.Add((region.Layer, LayerColors.GetDrawPriority(region.Layer), () => RenderRegion(context, region)));
 
-        foreach (var text in component.Texts)
+        foreach (var text in component.Texts.Cast<PcbText>())
             primitives.Add((text.Layer, LayerColors.GetDrawPriority(text.Layer), () => RenderText(context, text)));
 
-        foreach (var pad in component.Pads)
+        foreach (var pad in component.Pads.Cast<PcbPad>())
             primitives.Add((pad.Layer, LayerColors.GetDrawPriority(pad.Layer), () => RenderPad(context, pad)));
 
-        foreach (var via in component.Vias)
+        foreach (var via in component.Vias.Cast<PcbVia>())
             primitives.Add((via.Layer, LayerColors.GetDrawPriority(via.Layer), () => RenderVia(context, via)));
 
-        foreach (var body in component.ComponentBodies)
+        foreach (var body in component.ComponentBodies.Cast<PcbComponentBody>())
             primitives.Add((body.Layer, LayerColors.GetDrawPriority(body.Layer), () => RenderComponentBody(context, body)));
 
         // Sort by draw priority (lower priority = drawn first / behind)
@@ -66,7 +70,7 @@ public sealed class PcbComponentRenderer
 
     // ── Track ───────────────────────────────────────────────────────
 
-    private void RenderTrack(IRenderContext context, IPcbTrack track)
+    private void RenderTrack(IRenderContext context, PcbTrack track)
     {
         var (x1, y1) = _transform.WorldToScreen(track.Start.X, track.Start.Y);
         var (x2, y2) = _transform.WorldToScreen(track.End.X, track.End.Y);
@@ -78,7 +82,7 @@ public sealed class PcbComponentRenderer
 
     // ── Arc ─────────────────────────────────────────────────────────
 
-    private void RenderArc(IRenderContext context, IPcbArc arc)
+    private void RenderArc(IRenderContext context, PcbArc arc)
     {
         var (cx, cy) = _transform.WorldToScreen(arc.Center.X, arc.Center.Y);
         var r = _transform.ScaleValue(arc.Radius);
@@ -102,7 +106,7 @@ public sealed class PcbComponentRenderer
 
     // ── Pad ─────────────────────────────────────────────────────────
 
-    private void RenderPad(IRenderContext context, IPcbPad pad)
+    private void RenderPad(IRenderContext context, PcbPad pad)
     {
         var (cx, cy) = _transform.WorldToScreen(pad.Location.X, pad.Location.Y);
 
@@ -216,7 +220,7 @@ public sealed class PcbComponentRenderer
 
     // ── Via ─────────────────────────────────────────────────────────
 
-    private void RenderVia(IRenderContext context, IPcbVia via)
+    private void RenderVia(IRenderContext context, PcbVia via)
     {
         var (cx, cy) = _transform.WorldToScreen(via.Location.X, via.Location.Y);
 
@@ -248,7 +252,7 @@ public sealed class PcbComponentRenderer
 
     // ── Fill ────────────────────────────────────────────────────────
 
-    private void RenderFill(IRenderContext context, IPcbFill fill)
+    private void RenderFill(IRenderContext context, PcbFill fill)
     {
         var (x1, y1) = _transform.WorldToScreen(fill.Corner1.X, fill.Corner1.Y);
         var (x2, y2) = _transform.WorldToScreen(fill.Corner2.X, fill.Corner2.Y);
@@ -295,7 +299,7 @@ public sealed class PcbComponentRenderer
 
     // ── Region ──────────────────────────────────────────────────────
 
-    private void RenderRegion(IRenderContext context, IPcbRegion region)
+    private void RenderRegion(IRenderContext context, PcbRegion region)
     {
         if (region.Outline.Count < 3) return;
 
@@ -314,7 +318,7 @@ public sealed class PcbComponentRenderer
 
     // ── Text ────────────────────────────────────────────────────────
 
-    private void RenderText(IRenderContext context, IPcbText text)
+    private void RenderText(IRenderContext context, PcbText text)
     {
         var (x, y) = _transform.WorldToScreen(text.Location.X, text.Location.Y);
         var color = LayerColors.GetColor(text.Layer);
@@ -370,7 +374,7 @@ public sealed class PcbComponentRenderer
 
     // ── Component Body ──────────────────────────────────────────────
 
-    private void RenderComponentBody(IRenderContext context, IPcbComponentBody body)
+    private void RenderComponentBody(IRenderContext context, PcbComponentBody body)
     {
         if (body.Outline.Count < 3) return;
 

@@ -1,6 +1,6 @@
 using OpenMcdf;
 using OriginalCircuit.Altium.Models.Pcb;
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 using OriginalCircuit.Altium.Serialization.Binary;
 
 namespace OriginalCircuit.Altium.Serialization.Writers;
@@ -187,7 +187,7 @@ public sealed class PcbLibWriter
 
         // Write component count and names
         writer.Write((uint)library.Components.Count);
-        foreach (var component in library.Components)
+        foreach (var component in library.Components.Cast<PcbComponent>())
         {
             cancellationToken.ThrowIfCancellationRequested();
             writer.WriteStringBlock(component.Name);
@@ -198,7 +198,7 @@ public sealed class PcbLibWriter
         dataStream.SetData(ms.ToArray());
     }
 
-    private static void WriteFootprint(CompoundFile cf, IPcbComponent component, Dictionary<string, string> sectionKeys)
+    private static void WriteFootprint(CompoundFile cf, PcbComponent component, Dictionary<string, string> sectionKeys)
     {
         var sectionKey = sectionKeys.TryGetValue(component.Name, out var key)
             ? key
@@ -220,7 +220,7 @@ public sealed class PcbLibWriter
         WriteAdditionalComponentStreams(footprintStorage, component);
     }
 
-    private static void WriteFootprintParameters(CFStorage storage, IPcbComponent component)
+    private static void WriteFootprintParameters(CFStorage storage, PcbComponent component)
     {
         var paramsStream = storage.AddStream("Parameters");
 
@@ -252,7 +252,7 @@ public sealed class PcbLibWriter
         paramsStream.SetData(ms.ToArray());
     }
 
-    private static void WriteWideStrings(CFStorage storage, IPcbComponent component)
+    private static void WriteWideStrings(CFStorage storage, PcbComponent component)
     {
         var wideStringsStream = storage.AddStream("WideStrings");
 
@@ -275,7 +275,7 @@ public sealed class PcbLibWriter
         wideStringsStream.SetData(ms.ToArray());
     }
 
-    private static void WriteFootprintData(CFStorage storage, IPcbComponent component)
+    private static void WriteFootprintData(CFStorage storage, PcbComponent component)
     {
         var dataStream = storage.AddStream("Data");
 
@@ -683,7 +683,7 @@ public sealed class PcbLibWriter
         });
     }
 
-    private static void WriteUniqueIdPrimitiveInformation(CFStorage storage, IPcbComponent component)
+    private static void WriteUniqueIdPrimitiveInformation(CFStorage storage, PcbComponent component)
     {
         // UniqueIdPrimitiveInformation is optional - skip for new files
     }
@@ -742,7 +742,7 @@ public sealed class PcbLibWriter
         }
     }
 
-    private static void WriteAdditionalComponentStreams(CFStorage storage, IPcbComponent component)
+    private static void WriteAdditionalComponentStreams(CFStorage storage, PcbComponent component)
     {
         if (component is PcbComponent { AdditionalStreams: not null } pcbComp)
             WriteAdditionalStreams(storage, pcbComp.AdditionalStreams);

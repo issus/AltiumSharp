@@ -2,7 +2,7 @@ using OriginalCircuit.Altium;
 using OriginalCircuit.Altium.Models;
 using OriginalCircuit.Altium.Models.Pcb;
 using OriginalCircuit.Altium.Models.Sch;
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Tests;
 
@@ -231,7 +231,7 @@ public class WriterTests
         try
         {
             // Act
-            await library.SaveAsync(tempPath, new SaveOptions { Overwrite = true });
+            await library.SaveAsync(tempPath, new OriginalCircuit.Eda.Models.SaveOptions());
 
             // Assert
             Assert.True(File.Exists(tempPath));
@@ -445,7 +445,7 @@ public class WriterTests
         try
         {
             // Act
-            await library.SaveAsync(tempPath, new SaveOptions { Overwrite = true });
+            await library.SaveAsync(tempPath, new OriginalCircuit.Eda.Models.SaveOptions());
 
             // Assert
             Assert.True(File.Exists(tempPath));

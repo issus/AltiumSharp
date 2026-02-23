@@ -1,7 +1,7 @@
 using OpenMcdf;
 using OriginalCircuit.Altium.Diagnostics;
 using OriginalCircuit.Altium.Models.Pcb;
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 using OriginalCircuit.Altium.Serialization.Binary;
 using OriginalCircuit.Altium.Serialization.Compound;
 using OriginalCircuit.Altium.Serialization.Writers;

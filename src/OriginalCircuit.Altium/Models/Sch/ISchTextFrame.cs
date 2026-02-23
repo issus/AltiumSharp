@@ -1,9 +1,11 @@
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Models;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
 /// <summary>
 /// Represents a schematic text frame primitive that displays text within a bordered rectangular area.
+/// This is an Altium-specific primitive with no shared equivalent.
 /// </summary>
 public interface ISchTextFrame : IPrimitive
 {
@@ -19,5 +21,5 @@ public interface ISchTextFrame : IPrimitive
     bool WordWrap { get; }
     bool ClipToRect { get; }
     int LineWidth { get; }
-    SchTextJustification Alignment { get; }
+    TextJustification Alignment { get; }
 }

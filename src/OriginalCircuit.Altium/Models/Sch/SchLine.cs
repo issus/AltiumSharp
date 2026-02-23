@@ -1,4 +1,4 @@
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
@@ -27,6 +27,12 @@ public sealed class SchLine : ISchLine
     /// Line style (0=Solid, 1=Dashed, 2=Dotted, 3=DashDot).
     /// </summary>
     public int LineStyle { get; set; }
+
+    /// <inheritdoc />
+    EdaColor ISchLine.Color => AltiumColorHelper.BgrToEdaColor(Color);
+
+    /// <inheritdoc />
+    LineStyle ISchLine.LineStyle => AltiumEnumHelper.ToEdaLineStyle(LineStyle);
 
     /// <summary>
     /// Fill/area color value.

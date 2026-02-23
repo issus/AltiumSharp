@@ -1,4 +1,4 @@
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
@@ -21,7 +21,7 @@ public sealed class SchNetLabel : ISchNetLabel
     /// <summary>
     /// Text justification.
     /// </summary>
-    public SchTextJustification Justification { get; set; } = SchTextJustification.BottomLeft;
+    public TextJustification Justification { get; set; } = TextJustification.BottomLeft;
 
     /// <summary>
     /// Font ID reference.
@@ -32,6 +32,9 @@ public sealed class SchNetLabel : ISchNetLabel
     /// Label color (RGB).
     /// </summary>
     public int Color { get; set; }
+
+    /// <inheritdoc />
+    EdaColor ISchNetLabel.Color => AltiumColorHelper.BgrToEdaColor(Color);
 
     /// <summary>
     /// Whether the label is mirrored.
@@ -139,7 +142,7 @@ public sealed class NetLabelBuilder
     /// <summary>
     /// Sets the text justification.
     /// </summary>
-    public NetLabelBuilder Justify(SchTextJustification justification)
+    public NetLabelBuilder Justify(TextJustification justification)
     {
         _label.Justification = justification;
         return this;

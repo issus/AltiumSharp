@@ -1,16 +1,6 @@
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
-
-/// <summary>
-/// Line style for wires and polylines.
-/// </summary>
-public enum SchLineStyle
-{
-    Solid = 0,
-    Dashed = 1,
-    Dotted = 2
-}
 
 /// <summary>
 /// Represents a schematic wire segment (electrical connection).
@@ -36,6 +26,12 @@ public sealed class SchWire : ISchWire
     /// Line style (Solid, Dashed, Dotted).
     /// </summary>
     public SchLineStyle LineStyle { get; set; } = SchLineStyle.Solid;
+
+    /// <inheritdoc />
+    EdaColor ISchWire.Color => AltiumColorHelper.BgrToEdaColor(Color);
+
+    /// <inheritdoc />
+    Coord ISchWire.LineWidth => AltiumLineWidthHelper.IndexToCoord(LineWidth);
 
     /// <summary>
     /// Area/background color (RGB).

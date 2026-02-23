@@ -129,6 +129,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Primitives
 {
@@ -512,8 +513,8 @@ namespace OriginalCircuit.Altium.Primitives
         // Check for actual Coord type (not just [AltiumCoord] attribute)
         var typeName = type.ToDisplayString();
         if (typeName.EndsWith("Coord", StringComparison.Ordinal) ||
-            typeName == "OriginalCircuit.Altium.Primitives.Coord" ||
-            typeName == "global::OriginalCircuit.Altium.Primitives.Coord")
+            typeName == "OriginalCircuit.Eda.Primitives.Coord" ||
+            typeName == "global::OriginalCircuit.Eda.Primitives.Coord")
             return PropertyTypeKind.Coord;
 
         // Use actual property type for serialization
@@ -542,6 +543,7 @@ namespace OriginalCircuit.Altium.Primitives
         sb.AppendLine("using System;");
         sb.AppendLine("using System.Collections.Generic;");
         sb.AppendLine("using System.Globalization;");
+        sb.AppendLine("using global::OriginalCircuit.Eda.Primitives;");
         sb.AppendLine("using global::OriginalCircuit.Altium.Primitives;");
         sb.AppendLine();
 
@@ -803,7 +805,7 @@ namespace OriginalCircuit.Altium.Primitives
             case PropertyTypeKind.Bool:
                 return "false";
             case PropertyTypeKind.Coord:
-                return "global::OriginalCircuit.Altium.Primitives.Coord.Zero";
+                return "global::OriginalCircuit.Eda.Primitives.Coord.Zero";
             case PropertyTypeKind.Enum:
                 return $"default({prop.TypeName})";
             default:

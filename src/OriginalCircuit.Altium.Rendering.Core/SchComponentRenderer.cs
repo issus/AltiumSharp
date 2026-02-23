@@ -1,6 +1,10 @@
 using OriginalCircuit.Altium.Models;
 using OriginalCircuit.Altium.Models.Sch;
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Enums;
+using OriginalCircuit.Eda.Models;
+using OriginalCircuit.Eda.Models.Sch;
+using OriginalCircuit.Eda.Primitives;
+using PinElectricalType = OriginalCircuit.Altium.Models.Sch.PinElectricalType;
 
 namespace OriginalCircuit.Altium.Rendering;
 
@@ -11,7 +15,7 @@ namespace OriginalCircuit.Altium.Rendering;
 public sealed class SchComponentRenderer
 {
     private readonly CoordTransform _transform;
-    private ISchComponent? _currentComponent;
+    private SchComponent? _currentComponent;
 
     private const double DefaultLineWidth = 1.0;
     private const double DefaultFontSize = 10.0;
@@ -47,7 +51,7 @@ public sealed class SchComponentRenderer
     /// </summary>
     /// <param name="component">The schematic component to render.</param>
     /// <param name="context">The render context to draw into.</param>
-    public void Render(ISchComponent component, IRenderContext context)
+    public void Render(SchComponent component, IRenderContext context)
     {
         ArgumentNullException.ThrowIfNull(component);
         ArgumentNullException.ThrowIfNull(context);
@@ -56,53 +60,53 @@ public sealed class SchComponentRenderer
         try
         {
             // Back layer: images, filled shapes
-            foreach (var image in component.Images)
+            foreach (var image in component.Images.Cast<SchImage>())
                 if (IsPartVisible(image)) RenderImage(context, image);
-            foreach (var polygon in component.Polygons)
+            foreach (var polygon in component.Polygons.Cast<SchPolygon>())
                 if (IsPartVisible(polygon)) RenderPolygon(context, polygon);
-            foreach (var rect in component.Rectangles)
+            foreach (var rect in component.Rectangles.Cast<SchRectangle>())
                 if (IsPartVisible(rect)) RenderRectangle(context, rect);
-            foreach (var roundedRect in component.RoundedRectangles)
+            foreach (var roundedRect in component.RoundedRectangles.Cast<SchRoundedRectangle>())
                 if (IsPartVisible(roundedRect)) RenderRoundedRectangle(context, roundedRect);
-            foreach (var ellipse in component.Ellipses)
+            foreach (var ellipse in component.Ellipses.Cast<SchEllipse>())
                 if (IsPartVisible(ellipse)) RenderEllipse(context, ellipse);
-            foreach (var pie in component.Pies)
+            foreach (var pie in component.Pies.Cast<SchPie>())
                 if (IsPartVisible(pie)) RenderPie(context, pie);
-            foreach (var textFrame in component.TextFrames)
+            foreach (var textFrame in component.TextFrames.Cast<SchTextFrame>())
                 if (IsPartVisible(textFrame)) RenderTextFrame(context, textFrame);
 
             // Lines and curves
-            foreach (var line in component.Lines)
+            foreach (var line in component.Lines.Cast<SchLine>())
                 if (IsPartVisible(line)) RenderLine(context, line);
-            foreach (var arc in component.Arcs)
+            foreach (var arc in component.Arcs.Cast<SchArc>())
                 if (IsPartVisible(arc)) RenderArc(context, arc);
-            foreach (var ellipticalArc in component.EllipticalArcs)
+            foreach (var ellipticalArc in component.EllipticalArcs.Cast<SchEllipticalArc>())
                 if (IsPartVisible(ellipticalArc)) RenderEllipticalArc(context, ellipticalArc);
-            foreach (var polyline in component.Polylines)
+            foreach (var polyline in component.Polylines.Cast<SchPolyline>())
                 if (IsPartVisible(polyline)) RenderPolyline(context, polyline);
-            foreach (var bezier in component.Beziers)
+            foreach (var bezier in component.Beziers.Cast<SchBezier>())
                 if (IsPartVisible(bezier)) RenderBezier(context, bezier);
-            foreach (var wire in component.Wires)
+            foreach (var wire in component.Wires.Cast<SchWire>())
                 if (IsPartVisible(wire)) RenderWire(context, wire);
 
             // Connection points
-            foreach (var junction in component.Junctions)
+            foreach (var junction in component.Junctions.Cast<SchJunction>())
                 if (IsPartVisible(junction)) RenderJunction(context, junction);
 
             // Pins
-            foreach (var pin in component.Pins)
+            foreach (var pin in component.Pins.Cast<SchPin>())
                 if (IsPartVisible(pin)) RenderPin(context, pin);
 
             // Text/labels on top
-            foreach (var label in component.Labels)
+            foreach (var label in component.Labels.Cast<SchLabel>())
                 if (IsPartVisible(label)) RenderLabel(context, label);
-            foreach (var parameter in component.Parameters)
+            foreach (var parameter in component.Parameters.Cast<SchParameter>())
                 if (IsPartVisible(parameter)) RenderParameter(context, parameter);
-            foreach (var netLabel in component.NetLabels)
+            foreach (var netLabel in component.NetLabels.Cast<SchNetLabel>())
                 if (IsPartVisible(netLabel)) RenderNetLabel(context, netLabel);
-            foreach (var powerObj in component.PowerObjects)
+            foreach (var powerObj in component.PowerObjects.Cast<SchPowerObject>())
                 if (IsPartVisible(powerObj)) RenderPowerObject(context, powerObj);
-            foreach (var symbol in component.Symbols)
+            foreach (var symbol in component.Symbols.Cast<SchSymbol>())
                 if (IsPartVisible(symbol)) RenderSymbol(context, symbol);
         }
         finally
@@ -116,7 +120,7 @@ public sealed class SchComponentRenderer
     /// <summary>
     /// Renders a schematic pin, including its line, electrical type symbol, name, and designator.
     /// </summary>
-    public void RenderPin(IRenderContext context, ISchPin pin)
+    public void RenderPin(IRenderContext context, SchPin pin)
     {
         if (pin.IsHidden) return;
 
@@ -296,7 +300,7 @@ public sealed class SchComponentRenderer
     /// <summary>
     /// Renders a schematic line primitive with its color, width, and dash style.
     /// </summary>
-    public void RenderLine(IRenderContext context, ISchLine line)
+    public void RenderLine(IRenderContext context, SchLine line)
     {
         var (x1, y1) = _transform.WorldToScreen(line.Start.X, line.Start.Y);
         var (x2, y2) = _transform.WorldToScreen(line.End.X, line.End.Y);
@@ -314,7 +318,7 @@ public sealed class SchComponentRenderer
     /// <summary>
     /// Renders a schematic rectangle with optional fill and border.
     /// </summary>
-    public void RenderRectangle(IRenderContext context, ISchRectangle rect)
+    public void RenderRectangle(IRenderContext context, SchRectangle rect)
     {
         var (x1, y1) = _transform.WorldToScreen(rect.Corner1.X, rect.Corner1.Y);
         var (x2, y2) = _transform.WorldToScreen(rect.Corner2.X, rect.Corner2.Y);
@@ -342,7 +346,7 @@ public sealed class SchComponentRenderer
     /// <summary>
     /// Renders a schematic arc or full circle based on start and end angles.
     /// </summary>
-    public void RenderArc(IRenderContext context, ISchArc arc)
+    public void RenderArc(IRenderContext context, SchArc arc)
     {
         var (cx, cy) = _transform.WorldToScreen(arc.Center.X, arc.Center.Y);
         var r = _transform.ScaleValue(arc.Radius);
@@ -367,7 +371,7 @@ public sealed class SchComponentRenderer
     /// <summary>
     /// Renders a schematic wire as a polyline through its vertices.
     /// </summary>
-    public void RenderWire(IRenderContext context, ISchWire wire)
+    public void RenderWire(IRenderContext context, SchWire wire)
     {
         if (wire.Vertices.Count < 2) return;
 
@@ -388,7 +392,7 @@ public sealed class SchComponentRenderer
     /// <summary>
     /// Renders a schematic polyline with optional start and end line shapes (arrows, circles, etc.).
     /// </summary>
-    public void RenderPolyline(IRenderContext context, ISchPolyline polyline)
+    public void RenderPolyline(IRenderContext context, SchPolyline polyline)
     {
         if (polyline.Vertices.Count < 2) return;
 
@@ -471,7 +475,7 @@ public sealed class SchComponentRenderer
     /// <summary>
     /// Renders a schematic polygon with optional fill and border.
     /// </summary>
-    public void RenderPolygon(IRenderContext context, ISchPolygon polygon)
+    public void RenderPolygon(IRenderContext context, SchPolygon polygon)
     {
         if (polygon.Vertices.Count < 3) return;
 
@@ -497,7 +501,7 @@ public sealed class SchComponentRenderer
     /// <summary>
     /// Renders a schematic bezier curve from its cubic control points.
     /// </summary>
-    public void RenderBezier(IRenderContext context, ISchBezier bezier)
+    public void RenderBezier(IRenderContext context, SchBezier bezier)
     {
         if (bezier.ControlPoints.Count < 4) return;
 
@@ -521,7 +525,7 @@ public sealed class SchComponentRenderer
     /// <summary>
     /// Renders a schematic ellipse with optional fill and border.
     /// </summary>
-    public void RenderEllipse(IRenderContext context, ISchEllipse ellipse)
+    public void RenderEllipse(IRenderContext context, SchEllipse ellipse)
     {
         var (cx, cy) = _transform.WorldToScreen(ellipse.Center.X, ellipse.Center.Y);
         var rx = _transform.ScaleValue(ellipse.RadiusX);
@@ -543,7 +547,7 @@ public sealed class SchComponentRenderer
     /// <summary>
     /// Renders a schematic rounded rectangle with optional fill, border, and corner radii.
     /// </summary>
-    public void RenderRoundedRectangle(IRenderContext context, ISchRoundedRectangle roundedRect)
+    public void RenderRoundedRectangle(IRenderContext context, SchRoundedRectangle roundedRect)
     {
         var (x1, y1) = _transform.WorldToScreen(roundedRect.Corner1.X, roundedRect.Corner1.Y);
         var (x2, y2) = _transform.WorldToScreen(roundedRect.Corner2.X, roundedRect.Corner2.Y);
@@ -579,7 +583,7 @@ public sealed class SchComponentRenderer
     /// <summary>
     /// Renders a schematic pie (arc sector) with optional fill and border.
     /// </summary>
-    public void RenderPie(IRenderContext context, ISchPie pie)
+    public void RenderPie(IRenderContext context, SchPie pie)
     {
         var (cx, cy) = _transform.WorldToScreen(pie.Center.X, pie.Center.Y);
         var r = _transform.ScaleValue(pie.Radius);
@@ -602,7 +606,7 @@ public sealed class SchComponentRenderer
     /// <summary>
     /// Renders a schematic elliptical arc with independent primary and secondary radii.
     /// </summary>
-    public void RenderEllipticalArc(IRenderContext context, ISchEllipticalArc arc)
+    public void RenderEllipticalArc(IRenderContext context, SchEllipticalArc arc)
     {
         var (cx, cy) = _transform.WorldToScreen(arc.Center.X, arc.Center.Y);
         var rx = _transform.ScaleValue(arc.PrimaryRadius);
@@ -627,7 +631,7 @@ public sealed class SchComponentRenderer
     /// <summary>
     /// Renders a schematic text frame with optional fill, border, word wrap, and clipping.
     /// </summary>
-    public void RenderTextFrame(IRenderContext context, ISchTextFrame textFrame)
+    public void RenderTextFrame(IRenderContext context, SchTextFrame textFrame)
     {
         var (x1, y1) = _transform.WorldToScreen(textFrame.Corner1.X, textFrame.Corner1.Y);
         var (x2, y2) = _transform.WorldToScreen(textFrame.Corner2.X, textFrame.Corner2.Y);
@@ -744,7 +748,7 @@ public sealed class SchComponentRenderer
     /// <summary>
     /// Renders a schematic label with font, color, rotation, and mirroring support.
     /// </summary>
-    public void RenderLabel(IRenderContext context, ISchLabel label)
+    public void RenderLabel(IRenderContext context, SchLabel label)
     {
         if (label.IsHidden) return;
         if (string.IsNullOrEmpty(label.Text)) return;
@@ -787,7 +791,7 @@ public sealed class SchComponentRenderer
     /// <summary>
     /// Renders a schematic parameter as text, resolving string indirection and applying rotation.
     /// </summary>
-    public void RenderParameter(IRenderContext context, ISchParameter parameter)
+    public void RenderParameter(IRenderContext context, SchParameter parameter)
     {
         if (!parameter.IsVisible) return;
 
@@ -838,7 +842,7 @@ public sealed class SchComponentRenderer
     /// <summary>
     /// Renders a schematic junction as a filled circle at the connection point.
     /// </summary>
-    public void RenderJunction(IRenderContext context, ISchJunction junction)
+    public void RenderJunction(IRenderContext context, SchJunction junction)
     {
         var (sx, sy) = _transform.WorldToScreen(junction.Location.X, junction.Location.Y);
         var color = junction.Color != 0 ? ColorHelper.BgrToArgb(junction.Color) : DefaultJunctionColor;
@@ -853,7 +857,7 @@ public sealed class SchComponentRenderer
     /// <summary>
     /// Renders a schematic net label as text with font, alignment, and rotation.
     /// </summary>
-    public void RenderNetLabel(IRenderContext context, ISchNetLabel netLabel)
+    public void RenderNetLabel(IRenderContext context, SchNetLabel netLabel)
     {
         if (string.IsNullOrEmpty(netLabel.Text)) return;
 
@@ -892,7 +896,7 @@ public sealed class SchComponentRenderer
     /// <summary>
     /// Renders a schematic power object with its power port symbol and optional net name text.
     /// </summary>
-    public void RenderPowerObject(IRenderContext context, ISchPowerObject powerObject)
+    public void RenderPowerObject(IRenderContext context, SchPowerObject powerObject)
     {
         var (sx, sy) = _transform.WorldToScreen(powerObject.Location.X, powerObject.Location.Y);
         var color = powerObject.Color != 0 ? ColorHelper.BgrToArgb(powerObject.Color) : ColorHelper.Black;
@@ -1036,7 +1040,7 @@ public sealed class SchComponentRenderer
 
     // ── Image ───────────────────────────────────────────────────────
 
-    private void RenderImage(IRenderContext context, ISchImage image)
+    private void RenderImage(IRenderContext context, SchImage image)
     {
         var (x1, y1) = _transform.WorldToScreen(image.Corner1.X, image.Corner1.Y);
         var (x2, y2) = _transform.WorldToScreen(image.Corner2.X, image.Corner2.Y);
@@ -1070,7 +1074,7 @@ public sealed class SchComponentRenderer
 
     // ── Symbol ──────────────────────────────────────────────────────
 
-    private void RenderSymbol(IRenderContext context, ISchSymbol symbol)
+    private void RenderSymbol(IRenderContext context, SchSymbol symbol)
     {
         // Symbols are complex asset references - stub (V1 also doesn't render)
     }
@@ -1110,19 +1114,19 @@ public sealed class SchComponentRenderer
         };
     }
 
-    private static (TextHAlign h, TextVAlign v) MapJustification(SchTextJustification justification)
+    private static (TextHAlign h, TextVAlign v) MapJustification(TextJustification justification)
     {
         return justification switch
         {
-            SchTextJustification.BottomLeft => (TextHAlign.Left, TextVAlign.Bottom),
-            SchTextJustification.BottomCenter => (TextHAlign.Center, TextVAlign.Bottom),
-            SchTextJustification.BottomRight => (TextHAlign.Right, TextVAlign.Bottom),
-            SchTextJustification.MiddleLeft => (TextHAlign.Left, TextVAlign.Middle),
-            SchTextJustification.MiddleCenter => (TextHAlign.Center, TextVAlign.Middle),
-            SchTextJustification.MiddleRight => (TextHAlign.Right, TextVAlign.Middle),
-            SchTextJustification.TopLeft => (TextHAlign.Left, TextVAlign.Top),
-            SchTextJustification.TopCenter => (TextHAlign.Center, TextVAlign.Top),
-            SchTextJustification.TopRight => (TextHAlign.Right, TextVAlign.Top),
+            TextJustification.BottomLeft => (TextHAlign.Left, TextVAlign.Bottom),
+            TextJustification.BottomCenter => (TextHAlign.Center, TextVAlign.Bottom),
+            TextJustification.BottomRight => (TextHAlign.Right, TextVAlign.Bottom),
+            TextJustification.MiddleLeft => (TextHAlign.Left, TextVAlign.Middle),
+            TextJustification.MiddleCenter => (TextHAlign.Center, TextVAlign.Middle),
+            TextJustification.MiddleRight => (TextHAlign.Right, TextVAlign.Middle),
+            TextJustification.TopLeft => (TextHAlign.Left, TextVAlign.Top),
+            TextJustification.TopCenter => (TextHAlign.Center, TextVAlign.Top),
+            TextJustification.TopRight => (TextHAlign.Right, TextVAlign.Top),
             _ => (TextHAlign.Left, TextVAlign.Bottom)
         };
     }
@@ -1225,7 +1229,7 @@ public sealed class SchComponentRenderer
     /// Checks whether a primitive should be rendered based on the current PartFilter.
     /// Uses dynamic property access since OwnerPartId is not on the IPrimitive interface.
     /// </summary>
-    private bool IsPartVisible(IPrimitive primitive)
+    private bool IsPartVisible(object primitive)
     {
         if (PartFilter is not { } partId || partId <= 0)
             return true;
@@ -1240,7 +1244,7 @@ public sealed class SchComponentRenderer
     /// Gets the OwnerPartId from a primitive via reflection/pattern matching.
     /// Returns 0 (visible in all parts) if the property is not found.
     /// </summary>
-    private static int GetOwnerPartId(IPrimitive primitive)
+    private static int GetOwnerPartId(object primitive)
     {
         // Use a type switch for the concrete schematic types
         // This avoids reflection overhead while covering all known types

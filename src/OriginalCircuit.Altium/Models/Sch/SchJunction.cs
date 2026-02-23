@@ -1,4 +1,4 @@
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
@@ -19,6 +19,9 @@ public sealed class SchJunction : ISchJunction
     /// Junction color (RGB).
     /// </summary>
     public int Color { get; set; }
+
+    /// <inheritdoc />
+    EdaColor ISchJunction.Color => AltiumColorHelper.BgrToEdaColor(Color);
 
     /// <summary>
     /// Whether the junction is locked.

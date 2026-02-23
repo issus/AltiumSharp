@@ -1,12 +1,14 @@
 using OpenMcdf;
 using OriginalCircuit.Altium.Diagnostics;
 using OriginalCircuit.Altium.Models.Pcb;
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 using OriginalCircuit.Altium.Serialization.Binary;
 using OriginalCircuit.Altium.Serialization.Compound;
 using System.Buffers;
 using System.IO.Compression;
 using System.Text;
+using PadShape = OriginalCircuit.Altium.Models.Pcb.PadShape;
+using PadHoleType = OriginalCircuit.Altium.Models.Pcb.PadHoleType;
 
 namespace OriginalCircuit.Altium.Serialization.Readers;
 

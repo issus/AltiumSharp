@@ -22,4 +22,8 @@
     <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.0" NoWarn="NU1510" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\OriginalCircuit.Eda.Abstractions\src\OriginalCircuit.Eda.Abstractions\OriginalCircuit.Eda.Abstractions.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,4 +1,4 @@
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
@@ -26,6 +26,15 @@ public sealed class SchPolyline : ISchPolyline
     /// Line style (Solid, Dashed, Dotted).
     /// </summary>
     public SchLineStyle LineStyle { get; set; } = SchLineStyle.Solid;
+
+    /// <inheritdoc />
+    EdaColor ISchPolyline.Color => AltiumColorHelper.BgrToEdaColor(Color);
+
+    /// <inheritdoc />
+    Coord ISchPolyline.LineWidth => AltiumLineWidthHelper.IndexToCoord(LineWidth);
+
+    /// <inheritdoc />
+    LineStyle ISchPolyline.LineStyle => AltiumEnumHelper.SchLineStyleToEdaLineStyle(LineStyle);
 
     /// <summary>
     /// Shape at the start of the polyline (0=None, 1=Arrow, etc.).

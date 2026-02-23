@@ -1,4 +1,4 @@
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
@@ -27,6 +27,12 @@ public sealed class SchBus : ISchBus
     /// Bus color (RGB).
     /// </summary>
     public int Color { get; set; }
+
+    /// <inheritdoc />
+    EdaColor ISchBus.Color => AltiumColorHelper.BgrToEdaColor(Color);
+
+    /// <inheritdoc />
+    Coord ISchBus.LineWidth => AltiumLineWidthHelper.IndexToCoord(LineWidth);
 
     /// <summary>
     /// Area/fill color (RGB).

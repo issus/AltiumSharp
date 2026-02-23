@@ -1,4 +1,4 @@
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Pcb;
 
@@ -73,6 +73,15 @@ public sealed class PcbPad : IPcbPad
     /// Hole type.
     /// </summary>
     public PadHoleType HoleType { get; set; } = PadHoleType.Round;
+
+    /// <inheritdoc />
+    OriginalCircuit.Eda.Enums.PadShape IPcbPad.Shape => AltiumEnumHelper.ToEdaPadShape(ShapeTop);
+
+    /// <inheritdoc />
+    CoordPoint IPcbPad.Size => SizeTop;
+
+    /// <inheritdoc />
+    OriginalCircuit.Eda.Enums.PadHoleType IPcbPad.HoleType => AltiumEnumHelper.ToEdaPadHoleType(HoleType);
 
     /// <summary>
     /// Rotation angle in degrees.

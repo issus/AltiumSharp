@@ -1,4 +1,4 @@
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
@@ -15,17 +15,6 @@ public enum PinElectricalType
     HiZ = 5,
     OpenEmitter = 6,
     Power = 7
-}
-
-/// <summary>
-/// Pin orientation.
-/// </summary>
-public enum PinOrientation
-{
-    Right = 0,
-    Up = 1,
-    Left = 2,
-    Down = 3
 }
 
 /// <summary>
@@ -144,6 +133,9 @@ public sealed class SchPin : ISchPin
     /// Whether the pin is hidden.
     /// </summary>
     public bool IsHidden { get; set; }
+
+    /// <inheritdoc />
+    OriginalCircuit.Eda.Enums.PinElectricalType ISchPin.ElectricalType => AltiumEnumHelper.ToEdaPinElectricalType(ElectricalType);
 
     /// <summary>
     /// Custom color for the designator text.

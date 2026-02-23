@@ -3,7 +3,7 @@ using OriginalCircuit.Altium.Serialization.Readers;
 using OriginalCircuit.Altium.Serialization.Writers;
 using OriginalCircuit.Altium.Models.Pcb;
 using OriginalCircuit.Altium.Models.Sch;
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Tests;
 

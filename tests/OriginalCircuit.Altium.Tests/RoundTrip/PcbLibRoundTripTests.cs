@@ -1,5 +1,5 @@
 using OriginalCircuit.Altium.Models.Pcb;
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 using OriginalCircuit.Altium.Serialization.Readers;
 using OriginalCircuit.Altium.Serialization.Writers;
 
@@ -201,7 +201,7 @@ public sealed class PcbLibRoundTripTests
         original.Add(component);
 
         var readBack = RoundTrip(original);
-        var fill = (PcbFill)readBack.Components.First().Fills.First();
+        var fill = (PcbFill)((PcbComponent)readBack.Components.First()).Fills.First();
 
         Assert.Equal(-50, fill.Corner1.X.ToMils(), 1);
         Assert.Equal(-25, fill.Corner1.Y.ToMils(), 1);
@@ -287,7 +287,7 @@ public sealed class PcbLibRoundTripTests
         original.Add(component);
 
         var readBack = RoundTrip(original);
-        var comp = readBack.Components.First();
+        var comp = (PcbComponent)readBack.Components.First();
 
         Assert.Equal("AllTypes", comp.Name);
         Assert.Equal("Has every primitive type", comp.Description);

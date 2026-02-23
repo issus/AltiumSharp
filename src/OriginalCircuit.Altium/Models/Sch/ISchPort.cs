@@ -1,9 +1,11 @@
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Models;
+using OriginalCircuit.Eda.Primitives;
 
 namespace OriginalCircuit.Altium.Models.Sch;
 
 /// <summary>
 /// Represents a schematic port primitive that provides an off-sheet or hierarchical connection point.
+/// This is an Altium-specific primitive with no shared equivalent.
 /// </summary>
 public interface ISchPort : IPrimitive
 {

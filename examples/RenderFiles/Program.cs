@@ -35,8 +35,10 @@
 
 using OriginalCircuit.Altium.Models.Pcb;
 using OriginalCircuit.Altium.Models.Sch;
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Enums;
+using OriginalCircuit.Eda.Primitives;
 using OriginalCircuit.Altium.Rendering;
+using PinElectricalType = OriginalCircuit.Altium.Models.Sch.PinElectricalType;
 using OriginalCircuit.Altium.Rendering.Raster;
 using OriginalCircuit.Altium.Rendering.Svg;
 

@@ -36,7 +36,9 @@
 using OriginalCircuit.Altium;
 using OriginalCircuit.Altium.Models.Pcb;
 using OriginalCircuit.Altium.Models.Sch;
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Enums;
+using PinElectricalType = OriginalCircuit.Altium.Models.Sch.PinElectricalType;
+using OriginalCircuit.Eda.Primitives;
 using OriginalCircuit.Altium.Serialization.Writers;
 
 var outputDir = Path.Combine(Path.GetTempPath(), "AltiumExamples");

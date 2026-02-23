@@ -1,6 +1,6 @@
 using OpenMcdf;
 using OriginalCircuit.Altium.Models.Pcb;
-using OriginalCircuit.Altium.Primitives;
+using OriginalCircuit.Eda.Primitives;
 using OriginalCircuit.Altium.Serialization.Binary;
 
 namespace OriginalCircuit.Altium.Serialization.Writers;

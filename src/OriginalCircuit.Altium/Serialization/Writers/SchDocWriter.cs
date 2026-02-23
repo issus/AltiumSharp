@@ -91,7 +91,7 @@ public sealed class SchDocWriter
         var index = 0;
         var pinIndex = 0;
 
-        foreach (var component in document.Components)
+        foreach (var component in document.Components.Cast<SchComponent>())
         {
             cancellationToken.ThrowIfCancellationRequested();
             var componentIndex = index;
@@ -108,7 +108,7 @@ public sealed class SchDocWriter
         headerStream.SetData(ms.ToArray());
     }
 
-    private static void WritePrimitives(BinaryFormatWriter writer, ISchComponent component,
+    private static void WritePrimitives(BinaryFormatWriter writer, SchComponent component,
         int ownerIndex, ref int index, ref int pinIndex,
         Dictionary<int, (int x, int y, int length)> pinsFrac,
         Dictionary<int, Dictionary<string, string>> pinsSymbolLineWidth)
@@ -179,7 +179,7 @@ public sealed class SchDocWriter
         WriteImplementationRecords(writer, component, ownerIndex, ref index);
     }
 
-    private static void WriteImplementationRecords(BinaryFormatWriter writer, ISchComponent component,
+    private static void WriteImplementationRecords(BinaryFormatWriter writer, SchComponent component,
         int componentIndex, ref int index)
     {
         if (component.Implementations.Count == 0)
