@@ -4,7 +4,6 @@
     <TargetFramework>net10.0</TargetFramework>
 
     <PackageId>OriginalCircuit.Altium.Rendering.Core</PackageId>
-    <Version>2.0.0-alpha.1</Version>
     <Description>Core rendering abstractions for Altium Designer file visualization</Description>
   </PropertyGroup>
 

@@ -4,6 +4,21 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+  </PropertyGroup>
+
+  <!-- Shared NuGet metadata for all publishable packages -->
+  <PropertyGroup Condition="'$(IsPackable)' != 'false' and '$(DevelopmentDependency)' != 'true'">
+    <Version>2.0.0-alpha.1</Version>
+    <Authors>OriginalCircuit</Authors>
+    <Company>OriginalCircuit Limited</Company>
+    <Copyright>Copyright 2020-2026 Original Circuit Limited</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/issus/AltiumSharp</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/issus/AltiumSharp</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>altium;schlib;pcblib;altium designer;eda;ecad;pcb</PackageTags>
   </PropertyGroup>
 
 </Project>

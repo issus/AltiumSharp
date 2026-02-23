@@ -2,35 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-
-    <!-- Package metadata -->
     <PackageId>OriginalCircuit.Altium</PackageId>
-    <Version>2.0.0-alpha.1</Version>
-    <Authors>OriginalCircuit</Authors>
-    <Company>OriginalCircuit Limited</Company>
     <Description>High-performance library for reading and writing Altium Designer files (.PcbLib, .SchLib, .PcbDoc, .SchDoc)</Description>
-    <Copyright>Copyright 2020-2026 Original Circuit Limited. Released under MIT License</Copyright>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/issus/AltiumSharp</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/issus/AltiumSharp</RepositoryUrl>
-    <PackageTags>altium;schlib;pcblib;altium designer;eda;ecad;pcb</PackageTags>
-
-    <!-- Enable analyzers -->
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <AnalysisLevel>latest</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Source generator reference -->
     <ProjectReference Include="..\OriginalCircuit.Altium.Generators\OriginalCircuit.Altium.Generators.csproj"
                       OutputItemType="Analyzer"
                       ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>
-    <!-- OpenMcdf for compound file support (evaluate for custom implementation later) -->
     <PackageReference Include="OpenMcdf" Version="2.3.0" />
-    <!-- Windows-1252 encoding support (required at runtime, suppress pruning warning) -->
     <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.0" NoWarn="NU1510" />
   </ItemGroup>
 
