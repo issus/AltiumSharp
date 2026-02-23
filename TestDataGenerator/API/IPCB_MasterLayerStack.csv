@@ -1,0 +1,33 @@
+MemberType,Name,DataType
+function,Board,IPCB_Board
+function,Count,Integer
+function,CreateLayer(const ALayer : IDispatch),IPCB_LayerObject
+function,CreateSubstack,IPCB_LayerStack
+procedure,DisableLayer(ASubstack : IPCB_LayerStack; ALayer : IPCB_LayerObject),
+property,DisplayName[DisplayMode: TLayerNameDisplayMode],TPCBString
+procedure,EnableLayer(ASubstack : IPCB_LayerStack; ALayer : IPCB_LayerObject),
+procedure,Export_ToParameters(Params : PWideChar),
+function,First(T : TLayerClassID),IPCB_LayerObject
+function,GetSubstack(ASubstackID : WideString),IPCB_LayerStack
+function,Get_ZBottom(Layer : IPCB_LayerObject),Integer
+function,Get_ZTop(Layer : IPCB_LayerObject),Integer
+function,Id,WideString
+procedure,Import_FromParameters(Params : PWideChar),
+function,InsertAbove(ARefLayer : IPCB_LayerObject; ALayer : IPCB_LayerObject),IPCB_LayerObject
+function,InsertBelow(ARefLayer : IPCB_LayerObject; ALayer : IPCB_LayerObject),IPCB_LayerObject
+function,InsertOnBottom(ALayer : IPCB_LayerObject),IPCB_LayerObject
+function,InsertOnTop(ALayer : IPCB_LayerObject),IPCB_LayerObject
+property,IsFlex,Boolean
+property,Iterator,IPCB_LayerObjectIterator
+property,I_ObjectAddress,Pointer
+function,Last(T : TLayerClassID),IPCB_LayerObject
+function,LayerNumberInStack(const ALayer : Integer),Integer
+property,LayerStackStyle,TLayerStackStyle
+property,Name,TPCBString
+function,Next(T : TLayerClassID; ARefLayer : IPCB_LayerObject),IPCB_LayerObject
+function,Previous(T : TLayerClassID; ARefLayer : IPCB_LayerObject),IPCB_LayerObject
+function,RemoveLayer(Layer : IPCB_LayerObject),Boolean
+function,RemoveSubstack(Substack : IPCB_LayerStack),Boolean
+function,StateID,Integer
+function,SubstackCount,Integer
+property,Substacks[Index: Integer],IPCB_LayerStack

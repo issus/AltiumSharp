@@ -1,0 +1,149 @@
+MemberType,Name,DataType
+function,ActualCheck,(P1 : IPCB_Primitive, P2 : IPCB_Primitive) : IPCB_Violation
+property,AllowGlobalEdit,Boolean
+procedure,BeginModify,
+property,Board,IPCB_Board
+function,BoundingRectangle,IDispatch
+function,BoundingRectangleChildren,IDispatch
+function,BoundingRectangleForPainting,IDispatch
+function,BoundingRectangleForSelection,IDispatch
+procedure,CancelModify,
+function,CheckBinaryScope,(P1 : IPCB_Primitive, P2 : IPCB_Primitive) : Boolean
+function,CheckUnaryScope,(P : IPCB_Primitive) : Boolean
+property,Comment,TPCBString
+property,Component,IPCB_Component
+property,Coordinate,IPCB_Coordinate
+property,DefinedByLogicalDocument,Boolean
+property,Descriptor,TPCBString
+property,Detail,TPCBString
+property,Dimension,IPCB_Dimension
+property,DrawAsPreview,Boolean
+property,DRCEnabled,Boolean
+property,DRCError,Boolean
+property,Enabled,Boolean
+property,EnableDraw,Boolean
+property,Enabled_Direct,Boolean
+property,Enabled_vComponent,Boolean
+property,Enabled_vCoordinate,Boolean
+property,Enabled_vDimension,Boolean
+property,Enabled_vNet,Boolean
+property,Enabled_vPolygon,Boolean
+procedure,EndModify,
+procedure,Export_ToParameters,(AParams : PWideChar)
+property,FavoredImpedance,TDouble
+property,FilterLayerStackID,WideString
+function,FindImpedanceProfileForRule,(Impedance : Double) : IPCB_ImpedanceProfile
+procedure,FlipXY,(Axis : Integer, MirrOp : TMirrorOperation)
+function,GetImpedanceProfile,IPCB_ImpedanceProfile
+function,GetState_CollisionExpansion,Integer
+function,GetState_DataSummaryString,WideString
+function,GetState_MaxGapAtSubStack,"(const L : Integer, const StackID : WideString) : Integer"
+function,GetState_MaxWidthAtSubStack,"(const L : Integer, const StackID : WideString) : Integer"
+function,GetState_MinGapAtSubStack,"(const L : Integer, const StackID : WideString) : Integer"
+function,GetState_MinWidthAtSubStack,"(const L : Integer, const StackID : WideString) : Integer"
+function,GetState_PreferedGapAtSubStack,"(const L : Integer, const StackID : WideString) : Integer"
+function,GetState_PreferedWidthAtSubStack,"(const L : Integer, const StackID : WideString) : Integer"
+function,GetState_ScopeDescriptorString,WideString
+function,GetState_ShortDescriptorString,WideString
+function,GetState_ViolationDescriptorString,(V : IPCB_Violation) : WideString
+function,GetWhatsThisHelpString,WideString
+procedure,GraphicallyInvalidate,
+property,Handle,TPCBString
+property,Identifier,TPCBString
+property,ImpedanceDriven,Boolean
+property,ImpedanceProfileId,TPCBString
+property,InBoard,Boolean
+property,InComponent,Boolean
+property,InCoordinate,Boolean
+property,Index,Word
+property,InDimension,Boolean
+property,InNet,Boolean
+property,InPolygon,Boolean
+property,InSelectionMemory[Index: Integer],Boolean
+procedure,Invalidate,
+property,IsAdvanced,Boolean
+property,IsAssyTestpoint_Bottom,Boolean
+property,IsAssyTestpoint_Top,Boolean
+property,IsElectricalPrim,Boolean
+function,IsFreePrimitive,Boolean
+function,IsHidden,Boolean
+property,IsKeepout,Boolean
+function,IsLayerDefined,(ALayer : Integer, const ALayerStackID : WideString) : Boolean
+property,IsPreRoute,Boolean
+function,IsSaveable,(AVer : TAdvPCBFileFormatVersion) : Boolean
+property,IsTenting,Boolean
+property,IsTenting_Bottom,Boolean
+property,IsTenting_Top,Boolean
+property,IsTestpoint_Bottom,Boolean
+property,IsTestpoint_Top,Boolean
+function,IsUnary,Boolean
+function,IsUniformMaxWidth,(const LSID : WideString, out Width : Integer) : Boolean
+function,IsUniformMinWidth,(const LSID : WideString, out Width : Integer) : Boolean
+function,IsUniformPreferredWidth,(const LSID : WideString, out Width : Integer) : Boolean
+function,IsValid,Boolean
+function,I_ObjectAddress,Pointer
+property,Layer,TLayer
+property,LayerKind,TRuleLayerKind
+property,Layer_V6,TV6_Layer
+property,MaxGap[L: Integer],TCoord
+property,MaxImpedance,TDouble
+property,MaxLimit,TCoord
+property,MaxUncoupledLength,TCoord
+property,MaxWidth[L: Integer],TCoord
+property,MinGap[L: Integer],TCoord
+property,MinImpedance,TDouble
+property,MinLimit,TCoord
+property,MinWidth[L: Integer],TCoord
+procedure,Mirror,(Axis : Integer, MirrOp : TMirrorOperation)
+property,MiscFlag1,Boolean
+property,MiscFlag2,Boolean
+property,MiscFlag3,Boolean
+property,MostFrequentGap,TCoord
+property,MostFrequentWidth,TCoord
+property,Moveable,Boolean
+procedure,MoveByXY,(AX : Integer, AY : Integer)
+procedure,MoveToXY,(AX : Integer, AY : Integer)
+property,Name,TPCBString
+property,Net,IPCB_Net
+property,NetScope,TNetScope
+function,NetScopeMatches,(P1 : IPCB_Primitive, P2 : IPCB_Primitive) : Boolean
+property,ObjectId,TObjectId
+property,ObjectIDString,TPCBString
+property,PadCacheRobotFlag,Boolean
+property,PasteMaskExpansion,TCoord
+property,Polygon,IPCB_Polygon
+property,PolygonOutline,Boolean
+property,PowerPlaneClearance,TCoord
+property,PowerPlaneConnectStyle,TPlaneConnectStyle
+property,PowerPlaneReliefExpansion,TCoord
+property,PreferedGap[L: Integer],TCoord
+property,PreferedWidth[L: Integer],TCoord
+function,Priority,Word
+property,ReliefAirGap,TCoord
+property,ReliefConductorWidth,TCoord
+property,ReliefEntries,Integer
+function,Replicate,IPCB_Primitive
+function,RequiredParameterSpace,Integer
+procedure,RotateBy,(Angle : Double)
+property,RuleKind,TRuleKind
+property,Scope1Expression,TPCBString
+function,Scope1Includes,(P : IPCB_Primitive) : Boolean
+property,Scope2Expression,TPCBString
+function,Scope2Includes,(P : IPCB_Primitive) : Boolean
+function,ScopeKindIsValid,(AScopeKind : TScopeKind) : Boolean
+property,Selected,Boolean
+procedure,SetState_MaxGapAtSubStack,"(const L : Integer, const StackID : WideString, Value : Integer)"
+procedure,SetState_MaxWidthAtSubStack,"(const L : Integer, const StackID : WideString, Value : Integer)"
+procedure,SetState_MinGapAtSubStack,"(const L : Integer, const StackID : WideString, Value : Integer)"
+procedure,SetState_MinWidthAtSubStack,"(const L : Integer, const StackID : WideString, Value : Integer)"
+procedure,SetState_PreferedGapAtSubStack,"(const L : Integer, const StackID : WideString, Value : Integer)"
+procedure,SetState_PreferedWidthAtSubStack,"(const L : Integer, const StackID : WideString, Value : Integer)"
+procedure,SetState_Preview,"(Enable : Boolean, Color : Cardinal, Opacity : Single, z : Integer, Height : Integer, sx : Single, sy : Single, SZ : Single)"
+property,SolderMaskExpansion,TCoord
+procedure,SwapLayerPairs,
+property,TearDrop,Boolean
+property,UnionIndex,Integer
+property,UniqueId,TPCBString
+property,Used,Boolean
+property,UserRouted,Boolean
+property,ViewableObjectID,TViewableObjectID

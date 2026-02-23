@@ -1,0 +1,7 @@
+MemberType,Name,DataType
+property,CanSelectSide[ASide: TViaStructureFeatureSide],Boolean
+procedure,CopyTo,const AFeature : IPCB_ViaStructureFeature
+property,FeatureType,TViaStructureFeatureType
+property,Material,TPCBString
+function,Replicate,IPCB_ViaStructureFeature
+property,Side,TViaStructureFeatureSide

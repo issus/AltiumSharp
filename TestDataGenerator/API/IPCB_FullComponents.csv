@@ -1,0 +1,4 @@
+MemberType,Name,DataType
+function,GetComponents,const ADesignVariant : IPCB_DesignVariant) : IPCB_FullComponentList
+function,GetComponentsForAllVariants,IPCB_FullComponentList
+function,GetComponentsForCurrentVariant,IPCB_FullComponentList

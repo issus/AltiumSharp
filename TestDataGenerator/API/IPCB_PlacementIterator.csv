@@ -1,0 +1,4 @@
+MemberType,Name,DataType
+procedure,SetFilter_IncludeDynamicGuides,AValue : Boolean
+procedure,SetFilter_IncludeGrids,AValue : Boolean
+procedure,SetFilter_IncludeStaticGuides,AValue : Boolean

@@ -1,0 +1,23 @@
+MemberType,Name,DataType
+function,AddCartesianGrid,IPCB_CartesianGrid
+function,AddMCADCartesianGrid,IPCB_CartesianGrid
+function,AddMCADPolarGrid,IPCB_PolarGrid
+function,AddPolarGrid,IPCB_PolarGrid
+procedure,BeginUpdate,
+function,CanDecrementGridPriority(const AGrid : IPCB_PlacementGrid),Boolean
+function,CanIncrementGridPriority(const AGrid : IPCB_PlacementGrid),Boolean
+function,CreatePlacementGridIterator,IPCB_PlacementGridIterator
+function,CreateRealPlacementGuideIterator,IPCB_RealPlacementGuideIterator
+function,DecrementGridPriority(const AGrid : IPCB_PlacementGrid),Boolean
+procedure,DeleteAllGrids,
+procedure,DeleteAllGuides,
+procedure,DeleteAllMCADGrids,
+function,DeleteGrid(const AGrid : IPCB_PlacementGrid),Boolean
+function,DeleteGuide(const AGuide : IPCB_PlacementGuide),Boolean
+procedure,EndUpdate,
+function,FindApplicableGrid(APrimitive : IPCB_Primitive),IPCB_PlacementGrid
+function,FindApplicableGridByXY(AX : Integer; AY : Integer),IPCB_PlacementGrid
+function,IncrementGridPriority(const AGrid : IPCB_PlacementGrid),Boolean
+procedure,NextStateID,
+procedure,ResolveGridPriorities,
+function,RunGridEditor(const ABoard : IPCB_Board; const AGrid : IPCB_PlacementGrid),Boolean

@@ -1,0 +1,25 @@
+MemberType,Name,DataType
+procedure,ClearGraphicalObjects,
+procedure,ConfigView,(Parameters : WideString)
+property,DirectionX,Single
+property,DirectionY,Single
+property,DirectionZ,Single
+function,GetDummyBoard,IPCB_Board
+function,GetIs3D,Boolean
+function,GetIsItemNotFound,Boolean
+function,I_ObjectAddress,Pointer
+procedure,KeyDown,(var Key : Word, Shift : TShiftState)
+procedure,MouseWheel,"(Sender : TObject, Shift : TShiftState, WheelDelta : Integer, const MousePos : IDispatch, var Handled : Boolean)"
+property,Name,TPCBString
+property,Origin,TCoordPoint3D
+procedure,RefreshView,
+procedure,Register3DChangedHandler,(Is3DChangedHandler : IPCB_ComponentPainter3DChangedHandler)
+procedure,RegisterGOMouseHoverHandler,(GraphicalObjectMouseHoverHandler : IPCB_GOMouseHoverHandler)
+procedure,SetAllLayersVisibilityState,(Visible : Boolean)
+procedure,SetCamera,(LowX : Integer, LowY : Integer, HighX : Integer, HighY : Integer)
+procedure,SetCameraAngle,"(LookAtX : Double, LookAtY : Double, LookAtZ : Double, RotationX : Double, RotationY : Double, RotationZ : Double, RotationW : Double, ZoomMultiplier : Double)"
+procedure,SetComponentByHandle,(const AComponent : IPCB_Component)
+procedure,SetComponentByPath,(APattern : WideString, ALibraryPath : WideString)
+procedure,SetDirectXMode,
+procedure,SetVariantOption,(const AVariantOption : IVariantOption)
+procedure,SetViewRect,(LowX : Integer, LowY : Integer, HighX : Integer, HighY : Integer)

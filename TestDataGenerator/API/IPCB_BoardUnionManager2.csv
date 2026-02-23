@@ -1,0 +1,24 @@
+MemberType,Name,DataType
+procedure,AddPrimitiveToUnion,"(AUnionIndex : Integer, APrimitive : IPCB_Primitive)"
+procedure,CreateEmptyUnion,"(AUnionType : TSmartUnionObjectType, AUnionIndex : Integer, const AName : WideString)"
+function,CreateSmartUnion,(ASmartUnionObjectType : TSmartUnionObjectType) : IPCB_SmartUnionObject
+procedure,DefineNameForUnion,"(AUnionIndex : Integer, const AName : WideString)"
+procedure,DirectAddPrimitiveToUnion,"(AUnionIndex : Integer, APrimitive : IPCB_Primitive)"
+procedure,DirectAddPrimitiveToUnion2,"(AUnionIndex : Integer, APrimitive : IPCB_Primitive, AUnionType : TSmartUnionObjectType)"
+function,FindUnusedUnionIndex,Integer
+function,GetAllObjectsInUnion,(AUnionIndex : Integer) : IInterfaces
+function,GetAllUnions,IPCB_UnionList
+function,GetRelationsEnumerator,IPCB_RelationEnumerator
+function,GetSmartUnionByIndex,(const UnionIndex : Integer) : IPCB_SmartUnionObject
+function,GetState_UnionCount,Integer
+function,GetState_Unions,(AIndex : Integer) : IPCB_Union
+function,GetState_UnionsByUnionIndex,(AUnionIndex : Integer) : IPCB_Union
+function,GetUnusedUnionIndexForSmartUnion,(const AUnionID : TSmartUnionObjectType) : Integer
+function,IsSimpleUnion,(AUnionIndex : Integer) : Boolean
+procedure,RemoveSmartUnion,(const ASmartUnion : IPCB_SmartUnionObject)
+procedure,RemoveUnion,(AUnionIndex : Integer)
+procedure,RenameUnion,"(AUnionIndex : Integer, const ANewName : WideString)"
+procedure,SetRelation,"(AParentID : Integer, AChildID : Integer)"
+procedure,SetUnionFeatureBooleanValue,"(AUnionIndex : Integer, AFeature : TUnionFeatures, AValue : Boolean)"
+procedure,SetUnionFeatureIntegerValue,"(AUnionIndex : Integer, AFeature : TUnionFeatures, AValue : Integer)"
+procedure,SetUnionFeatureStringValue,"(AUnionIndex : Integer, AFeature : TUnionFeatures, const AValue : WideString)"

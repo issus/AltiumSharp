@@ -1,0 +1,3 @@
+MemberType,Name,DataType
+function,GetPrintedElectronics,IPrintedElectronics
+function,IsPrintedElectronics,Boolean

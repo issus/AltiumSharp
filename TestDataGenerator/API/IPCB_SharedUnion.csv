@@ -1,0 +1,29 @@
+MemberType,Name,DataType
+property,ActiveLayer,TLayer
+procedure,BeginModify(const ADoPushState : Boolean; const APrimitive : IPCB_Primitive),
+procedure,CancelEditing,
+procedure,CancelRegistrationOnBoard,
+procedure,ClearLayersLock,
+procedure,ClearPrimitive(const APrimitive : IPCB_Primitive),
+procedure,EditPrimitiveOnLayer(ALayer : Integer),
+procedure,EndModify(const APrimitive : IPCB_Primitive),
+procedure,HidePrimitivesOnLayer(ALayer : Integer),
+property,Id,Integer
+function,I_ObjectAddress,Pointer
+property,LayerIsVisible[ALayer: Integer],Boolean
+procedure,LinkPrimitive(const AValue : IPCB_Primitive),
+procedure,MoveByXY(AX : Integer; AY : Integer),
+procedure,MoveByXYPrimitivesOnLayer(ALayer : Integer; AX : Integer; AY : Integer),
+property,OwnerPrimitive,IPCB_Primitive
+property,PrimitiveLockOnLayer[ALayer: Integer],Boolean
+property,Primitives,IPCB_PrimitiveList
+procedure,RegisterOnBoard,
+function,Replicate,IPCB_SharedUnion
+procedure,ResetTransormToLastStateOnLayer(ALayer : Integer),
+procedure,RotateAroundXYPrimitivesOnLayer(ALayer : Integer; AX : Integer; AY : Integer; ARotation : Double),
+procedure,SetState_RotateAroundXY(AX : Integer; AY : Integer; RotationAngle : Double),
+procedure,ShowPrimitivesOnLayer(ALayer : Integer),
+procedure,SwapLayersIfNeeded,
+procedure,UnLinkAllPrimitives,
+procedure,UnLinkPrimitive(const AValue : IPCB_Primitive),
+procedure,UpdateLayerVisibility,

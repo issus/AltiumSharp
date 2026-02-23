@@ -1,0 +1,8 @@
+MemberType,Name,DataType
+function,GetExcluded,ILayerValueIterator
+function,GetIncluded,ILayerValueIterator
+function,HasExcluded,Boolean
+function,HasExcludedLayer,const ALayer : IDispatch) : Boolean
+function,HasIncluded,Boolean
+function,HasIncludedLayer,const ALayer : IDispatch) : Boolean
+function,IsAll,Boolean

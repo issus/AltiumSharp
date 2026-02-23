@@ -1,0 +1,3 @@
+MemberType,Name,DataType
+property,Current,Double
+property,Resistance,Double

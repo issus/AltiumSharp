@@ -1,0 +1,114 @@
+MemberType,Name,DataType
+function,ActualCheck,"(P1 : IPCB_Primitive, P2 : IPCB_Primitive) : IPCB_Violation"
+property,AllowGlobalEdit,Boolean
+procedure,BeginModify,
+property,Board,IPCB_Board
+function,BoundingRectangle,IDispatch
+function,BoundingRectangleChildren,IDispatch
+function,BoundingRectangleForPainting,IDispatch
+function,BoundingRectangleForSelection,IDispatch
+procedure,CancelModify,
+function,CheckBinaryScope,"(P1 : IPCB_Primitive, P2 : IPCB_Primitive) : Boolean"
+function,CheckUnaryScope,(P : IPCB_Primitive) : Boolean
+property,Comment,TPCBString
+property,Component,IPCB_Component
+property,Coordinate,IPCB_Coordinate
+property,DefinedByLogicalDocument,Boolean
+property,Descriptor,TPCBString
+property,Detail,TPCBString
+property,Dimension,IPCB_Dimension
+property,DrawAsPreview,Boolean
+property,DRCEnabled,Boolean
+property,DRCError,Boolean
+property,Enabled,Boolean
+property,EnableDraw,Boolean
+property,Enabled_Direct,Boolean
+property,Enabled_vComponent,Boolean
+property,Enabled_vCoordinate,Boolean
+property,Enabled_vDimension,Boolean
+property,Enabled_vNet,Boolean
+property,Enabled_vPolygon,Boolean
+procedure,EndModify,
+procedure,Export_ToParameters,(AParams : PWideChar)
+procedure,FlipXY,"(Axis : Integer, MirrOp : TMirrorOperation)"
+function,GetState_CollisionExpansion,Integer
+function,GetState_DataSummaryString,WideString
+function,GetState_ScopeDescriptorString,WideString
+function,GetState_ShortDescriptorString,WideString
+function,GetState_ViolationDescriptorString,(V : IPCB_Violation) : WideString
+function,GetWhatsThisHelpString,WideString
+procedure,GraphicallyInvalidate,
+property,Handle,TPCBString
+property,Identifier,TPCBString
+property,InBoard,Boolean
+property,InComponent,Boolean
+property,InCoordinate,Boolean
+property,Index,Word
+property,InDimension,Boolean
+property,InNet,Boolean
+property,InPolygon,Boolean
+property,InSelectionMemory[Index: Integer],Boolean
+property,IsAdvanced,Boolean
+property,IsAssyTestpoint_Bottom,Boolean
+property,IsAssyTestpoint_Top,Boolean
+property,IsElectricalPrim,Boolean
+function,IsFreePrimitive,Boolean
+function,IsHidden,Boolean
+property,IsKeepout,Boolean
+property,IsPreRoute,Boolean
+function,IsSaveable,(AVer : TAdvPCBFileFormatVersion) : Boolean
+property,IsTenting,Boolean
+property,IsTenting_Bottom,Boolean
+property,IsTenting_Top,Boolean
+property,IsTestpoint_Bottom,Boolean
+property,IsTestpoint_Top,Boolean
+function,IsUnary,Boolean
+function,IsValid,Boolean
+function,I_ObjectAddress,Pointer
+property,Layer,TLayer
+property,LayerKind,TRuleLayerKind
+property,Layer_V6,TV6_Layer
+procedure,Mirror,"(Axis : Integer, MirrOp : TMirrorOperation)"
+property,MiscFlag1,Boolean
+property,MiscFlag2,Boolean
+property,MiscFlag3,Boolean
+property,Moveable,Boolean
+procedure,MoveByXY,"(AX : Integer, AY : Integer)"
+procedure,MoveToXY,"(AX : Integer, AY : Integer)"
+property,Name,TPCBString
+property,Net,IPCB_Net
+property,NetAntennaeTolerance,TCoord
+property,NetScope,TNetScope
+property,NetScopeMatches,"(P1 : IPCB_Primitive, P2 : IPCB_Primitive) : Boolean"
+property,ObjectId,TObjectId
+property,ObjectIDString,TPCBString
+property,PadCacheRobotFlag,Boolean
+property,PasteMaskExpansion,TCoord
+property,Polygon,IPCB_Polygon
+property,PolygonOutline,Boolean
+property,PowerPlaneClearance,TCoord
+property,PowerPlaneConnectStyle,TPlaneConnectStyle
+property,PowerPlaneReliefExpansion,TCoord
+function,Priority,Word
+property,ReliefAirGap,TCoord
+property,ReliefConductorWidth,TCoord
+property,ReliefEntries,Integer
+function,Replicate,IPCB_Primitive
+function,RequiredParamterSpace,Integer
+procedure,RotateBy,(Angle : Double)
+property,RuleKind,TRuleKind
+property,Scope1Expression,TPCBString
+property,Scope1Includes,(P : IPCB_Primitive) : Boolean
+property,Scope2Expression,TPCBString
+property,Scope2Includes,(P : IPCB_Primitive) : Boolean
+function,ScopeKindIsValid,(AScopeKind : TScopeKind) : Boolean
+property,Selected,Boolean
+procedure,SetState_Preview,"(Enable : Boolean, Color : Cardinal, Opacity : Single, z : Integer, Height : Integer, sx : Single, sy : Single, SZ : Single)"
+property,SolderMaskExpansion,TCoord
+procedure,SwapLayerPairs,
+property,TearDrop,Boolean
+property,UnionIndex,Integer
+property,UniqueId,TPCBString
+property,Used,Boolean
+property,UserRouted,Boolean
+property,ViewableObjectID,TViewableObjectID

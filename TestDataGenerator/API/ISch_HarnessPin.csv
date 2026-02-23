@@ -1,0 +1,100 @@
+MemberType,Name,DataType
+procedure,AddAndPositionSchObject,AObject : ISch_BasicContainer
+procedure,AddErrorString,const AErrorString : WideString; AtEnd : LongBool
+procedure,AddSchObject,AObject : ISch_BasicContainer
+function,Add_Parameter,const AName : WideString; const AValue : WideString; out AParameter : ISch_Parameter : LongBool
+property,AreaColor,TColor
+function,BoundingRectangle,IDispatch
+function,BoundingRectangle_Full,IDispatch
+property,Color,TColor
+property,CompilationMasked,Boolean
+property,Container,ISch_BasicContainer
+procedure,CopyTo,const AContainer : ISch_BasicContainer
+property,DefaultValue,WideString
+procedure,DeleteAll,
+property,Description,WideString
+property,Designator,WideString
+property,Designator_CustomColor,TColor
+property,Designator_CustomFontID,TFontID
+property,Designator_CustomPosition_Margin,TCoord
+property,Designator_CustomPosition_RotationAnchor,TPinTextRotationAnchor
+property,Designator_CustomPosition_RotationRelative,TRotationBy90
+property,Designator_FontMode,TPinItemMode
+property,Designator_PositionMode,TPinItemMode
+property,Dimmed,Boolean
+property,Disabled,Boolean
+property,DisplayError,Boolean
+property,Electrical,TPinElectrical
+property,EnableDraw,Boolean
+property,ErrorColor,TColor
+property,ErrorKind,TErrorKind
+property,ErrorString,WideString
+function,ExportToParameters,WideString
+property,FormalType,TStdLogicState
+procedure,FreeAllContainedObjects,
+function,FullDesignator,WideString
+function,GetHash,WideString
+function,GetState_ConnectedWiresUniqueIdsCount,Integer
+function,GetState_ConnectedWireUniqueId,AIndex : Integer : WideString
+function,GetState_DescriptionString,WideString
+function,GetState_IdentifierString,WideString
+function,GetState_IsConnectedToAnyWire,Boolean
+function,GetState_SchParameterByName,const AName : WideString : ISch_Parameter
+function,GetState_WiringDiagramOriginUniqueId,WideString
+procedure,GraphicallyInvalidate,
+property,GraphicallyLocked,Boolean
+property,Handle,WideString
+property,HiddenNetName,WideString
+function,Import_FromUser,Boolean
+function,Import_FromUser_Parameters,Boolean
+property,IsHidden,Boolean
+function,I_ObjectAddress,IInterface
+property,LiveHighlightValue,WideString
+property,Location,TLocation
+procedure,Mirror,const Axis : IDispatch
+procedure,MoveByXY,X : Integer; Y : Integer
+procedure,MoveToXY,X : Integer; Y : Integer
+property,Name,WideString
+property,Name_CustomColor,TColor
+property,Name_CustomFontID,TFontID
+property,Name_CustomPosition_Margin,TCoord
+property,Name_CustomPosition_RotationAnchor,TPinTextRotationAnchor
+property,Name_CustomPosition_RotationRelative,TRotationBy90
+property,Name_FontMode,TPinItemMode
+property,Name_PositionMode,TPinItemMode
+property,ObjectId,TObjectId
+property,Orientation,TRotationBy90
+property,OwnerDocument,ISch_Document
+property,OwnerPartDisplayMode,TDisplayMode
+property,OwnerPartId,Integer
+function,OwnerSchComponent,ISch_Component
+property,PinLength,TCoord
+property,PinPackageLength,TCoord
+procedure,PostProcess_Import_FromUser,
+procedure,PreProcess_Import_FromUser,
+property,PropagationDelay,Double
+procedure,RemoveSchObject,AObject : ISch_BasicContainer
+function,Remove_Parameter,const Parameter : ISch_Parameter : LongBool
+function,Replicate,ISch_BasicContainer
+procedure,ResetAllSchParametersPosition,
+procedure,ResetErrorFields,
+procedure,RotateBy90,const Center : IDispatch; A : TRotationBy90
+function,SchIterator_Create,ISch_Iterator
+procedure,SchIterator_Destroy,var AIterator : ISch_Iterator
+property,Selection,Boolean
+procedure,SetState_Default,AUnit : TUnitSystem
+procedure,SetState_FunctionsFromName,
+procedure,SetState_xSizeySize,
+property,ShowDesignator,Boolean
+property,ShowName,Boolean
+property,SwapId_Pair,WideString
+property,SwapId_Part,WideString
+property,SwapId_PartPin,WideString
+property,SwapId_Pin,WideString
+property,Symbol_Inner,TIeeeSymbol
+property,Symbol_InnerEdge,TIeeeSymbol
+property,Symbol_LineWidth,TSize
+property,Symbol_Outer,TIeeeSymbol
+property,Symbol_OuterEdge,TIeeeSymbol
+property,UniqueId,WideString
+property,Width,Integer

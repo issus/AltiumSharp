@@ -1,0 +1,2 @@
+MemberType,Name,DataType
+procedure,"ClientToRay(x : Integer; y : Integer; out OrigX : Single; out OrigY : Single; out OrigZ : Single; out DirX : Single; out DirY : Single; out DirZ : Single)",

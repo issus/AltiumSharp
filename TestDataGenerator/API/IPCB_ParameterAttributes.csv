@@ -1,0 +1,5 @@
+MemberType,Name,DataType
+property,Attribute[AName: WideString],TPCBString
+function,HasAttribute,const AName : WideString : Boolean
+procedure,ResetAllAttributes,
+procedure,ResetAttribute,const AName : WideString

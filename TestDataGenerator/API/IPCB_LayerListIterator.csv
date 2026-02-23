@@ -1,0 +1,13 @@
+MemberType,Name,DataType
+function,AddFilter_ElectricalLayers,IPCB_LayerIterator
+function,AddFilter_InternalPlaneLayers,IPCB_LayerIterator
+function,AddFilter_LayerSet,ALayerSet : IPCB_LayerSet) : IPCB_LayerIterator
+function,AddFilter_MechanicalLayers,IPCB_LayerIterator
+function,AddFilter_MiscLayers,IPCB_LayerIterator
+function,AddFilter_SignalLayers,IPCB_LayerIterator
+function,First,Boolean
+property,Forward,Boolean
+property,Index,Integer
+function,Layer,Integer
+function,Next,Boolean
+procedure,SetBeforeFirst,

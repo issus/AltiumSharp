@@ -1,0 +1,11 @@
+MemberType,Name,DataType
+function,ConstructCustomPadShape,"(const ALayer : IDispatch, const AInvolvedPrimitives : ISafeInterfaceList) : IPCB_GeometricPolygon"
+property,CustomShape[ALayer: Integer],IPCB_Primitive
+property,CustomShapeInfo[ALayer: Integer],IPCB_CustomShapeInfo
+property,CustomShapeKind[ALayer: Integer],TShapeSubKind
+procedure,EditShapeOnLayer,(ALayer : Integer)
+function,GetState_ExtractedPrimitiveOnLayer,(ALayer : Integer) : IPCB_Primitive
+function,GetState_RegionShapeOnLayer,(ALayer : Integer) : IPCB_Region
+procedure,ResetMaskShapes,
+procedure,SetCustomShapeDefaultsOnLayer,(ALayer : Integer)
+procedure,SetProperty_CustomPolyShape,"(const ALayer : IDispatch, const AValue : IPCB_RegionShape)"

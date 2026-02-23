@@ -1,0 +1,3 @@
+MemberType,Name,DataType
+property,Count,Integer
+property,Items[AIndex: Integer],IPCB_FullComponent

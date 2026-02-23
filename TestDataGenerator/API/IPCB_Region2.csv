@@ -1,0 +1,117 @@
+MemberType,Name,DataType
+procedure,AddHoleContour(const Contour : IPCB_Contour),
+procedure,AddSnapPoint(const APoint : IDispatch),
+property,AllowGlobalEdit,Boolean
+property,ArcApproximation,TCoord
+property,Area,Int64
+procedure,BeginContoursBatch(ContoursCount : Integer),
+procedure,BeginModify,
+property,Board,IPCB_Board
+function,BoundingRectangle,IDispatch
+function,BoundingRectangleChildren,IDispatch
+function,BoundingRectangleForPainting,IDispatch
+function,BoundingRectangleForSelection,IDispatch
+procedure,CancelModify,
+property,CavityHeight,TCoord
+procedure,CheckNonCopper,
+property,Component,IPCB_Component
+property,Coordinate,IPCB_Coordinate
+procedure,DeleteAllSnapPoints,
+procedure,DeleteSnapPoint(AIndex : Integer),
+property,Descriptor,TPCBString
+property,Detail,TPCBString
+property,Dimension,IPCB_Dimension
+property,DrawAsPreview,Boolean
+property,DRCError,Boolean
+property,Enabled,Boolean
+property,EnableDraw,Boolean
+property,Enabled_Direct,Boolean
+property,Enabled_vComponent,Boolean
+property,Enabled_vCoordinate,Boolean
+property,Enabled_vDimension,Boolean
+property,Enabled_vNet,Boolean
+property,Enabled_vPolygon,Boolean
+procedure,EndContoursBatch,
+procedure,EndModify,
+procedure,Export_ToParameters(AParams : PWideChar),
+procedure,FlipXY(Axis : Integer; MirOp : TMirrorOperation),
+property,GeometricPolygon,IPCB_GeometricPolygon
+function,GetState_SelfIntersectionPoint(APos : Integer),IDispatch
+function,GetState_SelfIntersectionsCount,Integer
+function,GetState_SnapCount,Integer
+function,GetState_SnapPoint(AIndex : Integer),IDispatch
+function,GetTrisArea,Int64
+procedure,GraphicallyInvalidate,
+property,Handle,TPCBString
+property,HoleCount,Integer
+property,Holes[I: Integer],IPCB_Contour
+property,Identifier,TPCBString
+property,InBoard,Boolean
+property,InComponent,Boolean
+property,InCoordinate,Boolean
+property,Index,Word
+property,InDimension,Boolean
+property,InNet,Boolean
+property,InPolygon,Boolean
+property,InSelectionMemory[Index: Integer],Boolean
+property,IsAssyTestpoint_Bottom,Boolean
+property,IsAssyTestpoint_Top,Boolean
+property,IsElectricalPrim,Boolean
+function,IsFreePrimitive,Boolean
+function,IsHidden,Boolean
+property,IsKeepout,Boolean
+property,IsPreRoute,Boolean
+function,IsSaveable(AVar : TAdvPCBFileFormatVersion),Boolean
+function,IsShapeBased,Boolean
+function,IsSimpleRegion,Boolean
+property,IsTenting,Boolean
+property,IsTenting_Bottom,Boolean
+property,IsTenting_Top,Boolean
+property,IsTestpoint_Bottom,Boolean
+property,IsTestpoint_Top,Boolean
+function,I_ObjectAddress,Pointer
+property,Kind,TRegionKind
+property,Layer,TLayer
+property,Layer_V6,TV6_Layer
+property,MainContour,IPCB_Contour
+procedure,Mirror(Axis : Integer; MirOp : TMirrorOperation),
+property,MiscFlag1,Boolean
+property,MiscFlag2,Boolean
+property,MiscFlag3,Boolean
+property,Moveable,Boolean
+procedure,MoveByXY(AX : Integer; AY : Integer),
+procedure,MoveToXY(AX : Integer; AY : Integer),
+property,Name,TPCBString
+property,Net,IPCB_Net
+property,ObjectId,TObjectId
+property,ObjectIDString,TPCBString
+property,PadCacheRobotFlag,Boolean
+property,PasteMaskExpansion,TCoord
+property,Polygon,IPCB_Polygon
+property,PolygonOutline,Boolean
+property,PowerPlaneClearance,TCoord
+property,PowerPlaneConnectStyle,TPlaneConnectStyle
+property,PowerPlaneReliefExpansion,TCoord
+property,ReliefAirGap,TCoord
+property,ReliefConductorWidth,TCoord
+property,ReliefEntries,Integer
+function,Replicate,IPCB_Primitive
+function,RequiredParameterSpace,Integer
+procedure,RotateAroundXY(AX : Integer; AY : Integer; Angle : Double),
+procedure,RotateBy(Angle : Double),
+property,Selected,Boolean
+procedure,SetOutlineContour(Contour : IPCB_Contour),
+procedure,"SetState_Preview(Enable : Boolean; Color : Cardinal; Opacity : Single; z : Integer; Height : Integer; sx : Single; sy : Single; SZ : Single)",
+procedure,SetState_SnapPoint(AIndex : Integer; const APoint : IDispatch),
+property,SolderMaskExpansion,TCoord
+procedure,SwapLayerPairs,
+property,TearDrop,Boolean
+property,TotalVertexCount,Integer
+property,UnionIndex,Integer
+property,UniqueId,TPCBString
+property,Used,Boolean
+property,UserRouted,Boolean
+property,ViewableObjectID,TViewableObjectID
+property,VirtualCutout,Boolean
+property,x,TCoord
+property,y,TCoord

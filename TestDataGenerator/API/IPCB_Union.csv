@@ -1,0 +1,6 @@
+MemberType,Name,DataType
+function,FeturesValidForSave,Boolean
+function,GetState_DeadCopper,Boolean
+function,GetState_Name,WideString
+function,GetState_Type,TUnionTypeID
+function,GetState_UnionIndex,Integer

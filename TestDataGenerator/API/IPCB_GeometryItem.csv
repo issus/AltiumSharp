@@ -1,0 +1,3 @@
+MemberType,Name,DataType
+procedure,"GetAABB(out LowX : Single; out LowY : Single; out LowZ : Single; out HighX : Single; out HighY : Single; out HighZ : Single)",
+function,GetLayerData(Layer : Integer; GType : TGeometryLayerType),IPCB_GeometryLayerData

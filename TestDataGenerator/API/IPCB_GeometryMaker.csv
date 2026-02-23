@@ -1,0 +1,4 @@
+MemberType,Name,DataType
+function,BuildGeometry(const APrim : IPCB_Primitive),IPCB_GeometryItems
+property,LayerMap,IPCB_GeometryMakerLayerMap
+property,MaterialMap,IPCB_GeometryMakerMaterialMap

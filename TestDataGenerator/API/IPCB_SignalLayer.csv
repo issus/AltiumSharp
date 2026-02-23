@@ -1,0 +1,11 @@
+MemberType,Name,DataType
+property,ComponentPlacement,TComponentPlacementType
+property,CopperThickness,TCoord
+function,GetState_LayerDisplayName(Value : TLayerNameDisplayMode),WideString
+function,IsInLayerStack,Boolean
+function,I_ObjectAddress,Pointer
+function,LayerStack,IPCB_LayerStackBase
+property,Name,TPCBString
+property,UsedByPrims,Boolean
+function,V6_LayerID,TV6_Layer
+function,V7_LayerID,IDispatch

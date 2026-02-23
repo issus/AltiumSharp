@@ -1,0 +1,4 @@
+MemberType,Name,DataType
+procedure,AddArcToContour,"(AContour : IPCB_Contour, StartAngle : Double, EndAngle : Double, cx : Integer, cy : Integer, Radius : Integer, AClockwise : Boolean)"
+property,ArcResolution,TCoord
+function,MakeContour,"(APrim : IPCB_Primitive, AExpansion : Integer, ALayer : TV6_Layer) : IPCB_GeometricPolygon"

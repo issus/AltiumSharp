@@ -1,0 +1,3 @@
+MemberType,Name,DataType
+function,GetItems,IPCB_ClearanceGapByLayerConstraintItems
+procedure,RemoveItem,(const AKey : IDispatch)

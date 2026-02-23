@@ -1,0 +1,3 @@
+MemberType,Name,DataType
+property,Count,Integer
+property,NetByIndex[AIndex: Integer],IPCB_Net

@@ -1,0 +1,26 @@
+MemberType,Name,DataType
+property,CheckExternalNetList,Boolean
+property,DoMakeDRCErrorList,Boolean
+property,DoMakeDRCFile,Boolean
+property,DoSubNetDetails,Boolean
+procedure,Export_ToParameters,(Parameters : PWideChar)
+procedure,Export_ToParameters_GeneralOptions,(Parameters : PWideChar)
+procedure,Export_ToParameters_RulesToCheck,(Parameters : PWideChar)
+procedure,Export_ToParameters_RulesToCheck_Version3,(Parameters : PWideChar)
+procedure,Export_ToParameters_Version3,(Parameters : PWideChar)
+procedure,Export_ToParameters_Version4,(Parameters : PWideChar)
+property,ExternalNetListFileName,TPCBString
+procedure,Import_FromParameters,(DisplayUnit : TUnit, Parameters : PWideChar)
+procedure,Import_FromParameters_GeneralOptions,(Parameters : PWideChar)
+procedure,Import_FromParameters_RulesToCheck,(Parameters : PWideChar)
+procedure,Import_FromParameters_Version3,(DisplayUnit : TUnit, Parameters : PWideChar)
+procedure,Import_FromParameters_Version4,(DisplayUnit : TUnit, Parameters : PWideChar)
+property,IncludePCBHealth,Boolean
+property,InternalPlaneWarnings,Boolean
+function,I_ObjectAddress,Pointer
+property,MaxViolationCount,Integer
+property,OnLineRuleSetToCheck,TRuleSet
+property,OptionsObjectID,TOptionsObjectId
+property,ReportFilename,TPCBString
+property,RuleSetToCheck,TRuleSet
+property,VerifyShortingCopper,Boolean

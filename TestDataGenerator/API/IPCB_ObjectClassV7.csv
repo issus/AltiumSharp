@@ -1,0 +1,4 @@
+MemberType,Name,DataType
+procedure,AddLayerMember,const L : IDispatch
+function,IsLayerMember,const L : IDispatch : Boolean
+procedure,RemoveLayerMember,const L : IDispatch

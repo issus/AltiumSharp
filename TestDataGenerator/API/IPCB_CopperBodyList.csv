@@ -1,0 +1,4 @@
+MemberType,Name,DataType
+property,CopperBody[I: Integer],IPCB_CopperBody
+property,Count,Integer
+function,ExportToString,WideString

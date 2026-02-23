@@ -1,0 +1,29 @@
+MemberType,Name,DataType
+procedure,AddAndPositionSchObject,AObject : ISch_BasicContainer
+procedure,AddSchObject,AObject : ISch_BasicContainer
+property,Container,ISch_BasicContainer
+procedure,CopyTo,const AContainer : ISch_BasicContainer
+procedure,DeleteAll,
+function,ExportToParameters,WideString
+procedure,FreeAllContainedObjects,
+function,GetState_ConnectedWiresUniqueIdsCount,Integer
+function,GetState_ConnectedWireUniqueId,AIndex : Integer : WideString
+function,GetState_DescriptionString,WideString
+function,GetState_Designator,WideString
+function,GetState_IdentifierString,WideString
+function,GetState_IsConnectedToAnyWire,Boolean
+function,GetState_SchParameterByName,const AName : WideString : ISch_Parameter
+function,GetState_WiringDiagramOriginUniqueId,WideString
+property,Handle,WideString
+function,Import_FromUser,Boolean
+function,I_ObjectAddress,IInterface
+property,ObjectId,TObjectId
+property,OwnerDocument,ISch_Document
+procedure,PostProcess_Import_FromUser,
+procedure,PreProcess_Import_FromUser,
+procedure,RemoveSchObject,AObject : ISch_BasicContainer
+function,Replicate,ISch_BasicContainer
+function,SchIterator_Create,ISch_Iterator
+procedure,SchIterator_Destroy,var AIterator : ISch_Iterator
+procedure,SetState_Default,AUnit : TUnitSystem
+property,UniqueId,WideString

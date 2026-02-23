@@ -1,0 +1,69 @@
+MemberType,Name,DataType
+procedure,AddAndPositionSchObject,AObject : ISch_BasicContainer
+procedure,AddErrorString,const AErrorString : WideString; AtEnd : LongBool
+procedure,AddSchObject,AObject : ISch_BasicContainer
+property,AreaColor,TColor
+property,ArrowKind,TArrowKind
+function,BoundingRectangle,IDispatch
+function,BoundingRectangle_Full,IDispatch
+property,Color,TColor
+property,CompilationMasked,Boolean
+property,Container,ISch_BasicContainer
+procedure,CopyTo,const AContainer : ISch_BasicContainer
+procedure,DeleteAll,
+procedure,DeleteCrossRef,
+property,Dimmed,Boolean
+property,Disabled,Boolean
+property,DisplayError,Boolean
+property,DistanceFromTop,TCoord
+property,EnableDraw,Boolean
+property,ErrorColor,TColor
+property,ErrorKind,TErrorKind
+property,ErrorString,WideString
+function,ExportToParameters,WideString
+procedure,FreeAllContainedObjects,
+function,GetHash,WideString
+function,GetState_CrossRef,WideString
+function,GetState_DescriptionString,WideString
+function,GetState_IdentifierString,WideString
+function,GetState_SchParameterByName,const AName : WideString : ISch_Parameter
+function,GetState_WiringDiagramOriginUniqueId,WideString
+procedure,GraphicallyInvalidate,
+property,GraphicallyLocked,Boolean
+property,Handle,WideString
+property,HarnessColor,TColor
+property,HarnessType,WideString
+function,Import_FromUser,Boolean
+property,IOType,TPortIO
+property,IsVertical,Boolean
+function,I_ObjectAddress,IInterface
+property,LiveHighlightValue,WideString
+property,Location,TLocation
+procedure,Mirror,const Axis : IDispatch
+procedure,MoveByXY,X : Integer; Y : Integer
+procedure,MoveToXY,X : Integer; Y : Integer
+property,Name,WideString
+property,ObjectId,TObjectId
+property,OverrideDisplayString,WideString
+property,OwnerDocument,ISch_Document
+property,OwnerPartDisplayMode,TDisplayMode
+property,OwnerPartId,Integer
+property,OwnerSheetSymbol,ISch_SheetSymbol
+procedure,PostProcess_Import_FromUser,
+procedure,PreProcess_Import_FromUser,
+procedure,RemoveSchObject,AObject : ISch_BasicContainer
+function,Replicate,ISch_BasicContainer
+procedure,ResetErrorFields,
+procedure,RotateBy90,const Center : IDispatch; A : TRotationBy90
+function,SchIterator_Create,ISch_Iterator
+procedure,SchIterator_Destroy,var AIterator : ISch_Iterator
+property,Selection,Boolean
+procedure,SetState_CrossRef,AValue : WideString
+procedure,SetState_Default,AUnit : TUnitSystem
+procedure,SetState_xSizeySize,
+property,Side,TLeftRightSide
+property,Style,TPortArrowStyle
+property,TextColor,TColor
+property,TextFontID,TFontID
+property,TextStyle,TBusTextStyle
+property,UniqueId,WideString

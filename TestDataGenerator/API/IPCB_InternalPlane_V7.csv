@@ -1,0 +1,12 @@
+MemberType,Name,DataType
+property,CopperThickness,TCoord
+function,GetState_LayerDisplayName,Value : TLayerNameDisplayMode) : WideString
+function,IsInLayerStack,Boolean
+function,I_ObjectAddress,Pointer
+function,LayerStack,IPCB_LayerStackBase
+property,Name,TPCBString
+property,NetName,TPCBString
+property,PullBackDistance,TCoord
+property,UsedByPrims,Boolean
+function,V6_LayerID,TV6_Layer
+function,V7_LayerID,IDispatch

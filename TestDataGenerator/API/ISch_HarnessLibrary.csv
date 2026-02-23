@@ -1,0 +1,173 @@
+MemberType,Name,DataType
+procedure,AddAndPositionSchObject,AObject : ISch_BasicContainer
+procedure,AddErrorString,const AErrorString : WideString; AtEnd : LongBool
+procedure,AddSchComponent,const AComponent : ISch_Component
+procedure,AddSchComponentWithoutNotification,const AComponent : ISch_Component
+procedure,AddSchObject,AObject : ISch_BasicContainer
+function,Add_Parameter,const AName : WideString; const AValue : WideString; out AParameter : ISch_Parameter : LongBool
+property,AlwaysShowD,Boolean
+property,AreaColor,TColor
+property,BorderOn,Boolean
+function,BoundingRectangle,IDispatch
+function,BoundingRectangle_Full,IDispatch
+function,BoundingRectangle_Selected,IDispatch
+function,ChooseLocationInteractively,const ALocation : IDispatch; Prompt : WideString : Boolean
+function,ChooseRectangleInteractively,const ARect : IDispatch; Prompt1 : WideString; Prompt2 : WideString : Boolean
+property,Color,TColor
+property,CompilationMasked,Boolean
+property,Container,ISch_BasicContainer
+procedure,CopyTo,const AContainer : ISch_BasicContainer
+function,CountContextMenuObjects,AObjectSet : TObjectSet : Integer
+function,CountContextMenuObjectsExceptSchematicBasicObjects,AObjectSet : TObjectSet : Integer
+function,CreateFilteredHitTest,const ATestMode : THitTestMode; const ALocation : IDispatch; const AObjectSet : TObjectSet; const AParentObjectSet : TObjectSet; const AIncludePins : Boolean; const ACrossSelect : Boolean : ISch_HitTest
+function,CreateHitTest,ATestMode : THitTestMode; const ALocation : IDispatch : ISch_HitTest
+procedure,CreateLibraryFromProject,AddLibToProject : Boolean; FileName : WideString; RunQuiet : Boolean
+function,CreateLibraryValidator,ISch_LibraryValidator
+function,CreateNearHandle,const AGraphicalObject : ISch_GraphicalObject; const AView : IInterface; const ALocation : IDispatch : ISch_HitTest
+property,CurrentSchComponent,ISch_Component
+property,CustomMarginWidth,TCoord
+property,CustomSheetStyle,WideString
+property,CustomX,TCoord
+property,CustomXZones,TCoord
+property,CustomY,TCoord
+property,CustomYZones,TCoord
+procedure,DeleteAll,
+property,Description,WideString
+property,Dimmed,Boolean
+property,Disabled,Boolean
+property,DisplayError,Boolean
+property,DisplayUnit,TUnit
+property,DocumentBorderStyle,TSheetDocumentBorderStyle
+procedure,DocumentModifiedChanged,AChanged : Boolean
+property,DocumentName,WideString
+property,EnableDraw,Boolean
+property,ErrorColor,TColor
+property,ErrorKind,TErrorKind
+property,ErrorString,WideString
+function,ExportToParameters,WideString
+property,FolderGUID,WideString
+procedure,FreeAllContainedObjects,
+function,GenerateUniqueID,WideString
+function,GetDialogManager,ISch_DialogManager
+function,GetHash,WideString
+function,GetState_CurrentSchComponentDisplayMode,Byte
+function,GetState_CurrentSchComponentLibReference,WideString
+function,GetState_CurrentSchComponentPartId,Integer
+function,GetState_DescriptionString,WideString
+function,GetState_IdentifierString,WideString
+function,GetState_SchComponentByLibRef,ALibRef : WideString : ISch_Component
+function,GetState_SchParameterByName,const AName : WideString : ISch_Parameter
+function,GetState_WiringDiagramOriginUniqueId,WideString
+procedure,GraphicallyInvalidate,
+property,GraphicallyLocked,Boolean
+function,Graphical_VirtualRectangle,IDispatch
+function,GridCoordinateClosest,ACoord : Integer : Integer
+function,GridCoordinateUp,ACoord : Integer : Integer
+property,Handle,WideString
+function,HasPausedProcess,Boolean
+function,HasServerDocument,Boolean
+property,HotspotGridOn,Boolean
+property,HotspotGridSize,TCoord
+function,Import_FromUser,Boolean
+function,Import_FromUser_Parameters,Boolean
+property,InternalTolerance,TCoord
+function,IsInEditorView,Boolean
+property,IsLibrary,Boolean
+property,IsSingleDesignMode,Boolean
+property,IsSingleComponentMode,Boolean
+property,ItemRevisionGUID,WideString
+function,I_ObjectAddress,IInterface
+function,LibIsEmpty,Boolean
+property,LifeCycleDefinitionGUID,WideString
+function,LinkDocumentToReleaseVault,Parameters : WideString; var ErrorMsg : WideString : Boolean
+property,LiveHighlightValue,WideString
+property,LoadFormat,WideString
+function,LoadFromFile,const VFSAddress : WideString
+property,Location,TLocation
+procedure,LockViewUpdate,
+property,MinorVersion,Integer
+procedure,Mirror,const Axis : IDispatch
+procedure,MoveByXY,X : Integer; Y : Integer
+procedure,MoveToXY,X : Integer; Y : Integer
+procedure,Notify_FullUpdate,
+property,ObjectId,TObjectId
+function,ObjectReferenceZone,AObject : ISch_BasicContainer : WideString
+procedure,OptimizeUseOfPolylines,
+property,OwnerDocument,ISch_Document
+property,OwnerPartDisplayMode,TDisplayMode
+property,OwnerPartId,Integer
+procedure,PlaceSchComponent,ALibraryPath : WideString; ALibRef : WideString; var SchObject : ISch_Component
+function,PopupMenuHitTest,ISch_HitTest
+procedure,PostProcess_Import_FromUser,
+procedure,PreProcess_Import_FromUser,
+property,PropsRevisionGUID,WideString
+property,PropsVaultGUID,WideString
+procedure,RecreateHandles,
+procedure,RedrawToDC,DC : HDC; PrintKind : Integer; PrintWhat : Integer
+procedure,RedrawToDCEx,DC : HDC; PrintKind : Integer; PrintWhat : Integer; ExportToPDF : Boolean
+property,ReferenceZonesOn,Boolean
+property,ReferenceZoneStyle,TSheetReferenceZoneStyle
+procedure,RegisterSchObjectInContainer,AObject : ISch_BasicContainer
+function,ReleaseDocument,Parameters : WideString; var ErrorMsg : WideString : Boolean
+property,ReleaseItemGUID,WideString
+property,ReleaseVaultGUID,WideString
+procedure,RemoveSchComponent,const AComponent : ISch_Component
+procedure,RemoveSchObject,AObject : ISch_BasicContainer
+function,Remove_Parameter,const Parameter : ISch_Parameter : LongBool
+function,Replicate,ISch_BasicContainer
+procedure,ResetAllSchParametersPosition,
+procedure,ResetErrorFields,
+property,RevisionNamingSchemeGUID,WideString
+procedure,RotateBy90,const Center : IDispatch; A : TRotationBy90
+procedure,SaveToFile,const VFSAddress : WideString
+property,SchDocID,Integer
+function,SchIterator_Create,ISch_Iterator
+procedure,SchIterator_Destroy,var AIterator : ISch_Iterator
+function,SchLibIterator_Create,ISch_Iterator
+function,Sch_LibraryRuleChecker_Create,ISch_LibraryRuleChecker
+procedure,Sch_LibraryRuleChecker_Destroy,var ARuleChecker : ISch_LibraryRuleChecker
+property,Selection,Boolean
+procedure,SetPreferencesInfo,const AVaultGUID : WideString; const ARevisionGUID : WideString
+procedure,SetState_CurrentSchComponentAddDisplayMode,
+procedure,SetState_CurrentSchComponentAddPart,
+procedure,SetState_CurrentSchComponentDisplayMode,ADisplayMode : Byte
+procedure,SetState_CurrentSchComponentLibReference,const AValue : WideString
+procedure,SetState_CurrentSchComponentPartId,APartId : Integer
+procedure,SetState_CurrentSchComponentRemoveDisplayMode,
+procedure,SetState_CurrentSchComponentRemovePart,
+procedure,SetState_Default,AUnit : TUnitSystem
+procedure,SetState_xSizeySize,
+procedure,SetTemplateInfo,const AVaultGUID : WideString; const AItemGUID : WideString; const ARevisionGUID : WideString; const AVaultHRID : WideString; const ARevisionHRID : WideString
+property,SheetMarginWidth,TCoord
+property,SheetNumberSpaceSize,Integer
+property,SheetSizeX,TCoord
+property,SheetSizeY,TCoord
+property,SheetStyle,TSheetStyle
+property,SheetZonesX,Integer
+property,SheetZonesY,Integer
+property,ShowHiddenPins,Boolean
+property,ShowTemplateGraphics,Boolean
+property,SnapGridOn,Boolean
+property,SnapGridSize,TCoord
+property,SystemFont,TFontID
+property,TemplateFileName,WideString
+property,TemplateItemGUID,WideString
+property,TemplateRevisionGUID,WideString
+property,TemplateRevisionHRID,WideString
+property,TemplateVaultGUID,WideString
+property,TemplateVaultHRID,WideString
+property,TitleBlockOn,Boolean
+procedure,TransferComponentsPrimitivesBackFromEditor,
+procedure,TransferComponentsPrimitivesToEditor,
+property,UniqueId,WideString
+property,UnitSystem,TUnitSystem
+procedure,UnLockViewUpdate,
+procedure,UnregisterAndFreeAllConnectionLines,
+procedure,UnRegisterSchObjectFromContainer,AObject : ISch_BasicContainer
+procedure,UpdateDisplayOfCurrentSheet,
+procedure,UpdateDocumentProperties,
+function,UpdatePartsToLatestRevision,ATarget : TUpdatePartTarget; const AContextObject : IInterface; ANeedConfirm : Boolean; AClearMessages : Boolean; out AUpdatedCount : Integer; out AUpToDateCount : Integer; out AErrorCount : Integer : Boolean
+property,UseCustomSheet,Boolean
+property,VisibleGridOn,Boolean
+property,VisibleGridSize,TCoord
+property,WorkspaceOrientation,TSheetOrientation

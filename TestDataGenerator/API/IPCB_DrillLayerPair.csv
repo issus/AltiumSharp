@@ -1,0 +1,29 @@
+MemberType,Name,DataType
+procedure,AddToSubstack,(const StackID : WideString)
+property,Board,IPCB_Board
+procedure,CopyTo,(const ADrillLayerPair : IPCB_DrillLayerPair)
+property,CounterHoleParams,IPCB_CounterHoleParams
+procedure,DeleteFromAllSubstacks,
+procedure,DeleteFromSubstack,(const StackID : WideString)
+property,Description,TPCBString
+property,DrillLayerPairType,TDrillLayerPairType
+property,HighLayer,TV6_Layer
+property,Inverted,Boolean
+property,IsBackdrill,Boolean
+function,IsCounterHole,Boolean
+function,IsDefinedIn,(const StackID : WideString) : Boolean
+function,IsSimilarTo,(ADLP : IPCB_DrillLayerPair) : Boolean
+function,I_ObjectAddress,Pointer
+property,LowLayer,TV6_Layer
+property,Name,TPCBString
+procedure,OrderLayers,
+property,PlotDrillDrawing,Boolean
+property,PlotDrillGuide,Boolean
+procedure,Stacks_Add,(const AID : WideString)
+procedure,Stacks_Clear,
+function,Stacks_Count,Integer
+function,Stacks_Item,(AIndex : Integer) : WideString
+property,StartLayer,IPCB_LayerObject
+property,StopLayer,IPCB_LayerObject
+procedure,Substacks_FromString,(const Src : WideString)
+function,Substacks_ToString,WideString

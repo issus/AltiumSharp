@@ -1,0 +1,15 @@
+MemberType,Name,DataType
+procedure,AssignPinPairClass,APinPairs : IInterfaceList; AClassName : WideString
+function,CanCreateTiePoints,APinPairs : IInterfaceList : Boolean
+procedure,Clear,
+function,CreateFromPins,const APins : IInterfaceList : IPCB_PinPair
+function,CreateFromPinsDescriptors,const APins : WideString : IPCB_PinPair
+function,CreateFromPinsUniqueIDs,const APins : WideString : IPCB_PinPair
+function,CreateTiePoints,APinPairs : IInterfaceList : IInterfaceList
+procedure,Delete,const APinPair : IPCB_PinPair
+function,GetPinPairOf,const APrimitive : IPCB_Primitive : IPCB_PinPair
+procedure,InvalidateAll,
+property,PinPairs[Index: Integer],IPCB_PinPair
+property,PinPairsCount,Integer
+function,StateID,Int64
+function,SwapPins,const PinA : IPCB_Primitive; const PinB : IPCB_Primitive; const OldNetA : IPCB_Net; const OldNetB : IPCB_Net : IInterfaceList

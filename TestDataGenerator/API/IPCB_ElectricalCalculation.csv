@@ -1,0 +1,12 @@
+MemberType,Name,DataType
+function,CalculateImpedanceAtCrossSection,ALayer : Integer; const ACheckPoint : IDispatch; const ATraceDir
+function,CanCalculateSignalDelayForPrimitive,const APrimitive : IPCB_Primitive) : Boolean
+function,GetPrimitiveCurrent,const APrimitive : IPCB_Primitive) : Double
+function,GetPrimitiveResistance,const APrimitive : IPCB_Primitive) : Double
+function,GetSignalDelayForPrim,const APrimitive : IPCB_Primitive) : Double
+function,GetSignalDelayPerMeter,const APrimitive : IPCB_Primitive) : Double
+procedure,ResetDelaysCalculator,
+procedure,SaveSimbeorProjectForPrimitive,const APrimitive : IPCB_Primitive; const SaveFolder : WideString
+procedure,SignalDelayExportToParamters,const AParameters : IWideParameterList
+procedure,SignalDelayImportFromParameters,const AParameters : IWideParameterList
+procedure,SignalDelayUpdateAfterLoad,

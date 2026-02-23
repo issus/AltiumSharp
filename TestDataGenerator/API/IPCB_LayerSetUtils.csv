@@ -1,0 +1,18 @@
+MemberType,Name,DataType
+function,AllLayers,IPCB_LayerSet
+function,AreDisjoint,const SetA : IPCB_LayerSet; const SetB : IPCB_LayerSet) : Boolean
+function,Complement,const SetA : IPCB_LayerSet) : IPCB_LayerSet
+function,CreateLayerSet,IPCB_LayerSet
+function,EmptySet,IPCB_LayerSet
+function,Equal,const SetA : IPCB_LayerSet; const SetB : IPCB_LayerSet) : Boolean
+function,Factory,L : Integer) : IPCB_LayerSet
+function,FactoryA,Ls : Integer) : IPCB_LayerSet
+function,InternalPlaneLayers,IPCB_LayerSet
+function,Intersection,const SetA : IPCB_LayerSet; const SetB : IPCB_LayerSet) : IPCB_LayerSet
+function,MechanicalLayers,IPCB_LayerSet
+function,NonEditableLayers,IPCB_LayerSet
+function,SerializeFromString,const Str : WideString) : IPCB_LayerSet
+function,SerializeToString,const ALayerSet : IPCB_LayerSet) : WideString
+function,SignalLayers,IPCB_LayerSet
+function,StandardLayers,IPCB_LayerSet
+function,Union,const SetA : IPCB_LayerSet; const SetB : IPCB_LayerSet) : IPCB_LayerSet

@@ -1,0 +1,6 @@
+MemberType,Name,DataType
+procedure,AddBoard,(Board : IPCB_Board)
+property,Boards[AIndex: Integer],IPCB_Board
+procedure,Clear,
+property,Count,Integer
+procedure,RemoveBoard,(Board : IPCB_Board)

@@ -1,0 +1,8 @@
+MemberType,Name,DataType
+property,Count,Integer
+property,EndAngle,TAngle
+function,GetState_Point,AStartHeight : Integer; AEndHeight : Integer; ALength : Integer; AIndex : Integer : IDispatch
+property,Height,TCoord
+function,I_ObjectAddress,Pointer
+property,Standard,TWirebondStandard
+property,StartAngle,TAngle

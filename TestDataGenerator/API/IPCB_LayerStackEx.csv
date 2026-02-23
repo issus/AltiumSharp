@@ -1,0 +1,12 @@
+MemberType,Name,DataType
+procedure,Clear,
+procedure,ClearStackLayers,
+property,Color,TColor
+function,GetElectricalLayer,PositionInStack : Integer; LayerPartition : TLayerPartition) : IPCB_LayerObject
+function,GetElectricalLayerPosInStack,const Layer : Integer) : Integer
+function,IsLayerInLayerStack,const ALayer : IDispatch) : Boolean
+function,LayerEnabled,const ALayerObject : IPCB_LayerObject) : Boolean
+function,LayerUsedByPrims,const ALayerObject : IPCB_LayerObject) : Boolean
+procedure,SetStackID,const AValue : WideString
+property,ShowDielectricBottom,Boolean
+property,ShowDielectricTop,Boolean

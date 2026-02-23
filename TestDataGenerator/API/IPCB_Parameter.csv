@@ -1,0 +1,5 @@
+MemberType,Name,DataType
+property,Attributes,IPCB_ParameterAttributes
+property,IsInherited,Boolean
+property,Name,TPCBString
+property,Value,TPCBString

@@ -1,0 +1,42 @@
+MemberType,Name,DataType
+function,AddStackData(const AValue : IPCB_ViaTemplateStackData),Integer
+procedure,ClearStackData,
+procedure,CopyTo(ADest : IPCB_PadViaTemplate; ACopyMode : TCopyMode),
+function,CreateDefaultStackData,IPCB_ViaTemplateStackData
+function,CreatePrimitive,IPCB_Primitive
+function,CreateTemplateLink,IPCB_PadViaTemplateLink
+procedure,DecreasePrimLinkCounter,
+property,DynamicName,Boolean
+property,ExternalLink,IPCB_PadViaTemplateLink
+function,GetFullTemplateID,WideString
+function,GetHashVersion,WideString
+property,Hash,WideString
+function,HasLocalChanges(APrimitive : IPCB_Primitive),Boolean
+property,HoleNegativeTolerance,TCoord
+property,HolePositiveTolerance,TCoord
+property,HoleSize,TCoord
+procedure,IncreasePrimLinkCounter,
+property,Internal,Boolean
+property,IsBackdrill,Boolean
+property,IsTenting_Bottom,Boolean
+property,IsTenting_Top,Boolean
+function,I_ObjectAddress,Pointer
+property,LibraryID,WideString
+property,ManualSolderMask,Boolean
+property,Mode,TPadMode
+property,ObjectId,TObjectId
+property,ObjectIDString,WideString
+property,PrimLinkCount,Integer
+property,RemoveUnused,Boolean
+property,RevisionID,WideString
+property,SolderMaskBottomExpansion,TCoord
+property,SolderMaskExpansion,TCoord
+property,SolderMaskHoleEdge,Boolean
+property,StackData[AIndex: Integer],IPCB_ViaTemplateStackData
+function,StackDataCount,Integer
+property,TemplateDescription,WideString
+property,TemplateID,WideString
+property,TemplateName,WideString
+procedure,UpdateHash,
+property,UseSeparateExpansions,Boolean
+property,ViaStructure,IPCB_ViaStructure

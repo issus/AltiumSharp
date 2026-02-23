@@ -1,0 +1,27 @@
+MemberType,Name,DataType
+procedure,AngleRadiusToCoord,const Angle : Double; const Radius : Integer; out OutX : Integer; out OutY : Integer
+property,AngularStep,TAngle
+property,Color,TColor
+property,ColorLarge,TColor
+property,ComponentGrid,Boolean
+function,CoordToAngle,const x : Integer; const y : Integer : Double
+function,CoordToRadius,const x : Integer; const y : Integer : Integer
+property,DisplayUnit,TUnit
+property,DrawMode,TDrawGridMode
+property,DrawModeLarge,TDrawGridMode
+property,DrawMultiplier,Integer
+property,DrawMultiplierLarge,Integer
+property,Enabled,Boolean
+property,EndAngle,TAngle
+function,GetOwnerBoard,IPCB_Board
+property,IsDefault,Boolean
+property,IsMCADSource,Boolean
+function,I_ObjectAddress,Pointer
+property,MaxRadius,TDouble
+property,MinRadius,TDouble
+property,Name,WideString
+property,Origin,TCoordPoint
+property,Priority,Cardinal
+property,RadialStep,TDouble
+property,ShowOrigin,Boolean
+property,StartAngle,TAngle

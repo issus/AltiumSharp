@@ -1,0 +1,8 @@
+MemberType,Name,DataType
+procedure,ClearShape,
+property,EdgeType,TPCB_ShapeEdgeType
+property,EndPt,TCoordPoint
+property,StartPt,TCoordPoint
+property,SubPt[Index: Integer],TCoordPoint
+property,SubPtCount,Integer
+property,UserData,TPCBString

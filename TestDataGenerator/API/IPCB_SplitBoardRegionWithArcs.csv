@@ -1,0 +1,6 @@
+MemberType,Name,DataType
+property,Edge[AIndex: Integer],IPCB_ShapeEdge
+property,EdgeCount,Integer
+property,LeftBoardRegion,IPCB_BoardRegion
+property,RightBoardRegion,IPCB_BoardRegion
+procedure,UpdateFromToPoints,

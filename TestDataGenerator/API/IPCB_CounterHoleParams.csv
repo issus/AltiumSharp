@@ -1,0 +1,14 @@
+MemberType,Name,DataType
+property,Angle,TAngle
+procedure,CopyFrom,(OtherParams : IPCB_CounterHoleParams)
+property,Depth,TCoord
+procedure,Deserialize,(ParamStr : WideString)
+property,Diameter,TCoord
+property,Direction,TCounterHoleDirection
+function,GetCounterHoleType,TCounterHoleType
+function,GetDepthForDiameter,(ADiameter : Integer) : Integer
+function,GetDiameterOnDepth,(ADepth : Integer) : Integer
+function,IsEqual,(OtherParams : IPCB_CounterHoleParams) : Boolean
+function,IsEqualWithoutMaterial,(OtherParams : IPCB_CounterHoleParams) : Boolean
+property,Material,TCounterHoleMaterial
+function,Serialize,WideString

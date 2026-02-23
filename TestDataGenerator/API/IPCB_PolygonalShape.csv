@@ -1,0 +1,11 @@
+MemberType,Name,DataType
+function,BoundingRectangle,const Rect : IDispatch : Boolean
+procedure,CloseLastPoint,
+procedure,DecrementPointCount,
+procedure,DeleteSegmentAt,const Index : Integer
+procedure,IncrementPointCount,
+function,InsertSegmentAt,const Index : Integer : IDispatch
+function,IsClockWise,Boolean
+procedure,SetState_PointCount,NewPointCount : Integer
+property,ShapeSegmentCount,Integer
+property,ShapeSegments[I: Integer],TPolySegment

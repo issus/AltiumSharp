@@ -1,0 +1,6 @@
+MemberType,Name,DataType
+property,IsHole[Index: Integer],Boolean
+property,Region[Index: Integer],IPCB_RegionShape2
+property,RegionCount,Integer
+property,RegionData[Index: Integer],WideString
+procedure,SaveToSVGFile,(FileName : WideString)

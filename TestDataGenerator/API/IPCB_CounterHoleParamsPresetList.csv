@@ -1,0 +1,6 @@
+MemberType,Name,DataType
+function,AddNew,IPCB_CounterHoleParamsPreset
+procedure,Clear,
+property,Count,Integer
+procedure,Delete,(Index : Integer)
+property,Presets[Index: Integer],IPCB_CounterHoleParamsPreset

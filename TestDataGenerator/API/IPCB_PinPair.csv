@@ -1,0 +1,22 @@
+MemberType,Name,DataType
+function,CastToPrimitive,IPCB_Primitive
+property,Color,TColor
+property,DelayTotal,Double
+function,GetPinPairItemDisplayName,Prim : IPCB_Primitive : WideString
+function,GetState_IsBroken,Boolean
+function,GetState_PinDescriptorString,Index : Integer : WideString
+function,GetState_PinsCount,Integer
+function,GetState_PinUniqueId,Index : Integer : WideString
+function,I_ObjectAddress,Pointer
+property,Length,Int64
+property,Name,WideString
+property,NodeCount,Integer
+property,OverrideColorForDraw,Boolean
+property,PinPackageLength,Int64
+function,PinsToString,AUseUniqueIDInsteadOfDescriptor : Boolean : WideString
+property,Primitives[Index: Integer],IPCB_Primitive
+property,PrimitivesCount,Integer
+procedure,Rebuild,
+property,RoutedLength,Int64
+function,UniqueIDsExist,Boolean
+property,UnroutedLength,Int64

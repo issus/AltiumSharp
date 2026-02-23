@@ -1,0 +1,5 @@
+MemberType,Name,DataType
+function,GetState_FromPoint,IDispatch
+function,GetState_ToPoint,IDispatch
+function,I_ObjectAddress,Pointer
+procedure,SetState_FromToPoints,const AFromPoint : IDispatch; const AToPoint : IDispatch

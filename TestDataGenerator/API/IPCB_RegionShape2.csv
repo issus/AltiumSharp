@@ -1,0 +1,7 @@
+MemberType,Name,DataType
+procedure,ClearEdges,
+procedure,Delete(Index : Integer),
+property,Edge[I: Integer],IPCB_ShapeEdge
+property,EdgeCount,Integer
+function,Insert(Index : Integer; const AType : TPCB_ShapeEdgeType),IPCB_ShapeEdge
+procedure,UpdateContourFromShape(ConserveExistingHoles : Boolean),

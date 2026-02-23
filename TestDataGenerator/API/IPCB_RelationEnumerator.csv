@@ -1,0 +1,4 @@
+MemberType,Name,DataType
+function,ChildID,Integer
+function,Next,Boolean
+function,ParentID,Integer

@@ -1,0 +1,15 @@
+MemberType,Name,DataType
+property,Color,TColor
+property,Enabled,Boolean
+function,GetOwnerBoard,IPCB_Board
+function,IsHorizontal,Boolean
+property,IsMCADSource,Boolean
+function,IsMinus45Degrees,Boolean
+function,IsPlus45Degrees,Boolean
+function,IsVertical,Boolean
+function,I_ObjectAddress,Pointer
+procedure,MoveOriginTo,const AX : Integer; const AY : Integer
+procedure,SetOrigin,const x : Integer; const y : Integer
+property,SourceObject,IPCB_Primitive
+property,x,Integer
+property,y,Integer

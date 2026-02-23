@@ -1,0 +1,14 @@
+MemberType,Name,DataType
+function,AsShortDisplayString,L : Integer) : WideString
+function,AsString,L : Integer) : WideString
+function,FirstLayerInRange,LayerType : TLayerPartition; UnAvaiableLayers : IPCB_LayerSet) : Integer
+function,FromShortDisplayString,S : WideString) : Integer
+function,FromString,S : WideString) : Integer
+function,IsElectricalLayer,L : Integer) : Boolean
+function,IsInternalPlaneLayer,L : Integer) : Boolean
+function,IsMechanicalLayer,L : Integer) : Boolean
+function,IsMidLayer,L : Integer) : Boolean
+function,IsSignalLayer,L : Integer) : Boolean
+function,LayerIterator_PossibleLayers,IPCB_LayerListIterator
+function,LayerIterator_PossibleSummer09Layers,IPCB_LayerListIterator
+function,MechanicalLayer,I : Cardinal) : Integer

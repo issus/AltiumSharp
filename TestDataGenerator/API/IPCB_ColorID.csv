@@ -1,0 +1,8 @@
+MemberType,Name,DataType
+function,Bordered,Boolean
+function,Diffuse,IDispatch
+function,Hatched,Boolean
+function,HatchStyle,TMaterialHatchStyle
+function,Offset2D,ShortInt
+function,OverrideColor,IDispatch
+function,TexCoord,IDispatch

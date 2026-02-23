@@ -1,0 +1,15 @@
+MemberType,Name,DataType
+property,DielectricConstant,TDouble
+property,DielectricHeight,TCoord
+property,DielectricLossTangent,TDouble
+property,DielectricMaterial,TPCBString
+property,DielectricType,TDielectricType
+function,GetState_LayerDisplayName,(Value : TLayerNameDisplayMode) : WideString
+property,IsInLayerStack,Boolean
+property,IsStiffener,Boolean
+function,I_ObjectAddress,Pointer
+function,LayerStack,IPCB_LayerStackBase
+property,Name,TPCBString
+property,UsedByPrims,Boolean
+property,V6_LayerID,TV6_Layer
+function,V7_LayerID,IDispatch

@@ -1,0 +1,15 @@
+MemberType,Name,DataType
+property,Comment,TPCBString
+property,ComponentID,TPCBString
+property,Description,TPCBString
+property,Designator,TPCBString
+property,DesignVariant,IPCB_DesignVariant
+property,Footprint,IPCB_Component
+property,ItemGUID,TPCBString
+property,Kind,TComponentKind
+property,LibraryItemID,TPCBString
+property,LibraryName,TPCBString
+property,Parameters,IPCB_ParameterList
+property,RevisionGUID,TPCBString
+property,SystemParameters,IPCB_ParameterList
+property,VaultGUID,TPCBString

@@ -1,0 +1,6 @@
+MemberType,Name,DataType
+function,First,IPCB_PlacementGrid
+function,Next,IPCB_PlacementGrid
+procedure,SetFilter_IncludeDynamicGuides,AValue : Boolean
+procedure,SetFilter_IncludeGrids,AValue : Boolean
+procedure,SetFilter_IncludeStaticGuides,AValue : Boolean

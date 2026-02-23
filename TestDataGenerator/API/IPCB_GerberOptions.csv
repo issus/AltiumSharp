@@ -1,0 +1,27 @@
+MemberType,Name,DataType
+property,AptTable,TPCBString
+property,BorderSize,TCoord
+property,CenterPhotoPlots,Boolean
+property,EmbedApertures,Boolean
+procedure,Export_ToParameters(Parameters : PWideChar),
+procedure,Export_ToParameters_Version3(Parameters : PWideChar),
+procedure,Export_ToParameters_Version4(Parameters : PWideChar),
+property,FilmSizeX,TCoord
+property,FilmSizeY,TCoord
+property,FlashAllFills,Boolean
+property,G54,Boolean
+property,GerberDecs,Integer
+property,GerberUnits,Integer
+procedure,Import_FromParameters(DisplayUnit : TUnit; Parameters : PWideChar),
+procedure,Import_FromParameters_Version3(DisplayUnit : TUnit; Parameters : PWideChar),
+procedure,Import_FromParameters_Version4(DisplayUnit : TUnit; Parameters : PWideChar),
+function,I_ObjectAddress,Pointer
+property,MaxAperSize,TCoord
+property,MinusTol,TCoord
+property,OptionsObjectID,TOptionsObjectId
+property,PadsFlashOnly,Boolean
+property,Panelize,Boolean
+property,PlusTol,TCoord
+property,ReliefShapesAllowed,Boolean
+property,SortOutput,Boolean
+property,UseSoftwareArcs,Boolean

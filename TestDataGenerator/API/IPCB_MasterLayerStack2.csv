@@ -1,0 +1,72 @@
+MemberType,Name,DataType
+function,AddMechanicalLayer,IPCB_MechanicalLayer
+function,Board,IPCB_Board
+procedure,ChangeMechanicalLayerKind(const ALayerObject : IPCB_MechanicalLayer; ALayerKind : TMechanicalLayerKind),
+procedure,ChangeSubStackId(ASubstack : IPCB_LayerStack; NewID : WideString),
+procedure,Clear,
+procedure,ClearAllPhysicalLayers,
+procedure,ClearStackLayers,
+procedure,ClearSubstacks,
+function,Count,Integer
+function,CreateImpedanceProfile,IPCB_ImpedanceProfile
+function,CreateImpedanceProfileWithId(Id : WideString),IPCB_ImpedanceProfile
+function,CreateLayer(const ALayer : IDispatch),IPCB_LayerObject
+function,CreateLayer(const ALayer : IDispatch; const ALayerID : WideString),IPCB_LayerObject
+function,CreateLayerPairByKind(AKind : TMechanicalLayerPairKind),Boolean
+function,CreateLayerWithId(const ALayer : IDispatch; const LayerID : WideString),IPCB_LayerObject
+function,CreateSubstack,IPCB_LayerStack
+function,CreateSubstackWithId(Id : WideString),IPCB_LayerStack
+function,DeleteLayer(const ALayer : IPCB_LayerObject),Boolean
+procedure,DisableLayer(ASubstack : IPCB_LayerStack; ALayer : IPCB_LayerObject),
+property,DisplayName[DisplayMode: TLayerNameDisplayMode],TPCBString
+procedure,EnableLayer(ASubstack : IPCB_LayerStack; ALayer : IPCB_LayerObject),
+procedure,Export_ToLayerStackManagerParameters(Params : PWideChar),
+procedure,Export_ToParameters(Params : PWideChar),
+function,FindLayerByKind(ALayerKind : TMechanicalLayerKind),IPCB_MechanicalLayer
+function,First(T : TLayerClassID),IPCB_LayerObject
+function,GetAllAvailableLayers,IPCB_LayerObjectIterator
+function,GetImpedanceProfileById(Id : WideString),IPCB_ImpedanceProfile
+function,GetImpedanceProfileByIndex(Index : Integer),IPCB_ImpedanceProfile
+function,GetImpedanceProfileCount,Integer
+function,GetMechanicalLayer(AIndexInMechanicalFamily : Integer),IPCB_MechanicalLayer
+function,GetState_CustomData,WideString
+function,GetState_RoughnessFactor,Double
+function,GetState_RoughnessModelType,TRoughnessModelType
+function,GetState_SingleLayerPreffered,Boolean
+function,GetState_SurfaceRoughness,Double
+function,GetSubstack(ASubstackID : WideString),IPCB_LayerStack
+function,Get_ZBottom(Layer : IPCB_LayerObject),Integer
+function,Get_ZTop(Layer : IPCB_LayerObject),Integer
+function,HasMicroVias,Boolean
+function,HasPrintedElectronicLayers,Boolean
+function,Id,WideString
+procedure,Import_FromLayerStackManagerParameters(Params : PWideChar),
+procedure,Import_FromParameters(Params : PWideChar),
+function,InsertAbove(ARefLayer : IPCB_LayerObject; ALayer : IPCB_LayerObject),IPCB_LayerObject
+function,InsertBelow(ARefLayer : IPCB_LayerObject; ALayer : IPCB_LayerObject),IPCB_LayerObject
+function,InsertOnBottom(ALayer : IPCB_LayerObject),IPCB_LayerObject
+function,InsertOnTop(ALayer : IPCB_LayerObject),IPCB_LayerObject
+property,IsFlex,Boolean
+function,Iterator,IPCB_LayerObjectIterator
+function,I_ObjectAddress,Pointer
+function,Last(T : TLayerClassID),IPCB_LayerObject
+property,LayerKindMap,IMechanicalLayerKindMap
+function,LayerNumberInStack(const ALayer : Integer),Integer
+property,LayerStackStyle,TLayerStackStyle
+function,MeasureLayerDistance(const StartLayer : IPCB_LayerObject; const EndLayer : IPCB_LayerObject),Integer
+procedure,Merge_FromLayerStackManagerParameters(Params : PWideChar; Actions : PWideChar),
+property,Name,TPCBString
+function,Next(T : TLayerClassID; ARefLayer : IPCB_LayerObject),IPCB_LayerObject
+function,Previous(T : TLayerClassID; ARefLayer : IPCB_LayerObject),IPCB_LayerObject
+function,RemoveImpedanceProfile(ImpedanceProfile : IPCB_ImpedanceProfile),Boolean
+function,RemoveLayer(Layer : IPCB_LayerObject),Boolean
+function,RemoveSubstack(Substack : IPCB_LayerStack),Boolean
+procedure,SetState_CustomData(Value : WideString),
+procedure,SetState_RoughnessFactor(ARoughnessFactor : Double),
+procedure,SetState_RoughnessModelType(ARoughnessModelType : TRoughnessModelType),
+procedure,SetState_SingleLayerPreffered(AValue : Boolean),
+procedure,SetState_SurfaceRoughness(ASurfaceRoughness : Double),
+function,StateID,Integer
+function,SubstackCount,Integer
+property,Substacks[Index: Integer],IPCB_LayerStack
+procedure,SwapSubstacks(ALayerStack1 : Integer; ALayerStack2 : Integer),

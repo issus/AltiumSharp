@@ -1,0 +1,13 @@
+MemberType,Name,DataType
+function,CreateCylinderModel(const Radius : Integer; const Height : Integer; const Color : Cardinal),IPCB_Model
+function,CreateExtrudedModel(const Polygon : IPCB_GeometricPolygon; const PolyArea : Int64; const RefPt : IDispatch; MinZ : Integer; MaxZ : Integer; const Color : Cardinal),IPCB_Model
+function,CreateModelByVault(const AVaultGUID : WideString; const AItemGUID : WideString; const ARevisionGUID : WideString),IPCB_Model
+function,CreateRealModelFromParameters(const AParameters : IParameterList),IPCB_RealModel
+function,CreateSphereModel(const Radius : Integer; const Color : Cardinal),IPCB_Model
+function,FactoryCreateModelByModelType(const ModelType : T3DModelType),IPCB_Model
+function,ImportModel(const ARealModel : IPCB_RealModel; const Stream_NotCompressed : IStream),IPCB_RealModel
+function,ImportModel_FromFile(const ARealModel : IPCB_RealModel; const AFileName : WideString),IPCB_RealModel
+function,ImportModel_FromFiles(const ARealModel : IPCB_RealModel; const SearchPath : IPCB_WideStrings),IPCB_RealModel
+function,ImportModel_FromVault(const ARealModel : IPCB_RealModel; const AVaultGUID : WideString; const ARevisionGUID : WideString),IPCB_RealModel
+function,IsStale(const ARealModel : IPCB_RealModel),Boolean
+procedure,Reset_IDsToChecksum,

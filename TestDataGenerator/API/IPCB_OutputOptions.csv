@@ -1,0 +1,25 @@
+MemberType,Name,DataType
+property,BottomLayerOnPadMaster,Boolean
+property,DrillDrawSymbolSize,TCoord
+property,DrillGuideHoleSize,TCoord
+property,DrillSymbolKind,TDrillSymbol
+procedure,Export_ToParameters,Parameters : PWideChar
+procedure,Export_ToParameters_GeneralOptions,Parameters : PWideChar
+procedure,Export_ToParameters_LayerOptions,Parameters : PWideChar
+procedure,Export_ToParameters_LayerOptions_Version3,Parameters : PWideChar
+procedure,Export_ToParameters_Version3,Parameters : PWideChar
+procedure,Export_ToParameters_Version4,Parameters : PWideChar
+property,FlipLayer[PL: TV6_PlotLayer],Boolean
+procedure,Import_FromParameters,DisplayUnit : TUnit; Parameters : PWideChar
+procedure,Import_FromParameters_GeneralOptions,DisplayUnit : TUnit; Parameters : PWideChar
+procedure,Import_FromParameters_LayerOptions,Parameters : PWideChar
+procedure,Import_FromParameters_LayerOptions_Version3,Parameters : PWideChar
+procedure,Import_FromParameters_Version3,DisplayUnit : TUnit; Parameters : PWideChar
+procedure,Import_FromParameters_Version4,DisplayUnit : TUnit; Parameters : PWideChar
+property,IncludeUnconnectedPads,Boolean
+property,IncludeViasInSolderMask,Boolean
+function,I_ObjectAddress,Pointer
+property,MultiLayerOnPadMaster,Boolean
+property,OptionsObjectID,TOptionsObjectId
+property,PlotLayer[PL: TV6_PlotLayer],Boolean
+property,TopLayerOnPadMaster,Boolean

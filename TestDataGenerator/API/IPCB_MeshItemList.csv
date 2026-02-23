@@ -1,0 +1,5 @@
+MemberType,Name,DataType
+procedure,Clear,
+procedure,Delete(AIndex : Integer),
+function,Get(AIndex : Integer),IPCB_MeshItem
+function,GetCount,Integer

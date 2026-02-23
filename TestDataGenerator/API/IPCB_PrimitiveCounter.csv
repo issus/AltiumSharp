@@ -1,0 +1,5 @@
+MemberType,Name,DataType
+function,GetCount(ObjectSet : TObjectSet),Cardinal
+function,GetObjectCount(ObjectId : TObjectId),Cardinal
+property,HoleCount[HoleType: TExtendedHoleType],Cardinal
+property,StringCount,Cardinal

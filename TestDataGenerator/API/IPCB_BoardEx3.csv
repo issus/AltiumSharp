@@ -1,0 +1,16 @@
+MemberType,Name,DataType
+function,AddMeshObject,(const MeshObject : IPCB_MeshObject) : Integer
+function,AddMeshObjectToLayer,(const MeshObject : IPCB_MeshObject, Layer : Integer) : Integer
+function,CreateNewConnectivityGraph,IPCB_ConnectivityGraph
+function,GetBaseVCSBoard,IPCB_Board
+function,GetBoardIsBeingMerged,Boolean
+function,GetCurrentConnectivityGraph,IPCB_ConnectivityGraph
+function,GetLastRemoteBoard,IPCB_Board
+function,GetLastRemoteBoardRevisionInfo,IDispatch
+function,GetRemoteBoardRevisionInfo,(const Revision : WideString) : IDispatch
+function,GetState_SystemValid2,(const AProcessorName : WideString) : Boolean
+function,GuidsLoadedFromFile,Boolean
+procedure,InitializeBoard,
+procedure,SetBoardIsBeingMerged,(Value : Boolean)
+procedure,SetSkipRebuildingSplitPlanesAfterLoad,(Value : Boolean)
+procedure,SetState_SystemValid2,(const AProcessorName : WideString, AValid : Boolean)

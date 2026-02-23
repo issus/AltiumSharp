@@ -1,0 +1,9 @@
+MemberType,Name,DataType
+procedure,ChangeFeatureTypeCounter,AFeatureType : TViaStructureFeatureType; AIncrement : Boolean
+procedure,Clear,
+procedure,ClearFeatureTypeCounter,
+property,Count,Integer
+function,CreateViaStructure,AFullFeatureList : Boolean; AViaStructureType : TViaStructureType) : IPCB_ViaStructure
+function,IsFeatureTypeExists,AFeatureType : TViaStructureFeatureType) : Boolean
+property,Items[AIndex: Integer],IPCB_ViaStructure
+function,RegisterViaStructure,const AViaStructure : IPCB_ViaStructure) : IPCB_ViaStructure

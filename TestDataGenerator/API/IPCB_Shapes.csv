@@ -1,0 +1,3 @@
+MemberType,Name,DataType
+function,Count,Integer
+function,Items(Index : Integer),IPCB_RegionShape

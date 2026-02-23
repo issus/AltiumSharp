@@ -1,0 +1,71 @@
+MemberType,Name,DataType
+function,Board3DModelExporter,IPCB_Board3DModelExporter
+property,CanFastCrossSelect_Emit,Boolean
+property,CanFastCrossSelect_Receive,Boolean
+property,Capabilities,IPCB_CapabilitiesFactory
+function,CreateAndLoadPCBLibraryFromFile(const APath : WideString),IPCB_Library
+function,CreateComponentPainter,IPCB_ComponentPainterView
+function,CreateDocumentPainter(Mode : TPCB_DocumentPainterMode),IPCB_DocumentPainterView
+function,CreateLayerStackupPainter,IPCB_LayerStackupDocumentPainterView
+function,CreatePadViaPainter,IPCB_PadViaPainterView
+function,CreatePCBGroup,IPCB_GroupEx
+function,CreatePCBLibComp,IPCB_LibComponent
+function,CreatePCBLibrary,IPCB_Library
+function,CreatePCBPrimitiveGroups,IPCB_PrimitiveGroups
+function,CreatePCBPrimitiveList,IPCB_PrimitiveList
+function,CreatePCBWideStringList,IPCB_WideStrings
+function,CreatePhysicalLayerMap(ABoard : IPCB_Board),IPCB_GeometryMakerLayerMap
+procedure,DestroyPCBContour(var APCBContour : IPCB_Contour),
+procedure,DestroyPCBLibComp(var APCBLibComp : IPCB_LibComponent),
+procedure,DestroyPCBLibrary(var APCBLibrary : IPCB_Library),
+procedure,DestroyPCBObject(var APCBObject : IPCB_Primitive),
+procedure,DisableFastParams,
+procedure,DocumentLiveHighlight_Start(ADocumentPath : WideString),
+procedure,DocumentLiveHighlight_Stop(ADocumentPath : WideString),
+procedure,EnableFastParams,
+function,GetCurrentPCBBoard,IPCB_Board
+function,GetCurrentPCBLibrary,IPCB_Library
+function,GetOccWrapper,IOccWrapper
+function,GetPCBBoardByBoardID(BoardID : Integer),IPCB_Board
+function,GetPCBBoardByPath(const APath : WideString),IPCB_Board
+function,GetPCBLibraryByLibraryID(LibraryID : Integer),IPCB_Library
+function,GetPCBLibraryByPath(const APath : WideString),IPCB_Library
+function,GetState_PadViaLibraryManager,IPCB_PadViaLibraryManager
+property,InteractiveRoutingOptions,IPCB_InteractiveRoutingOptions
+function,IsObsoleteRuleKind(ARuleKind : TRuleKind),Boolean
+function,LayerSet,IPCB_LayerSetUtils
+function,LayerUtils,IPCB_LayerUtils
+function,LoadCompFromLibrary(const APattern : WideString; const ALibPath : WideString),IPCB_LibComponent
+function,LoadPCBBoardByPath(const APath : WideString),IPCB_Board
+function,LoadPCBLibraryByPath(const APath : WideString),IPCB_Library
+function,LoadPCBLibraryFromFile(const APath : WideString),IPCB_Library
+function,PaintFootprintThumbnail(ViewName : WideString; ViewFileAddress : WideString; Width : Integer; Height : Integer),HBITMAP
+property,ParametersFactory,IPCB_ParametersFactory
+function,PCBAdditionalObjectFactory,IPCB_AdditionalObjectFactory
+procedure,PcbApi_Export_ToPainter(var APainter : IInterface; LibReference : string; LibraryPath : string),
+function,PCBArcContourUtilities,IPCB_ArcContourUtilities
+function,PCBClassFactory(const AClassKind : TObjectId),IPCB_ObjectClass
+function,PCBClassFactoryByClassMember(const AClassKind : TClassMemberKind),IPCB_ObjectClass
+function,PCBContourFactory,IPCB_Contour
+function,PCBContourMaker,IPCB_ContourMaker
+function,PCBContourUtilities,IPCB_ContourUtilities
+function,PCBGeometricPolygonFactory,IPCB_GeometricPolygon
+function,PCBGeometryMaker,IPCB_GeometryMaker
+function,PCBObjectFactory(const AObjectId : TObjectId; const ADimensionKind : TDimensionKind; const ACreationMode : TObjectCreationMode),IPCB_Primitive
+function,PCBRuleFactory(const ARuleKind : TRuleKind),IPCB_Rule
+procedure,PostBatchProcess,
+procedure,PostProcess,
+procedure,PostProcess_Clustered,
+procedure,PreBatchProcess,
+procedure,PreProcess,
+procedure,PreProcess_Clustered,
+function,PrimitiveComparator,IPCB_PrimitiveComparator
+procedure,RefreshDocumentView(ADocumentPath : WideString),
+function,RunFontEditorDialog(var ATextHeight : Integer; var AUseTTFont : Boolean; var AStrokeFontName : WideString; var AStrokeWidth : Integer; var ATTFontName : WideString; var ATTBold : Boolean; var ATTItalic : Boolean; var ATTInverted : Boolean; var ATTInvertedBorder : Integer),Boolean
+procedure,SendMessageToRobots(Source : Pointer; Destination : Pointer; MessageID : Word; MessageData : Pointer),
+property,ShowStatus,Boolean
+property,SpecialStringConverter,IPCB_SpecialStringConverter
+property,SystemOptions,IPCB_SystemOptions
+property,TTFLettersCache,IPCB_LettersCache
+property,TTFontsCache,IPCB_TTFontsCache
+property,ViolationsFactory,IPCB_ViolationsFactory

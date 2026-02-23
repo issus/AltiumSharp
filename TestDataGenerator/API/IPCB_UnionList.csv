@@ -1,0 +1,3 @@
+MemberType,Name,DataType
+function,Get,Index : Integer) : IPCB_Union
+function,GetCount,Integer

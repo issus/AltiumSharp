@@ -1,0 +1,5 @@
+MemberType,Name,DataType
+function,GetState_QueryExpression,WideString
+function,GetState_ReadOnly,Boolean
+procedure,SetState_QueryExpression,AExpressIn : WideString
+procedure,SetState_ReadOnly,AValue : Boolean

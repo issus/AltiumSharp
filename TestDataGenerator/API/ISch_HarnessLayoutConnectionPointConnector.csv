@@ -1,0 +1,6 @@
+MemberType,Name,DataType
+procedure,AddPin,const APinId : WideString
+property,PinId[AIndex: Integer],WideString
+property,PinsCount,Integer
+procedure,RemovePin,const APinId : WideString
+property,UniqueId,WideString

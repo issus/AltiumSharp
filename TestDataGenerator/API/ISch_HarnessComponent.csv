@@ -1,0 +1,157 @@
+MemberType,Name,DataType
+procedure,AddAndPositionSchObject,AObject : ISch_BasicContainer
+procedure,AddDisplayMode,
+procedure,AddErrorString,const AErrorString : WideString; AtEnd : LongBool
+procedure,AddImplementationToComponent,AnImplementation : ISch_Implementation
+procedure,AddPart,
+function,AddPin,ISch_Pin
+procedure,AddSchImplementation,ISch_Implementation
+procedure,AddSchObject,AObject : ISch_BasicContainer
+procedure,AddSchParameter,ISch_Parameter
+function,Add_Parameter,const AName : WideString; const AValue : WideString; out AParameter : ISch_Parameter : LongBool
+function,Alias[Index : Integer],WideString
+property,AliasAsText,WideString
+property,AliasCount,Integer
+procedure,Alias_Add,S : WideString
+procedure,Alias_Clear,
+procedure,Alias_Delete,I : Integer
+procedure,Alias_Remove,S : WideString
+procedure,ApplyChosenComponent,const DestComponent : IDispatch
+property,AreaColor,TColor
+function,BoundingRectangle,IDispatch
+function,BoundingRectangle_Full,IDispatch
+function,ChangeComponentLibraryToLibrary,LibraryName : WideString; TableName : WideString; AllowSelectNew : Boolean; Action : TSourceChangeAction : TSourceChangeAction
+function,ChangeComponentLibraryToVault,AVaultGUID : WideString; AllowSelectNew : Boolean; Action : TSourceChangeAction : TSourceChangeAction
+function,ChooseFromLibrary,IDispatch
+function,ChooseFromVault,IDispatch
+property,Color,TColor
+property,Comment,ISch_Parameter
+property,CompilationMasked,Boolean
+property,ComponentDescription,WideString
+property,ComponentKind,TComponentKind
+property,ConfigurationParameters,WideString
+property,ConfiguratorName,WideString
+property,Container,ISch_BasicContainer
+procedure,CopyTo,const AContainer : ISch_BasicContainer
+property,CurrentPartID,Integer
+property,DatabaseLibraryName,WideString
+property,DatabaseTableName,WideString
+procedure,DeleteAll,
+procedure,DeleteDisplayMode,AMode : Byte
+procedure,DeletePart,APartId : Integer
+property,Designator,ISch_Designator
+property,DesignatorLocked,Boolean
+property,DesignItemId,WideString
+property,Dimmed,Boolean
+property,Disabled,Boolean
+property,DisplayError,Boolean
+property,DisplayFieldNames,Boolean
+property,DisplayMode,TDisplayMode
+property,DisplayModeCount,Integer
+function,EditPins,Boolean
+function,EditPinsWithSelection,ASelectedPins : ISafeInterfaceList : Boolean
+property,EnableDraw,Boolean
+property,ErrorColor,TColor
+property,ErrorKind,TErrorKind
+property,ErrorString,WideString
+function,ExportToParameters,WideString
+procedure,FreeAllContainedObjects,
+function,FullPartDesignator,APartId : Integer : WideString
+function,GenerateComponentTemplateGUID,WideString
+function,GetAllPinCount,Integer
+function,GetEmptyImplementation,ISch_Implementation
+function,GetGraphicsHash,WideString
+function,GetHash,WideString
+function,GetState_CustomDisplayModeName,ADisplayMode : Byte : WideString
+function,GetState_DatabaseLibraryKeyAsString,WideString
+function,GetState_DescriptionString,WideString
+function,GetState_IdentifierString,WideString
+function,GetState_IsSubPartImplemented,ASubPartId : Integer : Boolean
+function,GetState_IsSubPartImplementedAndDisplayMode,ASubPartId : Integer; ADisplayMode : Integer : Boolean
+function,GetState_SchParameterByName,const AName : WideString : ISch_Parameter
+function,GetState_WiringDiagramOriginUniqueId,WideString
+procedure,GraphicallyInvalidate,
+property,GraphicallyLocked,Boolean
+property,Handle,WideString
+property,HasConfiguredPinMapping,Boolean
+function,Import_FromUser,Boolean
+function,Import_FromUser_Parameters,Boolean
+function,InLibrary,Boolean
+function,InSheet,Boolean
+function,IsGenericComponent,Boolean
+function,IsIntegratedComponent,Boolean
+property,IsMirrored,Boolean
+function,IsMultiPartComponent,Boolean
+property,IsUnmanaged,Boolean
+property,IsUserConfigurable,Boolean
+property,ItemsGUID,WideString
+function,I_ObjectAddress,IInterface
+procedure,JumpTo,APin : ISch_Pin
+property,LibIdentifierKind,TLibIdentifierKind
+property,LibraryIdentifier,WideString
+property,LibraryPath,WideString
+property,LibReference,WideString
+property,LiveHighlightValue,WideString
+property,Location,TLocation
+procedure,Mirror,const Axis : IDispatch
+procedure,MoveByXY,X : Integer; Y : Integer
+procedure,MoveToXY,X : Integer; Y : Integer
+property,ObjectId,TObjectId
+procedure,OffsetParameters_Default,
+property,Orientation,TRotationBy90
+property,OverrideColors,Boolean
+property,OwnerDocument,ISch_Document
+property,OwnerPartDisplayMode,TDisplayMode
+property,OwnerPartId,Integer
+property,PartCount,Integer
+property,PartIdLocked,Boolean
+function,PartIdString,APartId : Integer : WideString
+property,PinColor,TColor
+property,PinsMoveable,Boolean
+procedure,PostProcess_Import_FromUser,
+procedure,PreProcess_Import_FromUser,
+procedure,RemovePins,APins : ISafeInterfaceList
+procedure,RemoveSchImplementation,AnImplementation : ISch_Implementation
+procedure,RemoveSchObject,AObject : ISch_BasicContainer
+function,Remove_Parameter,const Parameter : ISch_Parameter : LongBool
+function,Replicate,ISch_BasicContainer
+procedure,ResetAllSchParametersPosition,
+procedure,ResetErrorFields,
+property,RevisionDetails,WideString
+property,RevisionGUID,WideString
+property,RevisionHRID,WideString
+property,RevisionState,WideString
+property,RevisionStatus,WideString
+procedure,RotateBy90,const Center : IDispatch; A : TRotationBy90
+procedure,SaveToFile,APSAddress : WideString
+function,SchIterator_Create,ISch_Iterator
+procedure,SchIterator_Destroy,var AIterator : ISch_Iterator
+property,SelectedInLibrary,Boolean
+property,Selection,Boolean
+procedure,SetState_CustomDisplayModeName,ADisplayMode : Byte; AValue : WideString
+procedure,SetState_Default,AUnit : TUnitSystem
+procedure,SetState_FilePosition,AValue : Integer
+procedure,SetState_OrientationWithoutRotating,AValue : TRotationBy90
+procedure,SetState_xSizeySize,
+property,SheetPartFileName,WideString
+property,ShowHiddenFields,Boolean
+property,ShowHiddenPins,Boolean
+procedure,ShowInVaultExplorer,
+procedure,ShowLibraryInExplorer,
+property,SourceLibraryName,WideString
+function,SuggestedSearchKeywords,WideString
+property,SymbolItemGUID,WideString
+property,SymbolReference,WideString
+property,SymbolRevisionGUID,WideString
+property,SymbolVaultGUID,WideString
+property,TargetFileName,WideString
+property,UniqueId,WideString
+procedure,UpdatePart_PostProcess,
+procedure,UpdatePart_PreProcess,
+procedure,UpdatePrimitivesAccessibility,
+property,UseDBTableName,Boolean
+property,UseLibraryName,Boolean
+procedure,ValidateImplementationsCurrentState,
+procedure,ValidateLink,
+property,VariantOption,IVariantOption
+property,VaultGUID,WideString

@@ -1,0 +1,153 @@
+MemberType,Name,DataType
+procedure,AddPCBObject,PCBObject : IPCB_Primitive
+property,AllowGlobalEdit,Boolean
+property,ArrowLength,TCoord
+property,ArrowLineWidth,TCoord
+property,ArrowPosition,TDimensionArrowPosition
+property,ArrowSize,TCoord
+procedure,BeginModify,
+property,Board,IPCB_Board
+property,Bold,Boolean
+function,BoundingRectangle,IDispatch
+function,BoundingRectangleChildren,IDispatch
+function,BoundingRectangleForPainting,IDispatch
+function,BoundingRectangleForSelection,IDispatch
+procedure,CancelModify,
+property,Component,IPCB_Component
+property,Coordinate,IPCB_Coordinate
+property,Descriptor,TPCBString
+property,Detail,TPCBString
+property,Dimension,IPCB_Dimension
+property,DimensionKind,TDimensionKind
+property,DrawAsPreview,Boolean
+property,DRCError,Boolean
+property,Enabled,Boolean
+property,EnableDraw,Boolean
+property,Enabled_Direct,Boolean
+property,Enabled_vComponent,Boolean
+property,Enabled_vCoordinate,Boolean
+property,Enabled_vDimension,Boolean
+property,Enabled_vNet,Boolean
+property,Enabled_vPolygon,Boolean
+procedure,EndModify,
+procedure,Export_ToParameters,AParams : PWideChar
+property,ExtensionLineWidth,TCoord
+property,ExtensionOffset,TCoord
+property,ExtensionPickGap,TCoord
+function,FastSetState_XSizeYSize,Boolean
+procedure,FlipXY,Axis : Integer; MirrOp : TMirrorOperation
+property,FontName,TPCBString
+procedure,FreePrimitives,
+function,GetPrimitiveAt[I : Integer; ObjectId : TObjectId],IPCB_Primitive
+function,GetPrimitiveCount,ObjectSet : TObjectSet : Integer
+procedure,GraphicallyInvalidate,
+function,GroupIterator_Create,IPCB_GroupIterator
+procedure,GroupIterator_Destroy,var AIterator : IPCB_GroupIterator
+property,Handle,TPCBString
+property,Identifier,TPCBString
+property,InBoard,Boolean
+property,InComponent,Boolean
+property,InCoordinate,Boolean
+property,Index,Word
+property,InDimension,Boolean
+property,InNet,Boolean
+property,InPolygon,Boolean
+property,InSelectionMemory[Index: Integer],Boolean
+property,IsAssyTestpoint_Bottom,Boolean
+property,IsAssyTestpoint_Top,Boolean
+property,IsElectricalPrim,Boolean
+function,IsFreePrimitive,Boolean
+function,IsHidden,Boolean
+property,IsKeepout,Boolean
+property,IsPreRoute,Boolean
+function,IsSaveable,AVer : TAdvPCBFileFormatVersion : Boolean
+property,IsTenting,Boolean
+property,IsTenting_Bottom,Boolean
+property,IsTenting_Top,Boolean
+property,IsTestpoint_Bottom,Boolean
+property,IsTestpoint_Top,Boolean
+property,Italic,Boolean
+function,I_ObjectAddress,Pointer
+property,Layer,TLayer
+property,LayerUsed[L: TV6_Layer],Boolean
+property,Layer_V6,TV6_Layer
+property,LineWidth,TCoord
+procedure,Mirror,Axis : Integer; MirrOp : TMirrorOperation
+property,MiscFlag1,Boolean
+property,MiscFlag2,Boolean
+property,MiscFlag3,Boolean
+property,Moveable,Boolean
+procedure,MoveByXY,AX : Integer; AY : Integer
+procedure,MoveTextByXY,AX : Integer; AY : Integer
+procedure,MoveTextToXY,AX : Integer; AY : Integer
+procedure,MoveToXY,AX : Integer; AY : Integer
+property,Net,IPCB_Net
+property,ObjectId,TObjectId
+property,ObjectIDString,TPCBString
+property,PadCacheRobotFlag,Boolean
+property,PasteMaskExpansion,TCoord
+property,Polygon,IPCB_Polygon
+property,PolygonOutline,Boolean
+property,PowerPlaneClearance,TCoord
+property,PowerPlaneConnectStyle,TPlaneConnectStyle
+property,PowerPlaneReliefExpansion,TCoord
+property,PrimitiveLock,Boolean
+property,References[I: Integer],TDimensionReference
+procedure,References_Add,const r : IDispatch
+property,References_Count,Integer
+procedure,References_Delete,Index : Integer
+procedure,References_DeleteLast,
+function,References_IndexOf,P : IPCB_Primitive; Index : Integer : Integer
+function,References_Validate,Boolean
+property,ReliefAirGap,TCoord
+property,ReliefConductorWidth,TCoord
+property,ReliefEntries,Integer
+procedure,RemovePCBObject,PCBObject : IPCB_Primitive
+function,Replicate,IPCB_Primitive
+function,ReplicateWithChildren,IPCB_Primitive
+function,RequiredParamterSpace,Integer
+procedure,ResetPrecalculated,
+procedure,RotateAroundXY,AX : Integer; AY : Integer; Angle : Double
+procedure,RotateBy,Angle : Double
+property,Selected,Boolean
+procedure,SetState_LayersUsedArray,
+procedure,SetState_Preview,Enable : Boolean; Color : Cardinal; Opacity : Single; z : Integer; Height : Integer; sx : Single; sy : Single; SZ : Single
+function,SetState_XSizeYSize,Boolean
+property,Size,TCoord
+property,SolderMaskExpansion,TCoord
+property,Style,TUnitStyle
+procedure,SwapLayerPairs,
+property,TearDrop,Boolean
+function,Text,IPCB_Text
+property,TextDimensionUnit,TDimensionUnit
+property,TextFont,TFontID
+property,TextFormat,TPCBString
+property,TextGap,TCoord
+property,TextHeight,TCoord
+property,TextLineWidth,TCoord
+property,TextPosition,TDimensionTextPosition
+property,TextPrecision,Integer
+property,TextPrefix,TPCBString
+property,TextSuffix,TPCBString
+property,TextValue,TReal
+property,TextWidth,TCoord
+property,TextX,TCoord
+property,TextY,TCoord
+function,Track1,IPCB_Primitive
+function,Track2,IPCB_Primitive
+function,Track3,IPCB_Primitive
+function,Track4,IPCB_Primitive
+function,Track5,IPCB_Primitive
+function,Track6,IPCB_Primitive
+function,Track7,IPCB_Primitive
+function,Track8,IPCB_Primitive
+property,UnionIndex,Integer
+property,UniqueId,TPCBString
+property,Used,Boolean
+property,UserRouted,Boolean
+property,UseTTFonts,Boolean
+property,ViewableObjectID,TViewableObjectID
+property,x,TCoord
+property,X1Location,TCoord
+property,y,TCoord
+property,Y1Location,TCoord

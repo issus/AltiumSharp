@@ -1,0 +1,13 @@
+MemberType,Name,DataType
+procedure,AddFilter_AllLayers,
+procedure,AddFilter_Area,(x1 : Integer, y1 : Integer, x2 : Integer, y2 : Integer)
+procedure,AddFilter_IPCB_LayerSet,(ALayerSet : IPCB_LayerSet)
+procedure,AddFilter_LayerSet,(ALayerSet : TV6_LayerSet)
+procedure,AddFilter_LayerSetA,(ALayerSet : Integer)
+procedure,AddFilter_Method,(AMethod : TIterationMethod)
+procedure,AddFilter_ObjectSet,(AObjectSet : TObjectSet)
+procedure,AddFilter_ProcessSpecialLayers,
+function,FirstPCBObject,IPCB_Primitive
+function,I_ObjectAddress,Pointer
+function,NextPCBObject,IPCB_Primitive
+procedure,SetState_FilterAll,

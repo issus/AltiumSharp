@@ -1,0 +1,2 @@
+MemberType,Name,DataType
+function,Next(out Layer : Integer; out GType : TGeometryLayerType),Boolean

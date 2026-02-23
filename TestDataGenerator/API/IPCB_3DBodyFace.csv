@@ -1,0 +1,7 @@
+MemberType,Name,DataType
+function,FaceIndex,Integer
+function,GetTriangleIndex,const AIndex : Integer : Integer
+procedure,GetTriangleIndices,const AIndex : Integer; out AVertex1Index : Integer; out AVertex2Index : Integer; out AVertex3Index : Integer
+function,PartIndex,Integer
+function,StartTriangleIndex,Integer
+function,TriangleCount,Integer

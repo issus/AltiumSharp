@@ -1,0 +1,18 @@
+MemberType,Name,DataType
+function,AddRef,Integer
+property,Bold,Boolean
+property,CanEmbed,Boolean
+property,CharSet,Byte
+property,EmbeddedFontHandle,THandle
+function,FontExists,Boolean
+property,FontFaceName,TPCBString
+property,FontFullName,TPCBString
+property,FontStyleName,TPCBString
+function,GetEmbeddedFontData,var DataSize : Integer) : Pointer
+function,IsEmbedded,Boolean
+function,IsEmbeddedInDocument,const ABoard : Pointer) : Boolean
+function,IsSame,const FaceName : WideString; const Bold : Boolean; const Italic : Boolean; const CharSet : Byte) : Boolean
+property,Italic,Boolean
+function,I_ObjectAddress,Pointer
+property,RefCount,Integer
+function,Release,Integer

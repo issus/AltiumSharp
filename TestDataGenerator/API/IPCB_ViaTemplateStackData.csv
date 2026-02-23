@@ -1,0 +1,5 @@
+MemberType,Name,DataType
+property,Diameter,TCoord
+function,I_ObjectAddress,Pointer
+property,Layer,TLayer
+property,ThermalRelief,TPadViaThermalReliefData

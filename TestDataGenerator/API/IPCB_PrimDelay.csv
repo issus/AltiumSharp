@@ -1,0 +1,3 @@
+MemberType,Name,DataType
+function,CanEdit,Boolean
+property,PropagationDelay,Double

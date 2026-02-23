@@ -1,0 +1,54 @@
+MemberType,Name,DataType
+function,AddStackData(const AValue : IPCB_PadTemplateStackData),Integer
+procedure,ClearStackData,
+procedure,CopyTo(ADest : IPCB_PadViaTemplate; ACopyMode : TCopyMode),
+function,CreateDefaultStackData,IPCB_PadTemplateStackData
+function,CreatePrimitive,IPCB_Primitive
+function,CreateTemplateLink,IPCB_PadViaTemplateLink
+procedure,DecreasePrimLinkCounter,
+property,DynamicName,Boolean
+property,ExternalLink,IPCB_PadViaTemplateLink
+function,GetFullTemplateID,WideString
+function,GetHashVersion,WideString
+property,Hash,WideString
+function,HasLocalChanges(APrimitive : IPCB_Primitive),Boolean
+property,HoleNegativeTolerance,TCoord
+property,HolePositiveTolerance,TCoord
+property,HoleRotation,TAngle
+property,HoleSize,TCoord
+property,HoleType,TExtendedHoleType
+property,HoleWidth,TCoord
+procedure,IncreasePrimLinkCounter,
+property,Internal,Boolean
+property,IsBackdrill,Boolean
+property,IsMultiLayer,Boolean
+property,IsTenting_Bottom,Boolean
+property,IsTenting_Top,Boolean
+function,I_ObjectAddress,Pointer
+property,LibraryID,WideString
+property,ManualPasteMask,Boolean
+property,ManualSolderMask,Boolean
+property,Mode,TPadMode
+property,ObjectId,TObjectId
+property,ObjectIDString,WideString
+property,OffsetX,TCoord
+property,OffsetY,TCoord
+property,PadClass,WideString
+property,PasteMaskExpansion,TCoord
+property,PasteMaskPercent,Double
+property,PasteMaskUsePercent,Boolean
+property,Plated,Boolean
+property,PrimLinkCount,Integer
+property,RemoveUnused,Boolean
+property,RevisionID,WideString
+property,SolderMaskBottomExpansion,TCoord
+property,SolderMaskExpansion,TCoord
+property,SolderMaskHoleEdge,Boolean
+property,StackData[AIndex: Integer],IPCB_PadTemplateStackData
+function,StackDataCount,Integer
+property,TemplateDescription,WideString
+property,TemplateID,WideString
+property,TemplateName,WideString
+procedure,UpdateHash,
+property,UsePaste,Boolean
+property,UseSeparateExpansions,Boolean

@@ -1,0 +1,9 @@
+MemberType,Name,DataType
+function,I_ObjectAddress,Pointer
+property,LockSheet,Boolean
+property,SheetHeight,TCoord
+property,SheetWidth,TCoord
+property,SheetX,TCoord
+property,SheetY,TCoord
+property,ShowSheet,Boolean
+procedure,UpdateSheetPosition,

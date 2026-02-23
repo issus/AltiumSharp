@@ -1,0 +1,5 @@
+MemberType,Name,DataType
+function,Count,Integer
+function,FindReuseBlockByUnionID,AUnionID : Integer : IPCB_ReuseBlock
+function,GetReuseBlockByIndex,AIndex : Integer : IPCB_ReuseBlock
+function,GetReuseBlockByUnionID,AUnionID : Integer : IPCB_ReuseBlock

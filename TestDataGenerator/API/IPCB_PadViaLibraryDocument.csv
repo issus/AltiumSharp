@@ -1,0 +1,45 @@
+MemberType,Name,DataType
+procedure,AcquireDataFileHandle,
+procedure,AcquireFileOwnership,
+procedure,AddView,const AView : IServerDocumentView
+property,BeingClosed,LongBool
+property,CanClose,LongBool
+function,CanCreateSnippet,const AView : IServerDocumentView; AMode : TSnippetCreationMode; AContextSensitive : Boolean : Boolean
+function,CanPlaceSnippet,const ASnippetPath : WideString : Boolean
+function,CompareWithShadow,AShadowDoc : IServerDocument; ACompareView : IServerView : LongBool
+property,Count,Integer
+function,CreateSnippetFile,const AView : IServerDocumentView; ASnippetFilePath : WideString; AMode : TSnippetCreationMode; AContextSensitive : Boolean : Boolean
+property,CurrentTemplate,IPCB_PadViaTemplate
+property,DisplayUnits,TUnit
+procedure,DocumentDirectoryChanged,
+property,DocumentModifiedDate,TDateTime
+function,DoFileLoad,LongBool
+function,DoFileSave,const AKind : WideString : LongBool
+function,DoSafeChangeFileNameAndSave,const ANewFileName : WideString; const AKind : WideString : LongBool
+function,DoSafeFileSave,const AKind : WideString : LongBool
+property,FileName,WideString
+procedure,Focus,
+function,GetContextHelpTopicName,WideString
+function,GetExternalFiles,ACheckForExistence : Boolean : IExternalFiles
+function,GetFileModifiedDate,TDateTime
+function,GetSnippetView,IServerDocumentView
+function,GetViewByName,const ViewName : WideString : IServerDocumentView
+property,IsShown,LongBool
+property,Kind,WideString
+property,Modified,LongBool
+procedure,NavigateFirst,
+procedure,NotifyViews,ANotification : INotification
+function,OwnsFile,Boolean
+property,PadViaLibrary,IPCB_PadViaLibrary
+procedure,PlaceSnippet,ASnippetAddress : WideString; const AView : IServerDocumentView
+procedure,ReleaseDataFileHandle,
+procedure,ReleaseFileOwnership,
+property,ServerModule,IServerModule
+procedure,SetFileModifiedDate,const AValue : TDateTime
+function,SetFileName,const AFileName : WideString : WideString
+property,SupportsOwnSave,LongBool
+function,SupportsReload,LongBool
+procedure,UpdateModifiedDate,
+property,View[Index: Integer],IServerDocumentView
+function,WarnIfOwnedByOther,AWarningLevel : TFileOwnershipWarningLevel : LongBool
+procedure,ZoomSnippetContents,

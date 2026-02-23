@@ -1,0 +1,6 @@
+MemberType,Name,DataType
+procedure,Clear,
+procedure,Delete(AIndex : Integer),
+function,Get(AIndex : Integer),Cardinal
+function,GetAsString,WideString
+function,GetCount,Integer

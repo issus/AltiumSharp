@@ -1,0 +1,5 @@
+MemberType,Name,DataType
+procedure,ClearAll,
+property,Count,Integer
+procedure,Delete(Index : Integer),
+property,Items[Index: Integer],IPCB_Primitive

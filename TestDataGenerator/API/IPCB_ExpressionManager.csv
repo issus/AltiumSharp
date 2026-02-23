@@ -1,0 +1,7 @@
+MemberType,Name,DataType
+function,ExecRuleExpression,const Expression : WideString; Board : IPCB_Board; const RuleKind : TRuleKind; out AffectedObjects : Integer) : Boolean
+function,HighlightByExpression,Expression : WideString; Board : IPCB_Board; HighlightMethods : THighlightMethodSet) : Boolean
+function,IsExpressionValid,const Expression : WideString; const Board : IPCB_Board; out ErrLine : Integer; out ErrChar : Integer; out ErrMessage : WideString) : Boolean
+function,ShowExpressionBuilder,Board : IPCB_Board; out ResExpression : WideString) : Boolean
+function,ShowExpressionHelper,Expression : WideString; Board : IPCB_Board; out ResExpression : WideString) : Boolean
+procedure,ShowSmartEdit,SpecialString : WideString; EditedAttributeId : Integer; BoardCollection : IPCB_BoardCollection

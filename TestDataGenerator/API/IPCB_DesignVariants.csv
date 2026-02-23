@@ -1,0 +1,6 @@
+MemberType,Name,DataType
+property,Count,Integer
+property,Current,IPCB_DesignVariant
+property,DesignVariant[AIndex: Integer],IPCB_DesignVariant
+function,GetDesignVariantByID,(const AVariantID : WideString) : IPCB_DesignVariant
+function,GetDesignVariantByName,(const AVariantName : WideString) : IPCB_DesignVariant

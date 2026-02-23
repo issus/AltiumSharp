@@ -1,0 +1,9 @@
+MemberType,Name,DataType
+procedure,EditCustomReliefOnLayer,const ALayer : Integer
+function,EditThermalReliefData,const ADataForLayer : IDispatch; const AData : IDispatch : Boolean
+property,ManualThermalReliefsCount,Integer
+procedure,RemoveThermalRelief,const ADataForLayer : IDispatch
+procedure,SetAllThermalReliefsToRule,
+property,ThermalReliefData[ADataForLayer: IDispatch],TPadViaThermalReliefData
+property,ThermalReliefDataType[ADataForLayer: IDispatch],TPadViaThermalReliefDataType
+property,ThermalReliefsIterator,IStackObjectThermalReliefIterator

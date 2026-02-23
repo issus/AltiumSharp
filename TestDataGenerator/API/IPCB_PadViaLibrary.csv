@@ -1,0 +1,20 @@
+MemberType,Name,DataType
+property,Activated,Boolean
+function,AddExternalTemplate,const ATemplate : IPCB_PadViaTemplate : IPCB_PadViaTemplate
+procedure,AddTemplate,const APrimitive : IPCB_Primitive
+function,AddTemplateByPrimitive,const APrimitive : IPCB_Primitive : IPCB_PadViaTemplate
+function,CheckDublicate,const ATemplate : IPCB_PadViaTemplate : Boolean
+procedure,Clear,
+procedure,CopyTo,const ADest : IPCB_PadViaLibrary
+property,Count,Integer
+procedure,DeleteTemplate,AIndex : Integer
+property,DisplayUnits,TUnit
+function,FindTemplate,const ATemplate : WideString : IPCB_PadViaTemplate
+function,I_ObjectAddress,Pointer
+property,LibraryID,WideString
+property,LibraryName,WideString
+property,LibraryPath,WideString
+function,RemoveTemplate,const ATemplate : IPCB_PadViaTemplate : Boolean
+procedure,SetState_LibraryID,const AValue : WideString
+procedure,SetState_LibraryName,const AValue : WideString
+property,Templates[AIndex: Integer],IPCB_PadViaTemplate

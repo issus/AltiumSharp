@@ -1,0 +1,4 @@
+MemberType,Name,DataType
+function,GetViaStructureReplica,IPCB_ViaStructure
+property,ViaStructure,IPCB_ViaStructure
+property,ViaStructureType,TViaStructureType

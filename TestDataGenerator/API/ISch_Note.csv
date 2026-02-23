@@ -1,0 +1,67 @@
+MemberType,Name,DataType
+procedure,AddAndPositionSchObject,AObject : ISch_BasicContainer
+procedure,AddErrorString,const AErrorString : WideString; AtEnd : LongBool
+procedure,AddSchObject,AObject : ISch_BasicContainer
+property,Alignment,THorizontalAlign
+property,AreaColor,TColor
+property,Author,WideString
+function,BoundingRectangle,IDispatch
+function,BoundingRectangle_Full,IDispatch
+property,ClipToRect,Boolean
+property,Collapsed,Boolean
+property,Color,TColor
+property,CompilationMasked,Boolean
+property,Container,ISch_BasicContainer
+procedure,CopyTo,const AContainer : ISch_BasicContainer
+property,Corner,TLocation
+procedure,DeleteAll,
+property,Dimmed,Boolean
+property,Disabled,Boolean
+property,DisplayError,Boolean
+property,EnableDraw,Boolean
+property,ErrorColor,TColor
+property,ErrorKind,TErrorKind
+property,ErrorString,WideString
+function,ExportToParameters,WideString
+property,FontID,Integer
+procedure,FreeAllContainedObjects,
+function,GetHash,WideString
+function,GetState_DescriptionString,WideString
+function,GetState_IdentifierString,WideString
+function,GetState_SchParameterByName,const AName : WideString : ISch_Parameter
+function,GetState_WiringDiagramOriginUniqueId,WideString
+procedure,GraphicallyInvalidate,
+property,GraphicallyLocked,Boolean
+property,Handle,WideString
+function,Import_FromUser,Boolean
+property,IsSolid,Boolean
+function,I_ObjectAddress,IInterface
+property,LineStyle,TLineStyle
+property,LineWidth,TSize
+property,LiveHighlightValue,WideString
+property,Location,TLocation
+procedure,Mirror,const Axis : IDispatch
+procedure,MoveByXY,X : Integer; Y : Integer
+procedure,MoveToXY,X : Integer; Y : Integer
+property,ObjectId,TObjectId
+property,OwnerDocument,ISch_Document
+property,OwnerPartDisplayMode,TDisplayMode
+property,OwnerPartId,Integer
+procedure,PostProcess_Import_FromUser,
+procedure,PreProcess_Import_FromUser,
+procedure,RemoveSchObject,AObject : ISch_BasicContainer
+function,Replicate,ISch_BasicContainer
+procedure,ResetErrorFields,
+procedure,RotateBy90,const Center : IDispatch; A : TRotationBy90
+function,SchIterator_Create,ISch_Iterator
+procedure,SchIterator_Destroy,var AIterator : ISch_Iterator
+property,Selection,Boolean
+procedure,SetState_Default,AUnit : TUnitSystem
+procedure,SetState_xSizeySize,
+property,ShowBorder,Boolean
+property,Text,WideString
+property,TextColor,TColor
+property,TextMargin,TCoord
+property,Transparent,Boolean
+property,UniqueId,WideString
+property,WordWrap,Boolean

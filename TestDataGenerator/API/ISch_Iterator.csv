@@ -1,0 +1,12 @@
+MemberType,Name,DataType
+procedure,AddFilter_Area,"x1: Integer, y1: Integer, x2: Integer, y2: Integer"
+procedure,AddFilter_CurrentDisplayModePrimitives,
+procedure,AddFilter_CurrentDisplayModePrimitivesWithHiddenPins,
+procedure,AddFilter_CurrentPartPrimitives,
+procedure,AddFilter_ObjectSet,const AObjectSet: TObjectSet
+procedure,AddFilter_PartPrimitives,"APartId: Integer, ADisplayMode: Byte"
+function,FirstSchObject,: ISch_BasicContainer
+function,NextSchObject,: ISch_BasicContainer
+procedure,SetContainer,const AContainer: ISch_BasicContainer
+procedure,SetState_FilterAll,
+procedure,SetIterationDepth,AIterationDepth: TIterationDepth

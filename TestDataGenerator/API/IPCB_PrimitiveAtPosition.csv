@@ -1,0 +1,3 @@
+MemberType,Name,DataType
+function,GetPrimitiveAtPosition(ObjectId : TObjectId; Position : Integer),IPCB_Primitive
+procedure,SetPrimitiveAtPosition(ObjectId : TObjectId; Position : Integer; const APrimitive : IPCB_Primitive)

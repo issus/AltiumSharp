@@ -1,0 +1,5 @@
+MemberType,Name,DataType
+function,CreateCounterHoleParams,IPCB_CounterHoleParams
+function,CreateCounterHoleParamsList,IPCB_CounterHoleParamsList
+function,CreateCounterHoleParamsPreset,IPCB_CounterHoleParamsPreset
+function,CreateCounterHoleParamsPresetList,IPCB_CounterHoleParamsPresetList

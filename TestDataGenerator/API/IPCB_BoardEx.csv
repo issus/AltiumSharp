@@ -1,0 +1,62 @@
+MemberType,Name,DataType
+function,AddLayerPairEx2,"(ALowLayer : Integer, AHighLayer : Integer, ADrillLayerPairType : TDrillLayerPairType, const ACounterHoleParams : IPCB_CounterHoleParams) : Integer"
+function,AddMeshToLayer,(MeshString : WideString, Layer : Integer) : Integer
+function,AddPolygonMeshToLayer,"(Shape : IPCB_Contour, z : Integer, Color : Cardinal, Layer : Integer) : Integer"
+function,BeginReadOnlyMode,Boolean
+property,DesignVariants,IPCB_DesignVariants
+function,Drillmanager_GetDrillSymbolIndex,(APrimitive : IPCB_Primitive) : Integer
+function,Drillmanager_GetUseFields,TClassificationFieldSet
+function,EndReadOnlyMode,Boolean
+procedure,ExportToFile,(const AFileName : WideString, const AFormat : WideString)
+property,FullComponents,IPCB_FullComponents
+function,GetDialogsManager,IPCB_DialogsManager
+function,GetExpressionManager,IPCB_ExpressionManager
+function,GetSignalDelayForPrim,(APrimitive : IPCB_Primitive) : Double
+function,GetSignalDelayPerMeter,(APrimitive : IPCB_Primitive) : Double
+function,GetState_AutoTraceTuningOptions,IPCB_AccordionMakerSettings
+function,GetState_BoardRegionManager,IPCB_BoardRegionsManager
+function,GetState_ConstraintManagerData,WideString
+function,GetState_CounterHoleParamsPresetList,IPCB_CounterHoleParamsPresetList
+function,GetState_GridManager,IPCB_GridManager
+function,GetState_StateId,Cardinal
+function,GetState_TeardropOptions,ITeardropOptions
+function,GetState_UseConstraintManager,Boolean
+function,GetViewConfigurationByTypeAsString,(AType : WideString, out Config : WideString) : Boolean
+function,GetVoidsOnPlaneLayer,(ALayer : IPCB_Polygon)
+property,HasClearanceMatrix,Boolean
+property,InSingleLayerMode,Boolean
+procedure,InvalidatePadCaches,
+property,IsLocked,Boolean
+function,IsPlaneLayerIsPoured,(ALayer : Integer) : Boolean
+function,IsReadOnly,Boolean
+procedure,LoadFromASCIIFile,(AFileName : WideString)
+procedure,LoadFromCMPCBFile,(AFileName : WideString)
+procedure,LoadFromCSPCBFile,(AFileName : WideString)
+procedure,LoadFromJSONFile,(AFileName : WideString)
+procedure,LoadFromPCBFile,(AFileName : WideString)
+procedure,LoadFromPCBLibraryFile,(AFileName : WideString, ArrangeComponents : Boolean)
+function,LoadRulesFromFile,(AFileName : WideString) : TRuleSet
+function,PlaceAssemblyDesignators,(UpdateExisting : Boolean) : Integer
+procedure,PlaceViaStructureFeaturesGeometry,
+procedure,RemoveAllLayerPairs,
+procedure,RemoveNonExistedCoverlayOutlines,
+procedure,RemoveViaStructureFeaturesGeometry,
+function,RenderToPNG,"(const OutputFileName : WideString, DPI : Integer, top : Boolean, const ConfigType : WideString, const Config : WideString) : HRESULT"
+procedure,ResetDelaysCalculator,
+function,SaveRulesToFile,(AFileName : WideString) : Boolean
+procedure,SaveToASCIIFile,(AFileName : WideString)
+procedure,SaveToCMPCBFile,(AFileName : WideString)
+procedure,SaveToCSPCBFile,(AFileName : WideString)
+procedure,SaveToJSONFile,(AFileName : WideString)
+procedure,SaveToPCBFile,(AFileName : WideString)
+procedure,SaveToPCBLibraryFile,(AFileName : WideString)
+property,SelectedObjects_FilterDisabled,Boolean
+procedure,SetState_ConstraintManagerData,(Value : WideString)
+procedure,SetState_MechanicalLayerKindMapping,(const Value : TArray<RT_PCB.TMechanicalLayerToKindItem>)
+procedure,SetState_Navigate_HighlightObjectListEx,"(HighlightMethods : THighlightMethodSet, ClearExisting : Boolean, HighBoardOutline : Boolean, ClearExistingHighlights : Boolean, FullUpdate : Boolean)"
+procedure,SetState_UseConstraintManager,(AValue : Boolean)
+property,SingleLayer,TLayer
+procedure,SortRulesByPriority,
+property,ViaManager,IPCB_ViaManager
+property,ViaStructureManager,IPCB_ViaStructureManager
+property,ZoomOnViolations,Boolean

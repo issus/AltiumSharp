@@ -1,0 +1,15 @@
+MemberType,Name,DataType
+property,AngleEnd,TDouble
+property,AngleStart,TDouble
+property,Center,TCoordPoint
+procedure,ClearShape,
+property,ClockWise,Boolean
+property,EdgeType,TPCB_ShapeEdgeType
+property,EndPt,TCoordPoint
+procedure,FillClosed(const Center : IDispatch; Radius : Integer),
+property,IsClosed,Boolean
+property,Radius,TCoord
+property,StartPt,TCoordPoint
+property,SubPt[Index: Integer],TCoordPoint
+property,SubPtCount,Integer
+property,UserData,TPCBString

@@ -1,0 +1,13 @@
+MemberType,Name,DataType
+property,DisplayInSingleLayerMode,Boolean
+function,GetState_LayerDisplayName(Value : TLayerNameDisplayMode),WideString
+function,IsInLayerStack,Boolean
+function,I_ObjectAddress,Pointer
+property,Kind,TMechanicalLayerKind
+function,LayerStack,IPCB_LayerStackBase
+property,LinkToSheet,Boolean
+property,MechanicalLayerEnabled,Boolean
+property,Name,TPCBString
+property,UsedByPrims,Boolean
+property,V6_LayerID,TV6_Layer
+function,V7_LayerID,IDispatch

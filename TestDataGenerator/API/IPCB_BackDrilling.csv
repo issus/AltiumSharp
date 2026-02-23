@@ -1,0 +1,10 @@
+MemberType,Name,DataType
+property,BackDrillSource,Boolean
+property,BottomBackDrillStopLayer,TV7_Layer
+property,BottomUnusedStub,TCoord
+function,GetState_IsBackDrillLayer,(Layer : TV6_Layer) : Boolean
+property,HoleOversize,TCoord
+property,IsBackdrill,Boolean
+property,SourceObject,IPCB_Primitive
+property,TopBackDrillStopLayer,TV7_Layer
+property,TopUnusedStub,TCoord

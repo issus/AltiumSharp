@@ -1,0 +1,3 @@
+MemberType,Name,DataType
+function,Next,Boolean
+function,WirebondTemplate,IPCB_WirebondTemplate

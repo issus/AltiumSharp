@@ -1,0 +1,4 @@
+MemberType,Name,DataType
+property,Id,TPCBString
+property,Source,TPCBString
+property,Title,TPCBString

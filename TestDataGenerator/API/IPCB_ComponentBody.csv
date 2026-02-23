@@ -1,0 +1,90 @@
+MemberType,Name,DataType
+function,AddAxis,IPCB_Axis
+property,AllowGlobalEdit,Boolean
+property,Area,Int64
+property,Axis[Index : Integer],IPCB_Axis
+property,AxisCount,Integer
+procedure,BeginModify,
+property,Board,IPCB_Board
+property,BodyColor3D,TColor
+property,BodyOpacity3D,Single
+property,BodyProjection,TBoardSide
+function,BoundingRectangle,IDispatch
+function,BoundingRectangleChildren,IDispatch
+function,BoundingRectangleForPainting,IDispatch
+function,BoundingRectangleForSelection,IDispatch
+procedure,CancelModify,
+property,CavityHeight,TCoord
+function,ChooseFile,(var AFileName : WideString) : LongBool
+function,ChooseModel,(var AFileName : WideString) : LongBool
+procedure,ClearAxes,
+property,Component,IPCB_Component
+property,Coordinate,IPCB_Coordinate
+property,Descriptor,TPCBString
+property,Detail,TPCBString
+property,Dimension,IPCB_Dimension
+procedure,Displace,(const Displacement : Pointer)
+property,DrawAsPreview,Boolean
+property,DRCError,Boolean
+property,Enabled,Boolean
+property,EnableDraw,Boolean
+property,Enabled_Direct,Boolean
+property,Enabled_vComponent,Boolean
+property,Enabled_vCoordinate,Boolean
+property,Enabled_vDimension,Boolean
+property,Enabled_vNet,Boolean
+property,Enabled_vPolygon,Boolean
+procedure,EndModify,
+procedure,Export_ToParameters,(AParams : PWideChar)
+procedure,Fade,(Value : Single)
+procedure,FlipXY,"(Axis : Integer, MirrOp : TMirrorOperation)"
+property,GeometricPolygon,IPCB_GeometricPolygon
+function,GetState_ModelType,T3DModelType
+function,GetState_SnapCount,Integer
+function,GetState_SnapPoint,(Index : Integer) : IDispatch
+procedure,GetTransform_ModelToComponent,(P : Pointer)
+procedure,GraphicallyInvalidate,
+property,Handle,TPCBString
+property,HoleCount,Integer
+property,Holes[I: Integer],IPCB_Contour
+property,Identifier,TPCBString
+property,InBoard,Boolean
+property,InComponent,Boolean
+property,InCoordinate,Boolean
+property,Index,Word
+property,InDimension,Boolean
+property,InNet,Boolean
+property,InPolygon,Boolean
+property,InSelectionMemory[Index: Integer],Boolean
+property,IsAssyTestpoint_Bottom,Boolean
+property,IsAssyTestpoint_Top,Boolean
+property,IsElectricalPrim,Boolean
+function,IsFreePrimitive,Boolean
+function,IsHidden,Boolean
+property,IsKeepout,Boolean
+property,IsPreRoute,Boolean
+function,IsSaveable,(AVer : TAdvPCBFileFormatVersion) : Boolean
+function,IsSimpleRegion,Boolean
+property,IsTenting,Boolean
+property,IsTenting_Bottom,Boolean
+property,IsTenting_Top,Boolean
+property,IsTestpoint_Bottom,Boolean
+property,IsTestpoint_Top,Boolean
+function,I_ObjectAddress,Pointer
+property,Kind,TRegionKind
+property,Layer,TLayer
+property,Layer_V6,TV6_Layer
+procedure,LoadGenericModelFromFile,"(const AFileName : WideString, const AMakeEmbeded : LongBool)"
+property,MainContour,IPCB_Contour
+procedure,Mirror,"(Axis : Integer, MirrOp : TMirrorOperation)"
+property,MiscFlag1,Boolean
+property,MiscFlag2,Boolean
+property,MiscFlag3,Boolean
+property,Model,IPCB_Model
+function,ModelFactory_Create,(const ModelType : T3DModelType) : IPCB_Model
+function,ModelFactory_CreateCylinder,"(const Radius : Integer, const Height : Integer, const Color : Cardinal) : IPCB_Model"
+function,ModelFactory_CreateExtruded,"(const MinZ : Integer, const MaxZ : Integer, const Color : Cardinal) : IPCB_Model"
+function,ModelFactory_CreateSphere,"(const Radius : Integer, const Color : Cardinal) : IPCB_Model"
+function,ModelFactory_Destroy,(var Value : IPCB_Model)
+function,ModelFactory_FromBinaryFileName,"(WideString, WatchDirectory : Boolean) : IPCB_Model"
+function,ModelFactory_FromVault,"(const ATitle : WideSt

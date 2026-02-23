@@ -1,0 +1,28 @@
+MemberType,Name,DataType
+function,Board,IPCB_Board
+property,BottomSignalLayer,TLayer
+property,Color,Cardinal
+function,Count,Integer
+function,DielectricBottom,IPCB_SolderMaskLayer
+function,DielectricTop,IPCB_SolderMaskLayer
+property,DisplayName[DisplayMode: TLayerNameDisplayMode],TPCBString
+function,First,T : TLayerClassID) : IPCB_LayerObject
+function,Get_ZBottom,Layer : IPCB_LayerObject) : Integer
+function,Get_ZTop,Layer : IPCB_LayerObject) : Integer
+property,Id,WideString
+property,IsFlex,Boolean
+property,IsService,Boolean
+function,Iterator,IPCB_LayerObjectIterator
+function,I_ObjectAddress,Pointer
+function,Last,T : TLayerClassID) : IPCB_LayerObject
+function,LayerNumberInStack,const ALayer : Integer) : Integer
+function,LayerObject,ALayer : TV6_Layer) : IPCB_LayerObject
+property,LayerStackType,TLayerStackType
+property,Name,TPCBString
+function,Next,T : TLayerClassID; ARefLayer : IPCB_LayerObject) : IPCB_LayerObject
+function,Previous,T : TLayerClassID; ARefLayer : IPCB_LayerObject) : IPCB_LayerObject
+property,ShowDielectricBottom,Boolean
+property,ShowDielectricTop,Boolean
+function,StateID,Integer
+property,TopSignalLayer,TLayer
+property,UsedByPrims,Boolean

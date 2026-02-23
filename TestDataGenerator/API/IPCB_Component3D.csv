@@ -1,0 +1,168 @@
+MemberType,Name,DataType
+function,AddAxis,IPCB_Axis
+procedure,AddPCBObject,(PCBObject : IPCB_Primitive)
+property,AllowGlobalEdit,Boolean
+procedure,AutoPosition_NameComment,
+procedure,AutoPosition_NameComment_APILike,
+property,Axis[I: Integer],IPCB_Axis
+property,AxisCount,Integer
+procedure,BeginModify,
+property,Board,IPCB_Board
+function,BoundingRectangle,IDispatch
+function,BoundingRectangleChildren,IDispatch
+function,BoundingRectangleForPainting,IDispatch
+function,BoundingRectangleForSelection,IDispatch
+function,BoundingRectangleNoNameComment,IDispatch
+function,BoundingRectangleNoNameCommentForSignals,IDispatch
+procedure,CancelModify,
+procedure,ChangeAutopositionNameComment,
+function,ChangeCommentAutoposition,(Value : TTextAutoposition) : Boolean
+function,ChangeNameAutoposition,(Value : TTextAutoposition) : Boolean
+property,ChannelOffset,TChannelOffset
+procedure,ClearAxis,
+property,Comment,IPCB_Text
+property,CommentAutoPosition,TTextAutoposition
+property,CommentOn,Boolean
+property,Component,IPCB_Component
+property,ComponentKind,TComponentKind
+property,Coordinate,IPCB_Coordinate
+property,DefaultPCB3DModel,TPCBString
+property,Descriptor,TPCBString
+property,Detail,TPCBString
+property,Dimension,IPCB_Dimension
+procedure,Displace,(const Displacement : Pointer)
+property,DrawAsPreview,Boolean
+property,DRCError,Boolean
+property,Enabled,Boolean
+property,EnableDraw,Boolean
+property,Enabled_Direct,Boolean
+property,Enabled_vComponent,Boolean
+property,Enabled_vCoordinate,Boolean
+property,Enabled_vDimension,Boolean
+property,Enabled_vNet,Boolean
+property,Enabled_vPolygon,Boolean
+property,EnablePartSwapping,Boolean
+property,EnablePinSwapping,Boolean
+procedure,EndModify,
+procedure,Export_ToParameters,(AParams : PWideChar)
+function,FastSetState_XSizeYSize,Boolean
+procedure,FlipComponent,
+property,FlippedOnLayer,Boolean
+procedure,FlipXY,"(Axis : Integer, MirrOp : TMirrorOperation)"
+property,FootprintConfigurableParameters_Encoded,TPCBString
+property,FootprintConfiguratorName,TPCBString
+property,FootprintDescription,TPCBString
+property,FPGADisplayMode,TFPGADisplayMode
+procedure,FreePrimitives,
+function,GetPrimitiveAt,"(I : Integer, ObjectId : TObjectId) : IPCB_Primitive"
+function,GetPrimitiveCount,(ObjectSet : TObjectSet) : Integer
+function,Getstate_PadByName,(S : WideString) : IPCB_Primitive
+procedure,GraphicallyInvalidate,
+function,GroupIterator_Create,IPCB_GroupIterator
+procedure,GroupIterator_Destroy,(var AIterator : IPCB_GroupIterator)
+property,GroupNum,Integer
+property,Handle,TPCBString
+property,Height,TCoord
+property,Identifier,TPCBString
+property,InBoard,Boolean
+property,InComponent,Boolean
+property,InCoordinate,Boolean
+property,Index,Word
+property,InDimension,Boolean
+property,InNet,Boolean
+property,InPolygon,Boolean
+property,InSelectionMemory[Index: Integer],Boolean
+property,IsAssyTestpoint_Bottom,Boolean
+property,IsAssyTestpoint_Top,Boolean
+property,IsBGA,Boolean
+function,IsConfigurableFootprint,Boolean
+property,IsElectricalPrim,Boolean
+function,IsFitted,Boolean
+function,IsFreePrimitive,Boolean
+function,IsHidden,Boolean
+property,IsKeepout,Boolean
+function,IsPackageEqual,(const AComp : IPCB_Component) : Boolean
+function,IsPackageEqualEx,(const AComp : IPCB_Component, AOptions : TPackageCompareOptionSet) : Boolean
+property,IsPreRoute,Boolean
+function,IsSaveable,(AVer : TAdvPCBFileFormatVersion) : Boolean
+property,IsTenting,Boolean
+property,IsTenting_Bottom,Boolean
+property,IsTenting_Top,Boolean
+property,IsTestpoint_Bottom,Boolean
+property,IsTestpoint_Top,Boolean
+property,ItemGUID,TPCBString
+property,ItemRevisionGUID,TPCBString
+function,I_ObjectAddress,Pointer
+property,JumpersVisible,Boolean
+property,Layer,TLayer
+property,LayerUsed[L: TV6_Layer],Boolean
+property,Layer_V6,TV6_Layer
+function,LoadCompFromLibrary,Boolean
+function,LoadFromLibrary,(AParams : PWideChar) : Boolean
+property,LockStrings,Boolean
+procedure,Mirror,"(Axis : Integer, MirrOp : TMirrorOperation)"
+property,MiscFlag1,Boolean
+property,MiscFlag2,Boolean
+property,MiscFlag3,Boolean
+property,ModelHash,TPCBString
+property,Moveable,Boolean
+procedure,MoveByXY,"(AX : Integer, AY : Integer)"
+procedure,MoveToXY,"(AX : Integer, AY : Integer)"
+property,Name,IPCB_Text
+property,NameAutoPosition,TTextAutoposition
+property,NameOn,Boolean
+property,Net,IPCB_Net
+property,ObjectId,TObjectId
+property,ObjectIDString,TPCBString
+property,PackageSpecificHash,TPCBString
+property,PadCacheRobotFlag,Boolean
+property,PasteMaskExpansion,TCoord
+property,Pattern,TPCBString
+property,Polygon,IPCB_Polygon
+property,PolygonOutline,Boolean
+property,PowerPlaneClearance,TCoord
+property,PowerPlaneConnectStyle,TPlaneConnectStyle
+property,PowerPlaneReliefExpansion,TCoord
+property,PrimitiveLock,Boolean
+procedure,Rebuild,
+function,ReferencePointOutsideArea,Boolean
+property,ReliefAirGap,TCoord
+property,ReliefConductorWidth,TCoord
+property,ReliefEntries,Integer
+procedure,RemovePCBObject,(PCBObject : IPCB_Primitive)
+function,Replicate,IPCB_Primitive
+function,ReplicateWithChildren,IPCB_Primitive
+function,RequiredParamterSpace,Integer
+procedure,ResetDisplacement,
+procedure,RotateAroundXY,"(AX : Integer, AY : Integer, Angle : Double)"
+procedure,RotateBy,(Angle : Double)
+property,Rotation,TAngle
+function,SaveModelToFile,(FullPath : WideString) : Boolean
+function,SaveModelToFileAsPartFullPath,(WideString) : Boolean
+function,SaveModelToOccDocOcc,(IOCCDocument) : Boolean
+property,Selected,Boolean
+procedure,SetComponentPositionFrom,(ASource : IPCB_Component)
+procedure,SetState_FacePosition,"(AFaceIdx : Integer, AU : Integer, AV : Integer, ARot : Double)"
+procedure,SetState_LayersUsedArray,
+procedure,SetState_Preview,"(Enable : Boolean, Color : Cardinal, Opacity : Single, z : Integer, Height : Integer, sx : Single, sy : Single, SZ : Single)"
+function,SetState_XSizeYSize,Boolean
+function,ShowLibraryIntExplorer,
+property,SolderMaskExpansion,TCoord
+property,SourceCompDesignItemID,TPCBString
+property,SourceComponentLibrary,TPCBString
+property,SourceDescription,TPCBString
+property,SourceDesignator,TPCBString
+property,SourceFootprintLibrary,TPCBString
+property,SourceHierarchicalPath,TPCBString
+property,SourceLibReference,TPCBString
+property,SourceUniqueId,TPCBString
+procedure,SwapLayerPairs,
+property,TearDrop,Boolean
+property,UnionIndex,Integer
+property,UniqueId,TPCBString
+property,Used,Boolean
+property,UserRouted,Boolean
+property,VaultGUID,TPCBString
+property,ViewableObjectID,TViewableObjectID
+property,x,TCoord
+property,y,TCoord

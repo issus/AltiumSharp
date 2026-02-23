@@ -1,0 +1,15 @@
+MemberType,Name,DataType
+property,Center,TCoordPoint
+procedure,ClearShape,
+property,ClockWise,Boolean
+property,EdgeType,TPCB_ShapeEdgeType
+property,EndPt,TCoordPoint
+procedure,"Fill(const Center : IDispatch; const MinorPt : IDispatch; const MajorPt : IDispatch; const StartPt : IDispatch; const EndPt : IDispatch; ClockWise : Boolean)",
+procedure,FillClosed(const Center : IDispatch; const MinorPt : IDispatch; const MajorPt : IDispatch),
+property,IsClosed,Boolean
+property,MajorPt,TCoordPoint
+property,MinorPt,TCoordPoint
+property,StartPt,TCoordPoint
+property,SubPt[Index: Integer],TCoordPoint
+property,SubPtCount,Integer
+property,UserData,TPCBString

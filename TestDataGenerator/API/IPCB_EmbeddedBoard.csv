@@ -1,0 +1,143 @@
+MemberType,Name,DataType
+property,AllowGlobalEdit,Boolean
+procedure,ApplyFilterToIterator,const AIterator : IPCB_AbstractIterator
+function,AreLayerStacksCompatible,LongBool
+function,AreTransmitSettingsEqual,const AEmbeddedBoard : IPCB_EmbeddedBoard) : Boolean
+procedure,BeginModify,
+property,Board,IPCB_Board
+function,BoardIterator_CreateFiltered,IPCB_BoardIterator
+function,BoardIterator_Destroy,var AIterator : IPCB_BoardIterator
+function,BoundingRectangle,IDispatch
+function,BoundingRectangleChildren,IDispatch
+function,BoundingRectangleForPainting,IDispatch
+function,BoundingRectangleForSelection,IDispatch
+procedure,CancelModify,
+property,ChildBoard,IPCB_Board
+property,ColCount,Integer
+procedure,CollectTransmitParameters,
+property,ColSpacing,TCoord
+property,Component,IPCB_Component
+property,Coordinate,IPCB_Coordinate
+function,CreateTransmitTextCacheIterator,AOnlyText : Boolean) : IPCB_EmbeddedBoardTransmitTextCacheIterator
+procedure,DefineViewportRectGraphically,
+property,Descriptor,TPCBString
+property,Detail,TPCBString
+property,Dimension,IPCB_Dimension
+property,DocumentPath,TPCBString
+property,DrawAsPreview,Boolean
+property,DRCError,Boolean
+property,Enabled,Boolean
+property,EnableDraw,Boolean
+property,Enabled_Direct,Boolean
+property,Enabled_vComponent,Boolean
+property,Enabled_vCoordinate,Boolean
+property,Enabled_vDimension,Boolean
+property,Enabled_vNet,Boolean
+property,Enabled_vPolygon,Boolean
+procedure,EndModify,
+procedure,Export_ToParameters,AParams : PWideChar
+procedure,FlipXY,Axis : Integer; MirrOp : TMirrorOperation
+function,GetForbiddenParameterList,IPCB_ParameterList
+function,GetState_ColMargin,Integer
+function,GetState_RelativeDocumentPath,WideString
+function,GetState_RowMargin,Integer
+function,GetState_StateId,Cardinal
+procedure,GraphicallyInvalidate,
+property,Handle,TPCBString
+property,Identifier,TPCBString
+property,InBoard,Boolean
+property,InComponent,Boolean
+property,InCoordinate,Boolean
+property,Index,Word
+property,InDimension,Boolean
+property,InNet,Boolean
+property,InPolygon,Boolean
+property,InSelectionMemory[Index: Integer],Boolean
+property,IsAssyTestpoint_Bottom,Boolean
+property,IsAssyTestpoint_Top,Boolean
+property,IsElectricalPrim,Boolean
+function,IsFreePrimitive,Boolean
+function,IsHidden,Boolean
+property,IsKeepout,Boolean
+property,IsPreRoute,Boolean
+function,IsRedundant,Boolean
+function,IsSaveable,AVer : TAdvPCBFileFormatVersion) : Boolean
+property,IsTenting,Boolean
+property,IsTenting_Bottom,Boolean
+property,IsTenting_Top,Boolean
+property,IsTestpoint_Bottom,Boolean
+property,IsTestpoint_Top,Boolean
+property,IsViewport,Boolean
+function,I_ObjectAddress,Pointer
+property,Layer,TLayer
+property,Layer_V6,TV6_Layer
+procedure,Mirror,Axis : Integer; MirrOp : TMirrorOperation
+property,MirrorFlag,Boolean
+property,MiscFlag1,Boolean
+property,MiscFlag2,Boolean
+property,MiscFlag3,Boolean
+property,Moveable,Boolean
+procedure,MoveByXY,AX : Integer; AY : Integer
+procedure,MoveToXY,AX : Integer; AY : Integer
+property,Net,IPCB_Net
+property,ObjectId,TObjectId
+property,ObjectIDString,TPCBString
+property,OriginMode,TEmbeddedBoardOriginMode
+property,PadCacheRobotFlag,Boolean
+property,PasteMaskExpansion,TCoord
+property,Polygon,IPCB_Polygon
+property,PolygonOutline,Boolean
+property,PowerPlaneClearance,TCoord
+property,PowerPlaneConnectStyle,TPlaneConnectStyle
+property,PowerPlaneReliefExpansion,TCoord
+property,ReliefAirGap,TCoord
+property,ReliefConductorWidth,TCoord
+property,ReliefEntries,Integer
+function,Replicate,IPCB_Primitive
+function,RequiredParamterSpace,Integer
+procedure,RotateAroundXY,AX : Integer; AY : Integer; Angle : Double
+procedure,RotateBy,Angle : Double
+property,Rotation,TAngle
+property,RowCount,Integer
+property,RowSpacing,TCoord
+property,Scale,Double
+property,Selected,Boolean
+procedure,SetState_ColMargin,Value : Integer
+procedure,SetState_Preview,Enable : Boolean; Color : Cardinal; Opacity : Single; z : Integer; Height : Integer; sx : Single; sy : Single; SZ : Single
+procedure,SetState_RowMargin,Value : Integer
+procedure,SetState_VisibleLayers,const ALayers : IPCB_LayerSet
+procedure,SetState_XSizeYSize,Boolean
+property,SolderMaskExpansion,TCoord
+function,SpatialIterator_CreateFiltered,IPCB_SpatialIterator
+procedure,SpatialIterator_Destroy,var AIterator : IPCB_SpatialIterator
+procedure,SwapLayerPairs,
+property,TearDrop,Boolean
+property,TitleFontColor,TColor
+property,TitleFontName,TPCBString
+property,TitleFontSize,Integer
+property,TitleObject,Int64
+property,TransmitBoardShape,Boolean
+property,TransmitDimensions,Boolean
+property,TransmitDrillTable,Boolean
+property,TransmitLayersEnabled[Layer: Integer],Boolean
+property,TransmitLayerStackTable,Boolean
+property,TransmitParametersCount,Integer
+procedure,TransmitParametersEnabled,AParameter: WideString) : Boolean
+function,TransmitParametersName[Value: Integer],TPCBString
+property,UnionIndex,Integer
+property,UniqueId,TPCBString
+property,Used,Boolean
+property,UserRouted,Boolean
+property,ViewableObjectID,TViewableObjectID
+property,ViewConfig,TPCBString
+property,ViewConfigType,TPCBString
+property,ViewportRect,TCoordRect
+property,ViewportTitle,TPCBString
+property,ViewportVisible,Boolean
+property,VisibleLayers,IPCB_LayerSet
+property,X1Location,TCoord
+property,X2Location,TCoord
+property,XLocation,TCoord
+property,Y1Location,TCoord
+property,Y2Location,TCoord
+property,YLocation,TCoord
