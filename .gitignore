@@ -347,3 +347,15 @@ healthchecksdb
 
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 MigrationBackup/
+
+AltiumScriptExamples/
+*/History/*.zip
+
+# Test results
+**/TestResults/
+
+# Altium preview files
+__Previews/
+
+# Accidental nul files from bash/Windows interaction
+nul
