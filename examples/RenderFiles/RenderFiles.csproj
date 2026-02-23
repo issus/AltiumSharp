@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\OriginalCircuit.Altium\OriginalCircuit.Altium.csproj" />
+    <ProjectReference Include="..\..\src\OriginalCircuit.Altium.Rendering.Core\OriginalCircuit.Altium.Rendering.Core.csproj" />
+    <ProjectReference Include="..\..\src\OriginalCircuit.Altium.Rendering.Raster\OriginalCircuit.Altium.Rendering.Raster.csproj" />
+    <ProjectReference Include="..\..\src\OriginalCircuit.Altium.Rendering.Svg\OriginalCircuit.Altium.Rendering.Svg.csproj" />
+  </ItemGroup>
+</Project>
