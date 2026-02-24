@@ -1,0 +1,6 @@
+[submodule "shared/OriginalCircuit.Eda.Abstractions"]
+	path = shared/OriginalCircuit.Eda.Abstractions
+	url = https://github.com/issus/OriginalCircuit.Eda.Abstractions.git
+[submodule "shared/OriginalCircuit.Eda.Rendering"]
+	path = shared/OriginalCircuit.Eda.Rendering
+	url = https://github.com/issus/OriginalCircuit.Eda.Rendering.git

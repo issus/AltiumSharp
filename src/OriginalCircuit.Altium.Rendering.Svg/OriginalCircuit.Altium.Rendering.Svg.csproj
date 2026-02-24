@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OriginalCircuit.Altium.Rendering.Core\OriginalCircuit.Altium.Rendering.Core.csproj" />
-    <ProjectReference Include="..\..\..\OriginalCircuit.Eda.Rendering\src\OriginalCircuit.Eda.Rendering.Svg\OriginalCircuit.Eda.Rendering.Svg.csproj" />
+    <ProjectReference Include="..\..\shared\OriginalCircuit.Eda.Rendering\src\OriginalCircuit.Eda.Rendering.Svg\OriginalCircuit.Eda.Rendering.Svg.csproj" />
   </ItemGroup>
 
 </Project>
