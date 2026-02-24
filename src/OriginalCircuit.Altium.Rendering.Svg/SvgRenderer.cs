@@ -1,10 +1,10 @@
-using OriginalCircuit.Altium.Models;
 using OriginalCircuit.Altium.Models.Pcb;
 using OriginalCircuit.Altium.Models.Sch;
-using OriginalCircuit.Altium.Rendering;
 using OriginalCircuit.Eda.Models;
 using OriginalCircuit.Eda.Models.Pcb;
 using OriginalCircuit.Eda.Models.Sch;
+using OriginalCircuit.Eda.Rendering;
+using OriginalCircuit.Eda.Rendering.Svg;
 
 namespace OriginalCircuit.Altium.Rendering.Svg;
 
@@ -29,7 +29,7 @@ public sealed class SvgRenderer : IRenderer
         var height = (double)options.Height;
 
         var ctx = new SvgRenderContext(width, height);
-        ctx.Clear(options.BackgroundColor);
+        ctx.Clear(ColorHelper.EdaColorToArgb(options.BackgroundColor));
 
         var transform = new CoordTransform
         {

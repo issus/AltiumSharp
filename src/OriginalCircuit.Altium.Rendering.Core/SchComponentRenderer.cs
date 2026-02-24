@@ -4,6 +4,7 @@ using OriginalCircuit.Eda.Enums;
 using OriginalCircuit.Eda.Models;
 using OriginalCircuit.Eda.Models.Sch;
 using OriginalCircuit.Eda.Primitives;
+using OriginalCircuit.Eda.Rendering;
 using PinElectricalType = OriginalCircuit.Altium.Models.Sch.PinElectricalType;
 
 namespace OriginalCircuit.Altium.Rendering;
@@ -1097,8 +1098,8 @@ public sealed class SchComponentRenderer
     {
         return lineStyle switch
         {
-            1 => LineStyle.Dashed,
-            2 => LineStyle.Dotted,
+            1 => LineStyle.Dash,
+            2 => LineStyle.Dot,
             3 => LineStyle.DashDot,
             _ => LineStyle.Solid
         };
@@ -1108,8 +1109,8 @@ public sealed class SchComponentRenderer
     {
         return lineStyle switch
         {
-            SchLineStyle.Dashed => LineStyle.Dashed,
-            SchLineStyle.Dotted => LineStyle.Dotted,
+            SchLineStyle.Dashed => LineStyle.Dash,
+            SchLineStyle.Dotted => LineStyle.Dot,
             _ => LineStyle.Solid
         };
     }

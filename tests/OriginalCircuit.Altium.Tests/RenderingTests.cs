@@ -1,10 +1,12 @@
 using System.Xml.Linq;
 using OriginalCircuit.Altium.Models.Pcb;
 using OriginalCircuit.Altium.Models.Sch;
-using OriginalCircuit.Eda.Primitives;
 using OriginalCircuit.Altium.Rendering;
 using OriginalCircuit.Altium.Rendering.Raster;
 using OriginalCircuit.Altium.Rendering.Svg;
+using OriginalCircuit.Eda.Primitives;
+using OriginalCircuit.Eda.Rendering;
+using ColorHelper = OriginalCircuit.Altium.Rendering.ColorHelper;
 
 namespace OriginalCircuit.Altium.Tests;
 

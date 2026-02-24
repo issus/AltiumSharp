@@ -35,12 +35,13 @@
 
 using OriginalCircuit.Altium.Models.Pcb;
 using OriginalCircuit.Altium.Models.Sch;
-using OriginalCircuit.Eda.Enums;
-using OriginalCircuit.Eda.Primitives;
 using OriginalCircuit.Altium.Rendering;
-using PinElectricalType = OriginalCircuit.Altium.Models.Sch.PinElectricalType;
 using OriginalCircuit.Altium.Rendering.Raster;
 using OriginalCircuit.Altium.Rendering.Svg;
+using OriginalCircuit.Eda.Enums;
+using OriginalCircuit.Eda.Primitives;
+using OriginalCircuit.Eda.Rendering;
+using PinElectricalType = OriginalCircuit.Altium.Models.Sch.PinElectricalType;
 
 var outputDir = Path.Combine(Path.GetTempPath(), "AltiumRenderExample");
 Directory.CreateDirectory(outputDir);
@@ -294,7 +295,7 @@ var options = new RenderOptions
 {
     Width = 2048,
     Height = 2048,
-    BackgroundColor = 0xFF000020,        // ARGB: dark blue background
+    BackgroundColor = EdaColor.FromArgb(0xFF, 0x00, 0x00, 0x20), // dark blue background
     AutoZoom = true,
     Scale = 1.0
 };

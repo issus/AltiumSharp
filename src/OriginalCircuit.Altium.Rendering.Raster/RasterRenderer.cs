@@ -1,9 +1,10 @@
-using OriginalCircuit.Altium.Models;
 using OriginalCircuit.Altium.Models.Pcb;
 using OriginalCircuit.Altium.Models.Sch;
 using OriginalCircuit.Eda.Models;
 using OriginalCircuit.Eda.Models.Pcb;
 using OriginalCircuit.Eda.Models.Sch;
+using OriginalCircuit.Eda.Rendering;
+using OriginalCircuit.Eda.Rendering.Raster;
 using SkiaSharp;
 
 namespace OriginalCircuit.Altium.Rendering.Raster;
@@ -29,7 +30,7 @@ public sealed class RasterRenderer : IRenderer, IPcbLibRenderer
         using var canvas = new SKCanvas(bitmap);
         using var context = new SkiaRenderContext(canvas);
 
-        context.Clear(options.BackgroundColor);
+        context.Clear(ColorHelper.EdaColorToArgb(options.BackgroundColor));
 
         var transform = new CoordTransform
         {

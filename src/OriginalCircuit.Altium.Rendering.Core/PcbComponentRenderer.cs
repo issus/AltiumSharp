@@ -2,6 +2,7 @@ using OriginalCircuit.Altium.Models.Pcb;
 using OriginalCircuit.Eda.Enums;
 using OriginalCircuit.Eda.Models.Pcb;
 using OriginalCircuit.Eda.Primitives;
+using OriginalCircuit.Eda.Rendering;
 using PadShape = OriginalCircuit.Altium.Models.Pcb.PadShape;
 using PadHoleType = OriginalCircuit.Altium.Models.Pcb.PadHoleType;
 
