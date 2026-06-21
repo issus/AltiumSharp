@@ -46,14 +46,20 @@ await renderer.RenderAsync(board.Document, "MyBoard.gltf", settings: new GltfRen
 Each board feature is emitted as a separate, named glTF node so a viewer (three.js, Babylon.js,
 Blender, …) can toggle it independently:
 
-- `Substrate` — the FR4 laminate, extruded to the true stack thickness
-- `Copper.Top`, `Copper.Bottom`, `Copper.Mid1` … — one node per copper layer
-- `SolderMask.Top` / `SolderMask.Bottom`
-- `Silkscreen.Top` / `Silkscreen.Bottom`
-- `Drills` — plated holes and via barrels
-- `Components/<Designator>` — one node per placed 3D body
+- `Substrate` — the FR4 laminate, extruded to the true stack thickness, with unplated mounting
+  holes and board cut-outs subtracted as see-through openings
+- `Copper.Top Layer`, `Copper.Bottom Layer`, `Copper.<inner>` … — one node per copper layer; tracks,
+  arcs, fills, regions, pads (with through-hole annuli) and via rings
+- `SolderMask.Top` / `SolderMask.Bottom` — a translucent mask so traces show through tinted
+- `Finish.Top` / `Finish.Bottom` — the exposed copper of non-tented pads/vias, in the plated-finish
+  colour, so pads read through the mask openings
+- `Silkscreen.Top` / `Silkscreen.Bottom` — overlay tracks, arcs, fills and **text** (stroke font)
+- `Drills` — plated hole and via barrels
+- `Components` — one child node per placed 3D body, in its STEP per-face colours; bottom-side bodies
+  are mirrored under the board
 
-Nodes carry an `extras` payload tagging the Altium layer/role for programmatic filtering.
+Nodes carry an `extras` payload tagging the Altium layer/role for programmatic filtering. Pad shapes
+(round, oval, rectangular, octagonal, rounded-rectangle) are rendered to shape.
 
 ## Coordinates and units
 
