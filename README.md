@@ -30,6 +30,7 @@ Optional rendering packages:
 ```
 dotnet add package OriginalCircuit.Altium.Rendering.Raster   # PNG/JPG via SkiaSharp
 dotnet add package OriginalCircuit.Altium.Rendering.Svg      # Vector SVG output
+dotnet add package OriginalCircuit.Altium.Rendering.Gltf     # 3D glTF board models
 ```
 
 ## Quick Start
@@ -84,10 +85,14 @@ await writer.WriteAsync(pcbLib);
 
 ## Rendering
 
-Three rendering packages are available, all built on the abstractions in `OriginalCircuit.Altium.Rendering.Core`:
+Three rendering packages are available for 2D output, all built on the abstractions in `OriginalCircuit.Altium.Rendering.Core`:
 
 - **OriginalCircuit.Altium.Rendering.Raster** — renders to PNG or JPG using SkiaSharp (cross-platform)
 - **OriginalCircuit.Altium.Rendering.Svg** — renders to SVG using .NET XML APIs (no native dependencies)
+
+For 3D, **OriginalCircuit.Altium.Rendering.Gltf** exports a `PcbDocument` to a glTF 2.0 model — the full
+layer stack (copper, laminate at true thickness, solder mask, silkscreen, drills) plus the placed
+component 3D bodies, as named, individually toggleable nodes. See the **ExportBoardGltf** example.
 
 Both renderers draw individual components (`PcbComponent`, `SchComponent`) and whole documents (`PcbDocument` boards and `SchDocument` sheets):
 

@@ -207,6 +207,18 @@ See [BoardViewer/README.md](BoardViewer/README.md).
 dotnet run --project examples/BoardViewer   # then open the printed URL
 ```
 
+### ExportBoardGltf
+
+Exports a whole PCB document (`.PcbDoc`) as a **3D glTF model** — the full layer stack
+(copper, laminate at true thickness, solder mask, silkscreen, drills) plus placed component
+3D bodies, as named, toggleable nodes for any glTF viewer.
+See [ExportBoardGltf/README.md](ExportBoardGltf/README.md).
+
+```
+dotnet run --project examples/ExportBoardGltf                 # bundled sample board
+dotnet run --project examples/ExportBoardGltf -- MyBoard.PcbDoc
+```
+
 ## Test Data
 
 The examples expect Altium files in a `TestData/` directory at the repository root. A set of sample files is provided there. You can also point the examples at your own files by editing the file paths at the top of `Program.cs` in each project.

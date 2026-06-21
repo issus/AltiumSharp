@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Cross-platform rendering via two new packages:
   - `OriginalCircuit.Altium.Rendering.Raster` — PNG/JPG output using SkiaSharp
   - `OriginalCircuit.Altium.Rendering.Svg` — vector SVG output using .NET XML APIs
+- 3D rendering via `OriginalCircuit.Altium.Rendering.Gltf`: exports a `PcbDocument` to a glTF 2.0 model (`.glb`/`.gltf`) — the full physical layer stack (laminate at true thickness, copper layers, solder mask, silkscreen and plated drills) plus the embedded component 3D STEP bodies, placed from their footprint/3D transforms. Every board feature and component is a named, individually toggleable node. Driven by `GltfRenderer` / `GltfRenderSettings`; built on a native earcut triangulator and the `OriginalCircuit.Mech.STEP` / `OriginalCircuit.Mech.GLTF` libraries (vendored as submodules). Adds a `PcbStackup` model surfaced via `PcbDocument.GetStackup()` that exposes per-layer thicknesses and absolute Z positions.
 - Shared rendering abstractions in `OriginalCircuit.Altium.Rendering.Core` (`IRenderContext`, `IRenderer`, `CoordTransform`, `LayerColors`, visitor-pattern component renderers).
 - Structured diagnostics system: readers collect non-fatal warnings and errors as `AltiumDiagnostic` records (with `DiagnosticSeverity` of Info, Warning, or Error) on the returned model object instead of throwing.
 - Exception hierarchy: `AltiumFileException` base, `AltiumCorruptFileException` (includes stream name), `AltiumUnsupportedFeatureException` (includes record type).
