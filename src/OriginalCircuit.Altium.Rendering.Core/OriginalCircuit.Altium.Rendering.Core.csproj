@@ -12,6 +12,11 @@
     <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
+  <!-- The glTF renderer reuses the internal Altium stroke-font layout to build 3D silkscreen text. -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="OriginalCircuit.Altium.Rendering.Gltf" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\OriginalCircuit.Altium\OriginalCircuit.Altium.csproj" />
     <ProjectReference Include="..\..\shared\OriginalCircuit.Eda.Abstractions\src\OriginalCircuit.Eda.Abstractions\OriginalCircuit.Eda.Abstractions.csproj" PrivateAssets="all" />

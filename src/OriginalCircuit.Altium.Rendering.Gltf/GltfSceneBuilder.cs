@@ -70,6 +70,7 @@ internal sealed class GltfSceneBuilder
     private IEnumerable<PcbRegion> Regions => _doc.Regions.OfType<PcbRegion>();
     private IEnumerable<PcbPad> Pads => _doc.Pads.OfType<PcbPad>();
     private IEnumerable<PcbVia> Vias => _doc.Vias.OfType<PcbVia>();
+    private IEnumerable<PcbText> Texts => _doc.Texts.OfType<PcbText>();
 
     private void AddMaterials()
     {
@@ -269,7 +270,48 @@ internal sealed class GltfSceneBuilder
         foreach (var f in Fills)
             if (f.Layer == layerId)
                 mesh.AddSheet(FillRect(f), null, z);
+        foreach (var text in Texts)
+            if (text.Layer == layerId && !string.IsNullOrEmpty(text.Text))
+                AddTextStrokes(mesh, text, z, faceUp: layerId != 34);
         Emit(mesh, _matSilk, name, "silkscreen", layerId);
+    }
+
+    // Builds the stroke geometry for a PCB text using Altium's stroke font: normalized glyph segments
+    // (height 1, baseline-left) scaled to the text height, rotated, mirrored, and anchored at the text
+    // location, with each stroke drawn as a thin capsule. Barcodes and TrueType outlines are not modelled.
+    private void AddTextStrokes(MeshBuffer mesh, PcbText text, double z, bool faceUp)
+    {
+        if (text.BarCodeKind != 0) return;
+        double h = text.Height.ToMm();
+        if (h <= 0) return;
+        double sw = text.StrokeWidth.ToMm();
+        if (sw <= 0) sw = Math.Max(0.04, h * 0.1);
+
+        var segments = AltiumStrokeFont.Layout(text.Text, AltiumStrokeFont.FromStrokeFont(text.StrokeFont), out _);
+        if (segments.Count == 0) return;
+
+        double rad = text.Rotation * Math.PI / 180.0;
+        double cos = Math.Cos(rad), sin = Math.Sin(rad);
+        var loc = P(text.Location);
+        double half = sw / 2.0;
+
+        Vec2 Map(float nx, float ny)
+        {
+            double gx = nx * h, gy = ny * h;
+            if (text.IsMirrored) gx = -gx; // bottom-side / mirrored text
+            return new Vec2(loc.X + (gx * cos) - (gy * sin), loc.Y + (gx * sin) + (gy * cos));
+        }
+
+        // Each glyph stroke is a thin single-sided rectangle (cheaper than a round-capped capsule).
+        foreach (var s in segments)
+        {
+            var a = Map(s.X1, s.Y1);
+            var b = Map(s.X2, s.Y2);
+            var d = b - a;
+            if (d.Length < 1e-9) continue;
+            var perp = new Vec2(-d.Y, d.X).Normalized() * half;
+            mesh.AddFlatPolygon([a + perp, b + perp, b - perp, a - perp], null, z, faceUp);
+        }
     }
 
     // ── Drills / via barrels ────────────────────────────────────────────────────────────────────
