@@ -1,7 +1,6 @@
 using System.Numerics;
 using System.Text.Json.Nodes;
 using OriginalCircuit.Altium.Models.Pcb;
-using OriginalCircuit.Eda.Primitives;
 using OriginalCircuit.Mech.GLTF;
 using OriginalCircuit.Mech.GLTF.Step;
 using OriginalCircuit.Mech.STEP.Geometry;
@@ -141,21 +140,20 @@ internal sealed class GltfComponentPlacer(
             var normals = new List<Vector3>();
             var groups = new Dictionary<string, CanonicalGroup>();
 
-            double mrx = model.RotationX, mry = model.RotationY, mrz = model.RotationZ;
-            double mdz = Coord.FromRaw(model.Dz).ToMm();
-
+            // The cached mesh is the raw tessellated STEP geometry (in the model's native frame). The
+            // body's Model3DRot — applied per placement in EmitBody — is the absolute orientation and
+            // already includes any axis correction, so PcbModel.RotationX/Y/Z/Dz (the model's stored
+            // default) must NOT be applied here too, or rotated parts get double-rotated onto their side.
             foreach (var (transform, tri) in CollectMeshes(tess, stepModel))
             {
                 int baseIndex = positions.Count;
                 for (int i = 0; i < tri.Positions.Count; i++)
                 {
                     Vec3 wp = transform.TransformPoint(tri.Positions[i]);
-                    var (x, y, z) = Rotate(wp.X, wp.Y, wp.Z, mrx, mry, mrz);
-                    positions.Add(new Vector3((float)x, (float)y, (float)(z + mdz)));
+                    positions.Add(new Vector3((float)wp.X, (float)wp.Y, (float)wp.Z));
 
                     Vec3 wn = i < tri.Normals.Count ? transform.TransformDirection(tri.Normals[i]) : new Vec3(0, 0, 1);
-                    var (nx, ny, nz) = Rotate(wn.X, wn.Y, wn.Z, mrx, mry, mrz);
-                    var nv = new Vector3((float)nx, (float)ny, (float)nz);
+                    var nv = new Vector3((float)wn.X, (float)wn.Y, (float)wn.Z);
                     normals.Add(nv.LengthSquared() > 1e-12f ? Vector3.Normalize(nv) : new Vector3(0, 0, 1));
                 }
 
