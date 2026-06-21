@@ -127,7 +127,7 @@ internal sealed class GltfSceneBuilder
 
         foreach (var r in Regions)
             if (r.Layer == layerId && r.Kind == 0 && !r.IsKeepout && r.Outline.Count >= 3)
-                mesh.AddSheet(Ring(r.Outline), null, z);
+                mesh.AddSheet(Ring(r.Outline), RegionHoles(r), z); // pour clearances (around pads, fiducials, vias)
 
         foreach (var pad in Pads)
         {
@@ -171,23 +171,17 @@ internal sealed class GltfSceneBuilder
         var holes = new List<IReadOnlyList<Vec2>>();
         if (outline.Count < 3) return holes;
 
+        // Every drilled pad and via punches through the board, matching the photorealistic drill layer
+        // (plated holes keep a copper barrel from BuildDrills; unplated mounting holes are just open).
         foreach (var pad in Pads)
         {
-            double r = pad.HoleSize.ToMm() / 2.0;
-            if (r <= 0 || pad.IsPlated) continue; // plated holes keep a barrel; only NPTH are see-through
-            var c = P(pad.Location);
-            if (pad.HoleType == PadHoleType.Slot && pad.HoleSlotLength > 0)
-            {
-                double len = Coord.FromRaw(pad.HoleSlotLength).ToMm();
-                double rad = pad.HoleRotation * Math.PI / 180.0;
-                var ax = new Vec2(Math.Cos(rad), Math.Sin(rad));
-                double half = Math.Max(0, (len / 2.0) - r);
-                holes.Add(Shapes.Capsule(c - (ax * half), c + (ax * half), pad.HoleSize.ToMm(), Caps(r)));
-            }
-            else
-            {
-                holes.Add(Shapes.Circle(c, r, Seg(r)));
-            }
+            var hole = PadHole(pad);
+            if (hole is not null) holes.AddRange(hole);
+        }
+        foreach (var via in Vias)
+        {
+            double r = via.HoleSize.ToMm() / 2.0;
+            if (r > 0) holes.Add(Shapes.Circle(P(via.Location), r, Seg(r)));
         }
 
         double boardArea = PolygonArea(outline);
@@ -271,9 +265,20 @@ internal sealed class GltfSceneBuilder
             if (f.Layer == layerId)
                 mesh.AddSheet(FillRect(f), null, z);
         foreach (var text in Texts)
-            if (text.Layer == layerId && !string.IsNullOrEmpty(text.Text))
+            if (text.Layer == layerId && !string.IsNullOrEmpty(text.Text) && IsTextVisible(text))
                 AddTextStrokes(mesh, text, z, faceUp: layerId != 34);
         Emit(mesh, _matSilk, name, "silkscreen", layerId);
+    }
+
+    // A component's designator/comment text shows only when the component enables that field
+    // (Altium's NameOn/CommentOn); free text always shows.
+    private bool IsTextVisible(PcbText text)
+    {
+        if (text.ComponentIndex < 0 || text.ComponentIndex >= _doc.Components.Count) return true;
+        if (_doc.Components[text.ComponentIndex] is not PcbComponent owner) return true;
+        if (text.IsComment && !owner.CommentOn) return false;
+        if (text.IsDesignator && !owner.NameOn) return false;
+        return true;
     }
 
     // Builds the stroke geometry for a PCB text using Altium's stroke font: normalized glyph segments
@@ -287,8 +292,14 @@ internal sealed class GltfSceneBuilder
         double sw = text.StrokeWidth.ToMm();
         if (sw <= 0) sw = Math.Max(0.04, h * 0.1);
 
-        var segments = AltiumStrokeFont.Layout(text.Text, AltiumStrokeFont.FromStrokeFont(text.StrokeFont), out _);
+        var segments = AltiumStrokeFont.Layout(text.Text, AltiumStrokeFont.FromStrokeFont(text.StrokeFont), out float advance);
         if (segments.Count == 0) return;
+
+        // Anchor per the text justification (Altium text is bottom-left by default). Glyph space is
+        // normalized (height 1, baseline y=0, +x right, +y up), so the offsets are in those units.
+        string just = text.Justification.ToString();
+        double offX = just.Contains("Right") ? -advance : just.Contains("Left") ? 0.0 : -advance / 2.0;
+        double offY = just.Contains("Top") ? -1.0 : just.Contains("Bottom") ? 0.0 : -0.5;
 
         double rad = text.Rotation * Math.PI / 180.0;
         double cos = Math.Cos(rad), sin = Math.Sin(rad);
@@ -297,7 +308,7 @@ internal sealed class GltfSceneBuilder
 
         Vec2 Map(float nx, float ny)
         {
-            double gx = nx * h, gy = ny * h;
+            double gx = (nx + offX) * h, gy = (ny + offY) * h;
             if (text.IsMirrored) gx = -gx; // bottom-side / mirrored text
             return new Vec2(loc.X + (gx * cos) - (gy * sin), loc.Y + (gx * sin) + (gy * cos));
         }
@@ -375,6 +386,16 @@ internal sealed class GltfSceneBuilder
         var ring = new List<Vec2>(pts.Count);
         foreach (var p in pts) ring.Add(P(p));
         return ring;
+    }
+
+    // A copper region's internal clearance holes (the pour pulled back around pads/fiducials/vias).
+    private List<IReadOnlyList<Vec2>>? RegionHoles(PcbRegion region)
+    {
+        if (region.Holes is not { Count: > 0 }) return null;
+        var holes = new List<IReadOnlyList<Vec2>>(region.Holes.Count);
+        foreach (var h in region.Holes)
+            if (h.Count >= 3) holes.Add(Ring(h));
+        return holes.Count > 0 ? holes : null;
     }
 
     private List<Vec2> FillRect(PcbFill f)
