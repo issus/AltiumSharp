@@ -59,11 +59,12 @@
   </ItemGroup>
 
   <!--
-    The publishable packages reference the shared OriginalCircuit.Eda.* projects via
-    ProjectReference with PrivateAssets="all". Those projects are NOT published as standalone
-    NuGet packages, so without this they would be emitted as unresolvable package dependencies
-    (NU1101 on restore). Instead we bundle their built assemblies directly into our lib/ folder.
-    Same-version duplicates across our own packages are resolved harmlessly by the consumer.
+    The publishable packages reference the shared OriginalCircuit.Eda.* projects (and, for the
+    glTF renderer, the OriginalCircuit.Mech.* projects) via ProjectReference with
+    PrivateAssets="all". Those projects are NOT yet published as standalone NuGet packages, so
+    without this they would be emitted as unresolvable package dependencies (NU1101 on restore).
+    Instead we bundle their built assemblies directly into our lib/ folder. Same-version
+    duplicates across our own packages are resolved harmlessly by the consumer.
   -->
   <PropertyGroup Condition="'$(IsPackable)' != 'false' and '$(DevelopmentDependency)' != 'true'">
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);_IncludeSharedEdaAssemblies</TargetsForTfmSpecificBuildOutput>
@@ -72,7 +73,7 @@
   <Target Name="_IncludeSharedEdaAssemblies" DependsOnTargets="ResolveReferences">
     <ItemGroup>
       <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths)"
-                            Condition="'%(Extension)' == '.dll' and $([System.String]::Copy('%(Filename)').StartsWith('OriginalCircuit.Eda.'))" />
+                            Condition="'%(Extension)' == '.dll' and ($([System.String]::Copy('%(Filename)').StartsWith('OriginalCircuit.Eda.')) or $([System.String]::Copy('%(Filename)').StartsWith('OriginalCircuit.Mech.')))" />
     </ItemGroup>
   </Target>
 

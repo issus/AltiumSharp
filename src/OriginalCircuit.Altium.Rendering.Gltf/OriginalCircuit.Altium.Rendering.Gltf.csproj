@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+
+    <PackageId>OriginalCircuit.Altium.Rendering.Gltf</PackageId>
+    <Description>glTF 2.0 3D rendering for Altium Designer PCB documents. Produces a full layer-stack board model (copper, laminate, solder mask, silkscreen, drills) plus placed component 3D bodies, as toggleable nodes in a .gltf/.glb scene.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OriginalCircuit.Altium.Rendering.Core\OriginalCircuit.Altium.Rendering.Core.csproj" />
+  </ItemGroup>
+
+  <!--
+    The 3D engine lives in the OriginalCircuit.Mech.STEP / OriginalCircuit.Mech.GLTF sibling
+    repos, vendored as submodules under shared/. These are referenced via ProjectReference
+    (interim, until those libraries publish to NuGet) with PrivateAssets="all"; their built
+    assemblies are bundled into this package's lib/ folder by the _IncludeSharedEdaAssemblies
+    target in Directory.Build.props (which matches both OriginalCircuit.Eda.* and .Mech.*).
+    Referencing GLTF.Step + STEP.Tessellation pulls the rest of the Mech graph transitively.
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\shared\OriginalCircuit.Mech.GLTF\src\OriginalCircuit.Mech.GLTF\OriginalCircuit.Mech.GLTF.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\..\shared\OriginalCircuit.Mech.GLTF\src\OriginalCircuit.Mech.GLTF.Step\OriginalCircuit.Mech.GLTF.Step.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\..\shared\OriginalCircuit.Mech.STEP\src\OriginalCircuit.Mech.STEP.Tessellation\OriginalCircuit.Mech.STEP.Tessellation.csproj" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>
