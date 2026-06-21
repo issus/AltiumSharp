@@ -237,7 +237,7 @@ internal sealed class GltfSceneBuilder
             var shape = top ? pad.ShapeTop : pad.ShapeBottom;
             double w = size.X.ToMm(), h = size.Y.ToMm();
             if (w <= 0 || h <= 0) continue;
-            mesh.AddSheet(PadContour(P(pad.Location), w, h, pad.Rotation, shape), PadHole(pad), z);
+            mesh.AddSheet(PadContour(P(pad.Location), w, h, pad.Rotation, shape, pad.CornerRadiusPercentage), PadHole(pad), z);
         }
         foreach (var via in Vias)
         {
@@ -416,24 +416,32 @@ internal sealed class GltfSceneBuilder
 
         double w = size.X.ToMm(), h = size.Y.ToMm();
         if (w <= 0 || h <= 0) return null;
-        return PadContour(P(pad.Location), w, h, pad.Rotation, shape);
+        return PadContour(P(pad.Location), w, h, pad.Rotation, shape, pad.CornerRadiusPercentage);
     }
 
-    private List<Vec2> PadContour(Vec2 center, double w, double h, double rotationDeg, PadShape shape)
+    private List<Vec2> PadContour(Vec2 center, double w, double h, double rotationDeg, PadShape shape, int cornerPercent)
     {
-        if (shape == PadShape.Round)
+        switch (shape)
         {
-            if (Math.Abs(w - h) < 1e-6) return Shapes.Circle(center, w / 2.0, Seg(w / 2.0));
-            // Oblong: a stadium along the major axis.
-            double rad = rotationDeg * Math.PI / 180.0;
-            var ax = new Vec2(Math.Cos(rad), Math.Sin(rad));
-            if (w >= h) { double half = (w - h) / 2.0; return Shapes.Capsule(center - (ax * half), center + (ax * half), h, Caps(h / 2)); }
-            var ay = new Vec2(-Math.Sin(rad), Math.Cos(rad));
-            double half2 = (h - w) / 2.0;
-            return Shapes.Capsule(center - (ay * half2), center + (ay * half2), w, Caps(w / 2));
+            case PadShape.Round:
+                if (Math.Abs(w - h) < 1e-6) return Shapes.Circle(center, w / 2.0, Seg(w / 2.0));
+                // Oblong: a stadium along the major axis.
+                double rad = rotationDeg * Math.PI / 180.0;
+                var ax = new Vec2(Math.Cos(rad), Math.Sin(rad));
+                if (w >= h) { double half = (w - h) / 2.0; return Shapes.Capsule(center - (ax * half), center + (ax * half), h, Caps(h / 2)); }
+                var ay = new Vec2(-Math.Sin(rad), Math.Cos(rad));
+                double half2 = (h - w) / 2.0;
+                return Shapes.Capsule(center - (ay * half2), center + (ay * half2), w, Caps(w / 2));
+
+            case PadShape.Octagonal:
+                return Shapes.Octagon(center, w, h, rotationDeg);
+
+            case PadShape.RoundedRectangle:
+                return Shapes.RoundedRectangle(center, w, h, rotationDeg, cornerPercent, Math.Max(2, Caps(Math.Min(w, h) / 2.0) / 2));
+
+            default:
+                return Shapes.Rectangle(center, w, h, rotationDeg);
         }
-        // Rectangular / Octagonal / RoundedRectangle are approximated by their bounding rectangle.
-        return Shapes.Rectangle(center, w, h, rotationDeg);
     }
 
     // A pad that is an unplated through-hole (a mounting / tooling hole) — it carries no copper and

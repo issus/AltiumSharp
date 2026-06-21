@@ -40,6 +40,55 @@ internal static class Shapes
         return [R(-hw, -hh), R(hw, -hh), R(hw, hh), R(-hw, hh)];
     }
 
+    /// <summary>An octagonal pad: a rectangle with its four corners chamfered at 45°.</summary>
+    public static List<Vec2> Octagon(Vec2 center, double width, double height, double rotationDeg)
+    {
+        double hw = width / 2.0, hh = height / 2.0;
+        double c = Math.Min(hw, hh) * 0.4142; // chamfer ≈ (√2−1)·half-extent, an octagon-ish corner cut
+        var local = new (double X, double Y)[]
+        {
+            (-hw + c, -hh), (hw - c, -hh), (hw, -hh + c), (hw, hh - c),
+            (hw - c, hh), (-hw + c, hh), (-hw, hh - c), (-hw, -hh + c),
+        };
+        return Place(local, center, rotationDeg);
+    }
+
+    /// <summary>A rounded rectangle whose corner radius is <paramref name="cornerPercent"/>% of the half min-side.</summary>
+    public static List<Vec2> RoundedRectangle(Vec2 center, double width, double height, double rotationDeg, double cornerPercent, int segmentsPerCorner)
+    {
+        double hw = width / 2.0, hh = height / 2.0;
+        double r = Math.Min(hw, hh) * Math.Clamp(cornerPercent, 0, 100) / 100.0;
+        if (r <= 1e-6) return Rectangle(center, width, height, rotationDeg);
+
+        int seg = Math.Max(1, segmentsPerCorner);
+        var local = new List<(double X, double Y)>((seg + 1) * 4);
+        // Four corner arcs, counter-clockwise from the bottom-right corner.
+        AddCorner(local, hw - r, -(hh - r), -Math.PI / 2, 0, r, seg);
+        AddCorner(local, hw - r, hh - r, 0, Math.PI / 2, r, seg);
+        AddCorner(local, -(hw - r), hh - r, Math.PI / 2, Math.PI, r, seg);
+        AddCorner(local, -(hw - r), -(hh - r), Math.PI, 3 * Math.PI / 2, r, seg);
+        return Place(local, center, rotationDeg);
+    }
+
+    private static void AddCorner(List<(double X, double Y)> pts, double cx, double cy, double a0, double a1, double r, int seg)
+    {
+        for (int i = 0; i <= seg; i++)
+        {
+            double a = a0 + ((a1 - a0) * i / seg);
+            pts.Add((cx + (r * Math.Cos(a)), cy + (r * Math.Sin(a))));
+        }
+    }
+
+    private static List<Vec2> Place(IReadOnlyList<(double X, double Y)> local, Vec2 center, double rotationDeg)
+    {
+        double rad = rotationDeg * Math.PI / 180.0;
+        double cos = Math.Cos(rad), sin = Math.Sin(rad);
+        var pts = new List<Vec2>(local.Count);
+        foreach (var (x, y) in local)
+            pts.Add(new Vec2(center.X + (x * cos) - (y * sin), center.Y + (x * sin) + (y * cos)));
+        return pts;
+    }
+
     /// <summary>
     /// A rounded rectangle / stadium between two points (an Altium track or oval pad): a rectangle of
     /// the given <paramref name="width"/> capped by semicircles of radius width/2 at each end.
