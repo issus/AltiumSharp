@@ -13,6 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="OriginalCircuit.Altium.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\OriginalCircuit.Altium.Rendering.Core\OriginalCircuit.Altium.Rendering.Core.csproj" />
   </ItemGroup>
 
