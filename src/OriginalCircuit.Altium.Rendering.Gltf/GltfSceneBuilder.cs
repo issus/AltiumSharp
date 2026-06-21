@@ -171,37 +171,19 @@ internal sealed class GltfSceneBuilder
         var holes = new List<IReadOnlyList<Vec2>>();
         if (outline.Count < 3) return holes;
 
-        // Every drilled pad and via punches through the board, matching the photorealistic drill layer
-        // (plated holes keep a copper barrel from BuildDrills; unplated mounting holes are just open).
+        // Drilled PAD holes punch through the board (mounting holes + through-hole component pads);
+        // plated holes keep a copper barrel from BuildDrills. Vias are NOT cut: they are tiny, usually
+        // tented (so the mask must stay over them), and cutting hundreds of them produces triangulation
+        // slivers. Kind==1 regions on a copper layer are copper anti-fills (clearances), NOT board
+        // cut-outs, so they are not subtracted from the substrate either.
         foreach (var pad in Pads)
         {
             var hole = PadHole(pad);
             if (hole is not null) holes.AddRange(hole);
         }
-        foreach (var via in Vias)
-        {
-            double r = via.HoleSize.ToMm() / 2.0;
-            if (r > 0) holes.Add(Shapes.Circle(P(via.Location), r, Seg(r)));
-        }
-
-        double boardArea = PolygonArea(outline);
-        foreach (var region in Regions)
-        {
-            if (region.Kind != 1 || region.Outline.Count < 3) continue; // Kind 1 = cutout
-            var hole = Ring(region.Outline);
-            // Skip board-sized "cutout" traps; keep genuine interior cutouts.
-            if (boardArea <= 0 || PolygonArea(hole) < 0.8 * boardArea) holes.Add(hole);
-        }
         return holes;
     }
 
-    private static double PolygonArea(IReadOnlyList<Vec2> ring)
-    {
-        double a = 0;
-        for (int i = 0, j = ring.Count - 1; i < ring.Count; j = i++)
-            a += (ring[j].X * ring[i].Y) - (ring[i].X * ring[j].Y);
-        return Math.Abs(a) / 2.0;
-    }
 
     // ── Exposed copper / finish (the visible result of solder-mask openings) ────────────────────
     // Rather than boolean-cut the mask (fragile when openings overlap), the translucent mask sheet

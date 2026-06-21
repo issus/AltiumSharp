@@ -72,7 +72,10 @@ internal sealed class GltfComponentPlacer(
         double rx = body.Model3DRotX, ry = body.Model3DRotY, rz = body.Model3DRotZ + body.Model2DRotation;
         double tx = body.Model2DLocation.X.ToMm() - centerXMm;
         double ty = body.Model2DLocation.Y.ToMm() - centerYMm;
-        double standoff = body.StandoffHeight.ToMm() + body.Model3DDz.ToMm();
+        // STEP models are authored with z=0 at the board mounting plane (body above, leads below). A
+        // NEGATIVE standoff is the lead-protrusion depth, which the mesh already includes, so it must
+        // not be re-applied (that sinks the body); only a positive standoff is a genuine raised gap.
+        double standoff = Math.Max(0, body.StandoffHeight.ToMm()) + body.Model3DDz.ToMm();
 
         var positions = new List<Vector3>(canonical.Positions.Count);
         var normals = new List<Vector3>(canonical.Normals.Count);
