@@ -208,6 +208,18 @@ public sealed class PcbDocument : IPcbDocument
     /// </summary>
     public PcbLayerStack? LayerStack => _layerStackCache ??= PcbLayerStack.FromBoardParameters(BoardParameters);
 
+    private PcbStackup? _stackupCache;
+
+    /// <summary>
+    /// The physical board stack-up — an ordered (top-to-bottom) list of copper, dielectric, solder-mask
+    /// and silkscreen layers with true millimetre thicknesses and absolute Z positions — parsed from the
+    /// modern <c>V9_STACK_LAYER</c> Board6 parameters. Lazily computed; returns <see langword="null"/>
+    /// when the file carries no usable stack data (callers can fall back to
+    /// <see cref="PcbStackup.CreateDefault"/>). Unlike <see cref="LayerStack"/>, this models the
+    /// dielectric cores and exposes per-layer thickness, which is what 3D rendering needs.
+    /// </summary>
+    public PcbStackup? GetStackup() => _stackupCache ??= PcbStackup.FromBoardParameters(BoardParameters);
+
     /// <summary>
     /// Additional OLE storages/streams preserved for round-trip fidelity.
     /// Key format: "StorageName/StreamName" -> byte data.
