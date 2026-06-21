@@ -54,6 +54,16 @@ internal static class GltfPalette
         DoubleSided = true,
     };
 
+    /// <summary>A neutral dark-grey plastic material for component bodies that carry no STEP colour.</summary>
+    public static MaterialSpec Component() => new()
+    {
+        Name = "Component",
+        BaseColorFactor = Rgba(0.18, 0.18, 0.20),
+        MetallicFactor = 0.1,
+        RoughnessFactor = 0.6,
+        DoubleSided = true,
+    };
+
     /// <summary>The copper material for the requested surface finish.</summary>
     public static MaterialSpec Copper(GltfCopperFinish finish, bool doubleSided)
     {
