@@ -25,6 +25,7 @@ internal sealed class GltfSceneBuilder
 
     private double _cx, _cy;             // board centre (mm) subtracted from every point
     private int _matSubstrate, _matCopper, _matMask, _matSilk, _matBarrel;
+    private List<IReadOnlyList<Vec2>> _boardHoles = []; // see-through board openings (cutouts / NPTH)
 
     public GltfSceneBuilder(PcbDocument doc, GltfRenderSettings settings)
     {
@@ -44,6 +45,7 @@ internal sealed class GltfSceneBuilder
         _cy = (bounds.minY + bounds.maxY) / 2.0;
 
         AddMaterials();
+        _boardHoles = CollectBoardHoles(OutlineRing(bounds));
 
         if (_settings.IncludeSubstrate) BuildSubstrate(bounds);
         if (_settings.IncludeCopper) BuildCopperLayers();
@@ -89,7 +91,7 @@ internal sealed class GltfSceneBuilder
         double z1 = diel.Count > 0 ? diel.Max(d => d.Z1Mm) : _stack.TotalThicknessMm;
 
         var mesh = new MeshBuffer();
-        mesh.AddPrism(ring, holes: null, z0, z1);
+        mesh.AddPrism(ring, _boardHoles.Count > 0 ? _boardHoles : null, z0, z1);
         Emit(mesh, _matSubstrate, "Substrate", "substrate", null);
     }
 
@@ -128,8 +130,9 @@ internal sealed class GltfSceneBuilder
 
         foreach (var pad in Pads)
         {
+            if (IsUnplatedHole(pad)) continue; // NPTH / mounting hole carries no copper
             var contour = PadContourForLayer(pad, layerId);
-            if (contour is not null) mesh.AddSheet(contour, null, z);
+            if (contour is not null) mesh.AddSheet(contour, PadHole(pad), z);
         }
 
         foreach (var via in Vias)
@@ -159,6 +162,52 @@ internal sealed class GltfSceneBuilder
             EmitSheet(ring, _matMask, bottom.CenterZMm, "SolderMask.Bottom", "soldermask", 38);
     }
 
+    // Collects the see-through board openings — unplated (NPTH) mounting holes and board-cutout
+    // regions — that are subtracted from the substrate and solder mask. Plated via/pad holes are NOT
+    // included: their copper barrels fill them. Board-sized cutout traps are filtered out by area.
+    private List<IReadOnlyList<Vec2>> CollectBoardHoles(IReadOnlyList<Vec2> outline)
+    {
+        var holes = new List<IReadOnlyList<Vec2>>();
+        if (outline.Count < 3) return holes;
+
+        foreach (var pad in Pads)
+        {
+            double r = pad.HoleSize.ToMm() / 2.0;
+            if (r <= 0 || pad.IsPlated) continue; // plated holes keep a barrel; only NPTH are see-through
+            var c = P(pad.Location);
+            if (pad.HoleType == PadHoleType.Slot && pad.HoleSlotLength > 0)
+            {
+                double len = Coord.FromRaw(pad.HoleSlotLength).ToMm();
+                double rad = pad.HoleRotation * Math.PI / 180.0;
+                var ax = new Vec2(Math.Cos(rad), Math.Sin(rad));
+                double half = Math.Max(0, (len / 2.0) - r);
+                holes.Add(Shapes.Capsule(c - (ax * half), c + (ax * half), pad.HoleSize.ToMm(), Caps(r)));
+            }
+            else
+            {
+                holes.Add(Shapes.Circle(c, r, Seg(r)));
+            }
+        }
+
+        double boardArea = PolygonArea(outline);
+        foreach (var region in Regions)
+        {
+            if (region.Kind != 1 || region.Outline.Count < 3) continue; // Kind 1 = cutout
+            var hole = Ring(region.Outline);
+            // Skip board-sized "cutout" traps; keep genuine interior cutouts.
+            if (boardArea <= 0 || PolygonArea(hole) < 0.8 * boardArea) holes.Add(hole);
+        }
+        return holes;
+    }
+
+    private static double PolygonArea(IReadOnlyList<Vec2> ring)
+    {
+        double a = 0;
+        for (int i = 0, j = ring.Count - 1; i < ring.Count; j = i++)
+            a += (ring[j].X * ring[i].Y) - (ring[i].X * ring[j].Y);
+        return Math.Abs(a) / 2.0;
+    }
+
     // ── Exposed copper / finish (the visible result of solder-mask openings) ────────────────────
     // Rather than boolean-cut the mask (fragile when openings overlap), the translucent mask sheet
     // stays whole and the exposed copper — non-tented pads and vias — is drawn in the plated-finish
@@ -177,7 +226,7 @@ internal sealed class GltfSceneBuilder
         var mesh = new MeshBuffer();
         foreach (var pad in Pads)
         {
-            if (pad.IsKeepout) continue;
+            if (pad.IsKeepout || IsUnplatedHole(pad)) continue;
             bool throughHole = pad.HoleSize.ToMm() > 0;
             bool tented = top ? pad.IsTentingTop : pad.IsTentingBottom;
             bool exposed = !tented && (throughHole || pad.Layer == copperLayer);
@@ -187,7 +236,7 @@ internal sealed class GltfSceneBuilder
             var shape = top ? pad.ShapeTop : pad.ShapeBottom;
             double w = size.X.ToMm(), h = size.Y.ToMm();
             if (w <= 0 || h <= 0) continue;
-            mesh.AddSheet(PadContour(P(pad.Location), w, h, pad.Rotation, shape), null, z);
+            mesh.AddSheet(PadContour(P(pad.Location), w, h, pad.Rotation, shape), PadHole(pad), z);
         }
         foreach (var via in Vias)
         {
@@ -266,7 +315,7 @@ internal sealed class GltfSceneBuilder
     private void EmitSheet(IReadOnlyList<Vec2> ring, int material, double z, string name, string role, int? altiumLayer)
     {
         var mesh = new MeshBuffer();
-        mesh.AddSheet(ring, null, z);
+        mesh.AddSheet(ring, _boardHoles.Count > 0 ? _boardHoles : null, z);
         Emit(mesh, material, name, role, altiumLayer);
     }
 
@@ -343,6 +392,28 @@ internal sealed class GltfSceneBuilder
         }
         // Rectangular / Octagonal / RoundedRectangle are approximated by their bounding rectangle.
         return Shapes.Rectangle(center, w, h, rotationDeg);
+    }
+
+    // A pad that is an unplated through-hole (a mounting / tooling hole) — it carries no copper and
+    // is subtracted from the board as a see-through opening instead.
+    private static bool IsUnplatedHole(PcbPad pad) => pad.HoleSize.ToMm() > 0 && !pad.IsPlated;
+
+    // The pad's drill as a hole ring to subtract from its copper (so a through-hole reads as an
+    // annulus with the plated barrel / open hole showing through), or null for a holeless SMD pad.
+    private List<IReadOnlyList<Vec2>>? PadHole(PcbPad pad)
+    {
+        double r = pad.HoleSize.ToMm() / 2.0;
+        if (r <= 0) return null;
+        var c = P(pad.Location);
+        if (pad.HoleType == PadHoleType.Slot && pad.HoleSlotLength > 0)
+        {
+            double len = Coord.FromRaw(pad.HoleSlotLength).ToMm();
+            double rad = pad.HoleRotation * Math.PI / 180.0;
+            var ax = new Vec2(Math.Cos(rad), Math.Sin(rad));
+            double half = Math.Max(0, (len / 2.0) - r);
+            return [Shapes.Capsule(c - (ax * half), c + (ax * half), pad.HoleSize.ToMm(), Caps(r))];
+        }
+        return [Shapes.Circle(c, r, Seg(r))];
     }
 
     private bool ViaSpans(PcbVia via, int layerId)
