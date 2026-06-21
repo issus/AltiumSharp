@@ -18,6 +18,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OriginalCircuit.Altium.Rendering.Core\OriginalCircuit.Altium.Rendering.Core.csproj" />
+    <!-- CoordPoint/Coord live in Eda.Abstractions, which the core packages reference with
+         PrivateAssets="all" (not flowed transitively). This package uses those types directly, so
+         reference it explicitly; it is bundled into the package by the Directory.Build.props target. -->
+    <ProjectReference Include="..\..\shared\OriginalCircuit.Eda.Abstractions\src\OriginalCircuit.Eda.Abstractions\OriginalCircuit.Eda.Abstractions.csproj" PrivateAssets="all" />
   </ItemGroup>
 
   <!--
