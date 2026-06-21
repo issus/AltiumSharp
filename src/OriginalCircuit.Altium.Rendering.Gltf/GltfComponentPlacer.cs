@@ -3,6 +3,7 @@ using System.Text.Json.Nodes;
 using OriginalCircuit.Altium.Models.Pcb;
 using OriginalCircuit.Eda.Primitives;
 using OriginalCircuit.Mech.GLTF;
+using OriginalCircuit.Mech.GLTF.Step;
 using OriginalCircuit.Mech.STEP.Geometry;
 using OriginalCircuit.Mech.STEP.Schema;
 using OriginalCircuit.Mech.STEP.Tessellation;
@@ -12,9 +13,11 @@ namespace OriginalCircuit.Altium.Rendering.Gltf;
 
 /// <summary>
 /// Places each component's embedded 3D STEP body onto the board. The model is parsed and tessellated
-/// once per unique model id (cached), then each placement is transformed into board space — model
-/// canonical orientation, the body's 3D rotation, the footprint 2D rotation, the board XY location
-/// and the standoff height — and emitted as its own toggleable node under a single "Components" node.
+/// once per unique model id (cached, with its per-face STEP colours preserved), then each placement
+/// is transformed into board space — the model's canonical orientation (PcbModel rotation/Dz), the
+/// body's 3D rotation, the footprint 2D rotation, the board XY location and the standoff height — and
+/// emitted as its own toggleable node under a single "Components" node. Bottom-side bodies are
+/// mirrored under the board.
 /// </summary>
 internal sealed class GltfComponentPlacer(
     PcbDocument doc,
@@ -24,11 +27,17 @@ internal sealed class GltfComponentPlacer(
     double centerXMm,
     double centerYMm)
 {
-    // Canonical mesh (STEP scene transform + model orientation/Dz applied), cached per model id.
-    private readonly Dictionary<string, CanonicalMesh?> _cache = new(StringComparer.OrdinalIgnoreCase);
-    private int _material = -1;
+    // The STEP tessellator's fallback colour when a face carries no STEP colour style.
+    private static readonly Rgba DefaultColor = new(0.75, 0.75, 0.78);
 
-    private sealed record CanonicalMesh(List<Vector3> Positions, List<Vector3> Normals, List<int> Indices);
+    private readonly Dictionary<string, CanonicalMesh?> _cache = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, int> _materials = [];
+    private readonly PbrMaterialPolicy _policy = PbrMaterialPolicy.Default;
+
+    // One run of triangles sharing a STEP material within a model's canonical mesh.
+    private sealed record CanonicalGroup(Rgba Color, string? Name, List<int> Indices);
+
+    private sealed record CanonicalMesh(List<Vector3> Positions, List<Vector3> Normals, List<CanonicalGroup> Groups);
 
     public int? Build()
     {
@@ -38,6 +47,7 @@ internal sealed class GltfComponentPlacer(
         if (models.Count == 0) return null;
 
         double boardTopZ = stack.ForLayer(37)?.Z1Mm ?? stack.TotalThicknessMm;
+        double boardBottomZ = stack.ForLayer(38)?.Z0Mm ?? 0;
         var children = new List<int>();
 
         foreach (var body in doc.ComponentBodies.OfType<PcbComponentBody>())
@@ -46,49 +56,76 @@ internal sealed class GltfComponentPlacer(
             if (string.IsNullOrWhiteSpace(model.StepData)) continue;
 
             CanonicalMesh? canonical = GetCanonical(body.ModelId, model);
-            if (canonical is null || canonical.Indices.Count == 0) continue;
+            if (canonical is null || canonical.Groups.Count == 0) continue;
 
-            int node = EmitBody(body, model, canonical, boardTopZ);
+            int node = EmitBody(body, canonical, boardTopZ, boardBottomZ);
             if (node >= 0) children.Add(node);
         }
 
-        if (children.Count == 0) return null;
-        if (_material < 0) return null;
-        return builder.AddNode(name: "Components", children: children);
+        return children.Count > 0 ? builder.AddNode(name: "Components", children: children) : null;
     }
 
-    private int EmitBody(PcbComponentBody body, PcbModel model, CanonicalMesh canonical, double boardTopZ)
+    private int EmitBody(PcbComponentBody body, CanonicalMesh canonical, double boardTopZ, double boardBottomZ)
     {
+        bool bottom = IsBottomSide(body);
+
         // Footprint + 3D placement rotations (degrees), applied after the model's canonical pose.
         double rx = body.Model3DRotX, ry = body.Model3DRotY, rz = body.Model3DRotZ + body.Model2DRotation;
         double tx = body.Model2DLocation.X.ToMm() - centerXMm;
         double ty = body.Model2DLocation.Y.ToMm() - centerYMm;
-        double tz = boardTopZ + body.StandoffHeight.ToMm() + body.Model3DDz.ToMm();
+        double standoff = body.StandoffHeight.ToMm() + body.Model3DDz.ToMm();
 
         var positions = new List<Vector3>(canonical.Positions.Count);
         var normals = new List<Vector3>(canonical.Normals.Count);
         foreach (var p in canonical.Positions)
         {
             var (x, y, z) = Rotate(p.X, p.Y, p.Z, rx, ry, rz);
-            positions.Add(new Vector3((float)(x + tx), (float)(y + ty), (float)(z + tz)));
+            // A bottom-side part is flipped under the board: mirror Z and hang below the bottom face.
+            double wz = bottom ? boardBottomZ - standoff - z : boardTopZ + standoff + z;
+            positions.Add(new Vector3((float)(x + tx), (float)(y + ty), (float)wz));
         }
         foreach (var n in canonical.Normals)
         {
             var (x, y, z) = Rotate(n.X, n.Y, n.Z, rx, ry, rz);
+            if (bottom) z = -z; // match the Z mirror so normals keep facing outward
             var v = new Vector3((float)x, (float)y, (float)z);
             normals.Add(v.LengthSquared() > 1e-12f ? Vector3.Normalize(v) : new Vector3(0, 0, 1));
         }
 
-        string name = ComponentName(body);
-        int mesh = builder.AddMesh(positions, normals, canonical.Indices,
-            [new MeshPartSpec(0, canonical.Indices.Count, _material)], name);
+        var indices = new List<int>();
+        var parts = new List<MeshPartSpec>();
+        foreach (var g in canonical.Groups)
+        {
+            if (g.Indices.Count == 0) continue;
+            int offset = indices.Count;
+            // A Z mirror flips winding; reverse each triangle so front faces stay front.
+            if (bottom)
+                for (int i = 0; i < g.Indices.Count; i += 3) { indices.Add(g.Indices[i]); indices.Add(g.Indices[i + 2]); indices.Add(g.Indices[i + 1]); }
+            else
+                indices.AddRange(g.Indices);
+            parts.Add(new MeshPartSpec(offset, g.Indices.Count, MaterialFor(g.Color, g.Name)));
+        }
+        if (parts.Count == 0) return -1;
 
-        var extras = new JsonObject { ["role"] = "component", ["designator"] = name };
+        string name = ComponentName(body);
+        int mesh = builder.AddMesh(positions, normals, indices, parts, name);
+
+        var extras = new JsonObject { ["role"] = "component", ["designator"] = name, ["side"] = bottom ? "bottom" : "top" };
         if (!string.IsNullOrEmpty(body.ModelName)) extras["model"] = body.ModelName;
         return builder.AddNode(mesh: mesh, name: name, extras: extras);
     }
 
-    // Tessellates the model once and bakes its canonical orientation (PcbModel rotation + Dz).
+    private int MaterialFor(Rgba color, string? name)
+    {
+        string key = $"{color.R:F4},{color.G:F4},{color.B:F4},{color.A:F4}|{name}";
+        if (_materials.TryGetValue(key, out int idx)) return idx;
+        idx = builder.AddMaterial(_policy.ToMaterialSpec(color, name, doubleSided: true));
+        _materials[key] = idx;
+        return idx;
+    }
+
+    // Tessellates the model once and bakes its canonical orientation (PcbModel rotation + Dz),
+    // grouping triangles by their STEP per-face material colour.
     private CanonicalMesh? GetCanonical(string modelId, PcbModel model)
     {
         if (_cache.TryGetValue(modelId, out var cached)) return cached;
@@ -102,7 +139,7 @@ internal sealed class GltfComponentPlacer(
 
             var positions = new List<Vector3>();
             var normals = new List<Vector3>();
-            var indices = new List<int>();
+            var groups = new Dictionary<string, CanonicalGroup>();
 
             double mrx = model.RotationX, mry = model.RotationY, mrz = model.RotationZ;
             double mdz = Coord.FromRaw(model.Dz).ToMm();
@@ -121,14 +158,25 @@ internal sealed class GltfComponentPlacer(
                     var nv = new Vector3((float)nx, (float)ny, (float)nz);
                     normals.Add(nv.LengthSquared() > 1e-12f ? Vector3.Normalize(nv) : new Vector3(0, 0, 1));
                 }
-                foreach (int idx in tri.Indices) indices.Add(baseIndex + idx);
+
+                foreach (var part in tri.Parts)
+                {
+                    Rgba color = part.Material?.Color ?? DefaultColor;
+                    string? matName = part.Material?.Name;
+                    string key = $"{color.R:F4},{color.G:F4},{color.B:F4},{color.A:F4}|{matName}";
+                    if (!groups.TryGetValue(key, out var group))
+                    {
+                        group = new CanonicalGroup(color, matName, []);
+                        groups[key] = group;
+                    }
+                    int end = part.IndexOffset + part.IndexCount;
+                    for (int k = part.IndexOffset; k < end; k++)
+                        group.Indices.Add(baseIndex + tri.Indices[k]);
+                }
             }
 
-            if (indices.Count > 0)
-            {
-                result = new CanonicalMesh(positions, normals, indices);
-                if (_material < 0) _material = builder.AddMaterial(GltfPalette.Component());
-            }
+            var groupList = groups.Values.Where(g => g.Indices.Count > 0).ToList();
+            if (groupList.Count > 0) result = new CanonicalMesh(positions, normals, groupList);
         }
         catch
         {
@@ -162,6 +210,16 @@ internal sealed class GltfComponentPlacer(
         foreach (var child in node.Children)
             foreach (var item in Flatten(child, world))
                 yield return item;
+    }
+
+    // A component body is on the bottom side when its parent component sits on the bottom copper
+    // layer (32), or when the body's own mechanical placement layer is a bottom layer.
+    private bool IsBottomSide(PcbComponentBody body)
+    {
+        if (body.ComponentIndex < 0 || body.ComponentIndex >= doc.Components.Count) return false;
+        var comp = doc.Components[body.ComponentIndex];
+        if (comp.Layer == 32) return true;                       // placed on the Bottom layer
+        return comp is PcbComponent pc && pc.FlippedOnLayer;     // mirrored to the bottom side
     }
 
     private string ComponentName(PcbComponentBody body)
