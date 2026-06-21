@@ -47,7 +47,7 @@ internal sealed class GltfSceneBuilder
 
         if (_settings.IncludeSubstrate) BuildSubstrate(bounds);
         if (_settings.IncludeCopper) BuildCopperLayers();
-        if (_settings.IncludeSolderMask) BuildSolderMask(bounds);
+        if (_settings.IncludeSolderMask) { BuildSolderMask(bounds); BuildExposedCopper(); }
         if (_settings.IncludeSilkscreen) BuildSilkscreen();
         if (_settings.IncludeDrills) BuildDrills();
         if (_settings.IncludeComponents) BuildComponents();
@@ -157,6 +157,46 @@ internal sealed class GltfSceneBuilder
         var bottom = _stack.ForLayer(38);
         if (bottom is not null && HasGeometryOnLayer(38))
             EmitSheet(ring, _matMask, bottom.CenterZMm, "SolderMask.Bottom", "soldermask", 38);
+    }
+
+    // ── Exposed copper / finish (the visible result of solder-mask openings) ────────────────────
+    // Rather than boolean-cut the mask (fragile when openings overlap), the translucent mask sheet
+    // stays whole and the exposed copper — non-tented pads and vias — is drawn in the plated-finish
+    // colour just above the mask, so pads read as bright gold against the green while traces stay
+    // tinted under the mask.
+    private void BuildExposedCopper()
+    {
+        var top = _stack.ForLayer(37);
+        if (top is not null) BuildFinishSide(copperLayer: 1, top: true, z: top.Z1Mm + 0.004, "Finish.Top", 37);
+        var bottom = _stack.ForLayer(38);
+        if (bottom is not null) BuildFinishSide(copperLayer: 32, top: false, z: bottom.Z0Mm - 0.004, "Finish.Bottom", 38);
+    }
+
+    private void BuildFinishSide(int copperLayer, bool top, double z, string name, int maskLayer)
+    {
+        var mesh = new MeshBuffer();
+        foreach (var pad in Pads)
+        {
+            if (pad.IsKeepout) continue;
+            bool throughHole = pad.HoleSize.ToMm() > 0;
+            bool tented = top ? pad.IsTentingTop : pad.IsTentingBottom;
+            bool exposed = !tented && (throughHole || pad.Layer == copperLayer);
+            if (!exposed) continue;
+
+            var size = top ? pad.SizeTop : pad.SizeBottom;
+            var shape = top ? pad.ShapeTop : pad.ShapeBottom;
+            double w = size.X.ToMm(), h = size.Y.ToMm();
+            if (w <= 0 || h <= 0) continue;
+            mesh.AddSheet(PadContour(P(pad.Location), w, h, pad.Rotation, shape), null, z);
+        }
+        foreach (var via in Vias)
+        {
+            if (via.IsTented || (top ? via.IsTentingTop : via.IsTentingBottom)) continue;
+            double outer = via.Diameter.ToMm() / 2.0;
+            if (outer <= 0) continue;
+            mesh.AddSheet(Shapes.Circle(P(via.Location), outer, Seg(outer)), null, z);
+        }
+        Emit(mesh, _matCopper, name, "finish", maskLayer);
     }
 
     // ── Silkscreen ──────────────────────────────────────────────────────────────────────────────
