@@ -59,9 +59,9 @@ Blender, …) can toggle it independently:
 - `Components` — one child node per placed 3D body, in its STEP per-face colours; bottom-side bodies
   are mirrored under the board
 - `EmbeddedBoard.<name>` — for a **panel**, the referenced sub-board composited and tiled across the
-  array; each grid cell instances the sub-board's shared feature meshes, so a 3×3 panel costs roughly
-  one board's worth of geometry. Sub-boards are resolved from the panel file's directory, or via
-  `GltfRenderSettings.EmbeddedBoardResolver`
+  array; each grid cell instances the sub-board's shared feature **and component** meshes — every STEP
+  model is tessellated once — so a 3×3 panel costs roughly one populated board's worth of geometry.
+  Sub-boards are resolved from the panel file's directory, or via `GltfRenderSettings.EmbeddedBoardResolver`
 
 Nodes carry an `extras` payload tagging the Altium layer/role for programmatic filtering. Pad shapes
 (round, oval, rectangular, octagonal, rounded-rectangle) are rendered to shape.

@@ -38,16 +38,31 @@ internal sealed class GltfComponentPlacer(
 
     private sealed record CanonicalMesh(List<Vector3> Positions, List<Vector3> Normals, List<CanonicalGroup> Groups);
 
+    /// <summary>Places all component bodies and returns a single "Components" group node, or null if none.</summary>
     public int? Build()
     {
+        var children = new List<int>();
+        foreach (var (mesh, name, extras) in BuildMeshes())
+            children.Add(builder.AddNode(mesh: mesh, name: name, extras: extras));
+        return children.Count > 0 ? builder.AddNode(name: "Components", children: children) : null;
+    }
+
+    /// <summary>
+    /// Builds the (shared) mesh for each component body and returns it as a (mesh, name, extras) descriptor
+    /// without wrapping it in a node — so a panel can instance the whole sub-board at many array positions
+    /// while every STEP model is tessellated only once.
+    /// </summary>
+    public List<(int Mesh, string Name, JsonObject Extras)> BuildMeshes()
+    {
+        var result = new List<(int, string, JsonObject)>();
+
         var models = new Dictionary<string, PcbModel>(StringComparer.OrdinalIgnoreCase);
         foreach (var m in doc.Models)
             if (!string.IsNullOrEmpty(m.Id)) models[m.Id] = m;
-        if (models.Count == 0) return null;
+        if (models.Count == 0) return result;
 
         double boardTopZ = stack.ForLayer(37)?.Z1Mm ?? stack.TotalThicknessMm;
         double boardBottomZ = stack.ForLayer(38)?.Z0Mm ?? 0;
-        var children = new List<int>();
 
         foreach (var body in doc.ComponentBodies.OfType<PcbComponentBody>())
         {
@@ -57,14 +72,14 @@ internal sealed class GltfComponentPlacer(
             CanonicalMesh? canonical = GetCanonical(body.ModelId, model);
             if (canonical is null || canonical.Groups.Count == 0) continue;
 
-            int node = EmitBody(body, canonical, boardTopZ, boardBottomZ);
-            if (node >= 0) children.Add(node);
+            if (EmitBody(body, canonical, boardTopZ, boardBottomZ) is { } descriptor)
+                result.Add(descriptor);
         }
 
-        return children.Count > 0 ? builder.AddNode(name: "Components", children: children) : null;
+        return result;
     }
 
-    private int EmitBody(PcbComponentBody body, CanonicalMesh canonical, double boardTopZ, double boardBottomZ)
+    private (int Mesh, string Name, JsonObject Extras)? EmitBody(PcbComponentBody body, CanonicalMesh canonical, double boardTopZ, double boardBottomZ)
     {
         bool bottom = IsBottomSide(body);
 
@@ -107,14 +122,14 @@ internal sealed class GltfComponentPlacer(
                 indices.AddRange(g.Indices);
             parts.Add(new MeshPartSpec(offset, g.Indices.Count, MaterialFor(g.Color, g.Name)));
         }
-        if (parts.Count == 0) return -1;
+        if (parts.Count == 0) return null;
 
         string name = ComponentName(body);
         int mesh = builder.AddMesh(positions, normals, indices, parts, name);
 
         var extras = new JsonObject { ["role"] = "component", ["designator"] = name, ["side"] = bottom ? "bottom" : "top" };
         if (!string.IsNullOrEmpty(body.ModelName)) extras["model"] = body.ModelName;
-        return builder.AddNode(mesh: mesh, name: name, extras: extras);
+        return (mesh, name, extras);
     }
 
     private int MaterialFor(Rgba color, string? name)

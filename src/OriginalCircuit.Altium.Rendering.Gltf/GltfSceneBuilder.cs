@@ -611,10 +611,9 @@ internal sealed class GltfSceneBuilder
             double refX = double.MaxValue, refY = double.MaxValue;
             foreach (var p in outline) { refX = Math.Min(refX, p.X.ToMm()); refY = Math.Min(refY, p.Y.ToMm()); }
 
-            // Tessellate the sub-board's features once. Embedded boards are bare (no components) and do
-            // not themselves composite further — keep the run shallow and fast.
+            // Tessellate the sub-board's features (and components, each model once) into shared meshes.
+            // A sub-board does not itself composite further — keep the run one level deep.
             var subSettings = _settings.Clone();
-            subSettings.IncludeComponents = false;
             subSettings.EmbeddedBoardResolver = null;
             var feats = new GltfSceneBuilder(sub, subSettings, _builder).CaptureFeatureMeshes(refX, refY);
             if (feats.Count == 0) continue;
@@ -635,9 +634,9 @@ internal sealed class GltfSceneBuilder
         }
     }
 
-    // Builds the board features of this (embedded) document into the shared builder, centred on
-    // (centreX, centreY) mm, and returns the shared mesh + name + extras for each so a panel can
-    // instance them. No components, no root node, no scene — just reusable feature meshes.
+    // Builds this (embedded) document's board features and component bodies into the shared builder,
+    // centred on (centreX, centreY) mm, and returns the shared mesh + name + extras for each so a panel
+    // can instance them at every array position. No root node, no scene — just reusable meshes.
     public List<(int Mesh, string Name, JsonObject Extras)> CaptureFeatureMeshes(double centreX, double centreY)
     {
         _cx = centreX;
@@ -653,6 +652,13 @@ internal sealed class GltfSceneBuilder
         if (_settings.IncludeSolderMask) BuildSolderMask(bounds);
         if (_settings.IncludeSilkscreen) BuildSilkscreen();
         if (_settings.IncludeDrills) BuildDrills();
+        if (_settings.IncludeComponents)
+        {
+            // Each STEP model is tessellated once here and the resulting meshes are shared by every
+            // array instance, so the component bodies cost no more than a single populated board.
+            var placer = new GltfComponentPlacer(_doc, _settings, _stack, _builder, _cx, _cy);
+            _capture.AddRange(placer.BuildMeshes());
+        }
 
         return _capture;
     }
