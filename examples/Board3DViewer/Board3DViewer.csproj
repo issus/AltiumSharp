@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Board3DViewer</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\OriginalCircuit.Altium\OriginalCircuit.Altium.csproj" />
+    <ProjectReference Include="..\..\src\OriginalCircuit.Altium.Rendering.Gltf\OriginalCircuit.Altium.Rendering.Gltf.csproj" />
+  </ItemGroup>
+
+</Project>

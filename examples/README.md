@@ -4,8 +4,8 @@ This directory contains runnable example projects demonstrating common tasks wit
 
 ## Running Examples
 
-Each example is a standalone application (mostly console apps; **BoardViewer** is a web
-app). Run an example with:
+Each example is a standalone application (mostly console apps; **BoardViewer** and
+**Board3DViewer** are web apps). Run an example with:
 
 ```
 dotnet run --project examples/<ExampleName>
@@ -217,6 +217,17 @@ See [ExportBoardGltf/README.md](ExportBoardGltf/README.md).
 ```
 dotnet run --project examples/ExportBoardGltf                 # bundled sample board
 dotnet run --project examples/ExportBoardGltf -- MyBoard.PcbDoc
+```
+
+### Board3DViewer
+
+An interactive **3D** viewer as an **ASP.NET Blazor Server** app: pick a board and the server
+renders it to glTF and streams it to a three.js scene, with a per-feature layer-toggle panel.
+Pure .NET — no Node/npm/Python (three.js loads from a CDN client-side).
+See [Board3DViewer/README.md](Board3DViewer/README.md).
+
+```
+dotnet run --project examples/Board3DViewer   # then open the printed URL
 ```
 
 ## Test Data

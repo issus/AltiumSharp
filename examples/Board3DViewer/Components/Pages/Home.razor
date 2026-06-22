@@ -1,0 +1,123 @@
+@page "/"
+@rendermode InteractiveServer
+@inject IJSRuntime JS
+@inject BoardLibrary Library
+@implements IAsyncDisposable
+
+<div class="layout">
+    <aside class="panel">
+        <h1>AltiumSharp · glTF board</h1>
+
+        @if (Library.Names.Count == 0)
+        {
+            <p class="status">No bundled boards found (TestData/*.PcbDoc).</p>
+        }
+        else
+        {
+            <select @onchange="OnModelChanged" disabled="@_busy">
+                @foreach (var board in Library.Names)
+                {
+                    <option value="@board" selected="@(board == _selected)">@board</option>
+                }
+            </select>
+        }
+
+        <div class="status">@_status</div>
+
+        @if (_layers is { Length: > 0 })
+        {
+            @foreach (var group in _layers.GroupBy(GroupOf))
+            {
+                <div class="sec">@group.Key</div>
+                @foreach (var layer in group)
+                {
+                    var name = layer;
+                    <label class="row">
+                        <input type="checkbox" checked="@_visible.GetValueOrDefault(name, true)"
+                               @onchange="e => ToggleLayer(name, e.Value is true)" />
+                        <span>@name</span>
+                    </label>
+                }
+            }
+        }
+    </aside>
+
+    <canvas id="board-canvas" @ref="_canvas"></canvas>
+</div>
+
+<div class="hint">drag = rotate · scroll = zoom · right-drag = pan</div>
+
+@code {
+    private ElementReference _canvas;
+    private IJSObjectReference? _module;
+    private string _selected = "";
+    private string _status = "initialising…";
+    private string[]? _layers;
+    private bool _busy;
+    private readonly Dictionary<string, bool> _visible = new();
+
+    protected override void OnInitialized() => _selected = Library.Names.FirstOrDefault() ?? "";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender || Library.Names.Count == 0) return;
+        _module = await JS.InvokeAsync<IJSObjectReference>("import", "./board-viewer.js");
+        await _module.InvokeVoidAsync("init", _canvas);
+        await LoadAsync();
+    }
+
+    private async Task OnModelChanged(ChangeEventArgs e)
+    {
+        _selected = e.Value?.ToString() ?? _selected;
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        if (_module is null || string.IsNullOrEmpty(_selected)) return;
+        _busy = true;
+        _status = $"rendering {_selected} …";
+        _layers = null;
+        _visible.Clear();
+        StateHasChanged();
+
+        try
+        {
+            var names = await _module.InvokeAsync<string[]>(
+                "loadModel", $"/board.glb?name={Uri.EscapeDataString(_selected)}");
+            _layers = names;
+            foreach (var n in names) _visible[n] = true;
+            _status = $"loaded {_selected}";
+        }
+        catch (Exception ex)
+        {
+            _status = "error: " + ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task ToggleLayer(string name, bool visible)
+    {
+        _visible[name] = visible;
+        if (_module is not null) await _module.InvokeVoidAsync("setLayerVisible", name, visible);
+    }
+
+    // Groups feature nodes by their prefix ("Copper.1 GND" -> "Copper") for a tidier panel.
+    private static string GroupOf(string name)
+    {
+        var dot = name.IndexOf('.');
+        return dot > 0 ? name[..dot] : name;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_module is not null)
+        {
+            try { await _module.DisposeAsync(); } catch { /* circuit already gone */ }
+        }
+    }
+}
