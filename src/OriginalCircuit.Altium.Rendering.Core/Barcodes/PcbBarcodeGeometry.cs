@@ -55,6 +55,17 @@ internal static class PcbBarcodeGeometry
         var payload = !string.IsNullOrEmpty(text.ConvertedString) ? text.ConvertedString! : text.Text;
         if (string.IsNullOrEmpty(payload)) return null;
 
+        return text.BarCodeType switch
+        {
+            PcbBarCodeKind.DataMatrix or PcbBarCodeKind.QrCode => Build2D(text, payload!),
+            PcbBarCodeKind.Code128 or PcbBarCodeKind.Code39 => Build1D(text, payload!),
+            _ => null,
+        };
+    }
+
+    // The 2-D symbologies (Data Matrix, QR): a square grid of modules fitted into the box.
+    private static Layout? Build2D(PcbText text, string payload)
+    {
         bool[,]? grid = text.BarCodeType switch
         {
             PcbBarCodeKind.DataMatrix => DataMatrixEncoder.TryEncode(payload, out var dm) ? dm!.ToArray() : null,
@@ -127,6 +138,80 @@ internal static class PcbBarcodeGeometry
             for (int r = 0; r < rows; r++)
                 for (int c = 0; c < nCols; c++)
                     if (!grid[r, c]) foreground.Add(Cell(r, c));
+        }
+
+        return new Layout { Foreground = foreground, Inverted = inverted };
+    }
+
+    // The 1-D symbologies (Code 128, Code 39): a row of full-height vertical bars fitted into the box.
+    private static Layout? Build1D(PcbText text, string payload)
+    {
+        // Code 128 is implemented; Code 39 falls through to null (rendered as nothing) until needed.
+        bool[]? bars = text.BarCodeType == PcbBarCodeKind.Code128 && Code128Encoder.TryEncode(payload, out var c128)
+            ? c128
+            : null;
+        if (bars is null || bars.Length == 0) return null;
+        int n = bars.Length;
+
+        double boxW = BoxExtent(text.InvertedRectWidth, text.BarCodeFullWidth, n, text.BarCodeMinWidth, text.Height);
+        double boxH = BoxExtent(text.InvertedRectHeight, text.BarCodeFullHeight, n, text.BarCodeMinWidth, text.Height);
+        if (boxW <= 0 || boxH <= 0) return null;
+        double marginX = Math.Max(0, text.BarCodeXMargin.ToRaw());
+        double marginY = Math.Max(0, text.BarCodeYMargin.ToRaw());
+
+        // The bar field fits inside the box minus the quiet-zone margins; bars span its full height.
+        double fieldW = boxW - 2 * marginX, fieldH = boxH - 2 * marginY;
+        if (fieldW <= 0 || fieldH <= 0) { fieldW = boxW; fieldH = boxH; marginX = marginY = 0; }
+        double module = fieldW / n;
+        double fieldX = marginX, fieldY = marginY;
+        double fieldTop = fieldY + fieldH, fieldRight = fieldX + fieldW;
+
+        // Local frame: X right, Y up, origin at the box bottom-left (the text Location), pre-rotation.
+        double ox = text.Location.X.ToRaw();
+        double oy = text.Location.Y.ToRaw();
+        double rad = text.Rotation * Math.PI / 180.0;
+        double cos = Math.Cos(rad), sin = Math.Sin(rad);
+        int mirror = text.IsMirrored ? -1 : 1;
+
+        CoordPoint ToWorld(double lx, double ly)
+        {
+            double mx = mirror * lx;
+            return new CoordPoint(
+                Coord.FromRaw((int)Math.Round(ox + (mx * cos - ly * sin))),
+                Coord.FromRaw((int)Math.Round(oy + (mx * sin + ly * cos))));
+        }
+
+        CoordPoint[] Rect(double x0, double y0, double x1, double y1)
+            => new[] { ToWorld(x0, y0), ToWorld(x1, y0), ToWorld(x1, y1), ToWorld(x0, y1) };
+
+        // A bar (foreground) is `true`; merge each maximal run into one quad. The complement (spaces) plus the
+        // quiet-zone frame is what an INVERTED barcode prints — dark bars then read out of a light field.
+        bool inverted = text.BarCodeInverted;
+        var foreground = new List<CoordPoint[]>();
+
+        if (!inverted)
+        {
+            for (int i = 0; i < n;)
+            {
+                if (!bars[i]) { i++; continue; }
+                int j = i; while (j < n && bars[j]) j++;
+                foreground.Add(Rect(fieldX + i * module, fieldY, fieldX + j * module, fieldTop));
+                i = j;
+            }
+        }
+        else
+        {
+            foreground.Add(Rect(0, 0, boxW, fieldY));            // bottom margin strip (full width)
+            foreground.Add(Rect(0, fieldTop, boxW, boxH));       // top margin strip (full width)
+            foreground.Add(Rect(0, fieldY, fieldX, fieldTop));   // left margin strip
+            foreground.Add(Rect(fieldRight, fieldY, boxW, fieldTop)); // right margin strip
+            for (int i = 0; i < n;)
+            {
+                if (bars[i]) { i++; continue; }
+                int j = i; while (j < n && !bars[j]) j++;
+                foreground.Add(Rect(fieldX + i * module, fieldY, fieldX + j * module, fieldTop));
+                i = j;
+            }
         }
 
         return new Layout { Foreground = foreground, Inverted = inverted };
