@@ -25,17 +25,41 @@ internal sealed class GltfSceneBuilder
     private readonly Dictionary<int, int> _copperOrder = [];
 
     private double _cx, _cy;             // board centre (mm) subtracted from every point
-    private int _matSubstrate, _matCopper, _matMask, _matSilk, _matBarrel;
+    private int _matSubstrate, _matCopper, _matMask, _matSilk, _matBarrel, _matVcut;
     private List<IReadOnlyList<Vec2>> _boardHoles = []; // see-through board openings (cutouts / NPTH)
+    // Placed sub-board pad drill holes (panel-centred mm). A panel's laminate is one continuous piece, so
+    // each tiled sub-board's mounting/through holes must be cut from it here (the sub-board substrate itself
+    // is not rendered); the drill barrels are instanced separately.
+    private readonly List<IReadOnlyList<Vec2>> _placedBoardHoles = [];
     // Pad drill holes with their bounding box, for punching copper that runs over a barrel.
     private List<(IReadOnlyList<Vec2> Contour, double MinX, double MinY, double MaxX, double MaxY)> _drillBounds = [];
     // When set, feature meshes are collected here (for an embedded sub-board) instead of becoming
     // top-level nodes, so a panel can instance them at each array position.
     private List<(int Mesh, string Name, JsonObject Extras)>? _capture;
 
+    // The document currently being READ, and a transform that maps its coordinates into the panel
+    // (rotate about a reference, then translate) before centring. Used to gather a panel's placed
+    // sub-board outlines and milling geometry; the layer builders themselves read the panel (identity).
+    private PcbDocument _src;
+    private double _trRefX, _trRefY, _trCos = 1.0, _trSin, _trOx, _trOy;
+    // Routed slots (panel-centred mm): RouteToolPath/milling strokes that separate the array boards, cut
+    // clean through the laminate and leaving the rout's tabs joining the boards to the panel.
+    private readonly List<IReadOnlyList<Vec2>> _routs = [];
+    // Board cut-outs (panel-centred mm): regions flagged ISBOARDCUTOUT — slots/windows fully inside a board.
+    private readonly List<IReadOnlyList<Vec2>> _cutouts = [];
+    // Placed sub-board outlines (panel-centred mm) — used by the solder-mask FRAME to leave each board's
+    // mask to its own instanced layer, and to recognise (and discard) a rout boolean that spuriously rings a
+    // whole board. The substrate does NOT subtract these: the boards are part of the same continuous
+    // laminate, carved only by the routed slots, not by their rectangular outline.
+    private readonly List<IReadOnlyList<Vec2>> _boardOutlines = [];
+    // V-cut (scoring) lines (panel-centred mm): partial-depth grooves that do NOT cut through, so the
+    // laminate stays continuous across them. Rendered as surface lines, never subtracted from the board.
+    private readonly List<(Vec2 A, Vec2 B, double W)> _vcuts = [];
+
     public GltfSceneBuilder(PcbDocument doc, GltfRenderSettings settings, GltfBuilder? sharedBuilder = null)
     {
         _doc = doc;
+        _src = doc;
         _settings = settings;
         _builder = sharedBuilder ?? new GltfBuilder("OriginalCircuit.Altium.Rendering.Gltf");
         _stack = doc.GetStackup() ?? PcbStackup.CreateDefault(settings.FallbackBoardThicknessMm, InferCopperCount(doc));
@@ -53,24 +77,25 @@ internal sealed class GltfSceneBuilder
 
         AddMaterials();
 
-        // A panel is just a frame holding an array of sub-boards: it has no laminate of its own, and its
-        // outline-derived solder mask / silkscreen would sheet over the whole array (covering the boards).
-        // So when compositing, render ONLY the embedded boards — each carries its own full stack.
+        // A panel is one manufactured PCB: a single continuous laminate with the array boards routed out of
+        // it (the slots that separate them, joined by tabs) and scored by V-cut lines. The substrate and
+        // V-cuts are built once at panel scope; the panel's own copper/silk/tooling plus each sub-board's
+        // copper/mask/silk/drills/components are instanced onto it (the sub-board's stack is tessellated
+        // once and placed at every array cell). Instancing the thin layers keeps every triangulated polygon
+        // simple — one merged 9-board mask polygon (hundreds of holes) overruns the ear-clip's robustness —
+        // while the laminate, whose only holes are the routed slots, stays a single clean piece.
         bool composites = _settings.EmbeddedBoardResolver is not null && _doc.EmbeddedBoards.Count > 0;
-        if (composites)
-        {
-            BuildEmbeddedBoards();
-        }
-        else
-        {
-            PrepareBoardHoles(bounds);
-            if (_settings.IncludeSubstrate) BuildSubstrate(bounds);
-            if (_settings.IncludeCopper) BuildCopperLayers();
-            if (_settings.IncludeSolderMask) BuildSolderMask(bounds);
-            if (_settings.IncludeSilkscreen) BuildSilkscreen();
-            if (_settings.IncludeDrills) BuildDrills();
-            if (_settings.IncludeComponents) BuildComponents();
-        }
+        if (composites) CollectFramePlacements(); else CollectOwnCuts();
+
+        PrepareBoardHoles(bounds);
+        if (_settings.IncludeSubstrate) BuildSubstrate(bounds);
+        if (_settings.IncludeSubstrate) BuildVCuts();
+        if (_settings.IncludeCopper) BuildCopperLayers();
+        if (_settings.IncludeSolderMask) BuildSolderMask(bounds);
+        if (_settings.IncludeSilkscreen) BuildSilkscreen();
+        if (_settings.IncludeDrills) BuildDrills();
+        if (_settings.IncludeComponents) BuildComponents();
+        if (composites) BuildEmbeddedBoards();
 
         int root = _builder.AddNode(
             name: "Board",
@@ -82,13 +107,13 @@ internal sealed class GltfSceneBuilder
 
     // The document exposes primitives through interfaces; the instances are the concrete Altium types,
     // so narrow to them for the concrete-only geometry/shape/layer properties this renderer needs.
-    private IEnumerable<PcbTrack> Tracks => _doc.Tracks.OfType<PcbTrack>();
-    private IEnumerable<PcbArc> Arcs => _doc.Arcs.OfType<PcbArc>();
-    private IEnumerable<PcbFill> Fills => _doc.Fills.OfType<PcbFill>();
-    private IEnumerable<PcbRegion> Regions => _doc.Regions.OfType<PcbRegion>();
-    private IEnumerable<PcbPad> Pads => _doc.Pads.OfType<PcbPad>();
-    private IEnumerable<PcbVia> Vias => _doc.Vias.OfType<PcbVia>();
-    private IEnumerable<PcbText> Texts => _doc.Texts.OfType<PcbText>();
+    private IEnumerable<PcbTrack> Tracks => _src.Tracks.OfType<PcbTrack>();
+    private IEnumerable<PcbArc> Arcs => _src.Arcs.OfType<PcbArc>();
+    private IEnumerable<PcbFill> Fills => _src.Fills.OfType<PcbFill>();
+    private IEnumerable<PcbRegion> Regions => _src.Regions.OfType<PcbRegion>();
+    private IEnumerable<PcbPad> Pads => _src.Pads.OfType<PcbPad>();
+    private IEnumerable<PcbVia> Vias => _src.Vias.OfType<PcbVia>();
+    private IEnumerable<PcbText> Texts => _src.Texts.OfType<PcbText>();
 
     private void AddMaterials()
     {
@@ -97,6 +122,7 @@ internal sealed class GltfSceneBuilder
         _matMask = _builder.AddMaterial(GltfPalette.SolderMask);
         _matSilk = _builder.AddMaterial(GltfPalette.Silkscreen);
         _matBarrel = _builder.AddMaterial(GltfPalette.Copper(_settings.CopperFinish, doubleSided: true));
+        _matVcut = _builder.AddMaterial(GltfPalette.VCut);
     }
 
     // ── Substrate ───────────────────────────────────────────────────────────────────────────────
@@ -109,9 +135,78 @@ internal sealed class GltfSceneBuilder
         double z0 = diel.Count > 0 ? diel.Min(d => d.Z0Mm) : 0;
         double z1 = diel.Count > 0 ? diel.Max(d => d.Z1Mm) : _stack.TotalThicknessMm;
 
+        // The laminate is the outline minus the drilled holes, the routed slots and the board cut-outs. For
+        // a panel the slots are every placed sub-board's rout (collected in panel space): the boards are
+        // carved out of one continuous laminate and joined by the rout's tabs — exactly as fabricated. The
+        // sub-board outlines are NOT subtracted (the boards are not separate pieces); V-cut scoring is not
+        // subtracted either (it does not cut through).
+        //
+        // Two passes: first resolve the rout strokes into clean, non-overlapping slot contours, discarding
+        // any that spuriously ring a whole board (a board ringed by its rout but held by tabs must stay
+        // solid — the union of the overlapping strokes can otherwise wind a closed loop around it). Then
+        // subtract those slots together with the drills and cut-outs in one robust difference.
+        var slots = ResolveRoutSlots(ring);
+        var openings = new List<IReadOnlyList<Vec2>>(slots);
+        openings.AddRange(_cutouts);
+        openings.AddRange(_boardHoles);
+        openings.AddRange(_placedBoardHoles); // tiled sub-board mounting / through holes
+
         var mesh = new MeshBuffer();
-        mesh.AddPrism(ring, _boardHoles.Count > 0 ? _boardHoles : null, z0, z1);
+        if (openings.Count == 0)
+            mesh.AddPrism(ring, null, z0, z1);
+        else
+            foreach (var (outer, holes) in SkiaPolyTools.Difference(ring, openings))
+                mesh.AddPrism(outer, holes.Count > 0 ? holes.ConvertAll(h => (IReadOnlyList<Vec2>)h) : null, z0, z1);
         Emit(mesh, _matSubstrate, "Substrate", "substrate", null);
+    }
+
+    // Resolves the overlapping rout strokes into clean, non-overlapping slot contours by subtracting them
+    // from the board outline and keeping the resulting holes — except any hole that encloses a placed
+    // board's centre. The rout rings each board with only thin tabs joining it; the boolean union of those
+    // strokes can wind a closed loop around a board, which would cut the whole board out. A real slot never
+    // contains a board centre, so dropping such holes keeps the tabbed boards solid. (Plain boards have no
+    // rout, so this returns empty and the laminate is just its outline.)
+    private List<IReadOnlyList<Vec2>> ResolveRoutSlots(IReadOnlyList<Vec2> ring)
+    {
+        if (_routs.Count == 0) return [];
+
+        var centres = _boardOutlines.ConvertAll(Centroid);
+        var slots = new List<IReadOnlyList<Vec2>>();
+        foreach (var (_, holes) in SkiaPolyTools.Difference(ring, _routs))
+            foreach (var h in holes)
+                if (!centres.Exists(c => PointInPolygon(h, c)))
+                    slots.Add(h);
+        return slots;
+    }
+
+    private static Vec2 Centroid(IReadOnlyList<Vec2> poly)
+    {
+        double a = 0, cx = 0, cy = 0;
+        for (int i = 0, j = poly.Count - 1; i < poly.Count; j = i++)
+        {
+            double cross = (poly[j].X * poly[i].Y) - (poly[i].X * poly[j].Y);
+            a += cross;
+            cx += (poly[j].X + poly[i].X) * cross;
+            cy += (poly[j].Y + poly[i].Y) * cross;
+        }
+        if (Math.Abs(a) < 1e-9)
+        {
+            // Degenerate ring: fall back to the vertex average.
+            double sx = 0, sy = 0;
+            foreach (var p in poly) { sx += p.X; sy += p.Y; }
+            return new Vec2(sx / poly.Count, sy / poly.Count);
+        }
+        return new Vec2(cx / (3 * a), cy / (3 * a));
+    }
+
+    private static bool PointInPolygon(IReadOnlyList<Vec2> poly, Vec2 p)
+    {
+        bool inside = false;
+        for (int i = 0, j = poly.Count - 1; i < poly.Count; j = i++)
+            if (((poly[i].Y > p.Y) != (poly[j].Y > p.Y)) &&
+                (p.X < ((poly[j].X - poly[i].X) * (p.Y - poly[i].Y) / (poly[j].Y - poly[i].Y)) + poly[i].X))
+                inside = !inside;
+        return inside;
     }
 
     // ── Copper ──────────────────────────────────────────────────────────────────────────────────
@@ -217,6 +312,10 @@ internal sealed class GltfSceneBuilder
     {
         var openings = CollectMaskOpenings(copperLayer, solderLayer);
         openings.AddRange(_boardHoles); // mask is open over drilled holes too
+        openings.AddRange(_placedBoardHoles); // and over tiled sub-board mounting holes
+        openings.AddRange(_routs);      // and removed where the board is routed away
+        openings.AddRange(_cutouts);    // and over board cut-outs
+        openings.AddRange(_boardOutlines); // and (panel frame) over each routed-out sub-board
         if (openings.Count == 0) return; // nothing to mask over (e.g. no copper on this side)
 
         var groups = SkiaPolyTools.Difference(ring, openings);
@@ -304,7 +403,7 @@ internal sealed class GltfSceneBuilder
     // rules: a via prefers a via-scoped rule; a pad uses the most general non-via rule.
     private double ResolveMaskRuleExpansion(bool forVia)
     {
-        var rules = _doc.Rules.OfType<PcbSolderMaskExpansionRule>().Where(r => r.Enabled).ToList();
+        var rules = _src.Rules.OfType<PcbSolderMaskExpansionRule>().Where(r => r.Enabled).ToList();
         if (rules.Count == 0) return 0.05; // a sensible default when the board carries no rule
 
         static bool MentionsVia(PcbSolderMaskExpansionRule r) =>
@@ -370,8 +469,8 @@ internal sealed class GltfSceneBuilder
     // (Altium's NameOn/CommentOn); free text always shows.
     private bool IsTextVisible(PcbText text)
     {
-        if (text.ComponentIndex < 0 || text.ComponentIndex >= _doc.Components.Count) return true;
-        if (_doc.Components[text.ComponentIndex] is not PcbComponent owner) return true;
+        if (text.ComponentIndex < 0 || text.ComponentIndex >= _src.Components.Count) return true;
+        if (_src.Components[text.ComponentIndex] is not PcbComponent owner) return true;
         if (text.IsComment && !owner.CommentOn) return false;
         if (text.IsDesignator && !owner.NameOn) return false;
         return true;
@@ -496,7 +595,9 @@ internal sealed class GltfSceneBuilder
             }
         }
 
-        foreach (var (outer, holes) in SkiaPolyTools.Difference(rect, knockouts))
+        // Preserve input winding: each glyph contributes its outer (CCW) and counters/bowls (CW), and the
+        // opposite winding is what keeps a letter's counter filled (the box shows through only the strokes).
+        foreach (var (outer, holes) in SkiaPolyTools.Difference(rect, knockouts, normalizeWinding: false))
             mesh.AddFlatPolygon(outer, holes.Count > 0 ? holes.ConvertAll(x => (IReadOnlyList<Vec2>)x) : null, z, faceUp);
     }
 
@@ -586,7 +687,11 @@ internal sealed class GltfSceneBuilder
     private void PrepareBoardHoles((double minX, double minY, double maxX, double maxY) bounds)
     {
         _boardHoles = CollectBoardHoles(OutlineRing(bounds));
-        _drillBounds = _boardHoles.ConvertAll(h =>
+        // Copper on the panel's own layers must also avoid the tiled sub-board barrels, so the placed holes
+        // are included in the drill-bounds used by AddCopperSheet to punch copper that runs over a drill.
+        var drilled = new List<IReadOnlyList<Vec2>>(_boardHoles);
+        drilled.AddRange(_placedBoardHoles);
+        _drillBounds = drilled.ConvertAll(h =>
         {
             double minX = double.MaxValue, minY = double.MaxValue, maxX = double.MinValue, maxY = double.MinValue;
             foreach (var p in h) { if (p.X < minX) minX = p.X; if (p.X > maxX) maxX = p.X; if (p.Y < minY) minY = p.Y; if (p.Y > maxY) maxY = p.Y; }
@@ -594,12 +699,191 @@ internal sealed class GltfSceneBuilder
         });
     }
 
+    // ── Milled cut-outs ─────────────────────────────────────────────────────────────────────────
+    // The board's own milled cut-outs: RouteToolPath/milling geometry and board-cutout regions, in
+    // panel-centred mm. For a plain board (or an embedded sub-board rendered standalone) this is its own
+    // routing/cutouts; a panel collects each placed sub-board's instead (CollectFramePlacements).
+    private void CollectOwnCuts()
+    {
+        _routs.Clear();
+        _cutouts.Clear();
+        _boardOutlines.Clear();
+        _vcuts.Clear();
+        _placedBoardHoles.Clear();
+        CollectBoardCutouts(_cutouts); // only INTERNAL cut-outs — the surrounding rout is the frame's concern
+        CollectVCuts(_vcuts);
+    }
+
+    // For a panel: each placed sub-board's outline and milled channel, in panel-centred mm, so the frame
+    // substrate/mask route them out (the boards are instanced separately). The boards-in-a-frame shape
+    // is the rout's tabs, which keep the boards joined to the panel.
+    private void CollectFramePlacements()
+    {
+        _routs.Clear();
+        _cutouts.Clear();
+        _boardOutlines.Clear();
+        _vcuts.Clear();
+        _placedBoardHoles.Clear();
+        // The panel's own routed slots / cut-outs / V-cut scoring (in panel space, identity transform).
+        CollectMilling(_routs);
+        CollectBoardCutouts(_cutouts);
+        CollectVCuts(_vcuts);
+
+        var resolve = _settings.EmbeddedBoardResolver;
+        if (resolve is null) { ResetSource(); return; }
+
+        foreach (var emb in _doc.EmbeddedBoards)
+        {
+            if (string.IsNullOrEmpty(emb.DocumentPath)) continue;
+            PcbDocument? sub;
+            try { sub = resolve(emb.DocumentPath); } catch { sub = null; }
+            if (sub is null) continue;
+            var outline = sub.GetBoardOutline();
+            if (outline is not { Count: >= 3 }) continue;
+
+            double refX = double.MaxValue, refY = double.MaxValue;
+            foreach (var p in outline) { refX = Math.Min(refX, p.X.ToMm()); refY = Math.Min(refY, p.Y.ToMm()); }
+            double a = emb.Rotation * Math.PI / 180.0;
+            double cos = Math.Cos(a), sin = Math.Sin(a);
+            int rows = Math.Max(1, emb.RowCount), cols = Math.Max(1, emb.ColCount);
+            for (int r = 0; r < rows; r++)
+                for (int c = 0; c < cols; c++)
+                {
+                    double ox = emb.X.ToMm() + (emb.ColSpacing.ToMm() * c);
+                    double oy = emb.Y.ToMm() + (emb.RowSpacing.ToMm() * r);
+                    SetSource(sub, refX, refY, cos, sin, ox, oy);
+                    var mappedOutline = outline.Select(P).ToList();
+                    _boardOutlines.Add(mappedOutline);
+                    CollectMilling(_routs);     // the rout that carves this board out of the laminate
+                    CollectBoardCutouts(_cutouts); // and any internal slots/holes in the sub-board
+                    CollectVCuts(_vcuts);       // and the sub-board's own scoring, if any
+                    _placedBoardHoles.AddRange(CollectBoardHoles(mappedOutline)); // its drilled/mounting holes
+                }
+        }
+        ResetSource();
+    }
+
+    // Milling / routing geometry (RouteToolPath etc.) on the current source — the rout that separates the
+    // array boards. Routed clean through the laminate at its real tool width, so the slots read as
+    // see-through gaps with the rout's tabs left joining the boards to the panel.
+    private void CollectMilling(List<IReadOnlyList<Vec2>> cuts)
+    {
+        var milling = MillingLayers(_src);
+        if (milling.Count == 0) return;
+        foreach (var t in Tracks)
+            if (milling.Contains(t.Layer) && t.Width.ToMm() > 0)
+                cuts.Add(Shapes.Capsule(P(t.Start), P(t.End), t.Width.ToMm(), Caps(t.Width.ToMm() / 2)));
+        foreach (var a in Arcs)
+            if (milling.Contains(a.Layer) && a.Radius.ToMm() > 0 && a.Width.ToMm() > 0)
+            {
+                double r = a.Radius.ToMm();
+                double sweep = a.EndAngle - a.StartAngle;
+                if (sweep <= 0) sweep += 360;
+                int segs = Math.Max(3, (int)Math.Ceiling(SegArc(r) * sweep / 360.0));
+                cuts.Add(Shapes.ArcBand(P(a.Center), r, a.StartAngle, a.EndAngle, a.Width.ToMm(), segs));
+            }
+        foreach (var f in Fills)
+            if (milling.Contains(f.Layer))
+                cuts.Add(FillRect(f));
+        foreach (var r in Regions)
+            if (milling.Contains(r.Layer) && r.Outline.Count >= 3)
+                cuts.Add(Ring(r.Outline));
+    }
+
+    // V-cut (scoring) lines on the current source: tracks on a mechanical layer whose kind is VCut. These
+    // are partial-depth grooves — the laminate is continuous across them — so they are collected as line
+    // segments to draw on the surface, never subtracted from the board.
+    private void CollectVCuts(List<(Vec2 A, Vec2 B, double W)> vcuts)
+    {
+        var layers = VCutLayers(_src);
+        if (layers.Count == 0) return;
+        foreach (var t in Tracks)
+            if (layers.Contains(t.Layer))
+                vcuts.Add((P(t.Start), P(t.End), Math.Max(0.4, t.Width.ToMm())));
+    }
+
+    // Internal board cut-outs (regions flagged ISBOARDCUTOUT) on the current source — slots/holes within
+    // the board outline. These belong to the board itself (whether plain or tiled in a panel).
+    private void CollectBoardCutouts(List<IReadOnlyList<Vec2>> cuts)
+    {
+        foreach (var r in Regions)
+            if (r.IsBoardCutout == true && r.Outline.Count >= 3)
+                cuts.Add(Ring(r.Outline));
+    }
+
+    // Mechanical layer ids designated for milling/routing — Board6 "LAYER{id}MECHKIND = RouteToolPath"
+    // (or a Rout/Mill kind); geometry on them cuts through the board. Mirrors PcbRealisticRenderer.
+    private static HashSet<int> MillingLayers(PcbDocument doc)
+    {
+        var layers = new HashSet<int>();
+        if (doc.BoardParameters is not { } bp) return layers;
+        foreach (var (key, value) in bp)
+        {
+            if (!key.EndsWith("MECHKIND", StringComparison.OrdinalIgnoreCase)) continue;
+            if (!(value.Contains("Rout", StringComparison.OrdinalIgnoreCase) ||
+                  value.Contains("Mill", StringComparison.OrdinalIgnoreCase))) continue;
+            if (!key.StartsWith("LAYER", StringComparison.OrdinalIgnoreCase)) continue;
+            var mid = key.Substring(5, key.Length - 5 - "MECHKIND".Length);
+            if (int.TryParse(mid, out var id)) layers.Add(id);
+        }
+        return layers;
+    }
+
+    // Mechanical layer ids designated for V-cut scoring — Board6 "LAYER{id}MECHKIND = VCut".
+    private static HashSet<int> VCutLayers(PcbDocument doc)
+    {
+        var layers = new HashSet<int>();
+        if (doc.BoardParameters is not { } bp) return layers;
+        foreach (var (key, value) in bp)
+        {
+            if (!key.EndsWith("MECHKIND", StringComparison.OrdinalIgnoreCase)) continue;
+            if (!value.Contains("VCut", StringComparison.OrdinalIgnoreCase) &&
+                !value.Contains("V-Cut", StringComparison.OrdinalIgnoreCase)) continue;
+            if (!key.StartsWith("LAYER", StringComparison.OrdinalIgnoreCase)) continue;
+            var mid = key.Substring(5, key.Length - 5 - "MECHKIND".Length);
+            if (int.TryParse(mid, out var id)) layers.Add(id);
+        }
+        return layers;
+    }
+
+    // Draws the V-cut scoring as thin dark grooves on the laminate's top and bottom faces. The cuts do not
+    // pierce the board, so they are surface lines clipped to the board outline (a V-cut runs panel
+    // edge-to-edge; clipping keeps it off the routed slots and outside the board).
+    private void BuildVCuts()
+    {
+        if (_vcuts.Count == 0) return;
+        var ring = OutlineRing(ComputeBoundsMm());
+        if (ring.Count < 3) return;
+
+        var diel = _stack.Layers.Where(l => l.Kind == PcbStackupLayerKind.Dielectric).ToList();
+        double zTop = (diel.Count > 0 ? diel.Max(d => d.Z1Mm) : _stack.TotalThicknessMm) + 0.005;
+        double zBot = (diel.Count > 0 ? diel.Min(d => d.Z0Mm) : 0) - 0.005;
+
+        var mesh = new MeshBuffer();
+        foreach (var (a, b, w) in _vcuts)
+        {
+            var strip = Shapes.Capsule(a, b, w, 4);
+            // Clip the groove to the laminate (it runs panel edge-to-edge) and drop the parts that cross an
+            // open routed slot or cut-out (no material there to score).
+            var openSlots = new List<IReadOnlyList<Vec2>>(_routs);
+            openSlots.AddRange(_cutouts);
+            foreach (var (clipped, _) in SkiaPolyTools.Intersect(strip, ring))
+                foreach (var (outer, holes) in SkiaPolyTools.Difference(clipped, openSlots))
+                {
+                    var h = holes.Count > 0 ? holes.ConvertAll(x => (IReadOnlyList<Vec2>)x) : null;
+                    mesh.AddFlatPolygon(outer, h, zTop, faceUp: true);
+                    mesh.AddFlatPolygon(outer, h, zBot, faceUp: false);
+                }
+        }
+        Emit(mesh, _matVcut, "VCut", "vcut", null);
+    }
+
     // ── Embedded boards (panel arrays) ──────────────────────────────────────────────────────────
     // Each EmbeddedBoards6 object is a sub-board (resolved through the settings' resolver) tiled in a
     // rows×cols grid. Its outline-min corner aligns to the array origin, with one step of ColSpacing /
-    // RowSpacing between instances. The sub-board's board features are tessellated ONCE (centred on
-    // that corner) into shared meshes; each grid cell is then a lightweight node instance referencing
-    // them under a transl(/rotate) transform — so a 3×3 panel costs one board's worth of geometry.
+    // RowSpacing between instances. The sub-board's full stack is tessellated ONCE (centred on that
+    // corner) into shared meshes; each grid cell is then a lightweight node instance referencing them
+    // under a transl(/rotate) transform — so a populated 3×3 panel costs one board's worth of geometry.
     private void BuildEmbeddedBoards()
     {
         var resolve = _settings.EmbeddedBoardResolver;
@@ -650,11 +934,13 @@ internal sealed class GltfSceneBuilder
         _cy = centreY;
         _capture = [];
 
+        CollectOwnCuts(); // the sub-board's internal cut-outs (its surrounding rout is outside its outline)
         var bounds = ComputeBoundsMm();
         AddMaterials();
         PrepareBoardHoles(bounds);
 
-        if (_settings.IncludeSubstrate) BuildSubstrate(bounds);
+        // No substrate here: a panelised sub-board is part of the panel's one continuous laminate, which is
+        // built once at panel scope. The sub-board contributes only its thin layers and components.
         if (_settings.IncludeCopper) BuildCopperLayers();
         if (_settings.IncludeSolderMask) BuildSolderMask(bounds);
         if (_settings.IncludeSilkscreen) BuildSilkscreen();
@@ -706,7 +992,25 @@ internal sealed class GltfSceneBuilder
         return extras;
     }
 
-    private Vec2 P(CoordPoint p) => new(p.X.ToMm() - _cx, p.Y.ToMm() - _cy);
+    private Vec2 P(CoordPoint p)
+    {
+        double px = p.X.ToMm() - _trRefX, py = p.Y.ToMm() - _trRefY;
+        double mx = _trOx + (_trCos * px) - (_trSin * py);
+        double my = _trOy + (_trSin * px) + (_trCos * py);
+        return new(mx - _cx, my - _cy);
+    }
+
+    // Activates a placed sub-board source: the accessors read s.Doc, and P() maps its coordinates into
+    // the panel (rotate about the outline-min reference, then translate to the array cell), then centres.
+    private void SetSource(PcbDocument doc, double refX, double refY, double cos, double sin, double ox, double oy)
+    {
+        _src = doc; _trRefX = refX; _trRefY = refY; _trCos = cos; _trSin = sin; _trOx = ox; _trOy = oy;
+    }
+
+    private void ResetSource()
+    {
+        _src = _doc; _trRefX = 0; _trRefY = 0; _trCos = 1; _trSin = 0; _trOx = 0; _trOy = 0;
+    }
 
     private List<Vec2> Ring(IReadOnlyList<CoordPoint> pts)
     {

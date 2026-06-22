@@ -44,6 +44,16 @@ internal static class GltfPalette
         DoubleSided = true,
     };
 
+    /// <summary>V-cut score line — a dark groove cut into the laminate surface (does not cut through).</summary>
+    public static MaterialSpec VCut { get; } = new()
+    {
+        Name = "VCut",
+        BaseColorFactor = Rgba(0.20, 0.16, 0.10),
+        MetallicFactor = 0.0,
+        RoughnessFactor = 0.9,
+        DoubleSided = true,
+    };
+
     /// <summary>Solder paste stencil — dull metallic grey.</summary>
     public static MaterialSpec Paste { get; } = new()
     {

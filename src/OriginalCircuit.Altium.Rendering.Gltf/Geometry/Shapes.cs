@@ -10,7 +10,7 @@ internal static class Shapes
     /// <summary>Number of segments to approximate a full circle of <paramref name="radiusMm"/> within a chord tolerance.</summary>
     public static int SegmentCount(double radiusMm, double chordToleranceMm, int min = 16, int max = 512)
     {
-        if (radiusMm <= 0) return min;
+        if (radiusMm <= 1e-4) return min; // degenerate (sub-0.1µm) radius — a near-point arc/circle
         double t = Math.Clamp(chordToleranceMm, 1e-4, radiusMm);
         double step = 2.0 * Math.Acos(Math.Max(0.0, 1.0 - (t / radiusMm)));
         if (step <= 1e-9) return max;

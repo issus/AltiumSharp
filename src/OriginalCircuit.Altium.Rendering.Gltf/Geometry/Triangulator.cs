@@ -30,6 +30,15 @@ internal static class Triangulator
         var triangles = new List<int>();
         if (pts.Count < 3) return triangles;
 
+        // Normalise to a local origin. The ear-clip's area / point-in-triangle tests subtract like-magnitude
+        // terms, so a polygon far from the origin (e.g. an outer board on a big panel, ~tens of mm off
+        // centre) loses precision and mis-triangulates — leaving a spanning triangle or a dropped region for
+        // that one instance. Shifting to the polygon's min corner restores precision; the returned indices
+        // are unchanged, so the caller still resolves them against the original (un-shifted) points.
+        double ox = double.MaxValue, oy = double.MaxValue;
+        foreach (var p in pts) { if (p.X < ox) ox = p.X; if (p.Y < oy) oy = p.Y; }
+        for (int i = 0; i < pts.Count; i++) pts[i] = new Vec2(pts[i].X - ox, pts[i].Y - oy);
+
         int outerLen = outer.Count;
         Node? outerNode = BuildLinkedList(pts, 0, outerLen, clockwise: true);
         if (outerNode is null || outerNode.Next == outerNode.Prev) return triangles;
