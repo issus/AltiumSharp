@@ -17,6 +17,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- SkiaSharp is used only to obtain TrueType/OpenType glyph outlines, which are then tessellated
+         into flat 3D geometry for silkscreen text. (Same native dependency the Raster package uses.) -->
+    <PackageReference Include="SkiaSharp" Version="3.116.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\OriginalCircuit.Altium.Rendering.Core\OriginalCircuit.Altium.Rendering.Core.csproj" />
     <!-- CoordPoint/Coord live in Eda.Abstractions, which the core packages reference with
          PrivateAssets="all" (not flowed transitively). This package uses those types directly, so

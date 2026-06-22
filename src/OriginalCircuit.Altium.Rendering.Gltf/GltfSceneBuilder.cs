@@ -2,6 +2,7 @@ using System.Text.Json.Nodes;
 using OriginalCircuit.Altium.Models.Pcb;
 using OriginalCircuit.Altium.Rendering.Gltf.Geometry;
 using OriginalCircuit.Eda.Primitives;
+using PcbTextKind = OriginalCircuit.Eda.Enums.PcbTextKind;
 using OriginalCircuit.Mech.GLTF;
 using OriginalCircuit.Mech.GLTF.Step;
 
@@ -248,7 +249,7 @@ internal sealed class GltfSceneBuilder
                 mesh.AddSheet(FillRect(f), null, z);
         foreach (var text in Texts)
             if (text.Layer == layerId && !string.IsNullOrEmpty(text.Text) && IsTextVisible(text))
-                AddTextStrokes(mesh, text, z, faceUp: layerId != 34);
+                AddText(mesh, text, z, faceUp: layerId != 34);
         Emit(mesh, _matSilk, name, "silkscreen", layerId);
     }
 
@@ -263,12 +264,65 @@ internal sealed class GltfSceneBuilder
         return true;
     }
 
-    // Builds the stroke geometry for a PCB text using Altium's stroke font: normalized glyph segments
-    // (height 1, baseline-left) scaled to the text height, rotated, mirrored, and anchored at the text
-    // location, with each stroke drawn as a thin capsule. Barcodes and TrueType outlines are not modelled.
-    private void AddTextStrokes(MeshBuffer mesh, PcbText text, double z, bool faceUp)
+    // Dispatches a PCB text to the right geometry path: TrueType/OpenType glyph outlines (named system
+    // fonts) or Altium's built-in stroke font. Barcodes are not modelled as silk geometry here.
+    private void AddText(MeshBuffer mesh, PcbText text, double z, bool faceUp)
     {
         if (text.BarCodeKind != 0) return;
+        if (text.IsTrueType || text.TextKind == PcbTextKind.TrueType)
+            AddTrueTypeText(mesh, text, z, faceUp);
+        else
+            AddStrokeText(mesh, text, z, faceUp);
+    }
+
+    // Renders TrueType text as filled glyph geometry (its real font shapes) at the silk plane.
+    private void AddTrueTypeText(MeshBuffer mesh, PcbText text, double z, bool faceUp)
+    {
+        double h = text.Height.ToMm();
+        if (h <= 0) return;
+        var lines = text.Text.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n');
+        int n = lines.Length;
+        double lineH = h * 1.2, cap = 0.72 * h;
+
+        string justTt = text.Justification.ToString();
+        double radTt = text.Rotation * Math.PI / 180.0;
+        double cosTt = Math.Cos(radTt), sinTt = Math.Sin(radTt);
+        var locTt = P(text.Location);
+
+        double offY0 = justTt.Contains("Top") ? -cap : justTt.Contains("Middle") ? -cap / 2.0 : 0.0;
+        double blockShift = justTt.Contains("Top") ? 0.0 : justTt.Contains("Middle") ? (n - 1) / 2.0 * lineH : (n - 1) * lineH;
+
+        for (int li = 0; li < n; li++)
+        {
+            var glyphs = GltfTrueTypeText.Layout(lines[li], text.FontName, text.FontBold, text.FontItalic, h, out double advance);
+            if (glyphs.Count == 0) continue;
+
+            double offX = justTt.Contains("Right") ? -advance : justTt.Contains("Left") ? 0.0 : -advance / 2.0;
+            double baselineY = offY0 - (li * lineH) + blockShift;
+
+            Vec2 Map(Vec2 g)
+            {
+                double gx = g.X + offX, gy = g.Y + baselineY;
+                if (text.IsMirrored) gx = -gx;
+                return new Vec2(locTt.X + (gx * cosTt) - (gy * sinTt), locTt.Y + (gx * sinTt) + (gy * cosTt));
+            }
+
+            foreach (var glyph in glyphs)
+            {
+                var outer = glyph.Outer.ConvertAll(Map);
+                List<IReadOnlyList<Vec2>>? holes = glyph.Holes.Count > 0
+                    ? glyph.Holes.ConvertAll(hh => (IReadOnlyList<Vec2>)hh.ConvertAll(Map))
+                    : null;
+                mesh.AddFlatPolygon(outer, holes, z, faceUp);
+            }
+        }
+    }
+
+    // Builds the stroke geometry for a PCB text using Altium's stroke font: normalized glyph segments
+    // (height 1, baseline-left) scaled to the text height, rotated, mirrored, and anchored at the text
+    // location, with each stroke drawn as a thin single-sided rectangle.
+    private void AddStrokeText(MeshBuffer mesh, PcbText text, double z, bool faceUp)
+    {
         double h = text.Height.ToMm();
         if (h <= 0) return;
         double sw = text.StrokeWidth.ToMm();
