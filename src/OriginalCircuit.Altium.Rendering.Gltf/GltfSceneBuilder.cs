@@ -230,6 +230,17 @@ internal sealed class GltfSceneBuilder
             if (r.Layer == solderLayer && r.Outline.Count >= 3)
                 openings.Add(Ring(r.Outline));
 
+        // A 2-D barcode (Data Matrix / QR) on the solder-mask layer removes mask over its foreground,
+        // revealing the copper/finish beneath (an inverted symbol leaves the dark modules masked).
+        foreach (var t in Texts)
+            if (t.Layer == solderLayer && t.TextKind == PcbTextKind.BarCode)
+            {
+                var barcode = PcbBarcodeGeometry.TryBuild(t);
+                if (barcode is not null)
+                    foreach (var quad in barcode.Foreground)
+                        openings.Add(Array.ConvertAll(quad, P));
+            }
+
         return openings;
     }
 
@@ -319,15 +330,30 @@ internal sealed class GltfSceneBuilder
         return true;
     }
 
-    // Dispatches a PCB text to the right geometry path: TrueType/OpenType glyph outlines (named system
-    // fonts) or Altium's built-in stroke font. Barcodes are not modelled as silk geometry here.
+    // Dispatches a PCB text to the right geometry path. A text is a 2-D barcode only when its
+    // TextKind is BarCode (the BarCodeKind byte merely picks the symbology and is meaningless for
+    // plain text); otherwise it is inverted (negative) text, stroke-font text, or TrueType text.
     private void AddText(MeshBuffer mesh, PcbText text, double z, bool faceUp)
     {
-        if (text.BarCodeKind != 0) return;
-        if (text.IsTrueType || text.TextKind == PcbTextKind.TrueType)
-            AddTrueTypeText(mesh, text, z, faceUp);
-        else
+        if (text.TextKind == PcbTextKind.BarCode)
+            AddBarcode(mesh, text, z, faceUp);
+        else if (text.UseInvertedRectangle && text.InvertedRectWidth > Coord.Zero && text.InvertedRectHeight > Coord.Zero)
+            AddInvertedText(mesh, text, z, faceUp);
+        else if (text.TextKind == PcbTextKind.Stroke && !text.IsTrueType)
             AddStrokeText(mesh, text, z, faceUp);
+        else
+            AddTrueTypeText(mesh, text, z, faceUp);
+    }
+
+    // Renders a 2-D barcode (Data Matrix / QR) on an ink layer (silk/copper) as its filled foreground
+    // geometry. The symbol is re-encoded from the text on demand (Altium never stores the module
+    // pattern). On the solder-mask layer the modules are handled as openings (CollectMaskOpenings).
+    private void AddBarcode(MeshBuffer mesh, PcbText text, double z, bool faceUp)
+    {
+        var barcode = PcbBarcodeGeometry.TryBuild(text);
+        if (barcode is null) return;
+        foreach (var quad in barcode.Foreground)
+            mesh.AddFlatPolygon(Array.ConvertAll(quad, P), null, z, faceUp);
     }
 
     // Renders TrueType text as filled glyph geometry (its real font shapes) at the silk plane.
@@ -347,6 +373,7 @@ internal sealed class GltfSceneBuilder
         double offY0 = justTt.Contains("Top") ? -cap : justTt.Contains("Middle") ? -cap / 2.0 : 0.0;
         double blockShift = justTt.Contains("Top") ? 0.0 : justTt.Contains("Middle") ? (n - 1) / 2.0 * lineH : (n - 1) * lineH;
 
+        bool any = false;
         for (int li = 0; li < n; li++)
         {
             var glyphs = GltfTrueTypeText.Layout(lines[li], text.FontName, text.FontBold, text.FontItalic, h, out double advance);
@@ -369,8 +396,70 @@ internal sealed class GltfSceneBuilder
                     ? glyph.Holes.ConvertAll(hh => (IReadOnlyList<Vec2>)hh.ConvertAll(Map))
                     : null;
                 mesh.AddFlatPolygon(outer, holes, z, faceUp);
+                any = true;
             }
         }
+
+        // If the named font yielded no geometry (font unavailable / unsupported glyphs), fall back to the
+        // stroke font so the text still appears rather than silently vanishing.
+        if (!any) AddStrokeText(mesh, text, z, faceUp);
+    }
+
+    // Renders inverted (negative) text: a filled solder/silk rectangle with the glyphs knocked out, so
+    // the board shows through the letters. The rectangle is anchored bottom-left at the text location and
+    // the glyphs are justified within it per the inverted-rect justification.
+    private void AddInvertedText(MeshBuffer mesh, PcbText text, double z, bool faceUp)
+    {
+        double w = text.InvertedRectWidth.ToMm(), h = text.InvertedRectHeight.ToMm();
+        double rad = text.Rotation * Math.PI / 180.0;
+        double cos = Math.Cos(rad), sin = Math.Sin(rad);
+        var loc = P(text.Location);
+
+        // Local rect space: x right (0..w), y up (0..h), bottom-left at the location; mirrored text flips x.
+        Vec2 L(double lx, double ly)
+        {
+            if (text.IsMirrored) lx = w - lx;
+            return new Vec2(loc.X + (lx * cos) - (ly * sin), loc.Y + (lx * sin) + (ly * cos));
+        }
+        var rect = new List<Vec2> { L(0, 0), L(w, 0), L(w, h), L(0, h) };
+
+        // The knocked-out glyphs (TrueType only; a stroke inverted box just stays solid).
+        var knockouts = new List<IReadOnlyList<Vec2>>();
+        if (text.IsTrueType || text.TextKind == PcbTextKind.TrueType)
+        {
+            var lines = text.Text.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n');
+            int n = lines.Length;
+            double margin = Math.Min(w, h) * 0.12;
+            double glyphH = Math.Min(text.Height.ToMm(), Math.Max(0.1, ((h - (2 * margin)) / n) * 0.82));
+            double lineH = glyphH * 1.25;
+            double blockH = lineH * n;
+            (int ha, int va) = MapInvertedJustification(text.InvertedRectJustification);
+            double blockTop = va == 0 ? h - margin : va == 2 ? margin + blockH : (h + blockH) / 2.0; // top edge of the text block
+
+            for (int li = 0; li < n; li++)
+            {
+                var glyphs = GltfTrueTypeText.Layout(lines[li], text.FontName, text.FontBold, text.FontItalic, glyphH, out double advance);
+                double offX = ha == 2 ? w - margin - advance : ha == 0 ? margin : (w - advance) / 2.0;
+                double baselineY = blockTop - (lineH * (li + 1)) + ((lineH - glyphH) / 2.0);
+                foreach (var glyph in glyphs)
+                {
+                    knockouts.Add(glyph.Outer.ConvertAll(p => L(p.X + offX, p.Y + baselineY)));
+                    foreach (var bowl in glyph.Holes) knockouts.Add(bowl.ConvertAll(p => L(p.X + offX, p.Y + baselineY)));
+                }
+            }
+        }
+
+        foreach (var (outer, holes) in SkiaPolyTools.Difference(rect, knockouts))
+            mesh.AddFlatPolygon(outer, holes.Count > 0 ? holes.ConvertAll(x => (IReadOnlyList<Vec2>)x) : null, z, faceUp);
+    }
+
+    // Altium inverted-rect justification is column-major 1..9 (Manual=0). Returns (h: 0=Left,1=Center,2=Right;
+    // v: 0=Top,1=Middle,2=Bottom).
+    private static (int H, int V) MapInvertedJustification(OriginalCircuit.Altium.Models.Pcb.PcbTextJustification j)
+    {
+        int v = (int)j;
+        if (v is < 1 or > 9) return (1, 1);
+        return ((v - 1) / 3, (v - 1) % 3);
     }
 
     // Builds the stroke geometry for a PCB text using Altium's stroke font: normalized glyph segments
