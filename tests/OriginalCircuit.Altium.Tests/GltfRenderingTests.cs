@@ -53,6 +53,25 @@ public class GltfRenderingTests
     }
 
     [SkippableFact]
+    public async Task RenderAsync_Panel_CompositesEmbeddedSubBoards()
+    {
+        var path = Path.Combine(GetTestDataPath(), "SPI Isolator Panel.PcbDoc");
+        Skip.IfNot(File.Exists(path), "Test data not available");
+        Skip.IfNot(File.Exists(Path.Combine(GetTestDataPath(), "SPI Isolator.PcbDoc")), "Sub-board not available");
+
+        // Loading from a path records SourcePath, so the renderer resolves the panel's sibling sub-board.
+        var doc = (PcbDocument)await AltiumLibrary.OpenPcbDocAsync(path);
+        Assert.NotEmpty(doc.EmbeddedBoards);
+
+        using var ms = new MemoryStream();
+        await new GltfRenderer().RenderAsync(doc, ms);
+
+        string json = ExtractGlbJson(ms.ToArray());
+        Assert.Contains("EmbeddedBoard.SPI Isolator", json); // the tiled sub-board array node
+        Assert.Contains("\"r2c2\"", json);                   // its 3×3 grid is instanced (last cell present)
+    }
+
+    [SkippableFact]
     public async Task RenderAsync_BareBoard_OmitsComponents()
     {
         var path = Path.Combine(GetTestDataPath(), "SPI Isolator.PcbDoc");

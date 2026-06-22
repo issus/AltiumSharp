@@ -90,4 +90,16 @@ public sealed class GltfRenderSettings
     /// path's extension. When rendering to a <see cref="System.IO.Stream"/>, <c>Auto</c> means GLB.
     /// </summary>
     public GltfOutputFormat Format { get; set; } = GltfOutputFormat.Auto;
+
+    /// <summary>
+    /// Resolves an embedded-board reference (a panel's <c>EmbeddedBoards6</c> <c>DocumentPath</c>) to the
+    /// referenced sub-board, so panels can be composited from their tiled sub-boards. Returns the loaded
+    /// document, or null to skip that reference. When rendering from a file path, a default resolver that
+    /// loads sibling <c>.PcbDoc</c> files from the panel's directory is used if this is left null; when
+    /// rendering from a stream there is no directory, so the caller must supply one to see the sub-boards.
+    /// </summary>
+    public Func<string, OriginalCircuit.Altium.Models.Pcb.PcbDocument?>? EmbeddedBoardResolver { get; set; }
+
+    /// <summary>A shallow copy, so a derived settings can be tweaked without mutating the caller's.</summary>
+    internal GltfRenderSettings Clone() => (GltfRenderSettings)MemberwiseClone();
 }

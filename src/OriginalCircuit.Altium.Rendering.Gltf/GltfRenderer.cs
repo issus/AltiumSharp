@@ -1,4 +1,5 @@
 using System.Text;
+using OriginalCircuit.Altium;
 using OriginalCircuit.Altium.Models.Pcb;
 using OriginalCircuit.Mech.GLTF;
 
@@ -18,7 +19,18 @@ public sealed class GltfRenderer
     public GltfDocument BuildDocument(PcbDocument document, GltfRenderSettings? settings = null)
     {
         ArgumentNullException.ThrowIfNull(document);
-        return new GltfSceneBuilder(document, settings ?? new GltfRenderSettings()).Build();
+        settings ??= new GltfRenderSettings();
+
+        // A panel references its sub-boards by relative path; if the document was loaded from a file
+        // (so it knows its directory) and the caller gave no resolver, resolve them as siblings.
+        if (settings.EmbeddedBoardResolver is null && document.EmbeddedBoards.Count > 0 &&
+            document.SourcePath is { } source)
+        {
+            settings = settings.Clone();
+            settings.EmbeddedBoardResolver = CreateDirectoryResolver(Path.GetDirectoryName(source));
+        }
+
+        return new GltfSceneBuilder(document, settings).Build();
     }
 
     /// <summary>
@@ -75,6 +87,30 @@ public sealed class GltfRenderer
         {
             await stream.WriteAsync(GltfWriter.WriteGlb(gltf), cancellationToken).ConfigureAwait(false);
         }
+    }
+
+    // Resolves a panel's embedded-board references against a directory: tries the path as given
+    // (relative to the directory) and then by bare filename, loading and caching each sub-board once.
+    private static Func<string, PcbDocument?>? CreateDirectoryResolver(string? directory)
+    {
+        if (string.IsNullOrEmpty(directory)) return null;
+        var cache = new Dictionary<string, PcbDocument?>(StringComparer.OrdinalIgnoreCase);
+        return documentPath =>
+        {
+            if (string.IsNullOrEmpty(documentPath)) return null;
+            if (cache.TryGetValue(documentPath, out var hit)) return hit;
+
+            PcbDocument? doc = null;
+            foreach (var candidate in new[] { Path.Combine(directory, documentPath), Path.Combine(directory, Path.GetFileName(documentPath)) })
+            {
+                if (!File.Exists(candidate)) continue;
+                try { doc = (PcbDocument)AltiumLibrary.OpenPcbDocAsync(candidate).AsTask().GetAwaiter().GetResult(); }
+                catch { doc = null; }
+                if (doc is not null) break;
+            }
+            cache[documentPath] = doc;
+            return doc;
+        };
     }
 
     private static GltfOutputFormat ResolveFormat(GltfOutputFormat requested, string path)

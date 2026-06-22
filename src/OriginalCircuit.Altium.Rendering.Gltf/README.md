@@ -50,13 +50,18 @@ Blender, …) can toggle it independently:
   holes and board cut-outs subtracted as see-through openings
 - `Copper.Top Layer`, `Copper.Bottom Layer`, `Copper.<inner>` … — one node per copper layer; tracks,
   arcs, fills, regions, pads (with through-hole annuli) and via rings
-- `SolderMask.Top` / `SolderMask.Bottom` — a translucent mask so traces show through tinted
-- `Finish.Top` / `Finish.Bottom` — the exposed copper of non-tented pads/vias, in the plated-finish
-  colour, so pads read through the mask openings
-- `Silkscreen.Top` / `Silkscreen.Bottom` — overlay tracks, arcs, fills and **text** (stroke font)
+- `SolderMask.Top` / `SolderMask.Bottom` — a translucent **inverse** layer: the board outline minus the
+  pad/via openings (grown by the solder-mask expansion) and any features drawn on the mask layer, so
+  the copper finish shows through the openings bright and reads tinted under the mask
+- `Silkscreen.Top` / `Silkscreen.Bottom` — overlay tracks, arcs, fills and **text** (TrueType glyph
+  outlines, or the stroke font, plus inverted/negative text and 2-D barcodes)
 - `Drills` — plated hole and via barrels
 - `Components` — one child node per placed 3D body, in its STEP per-face colours; bottom-side bodies
   are mirrored under the board
+- `EmbeddedBoard.<name>` — for a **panel**, the referenced sub-board composited and tiled across the
+  array; each grid cell instances the sub-board's shared feature meshes, so a 3×3 panel costs roughly
+  one board's worth of geometry. Sub-boards are resolved from the panel file's directory, or via
+  `GltfRenderSettings.EmbeddedBoardResolver`
 
 Nodes carry an `extras` payload tagging the Altium layer/role for programmatic filtering. Pad shapes
 (round, oval, rectangular, octagonal, rounded-rectangle) are rendered to shape.

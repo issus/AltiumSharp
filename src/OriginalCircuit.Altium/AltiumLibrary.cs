@@ -107,7 +107,10 @@ public static class AltiumLibrary
         CancellationToken cancellationToken = default)
     {
         var reader = new PcbDocReader();
-        return await reader.ReadAsync(path, cancellationToken).ConfigureAwait(false);
+        var document = await reader.ReadAsync(path, cancellationToken).ConfigureAwait(false);
+        if (document is Models.Pcb.PcbDocument pcb)
+            pcb.SourcePath = System.IO.Path.GetFullPath(path);
+        return document;
     }
 
     /// <summary>

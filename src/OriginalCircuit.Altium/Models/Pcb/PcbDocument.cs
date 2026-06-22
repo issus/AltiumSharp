@@ -75,6 +75,13 @@ public sealed class PcbDocument : IPcbDocument
     public IReadOnlyList<PcbEmbeddedBoard> EmbeddedBoards => _embeddedBoards;
 
     /// <summary>
+    /// The file path this document was loaded from, when opened from a path (null for stream/in-memory
+    /// documents). Lets relative references — such as a panel's embedded sub-board paths — be resolved
+    /// against the document's own directory.
+    /// </summary>
+    public string? SourcePath { get; set; }
+
+    /// <summary>
     /// All design rules in this document.
     /// </summary>
     public IReadOnlyList<PcbRule> Rules => _rules;

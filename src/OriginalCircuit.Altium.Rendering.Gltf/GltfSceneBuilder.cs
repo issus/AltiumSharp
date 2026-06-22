@@ -20,7 +20,7 @@ internal sealed class GltfSceneBuilder
     private readonly PcbDocument _doc;
     private readonly GltfRenderSettings _settings;
     private readonly PcbStackup _stack;
-    private readonly GltfBuilder _builder = new("OriginalCircuit.Altium.Rendering.Gltf");
+    private readonly GltfBuilder _builder;
     private readonly List<int> _rootChildren = [];
     private readonly Dictionary<int, int> _copperOrder = [];
 
@@ -29,11 +29,15 @@ internal sealed class GltfSceneBuilder
     private List<IReadOnlyList<Vec2>> _boardHoles = []; // see-through board openings (cutouts / NPTH)
     // Pad drill holes with their bounding box, for punching copper that runs over a barrel.
     private List<(IReadOnlyList<Vec2> Contour, double MinX, double MinY, double MaxX, double MaxY)> _drillBounds = [];
+    // When set, feature meshes are collected here (for an embedded sub-board) instead of becoming
+    // top-level nodes, so a panel can instance them at each array position.
+    private List<(int Mesh, string Name, JsonObject Extras)>? _capture;
 
-    public GltfSceneBuilder(PcbDocument doc, GltfRenderSettings settings)
+    public GltfSceneBuilder(PcbDocument doc, GltfRenderSettings settings, GltfBuilder? sharedBuilder = null)
     {
         _doc = doc;
         _settings = settings;
+        _builder = sharedBuilder ?? new GltfBuilder("OriginalCircuit.Altium.Rendering.Gltf");
         _stack = doc.GetStackup() ?? PcbStackup.CreateDefault(settings.FallbackBoardThicknessMm, InferCopperCount(doc));
 
         int order = 0;
@@ -48,20 +52,18 @@ internal sealed class GltfSceneBuilder
         _cy = (bounds.minY + bounds.maxY) / 2.0;
 
         AddMaterials();
-        _boardHoles = CollectBoardHoles(OutlineRing(bounds));
-        _drillBounds = _boardHoles.ConvertAll(h =>
-        {
-            double minX = double.MaxValue, minY = double.MaxValue, maxX = double.MinValue, maxY = double.MinValue;
-            foreach (var p in h) { if (p.X < minX) minX = p.X; if (p.X > maxX) maxX = p.X; if (p.Y < minY) minY = p.Y; if (p.Y > maxY) maxY = p.Y; }
-            return (h, minX, minY, maxX, maxY);
-        });
+        PrepareBoardHoles(bounds);
 
-        if (_settings.IncludeSubstrate) BuildSubstrate(bounds);
+        // A panel composites its sub-boards, which carry their own substrate; rendering the panel's own
+        // substrate too would put two coplanar laminates at the same Z and z-fight, so skip it.
+        bool composites = _settings.EmbeddedBoardResolver is not null && _doc.EmbeddedBoards.Count > 0;
+        if (_settings.IncludeSubstrate && !composites) BuildSubstrate(bounds);
         if (_settings.IncludeCopper) BuildCopperLayers();
         if (_settings.IncludeSolderMask) BuildSolderMask(bounds);
         if (_settings.IncludeSilkscreen) BuildSilkscreen();
         if (_settings.IncludeDrills) BuildDrills();
         if (_settings.IncludeComponents) BuildComponents();
+        if (composites) BuildEmbeddedBoards();
 
         int root = _builder.AddNode(
             name: "Board",
@@ -574,13 +576,113 @@ internal sealed class GltfSceneBuilder
         if (group is int node) _rootChildren.Add(node);
     }
 
+    private void PrepareBoardHoles((double minX, double minY, double maxX, double maxY) bounds)
+    {
+        _boardHoles = CollectBoardHoles(OutlineRing(bounds));
+        _drillBounds = _boardHoles.ConvertAll(h =>
+        {
+            double minX = double.MaxValue, minY = double.MaxValue, maxX = double.MinValue, maxY = double.MinValue;
+            foreach (var p in h) { if (p.X < minX) minX = p.X; if (p.X > maxX) maxX = p.X; if (p.Y < minY) minY = p.Y; if (p.Y > maxY) maxY = p.Y; }
+            return (h, minX, minY, maxX, maxY);
+        });
+    }
+
+    // ── Embedded boards (panel arrays) ──────────────────────────────────────────────────────────
+    // Each EmbeddedBoards6 object is a sub-board (resolved through the settings' resolver) tiled in a
+    // rows×cols grid. Its outline-min corner aligns to the array origin, with one step of ColSpacing /
+    // RowSpacing between instances. The sub-board's board features are tessellated ONCE (centred on
+    // that corner) into shared meshes; each grid cell is then a lightweight node instance referencing
+    // them under a transl(/rotate) transform — so a 3×3 panel costs one board's worth of geometry.
+    private void BuildEmbeddedBoards()
+    {
+        var resolve = _settings.EmbeddedBoardResolver;
+        if (resolve is null) return;
+
+        foreach (var emb in _doc.EmbeddedBoards)
+        {
+            if (string.IsNullOrEmpty(emb.DocumentPath)) continue;
+
+            PcbDocument? sub;
+            try { sub = resolve(emb.DocumentPath); } catch { sub = null; }
+            if (sub is null) continue;
+
+            var outline = sub.GetBoardOutline();
+            if (outline is null || outline.Count < 3) continue;
+            double refX = double.MaxValue, refY = double.MaxValue;
+            foreach (var p in outline) { refX = Math.Min(refX, p.X.ToMm()); refY = Math.Min(refY, p.Y.ToMm()); }
+
+            // Tessellate the sub-board's features once. Embedded boards are bare (no components) and do
+            // not themselves composite further — keep the run shallow and fast.
+            var subSettings = _settings.Clone();
+            subSettings.IncludeComponents = false;
+            subSettings.EmbeddedBoardResolver = null;
+            var feats = new GltfSceneBuilder(sub, subSettings, _builder).CaptureFeatureMeshes(refX, refY);
+            if (feats.Count == 0) continue;
+
+            int rows = Math.Max(1, emb.RowCount), cols = Math.Max(1, emb.ColCount);
+            var instances = new List<int>(rows * cols);
+            for (int r = 0; r < rows; r++)
+                for (int c = 0; c < cols; c++)
+                {
+                    double tx = emb.X.ToMm() + (emb.ColSpacing.ToMm() * c) - _cx;
+                    double ty = emb.Y.ToMm() + (emb.RowSpacing.ToMm() * r) - _cy;
+                    var cells = feats.ConvertAll(f => _builder.AddNode(mesh: f.Mesh, name: f.Name, extras: f.Extras));
+                    instances.Add(_builder.AddNode(matrix: InstanceMatrix(tx, ty, emb.Rotation), name: $"r{r}c{c}", children: cells));
+                }
+
+            string label = System.IO.Path.GetFileNameWithoutExtension(emb.DocumentPath);
+            _rootChildren.Add(_builder.AddNode(name: $"EmbeddedBoard.{label}", children: instances));
+        }
+    }
+
+    // Builds the board features of this (embedded) document into the shared builder, centred on
+    // (centreX, centreY) mm, and returns the shared mesh + name + extras for each so a panel can
+    // instance them. No components, no root node, no scene — just reusable feature meshes.
+    public List<(int Mesh, string Name, JsonObject Extras)> CaptureFeatureMeshes(double centreX, double centreY)
+    {
+        _cx = centreX;
+        _cy = centreY;
+        _capture = [];
+
+        var bounds = ComputeBoundsMm();
+        AddMaterials();
+        PrepareBoardHoles(bounds);
+
+        if (_settings.IncludeSubstrate) BuildSubstrate(bounds);
+        if (_settings.IncludeCopper) BuildCopperLayers();
+        if (_settings.IncludeSolderMask) BuildSolderMask(bounds);
+        if (_settings.IncludeSilkscreen) BuildSilkscreen();
+        if (_settings.IncludeDrills) BuildDrills();
+
+        return _capture;
+    }
+
+    // A glTF (column-major) node matrix that rotates by rotDeg about Z then translates by (tx,ty),
+    // in the board-mm Z-up space the root node converts to Y-up metres.
+    private static double[] InstanceMatrix(double tx, double ty, double rotDeg)
+    {
+        double a = rotDeg * Math.PI / 180.0;
+        double cos = Math.Cos(a), sin = Math.Sin(a);
+        return
+        [
+            cos, sin, 0, 0,
+            -sin, cos, 0, 0,
+            0, 0, 1, 0,
+            tx, ty, 0, 1,
+        ];
+    }
+
     // ── Helpers ─────────────────────────────────────────────────────────────────────────────────
     private void Emit(MeshBuffer mesh, int material, string name, string role, int? altiumLayer)
     {
         if (mesh.IsEmpty) return;
         int meshIndex = _builder.AddMesh(mesh.Positions, mesh.Normals, mesh.Indices,
             [new MeshPartSpec(0, mesh.Indices.Count, material)], name);
-        _rootChildren.Add(_builder.AddNode(mesh: meshIndex, name: name, extras: Extras(role, altiumLayer)));
+        var extras = Extras(role, altiumLayer);
+        if (_capture is not null)
+            _capture.Add((meshIndex, name, extras)); // embedded sub-board: collect for instancing, no node yet
+        else
+            _rootChildren.Add(_builder.AddNode(mesh: meshIndex, name: name, extras: extras));
     }
 
     private static JsonObject Extras(string role, int? altiumLayer)
