@@ -27,6 +27,8 @@ internal sealed class GltfSceneBuilder
     private double _cx, _cy;             // board centre (mm) subtracted from every point
     private int _matSubstrate, _matCopper, _matMask, _matSilk, _matBarrel;
     private List<IReadOnlyList<Vec2>> _boardHoles = []; // see-through board openings (cutouts / NPTH)
+    // Pad drill holes with their bounding box, for punching copper that runs over a barrel.
+    private List<(IReadOnlyList<Vec2> Contour, double MinX, double MinY, double MaxX, double MaxY)> _drillBounds = [];
 
     public GltfSceneBuilder(PcbDocument doc, GltfRenderSettings settings)
     {
@@ -47,6 +49,12 @@ internal sealed class GltfSceneBuilder
 
         AddMaterials();
         _boardHoles = CollectBoardHoles(OutlineRing(bounds));
+        _drillBounds = _boardHoles.ConvertAll(h =>
+        {
+            double minX = double.MaxValue, minY = double.MaxValue, maxX = double.MinValue, maxY = double.MinValue;
+            foreach (var p in h) { if (p.X < minX) minX = p.X; if (p.X > maxX) maxX = p.X; if (p.Y < minY) minY = p.Y; if (p.Y > maxY) maxY = p.Y; }
+            return (h, minX, minY, maxX, maxY);
+        });
 
         if (_settings.IncludeSubstrate) BuildSubstrate(bounds);
         if (_settings.IncludeCopper) BuildCopperLayers();
@@ -116,19 +124,19 @@ internal sealed class GltfSceneBuilder
     {
         foreach (var t in Tracks)
             if (t.Layer == layerId && t.Width.ToMm() > 0)
-                mesh.AddSheet(Shapes.Capsule(P(t.Start), P(t.End), t.Width.ToMm(), Caps(t.Width.ToMm() / 2)), null, z);
+                AddCopperSheet(mesh, Shapes.Capsule(P(t.Start), P(t.End), t.Width.ToMm(), Caps(t.Width.ToMm() / 2)), null, z);
 
         foreach (var a in Arcs)
             if (a.Layer == layerId && a.Radius.ToMm() > 0 && a.Width.ToMm() > 0)
-                mesh.AddSheet(ArcBand(a), null, z);
+                AddCopperSheet(mesh, ArcBand(a), null, z);
 
         foreach (var f in Fills)
             if (f.Layer == layerId)
-                mesh.AddSheet(FillRect(f), null, z);
+                AddCopperSheet(mesh, FillRect(f), null, z);
 
         foreach (var r in Regions)
             if (r.Layer == layerId && r.Kind == 0 && !r.IsKeepout && r.Outline.Count >= 3)
-                mesh.AddSheet(Ring(r.Outline), RegionHoles(r), z); // pour clearances (around pads, fiducials, vias)
+                AddCopperSheet(mesh, Ring(r.Outline), RegionHoles(r), z); // pour clearances (around pads, fiducials, vias)
 
         foreach (var pad in Pads)
         {
@@ -147,6 +155,36 @@ internal sealed class GltfSceneBuilder
             var holes = inner > 0 ? new List<IReadOnlyList<Vec2>> { Shapes.Circle(center, inner, Seg(inner)) } : null;
             mesh.AddSheet(ring, holes, z);
         }
+    }
+
+    // Adds a copper sheet (a track, arc, fill, or pour region) with any pad drill holes that fall
+    // within it punched out, so a pour or a track running into a through-hole pad doesn't cover the
+    // barrel. Pads/vias already cut their own holes. The common case (no drill overlaps the sheet)
+    // takes the fast unchanged path; otherwise a robust boolean clips the drills (which can straddle
+    // the sheet edge where a track meets a pad — earcut handles only fully-interior holes).
+    private void AddCopperSheet(MeshBuffer mesh, IReadOnlyList<Vec2> outer, List<IReadOnlyList<Vec2>>? extraHoles, double z)
+    {
+        if (outer.Count < 3) return;
+
+        double minX = double.MaxValue, minY = double.MaxValue, maxX = double.MinValue, maxY = double.MinValue;
+        foreach (var p in outer) { if (p.X < minX) minX = p.X; if (p.X > maxX) maxX = p.X; if (p.Y < minY) minY = p.Y; if (p.Y > maxY) maxY = p.Y; }
+
+        List<IReadOnlyList<Vec2>>? drills = null;
+        foreach (var d in _drillBounds)
+            if (d.MaxX >= minX && d.MinX <= maxX && d.MaxY >= minY && d.MinY <= maxY)
+                (drills ??= []).Add(d.Contour);
+
+        if (drills is null)
+        {
+            mesh.AddSheet(outer, extraHoles, z); // no drill overlaps this sheet — unchanged fast path
+            return;
+        }
+
+        var holes = new List<IReadOnlyList<Vec2>>();
+        if (extraHoles is not null) holes.AddRange(extraHoles);
+        holes.AddRange(drills);
+        foreach (var (o, h) in SkiaPolyTools.Difference(outer, holes))
+            mesh.AddSheet(o, h.Count > 0 ? h.ConvertAll(x => (IReadOnlyList<Vec2>)x) : null, z);
     }
 
     // ── Solder mask (an INVERSE layer) ──────────────────────────────────────────────────────────
