@@ -15,7 +15,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
-let renderer, scene, camera, controls, current, canvasEl;
+let renderer, scene, camera, controls, current, canvasEl, headlight;
 
 export function init(canvas) {
     canvasEl = canvas;
@@ -41,14 +41,23 @@ export function init(canvas) {
     const pmrem = new THREE.PMREMGenerator(renderer);
     scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
 
-    // A directional key for shape/highlights on top of the environment.
-    const key = new THREE.DirectionalLight(0xffffff, 1.2);
-    key.position.set(0.4, 1.0, 0.6);
-    scene.add(key);
+    // A headlight that tracks the camera, so whichever side you've rotated toward is lit — including
+    // the board's underside. A fixed overhead key leaves the bottom black: fine for a hero render,
+    // useless for inspecting a board in a CAD viewer. The environment still supplies the reflections.
+    headlight = new THREE.DirectionalLight(0xffffff, 1.4);
+    scene.add(headlight);
+    scene.add(headlight.target);
 
     resize();
     addEventListener('resize', resize);
-    renderer.setAnimationLoop(() => { controls.update(); renderer.render(scene, camera); });
+    renderer.setAnimationLoop(() => {
+        controls.update();
+        // Keep the key light at the camera, aimed at what the camera looks at.
+        headlight.position.copy(camera.position);
+        headlight.target.position.copy(controls.target);
+        headlight.target.updateMatrixWorld();
+        renderer.render(scene, camera);
+    });
 
     // Exposed for poking at the scene from the browser console (and for tests).
     window.__viewer = { THREE, scene, camera, controls, renderer };
