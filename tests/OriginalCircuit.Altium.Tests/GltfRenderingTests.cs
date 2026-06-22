@@ -46,9 +46,8 @@ public class GltfRenderingTests
         string json = ExtractGlbJson(bytes);
         Assert.Contains("\"Substrate\"", json);
         Assert.Contains("Copper.", json);
-        Assert.Contains("SolderMask.", json);
-        Assert.Contains("Finish.", json);       // exposed copper through the mask openings
-        Assert.Contains("Silkscreen.", json);   // overlay tracks/arcs/text
+        Assert.Contains("SolderMask.", json);    // the inverse mask layer (openings reveal the copper beneath)
+        Assert.Contains("Silkscreen.", json);    // overlay tracks/arcs/text
         Assert.Contains("\"Drills\"", json);
         Assert.Contains("\"Components\"", json); // these boards have embedded component models
     }
