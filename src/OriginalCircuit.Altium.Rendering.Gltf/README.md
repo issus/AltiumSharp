@@ -60,8 +60,14 @@ Blender, …) can toggle it independently:
   are mirrored under the board
 - `EmbeddedBoard.<name>` — for a **panel**, the referenced sub-board composited and tiled across the
   array; each grid cell instances the sub-board's shared feature **and component** meshes — every STEP
-  model is tessellated once — so a 3×3 panel costs roughly one populated board's worth of geometry.
-  Sub-boards are resolved from the panel file's directory, or via `GltfRenderSettings.EmbeddedBoardResolver`
+  model is tessellated once — so a 3×3 panel costs roughly one populated board's worth of geometry. A
+  panel is rendered as *just* the sub-board array (its own outline-derived laminate/mask/silk are
+  dropped, as a panel is a frame, not a board). Sub-boards are resolved from the panel file's directory,
+  or via `GltfRenderSettings.EmbeddedBoardResolver`.
+
+Each feature/component node also carries a stable `group` in its `extras` (the layer/role it belongs
+to), so a viewer can toggle a layer across every instance of a panel without relying on node names
+(glTF loaders uniquify duplicate names).
 
 Nodes carry an `extras` payload tagging the Altium layer/role for programmatic filtering. Pad shapes
 (round, oval, rectangular, octagonal, rounded-rectangle) are rendered to shape.
