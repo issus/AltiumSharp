@@ -127,7 +127,7 @@ internal sealed class GltfComponentPlacer(
         string name = ComponentName(body);
         int mesh = builder.AddMesh(positions, normals, indices, parts, name);
 
-        var extras = new JsonObject { ["role"] = "component", ["designator"] = name, ["side"] = bottom ? "bottom" : "top" };
+        var extras = new JsonObject { ["role"] = "component", ["group"] = "Components", ["designator"] = name, ["side"] = bottom ? "bottom" : "top" };
         if (!string.IsNullOrEmpty(body.ModelName)) extras["model"] = body.ModelName;
         return (mesh, name, extras);
     }

@@ -69,19 +69,39 @@ export async function loadModel(url) {
     current = gltf.scene;
     scene.add(current);
     frame(current);
-    return featureNodes().map(n => n.name);
+    return featureGroups();
 }
 
-export function setLayerVisible(name, visible) {
-    const node = featureNodes().find(n => n.name === name);
-    if (node) node.visible = visible;
+export function setLayerVisible(group, visible) {
+    for (const o of featureObjects())
+        if (groupOf(o) === group) o.visible = visible;
 }
 
-// The toggleable feature nodes are the children of the single "Board" root node.
-function featureNodes() {
+// Every emitted feature/component node carries a stable `group` in its glTF extras (→ userData), so the
+// toggles can find and flip them wherever they sit in the tree — crucially, INSIDE a panel's per-cell
+// instance transforms, not just as direct children of "Board". (Node names can't be used: glTF loaders
+// uniquify duplicate names across instances, e.g. "Substrate", "Substrate_1", …)
+function featureObjects() {
     if (!current) return [];
     const board = current.getObjectByName('Board') || current;
-    return board.children.filter(c => c.name);
+    const out = [];
+    board.traverse(o => { if (o.userData && o.userData.group) out.push(o); });
+    return out;
+}
+
+function groupOf(o) {
+    return o.userData.group;
+}
+
+function featureGroups() {
+    const order = ['Substrate', 'Copper', 'SolderMask', 'Silkscreen', 'Drills', 'Components'];
+    const seen = new Set(), groups = [];
+    for (const o of featureObjects()) {
+        const g = groupOf(o);
+        if (!seen.has(g)) { seen.add(g); groups.push(g); }
+    }
+    const rank = (g) => { const i = order.findIndex(o => g.startsWith(o)); return i < 0 ? 99 : i; };
+    return groups.sort((a, b) => rank(a) - rank(b) || a.localeCompare(b));
 }
 
 function frame(obj) {

@@ -52,18 +52,25 @@ internal sealed class GltfSceneBuilder
         _cy = (bounds.minY + bounds.maxY) / 2.0;
 
         AddMaterials();
-        PrepareBoardHoles(bounds);
 
-        // A panel composites its sub-boards, which carry their own substrate; rendering the panel's own
-        // substrate too would put two coplanar laminates at the same Z and z-fight, so skip it.
+        // A panel is just a frame holding an array of sub-boards: it has no laminate of its own, and its
+        // outline-derived solder mask / silkscreen would sheet over the whole array (covering the boards).
+        // So when compositing, render ONLY the embedded boards — each carries its own full stack.
         bool composites = _settings.EmbeddedBoardResolver is not null && _doc.EmbeddedBoards.Count > 0;
-        if (_settings.IncludeSubstrate && !composites) BuildSubstrate(bounds);
-        if (_settings.IncludeCopper) BuildCopperLayers();
-        if (_settings.IncludeSolderMask) BuildSolderMask(bounds);
-        if (_settings.IncludeSilkscreen) BuildSilkscreen();
-        if (_settings.IncludeDrills) BuildDrills();
-        if (_settings.IncludeComponents) BuildComponents();
-        if (composites) BuildEmbeddedBoards();
+        if (composites)
+        {
+            BuildEmbeddedBoards();
+        }
+        else
+        {
+            PrepareBoardHoles(bounds);
+            if (_settings.IncludeSubstrate) BuildSubstrate(bounds);
+            if (_settings.IncludeCopper) BuildCopperLayers();
+            if (_settings.IncludeSolderMask) BuildSolderMask(bounds);
+            if (_settings.IncludeSilkscreen) BuildSilkscreen();
+            if (_settings.IncludeDrills) BuildDrills();
+            if (_settings.IncludeComponents) BuildComponents();
+        }
 
         int root = _builder.AddNode(
             name: "Board",
@@ -685,6 +692,7 @@ internal sealed class GltfSceneBuilder
         int meshIndex = _builder.AddMesh(mesh.Positions, mesh.Normals, mesh.Indices,
             [new MeshPartSpec(0, mesh.Indices.Count, material)], name);
         var extras = Extras(role, altiumLayer);
+        extras["group"] = name; // stable toggle key (a viewer can't rely on node names: glTF loaders uniquify duplicates across instances)
         if (_capture is not null)
             _capture.Add((meshIndex, name, extras)); // embedded sub-board: collect for instancing, no node yet
         else
