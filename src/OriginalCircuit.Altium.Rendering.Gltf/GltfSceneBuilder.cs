@@ -50,7 +50,7 @@ internal sealed class GltfSceneBuilder
 
         if (_settings.IncludeSubstrate) BuildSubstrate(bounds);
         if (_settings.IncludeCopper) BuildCopperLayers();
-        if (_settings.IncludeSolderMask) { BuildSolderMask(bounds); BuildExposedCopper(); }
+        if (_settings.IncludeSolderMask) BuildSolderMask(bounds);
         if (_settings.IncludeSilkscreen) BuildSilkscreen();
         if (_settings.IncludeDrills) BuildDrills();
         if (_settings.IncludeComponents) BuildComponents();
@@ -149,19 +149,114 @@ internal sealed class GltfSceneBuilder
         }
     }
 
-    // ── Solder mask ─────────────────────────────────────────────────────────────────────────────
+    // ── Solder mask (an INVERSE layer) ──────────────────────────────────────────────────────────
+    // The mask is the board outline MINUS the union of its openings: non-tented pad/via copper grown
+    // by the solder-mask expansion (manual override, From-Rule, or none) plus the negative geometry
+    // drawn on the solder-mask layer (tracks/arcs/fills/regions, which REMOVE mask) plus the drilled
+    // holes. The copper layer beneath (drawn in the finish colour) then shows through the openings
+    // bright, while copper under the translucent mask reads tinted.
     private void BuildSolderMask((double minX, double minY, double maxX, double maxY) bounds)
     {
         var ring = OutlineRing(bounds);
         if (ring.Count < 3) return;
 
         var top = _stack.ForLayer(37);
-        if (top is not null && HasGeometryOnLayer(37))
-            EmitSheet(ring, _matMask, top.CenterZMm, "SolderMask.Top", "soldermask", 37);
-
+        if (top is not null) BuildMaskSide(ring, top.CenterZMm, copperLayer: 1, solderLayer: 37, "SolderMask.Top");
         var bottom = _stack.ForLayer(38);
-        if (bottom is not null && HasGeometryOnLayer(38))
-            EmitSheet(ring, _matMask, bottom.CenterZMm, "SolderMask.Bottom", "soldermask", 38);
+        if (bottom is not null) BuildMaskSide(ring, bottom.CenterZMm, copperLayer: 32, solderLayer: 38, "SolderMask.Bottom");
+    }
+
+    private void BuildMaskSide(IReadOnlyList<Vec2> ring, double z, int copperLayer, int solderLayer, string name)
+    {
+        var openings = CollectMaskOpenings(copperLayer, solderLayer);
+        openings.AddRange(_boardHoles); // mask is open over drilled holes too
+        if (openings.Count == 0) return; // nothing to mask over (e.g. no copper on this side)
+
+        var groups = SkiaPolyTools.Difference(ring, openings);
+        if (groups.Count == 0) return;
+
+        var mesh = new MeshBuffer();
+        bool faceUp = solderLayer != 38; // top mask faces up, bottom faces down (single-sided is enough)
+        foreach (var (outer, holes) in groups)
+            mesh.AddFlatPolygon(outer, holes.Count > 0 ? holes.ConvertAll(h => (IReadOnlyList<Vec2>)h) : null, z, faceUp);
+        Emit(mesh, _matMask, name, "soldermask", solderLayer);
+    }
+
+    // The mask openings for one side: non-tented pad/via copper grown by the solder-mask expansion, and
+    // the negative geometry on the solder-mask layer (those features remove mask).
+    private List<IReadOnlyList<Vec2>> CollectMaskOpenings(int copperLayer, int solderLayer)
+    {
+        bool top = copperLayer == 1;
+        var openings = new List<IReadOnlyList<Vec2>>();
+        double padRuleExp = ResolveMaskRuleExpansion(forVia: false);
+        double viaRuleExp = ResolveMaskRuleExpansion(forVia: true);
+
+        foreach (var pad in Pads)
+        {
+            if (pad.IsKeepout) continue;
+            bool throughHole = pad.HoleSize.ToMm() > 0;
+            if (!throughHole && pad.Layer != copperLayer) continue; // SMD on the other side
+            if (top ? pad.IsTentingTop : pad.IsTentingBottom) continue;
+
+            var size = top ? pad.SizeTop : pad.SizeBottom;
+            var shape = top ? pad.ShapeTop : pad.ShapeBottom;
+            double w = size.X.ToMm(), h = size.Y.ToMm();
+            if (w <= 0 || h <= 0) continue;
+            double exp = EffectiveMaskExpansion(pad.SolderMaskExpansionMode, pad.SolderMaskExpansion.ToMm(), padRuleExp);
+            openings.Add(PadContour(P(pad.Location), w + (2 * exp), h + (2 * exp), pad.Rotation, shape, pad.CornerRadiusPercentage));
+        }
+
+        foreach (var via in Vias)
+        {
+            if (!ViaSpans(via, copperLayer)) continue;
+            if (via.IsTented || (top ? via.IsTentingTop : via.IsTentingBottom)) continue;
+            double r = via.Diameter.ToMm() / 2.0;
+            if (r <= 0) continue;
+            double exp = EffectiveMaskExpansion(via.SolderMaskExpansionMode, via.SolderMaskExpansion.ToMm(), viaRuleExp);
+            openings.Add(Shapes.Circle(P(via.Location), r + exp, Seg(r + exp)));
+        }
+
+        // Geometry ON the solder-mask layer is negative: it removes mask wherever it is drawn.
+        foreach (var t in Tracks)
+            if (t.Layer == solderLayer && t.Width.ToMm() > 0)
+                openings.Add(Shapes.Capsule(P(t.Start), P(t.End), t.Width.ToMm(), Caps(t.Width.ToMm() / 2)));
+        foreach (var a in Arcs)
+            if (a.Layer == solderLayer && a.Radius.ToMm() > 0 && a.Width.ToMm() > 0)
+                openings.Add(ArcBand(a));
+        foreach (var f in Fills)
+            if (f.Layer == solderLayer)
+                openings.Add(FillRect(f));
+        foreach (var r in Regions)
+            if (r.Layer == solderLayer && r.Outline.Count >= 3)
+                openings.Add(Ring(r.Outline));
+
+        return openings;
+    }
+
+    // Resolves the effective solder-mask expansion (mm) for a pad/via: 0 = none, 2 = the object's manual
+    // value, anything else (the Altium default, From-Rule) = the resolved design-rule expansion.
+    private static double EffectiveMaskExpansion(int mode, double manualMm, double ruleMm) => mode switch
+    {
+        0 => 0.0,
+        2 => manualMm,
+        _ => ruleMm,
+    };
+
+    // Resolves the From-Rule solder-mask expansion (mm) from the board's SolderMaskExpansion design
+    // rules: a via prefers a via-scoped rule; a pad uses the most general non-via rule.
+    private double ResolveMaskRuleExpansion(bool forVia)
+    {
+        var rules = _doc.Rules.OfType<PcbSolderMaskExpansionRule>().Where(r => r.Enabled).ToList();
+        if (rules.Count == 0) return 0.05; // a sensible default when the board carries no rule
+
+        static bool MentionsVia(PcbSolderMaskExpansionRule r) =>
+            (r.Scope1Expression?.Contains("Via", StringComparison.OrdinalIgnoreCase) ?? false) ||
+            (r.Scope2Expression?.Contains("Via", StringComparison.OrdinalIgnoreCase) ?? false);
+
+        PcbSolderMaskExpansionRule? pick = forVia ? rules.Where(MentionsVia).OrderBy(r => r.Priority).FirstOrDefault() : null;
+        pick ??= rules.Where(r => !MentionsVia(r)).OrderBy(r => r.Priority).FirstOrDefault();
+        pick ??= rules.OrderBy(r => r.Priority).FirstOrDefault();
+        return pick?.Expansion.ToMm() ?? 0.05;
     }
 
     // Collects the see-through board openings — unplated (NPTH) mounting holes and board-cutout
@@ -185,46 +280,6 @@ internal sealed class GltfSceneBuilder
         return holes;
     }
 
-
-    // ── Exposed copper / finish (the visible result of solder-mask openings) ────────────────────
-    // Rather than boolean-cut the mask (fragile when openings overlap), the translucent mask sheet
-    // stays whole and the exposed copper — non-tented pads and vias — is drawn in the plated-finish
-    // colour just above the mask, so pads read as bright gold against the green while traces stay
-    // tinted under the mask.
-    private void BuildExposedCopper()
-    {
-        var top = _stack.ForLayer(37);
-        if (top is not null) BuildFinishSide(copperLayer: 1, top: true, z: top.Z1Mm + 0.004, "Finish.Top", 37);
-        var bottom = _stack.ForLayer(38);
-        if (bottom is not null) BuildFinishSide(copperLayer: 32, top: false, z: bottom.Z0Mm - 0.004, "Finish.Bottom", 38);
-    }
-
-    private void BuildFinishSide(int copperLayer, bool top, double z, string name, int maskLayer)
-    {
-        var mesh = new MeshBuffer();
-        foreach (var pad in Pads)
-        {
-            if (pad.IsKeepout || IsUnplatedHole(pad)) continue;
-            bool throughHole = pad.HoleSize.ToMm() > 0;
-            bool tented = top ? pad.IsTentingTop : pad.IsTentingBottom;
-            bool exposed = !tented && (throughHole || pad.Layer == copperLayer);
-            if (!exposed) continue;
-
-            var size = top ? pad.SizeTop : pad.SizeBottom;
-            var shape = top ? pad.ShapeTop : pad.ShapeBottom;
-            double w = size.X.ToMm(), h = size.Y.ToMm();
-            if (w <= 0 || h <= 0) continue;
-            mesh.AddSheet(PadContour(P(pad.Location), w, h, pad.Rotation, shape, pad.CornerRadiusPercentage), PadHole(pad), z);
-        }
-        foreach (var via in Vias)
-        {
-            if (via.IsTented || (top ? via.IsTentingTop : via.IsTentingBottom)) continue;
-            double outer = via.Diameter.ToMm() / 2.0;
-            if (outer <= 0) continue;
-            mesh.AddSheet(Shapes.Circle(P(via.Location), outer, Seg(outer)), null, z);
-        }
-        Emit(mesh, _matCopper, name, "finish", maskLayer);
-    }
 
     // ── Silkscreen ──────────────────────────────────────────────────────────────────────────────
     private void BuildSilkscreen()
@@ -371,7 +426,7 @@ internal sealed class GltfSceneBuilder
         foreach (var pad in Pads)
         {
             double r = pad.HoleSize.ToMm() / 2.0;
-            if (r > 0) mesh.AddCylinderWall(P(pad.Location), r, zBot, zTop, Seg(r));
+            if (r > 0) mesh.AddCylinderWall(P(pad.Location), r, zBot, zTop, SegBarrel(r));
         }
         foreach (var via in Vias)
         {
@@ -379,7 +434,7 @@ internal sealed class GltfSceneBuilder
             if (r <= 0) continue;
             double zt = _stack.ForLayer(via.StartLayer)?.Z1Mm ?? zTop;
             double zb = _stack.ForLayer(via.EndLayer)?.Z0Mm ?? zBot;
-            mesh.AddCylinderWall(P(via.Location), r, zb, zt, Seg(r));
+            mesh.AddCylinderWall(P(via.Location), r, zb, zt, SegBarrel(r));
         }
         Emit(mesh, _matBarrel, "Drills", "drills", null);
     }
@@ -399,13 +454,6 @@ internal sealed class GltfSceneBuilder
         int meshIndex = _builder.AddMesh(mesh.Positions, mesh.Normals, mesh.Indices,
             [new MeshPartSpec(0, mesh.Indices.Count, material)], name);
         _rootChildren.Add(_builder.AddNode(mesh: meshIndex, name: name, extras: Extras(role, altiumLayer)));
-    }
-
-    private void EmitSheet(IReadOnlyList<Vec2> ring, int material, double z, string name, string role, int? altiumLayer)
-    {
-        var mesh = new MeshBuffer();
-        mesh.AddSheet(ring, _boardHoles.Count > 0 ? _boardHoles : null, z);
-        Emit(mesh, material, name, role, altiumLayer);
     }
 
     private static JsonObject Extras(string role, int? altiumLayer)
@@ -448,7 +496,7 @@ internal sealed class GltfSceneBuilder
         double r = a.Radius.ToMm();
         double sweep = a.EndAngle - a.StartAngle;
         if (sweep <= 0) sweep += 360;
-        int segs = Math.Max(2, (int)(Seg(r) * sweep / 360.0));
+        int segs = Math.Max(3, (int)Math.Ceiling(SegArc(r) * sweep / 360.0));
         return Shapes.ArcBand(P(a.Center), r, a.StartAngle, a.EndAngle, a.Width.ToMm(), segs);
     }
 
@@ -531,14 +579,16 @@ internal sealed class GltfSceneBuilder
         return li >= Math.Min(s, e) && li <= Math.Max(s, e);
     }
 
-    private bool HasGeometryOnLayer(int layerId)
-        => Tracks.Any(t => t.Layer == layerId) || Arcs.Any(a => a.Layer == layerId)
-           || Fills.Any(f => f.Layer == layerId) || Regions.Any(r => r.Layer == layerId)
-           // Mask layers are present whenever the board has any copper pads/vias to open over.
-           || layerId is 37 or 38;
-
     private int Seg(double radiusMm) => Shapes.SegmentCount(radiusMm, _settings.ArcChordToleranceMm);
     private int Caps(double radiusMm) => Math.Max(4, Seg(radiusMm) / 2);
+
+    // Visible arcs (silk rings, copper arcs) get a finer chord tolerance and a higher floor so small
+    // full circles read as smooth rings rather than polygons; small pads/holes keep the coarser Seg.
+    private int SegArc(double radiusMm) => Shapes.SegmentCount(radiusMm, Math.Min(_settings.ArcChordToleranceMm, 0.01), min: 40);
+
+    // Via/pad drill barrels are numerous and tiny, so they use a coarser segment count than the
+    // smooth-circle minimum used for silk rings and exposed pads.
+    private int SegBarrel(double radiusMm) => Math.Clamp(Shapes.SegmentCount(radiusMm, _settings.ArcChordToleranceMm) / 3, 12, 32);
 
     private List<Vec2> OutlineRing((double minX, double minY, double maxX, double maxY) bounds)
     {

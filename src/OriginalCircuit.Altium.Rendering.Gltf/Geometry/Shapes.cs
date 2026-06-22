@@ -8,7 +8,7 @@ namespace OriginalCircuit.Altium.Rendering.Gltf.Geometry;
 internal static class Shapes
 {
     /// <summary>Number of segments to approximate a full circle of <paramref name="radiusMm"/> within a chord tolerance.</summary>
-    public static int SegmentCount(double radiusMm, double chordToleranceMm, int min = 12, int max = 256)
+    public static int SegmentCount(double radiusMm, double chordToleranceMm, int min = 16, int max = 512)
     {
         if (radiusMm <= 0) return min;
         double t = Math.Clamp(chordToleranceMm, 1e-4, radiusMm);
