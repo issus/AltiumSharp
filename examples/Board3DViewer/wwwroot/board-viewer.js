@@ -19,7 +19,10 @@ let renderer, scene, camera, controls, current, canvasEl, headlight;
 
 export function init(canvas) {
     canvasEl = canvas;
-    renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    // A logarithmic depth buffer spreads precision across the whole near..far range instead of crowding it
+    // near the camera, so the thin, near-coplanar PCB layers (copper / mask / silkscreen, microns apart on a
+    // board that may be hundreds of mm across) don't z-fight — the mask bleeding through the silk.
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, logarithmicDepthBuffer: true });
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.0;
@@ -28,7 +31,10 @@ export function init(canvas) {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x6a6e73); // neutral studio grey, like a mechanical CAD viewer
 
-    camera = new THREE.PerspectiveCamera(35, 1, 0.0005, 100);
+    // Near/far in metres. The board is small and never sensibly viewed from closer than a few mm, so a 5 mm
+    // near plane (was 0.5 µm) and a 50 m far keep the depth range tight — far better precision than the old
+    // 200,000:1 range, on top of the logarithmic depth buffer.
+    camera = new THREE.PerspectiveCamera(35, 1, 0.005, 50);
 
     controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;

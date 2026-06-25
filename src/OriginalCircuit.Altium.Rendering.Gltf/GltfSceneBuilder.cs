@@ -58,6 +58,8 @@ internal sealed class GltfSceneBuilder
     // A TrueType PCB string's Height is the font CELL height, a bit larger than the point size (em); Altium
     // renders the em a touch smaller. Matched against the inverted-rect box Altium sizes to the text.
     private const double TtEmScale = 0.8;
+    // Gap (mm) the silkscreen is lifted above the solder-mask plane to avoid depth-buffer z-fighting.
+    private const double SilkLiftMm = 0.04;
 
     public GltfSceneBuilder(PcbDocument doc, GltfRenderSettings settings, GltfBuilder? sharedBuilder = null)
     {
@@ -452,8 +454,13 @@ internal sealed class GltfSceneBuilder
     // ── Silkscreen ──────────────────────────────────────────────────────────────────────────────
     private void BuildSilkscreen()
     {
-        double topZ = (_stack.ForLayer(37)?.Z1Mm ?? _stack.TotalThicknessMm) + 0.01;
-        double botZ = (_stack.ForLayer(38)?.Z0Mm ?? 0) - 0.01;
+        // Lift the silkscreen clear of the solder-mask plane it sits on. The mask sheet is rendered at its
+        // layer centre, so a too-small gap lets a depth buffer (especially on a large board viewed far away)
+        // flip between mask and silk — the mask bleeds through the silk. SilkLiftMm is a comfortably resolvable
+        // gap above the mask's top surface; still well under a tenth of the board thickness so it does not
+        // visibly float.
+        double topZ = (_stack.ForLayer(37)?.Z1Mm ?? _stack.TotalThicknessMm) + SilkLiftMm;
+        double botZ = (_stack.ForLayer(38)?.Z0Mm ?? 0) - SilkLiftMm;
         BuildOverlay(33, topZ, "Silkscreen.Top");
         BuildOverlay(34, botZ, "Silkscreen.Bottom");
     }
