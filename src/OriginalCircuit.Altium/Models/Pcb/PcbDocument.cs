@@ -292,16 +292,47 @@ public sealed class PcbDocument : IPcbDocument
     /// from primitives alone still frame correctly. When an outline is present the result is always
     /// non-degenerate, which also fixes the outline-only board that would otherwise render tiny
     /// (<see cref="CoordRect.Empty"/> makes <c>CoordTransform.AutoZoom</c> early-return).
+    /// <para>
+    /// Primitives lying <em>entirely</em> outside the board outline — off-board notes, title blocks
+    /// and (auto-placed) hidden component designators/comments — are excluded, so a board that carries
+    /// such off-sheet clutter still frames tightly to the physical board instead of zooming far out.
+    /// Content that touches the board (the usual edge overhang: clearance, tabs, mounting margins) is
+    /// kept, since its bounding box still intersects the outline's.
+    /// </para>
     /// </remarks>
     public CoordRect GetFramingBounds()
     {
         var outline = GetBoardOutline();
         if (outline.Count == 0) return Bounds;
 
-        // Seed from the outline points (Union(IEnumerable) avoids the origin-sentinel pull), then
-        // widen to include any primitives that stick out beyond the board edge.
+        // Seed from the outline points (Union(IEnumerable) avoids the origin-sentinel pull), then widen
+        // to include only content on or at the board — anything whose bounds touch the outline's box.
         var outlineBounds = CoordRect.Union(outline.Select(p => new CoordRect(p, p)));
-        return outlineBounds.Union(Bounds);
+        var result = outlineBounds;
+        void Fold(CoordRect r) { if (r.Intersects(outlineBounds)) result = result.Union(r); }
+
+        foreach (var pad in _pads) Fold(pad.Bounds);
+        foreach (var via in _vias) Fold(via.Bounds);
+        foreach (var track in _tracks) Fold(track.Bounds);
+        foreach (var arc in _arcs) Fold(arc.Bounds);
+        foreach (var text in _texts) Fold(text.Bounds);
+        foreach (var fill in _fills) Fold(fill.Bounds);
+        foreach (var region in _regions) Fold(region.Bounds);
+        foreach (var body in _componentBodies) Fold(body.Bounds);
+        foreach (var component in _components) Fold(component.Bounds);
+        // Embedded-board placements (panels): the tiled sub-board array is real board content, so fold in
+        // its full extent the same way the Bounds getter does (filtered, so a stray off-panel placement
+        // still can't blow up the frame).
+        foreach (var eb in _embeddedBoards)
+        {
+            if (eb.X1Location == eb.X2Location && eb.Y1Location == eb.Y2Location) continue;
+            var dx = Coord.FromRaw(eb.ColSpacing.ToRaw() * Math.Max(0, eb.ColCount - 1));
+            var dy = Coord.FromRaw(eb.RowSpacing.ToRaw() * Math.Max(0, eb.RowCount - 1));
+            Fold(new CoordRect(
+                new CoordPoint(eb.X1Location, eb.Y1Location),
+                new CoordPoint(eb.X2Location + dx, eb.Y2Location + dy)));
+        }
+        return result;
     }
 
     /// <summary>

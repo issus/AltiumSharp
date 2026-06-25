@@ -216,15 +216,23 @@ public sealed class PcbRealisticRenderer
             context.EndGroup();
         }
 
-        // Layer 6 ── Milled cut-outs / slots: geometry on a mechanical "RouteToolPath" layer removes board
-        //            material, so paint it in the page background to read as a hole through the board.
-        if (millingLayers.Count > 0)
+        // Layer 6 ── Cut-outs / slots remove board material, so they are painted in the page background to
+        //            read as a hole right through the board. Two sources contribute: geometry on a
+        //            mechanical milling ("RouteToolPath") layer, and any region flagged as a board cut-out
+        //            (the ISBOARDCUTOUT key) — these mark a void in the board shape, live on a mechanical
+        //            layer, and are otherwise drawn by no other pass. (A Cutout-kind region on a copper
+        //            layer is only a void in a pour, not a hole through the board, so it is not included.)
+        var boardCutouts = collected.Regions
+            .Where(r => r.IsBoardCutout == true && !millingLayers.Contains(r.Layer))
+            .ToList();
+        if (millingLayers.Count > 0 || boardCutouts.Count > 0)
         {
             context.BeginGroup("cutouts");
             foreach (var t in collected.Tracks) if (millingLayers.Contains(t.Layer)) DrawTrack(context, t, _backgroundArgb);
             foreach (var a in collected.Arcs) if (millingLayers.Contains(a.Layer)) DrawArc(context, a, _backgroundArgb);
             foreach (var f in collected.Fills) if (millingLayers.Contains(f.Layer)) DrawFill(context, f, _backgroundArgb);
             foreach (var r in collected.Regions) if (millingLayers.Contains(r.Layer)) DrawRegion(context, r, _backgroundArgb);
+            foreach (var r in boardCutouts) DrawRegion(context, r, _backgroundArgb);
             context.EndGroup();
         }
 
