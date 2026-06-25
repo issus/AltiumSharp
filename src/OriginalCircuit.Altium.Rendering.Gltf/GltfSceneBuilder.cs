@@ -55,6 +55,9 @@ internal sealed class GltfSceneBuilder
     // V-cut (scoring) lines (panel-centred mm): partial-depth grooves that do NOT cut through, so the
     // laminate stays continuous across them. Rendered as surface lines, never subtracted from the board.
     private readonly List<(Vec2 A, Vec2 B, double W)> _vcuts = [];
+    // A TrueType PCB string's Height is the font CELL height, a bit larger than the point size (em); Altium
+    // renders the em a touch smaller. Matched against the inverted-rect box Altium sizes to the text.
+    private const double TtEmScale = 0.8;
 
     public GltfSceneBuilder(PcbDocument doc, GltfRenderSettings settings, GltfBuilder? sharedBuilder = null)
     {
@@ -481,10 +484,12 @@ internal sealed class GltfSceneBuilder
     // plain text); otherwise it is inverted (negative) text, stroke-font text, or TrueType text.
     private void AddText(MeshBuffer mesh, PcbText text, double z, bool faceUp)
     {
+        bool framed = (text.UseInvertedRectangle || text.IsFrame)
+                      && text.InvertedRectWidth > Coord.Zero && text.InvertedRectHeight > Coord.Zero;
         if (text.TextKind == PcbTextKind.BarCode)
             AddBarcode(mesh, text, z, faceUp);
-        else if (text.UseInvertedRectangle && text.InvertedRectWidth > Coord.Zero && text.InvertedRectHeight > Coord.Zero)
-            AddInvertedText(mesh, text, z, faceUp);
+        else if (framed)
+            AddFramedText(mesh, text, z, faceUp); // text justified WITHIN its frame box (Location = bottom-left)
         else if (text.TextKind == PcbTextKind.Stroke && !text.IsTrueType)
             AddStrokeText(mesh, text, z, faceUp);
         else
@@ -505,27 +510,31 @@ internal sealed class GltfSceneBuilder
     // Renders TrueType text as filled glyph geometry (its real font shapes) at the silk plane.
     private void AddTrueTypeText(MeshBuffer mesh, PcbText text, double z, bool faceUp)
     {
-        double h = text.Height.ToMm();
-        if (h <= 0) return;
+        double H = text.Height.ToMm();
+        if (H <= 0) return;
+        double em = H * TtEmScale; // Altium sizes a TrueType string so its font cell ≈ Height; the em is smaller
         var lines = text.Text.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n');
         int n = lines.Length;
-        double lineH = h * 1.2, cap = 0.72 * h;
+        double lineH = em * 1.2, cap = 0.715 * em;
 
-        string justTt = text.Justification.ToString();
+        // Non-framed free strings are positioned by their legacy Location anchor (Altium does NOT apply the
+        // inverted-rect justification to them — that only drives FRAMED text). The glyphs are mirrored about
+        // the anchor below, which by itself flips the reading direction, so the alignment is NOT swapped.
+        var (ha, va) = LegacyJustification(text);
         double radTt = text.Rotation * Math.PI / 180.0;
         double cosTt = Math.Cos(radTt), sinTt = Math.Sin(radTt);
         var locTt = P(text.Location);
 
-        double offY0 = justTt.Contains("Top") ? -cap : justTt.Contains("Middle") ? -cap / 2.0 : 0.0;
-        double blockShift = justTt.Contains("Top") ? 0.0 : justTt.Contains("Middle") ? (n - 1) / 2.0 * lineH : (n - 1) * lineH;
+        double offY0 = va == 0 ? -cap : va == 1 ? -cap / 2.0 : 0.0;             // Top / Middle / Bottom anchor
+        double blockShift = va == 0 ? 0.0 : va == 1 ? (n - 1) / 2.0 * lineH : (n - 1) * lineH;
 
         bool any = false;
         for (int li = 0; li < n; li++)
         {
-            var glyphs = GltfTrueTypeText.Layout(lines[li], text.FontName, text.FontBold, text.FontItalic, h, out double advance);
+            var glyphs = GltfTrueTypeText.Layout(lines[li], text.FontName, text.FontBold, text.FontItalic, em, out double advance);
             if (glyphs.Count == 0) continue;
 
-            double offX = justTt.Contains("Right") ? -advance : justTt.Contains("Left") ? 0.0 : -advance / 2.0;
+            double offX = ha == 2 ? -advance : ha == 0 ? 0.0 : -advance / 2.0;  // Right / Left / Center
             double baselineY = offY0 - (li * lineH) + blockShift;
 
             Vec2 Map(Vec2 g)
@@ -551,33 +560,36 @@ internal sealed class GltfSceneBuilder
         if (!any) AddStrokeText(mesh, text, z, faceUp);
     }
 
-    // Renders inverted (negative) text: a filled solder/silk rectangle with the glyphs knocked out, so
-    // the board shows through the letters. The rectangle is anchored bottom-left at the text location and
-    // the glyphs are justified within it per the inverted-rect justification.
-    private void AddInvertedText(MeshBuffer mesh, PcbText text, double z, bool faceUp)
+    // Renders FRAMED text: the glyphs are laid out and justified WITHIN the text's frame box (whose
+    // bottom-left corner is the Location), not anchored at a point. When the frame is INVERTED the box is
+    // filled and the glyphs are knocked out of it (negative text, the board shows through the letters);
+    // otherwise the glyphs are simply drawn — this is Altium's multi-line "Frame" text mode (e.g. a centred
+    // title block sitting to one side of a line because it is centred in its wide frame, not on its anchor).
+    private void AddFramedText(MeshBuffer mesh, PcbText text, double z, bool faceUp)
     {
         double w = text.InvertedRectWidth.ToMm(), h = text.InvertedRectHeight.ToMm();
         double rad = text.Rotation * Math.PI / 180.0;
         double cos = Math.Cos(rad), sin = Math.Sin(rad);
         var loc = P(text.Location);
 
-        // Local rect space: x right (0..w), y up (0..h), bottom-left at the location; mirrored text flips x.
+        // Local frame space: x right (0..w), y up (0..h), bottom-left at the location; mirrored text flips x.
         Vec2 L(double lx, double ly)
         {
             if (text.IsMirrored) lx = w - lx;
             return new Vec2(loc.X + (lx * cos) - (ly * sin), loc.Y + (lx * sin) + (ly * cos));
         }
-        var rect = new List<Vec2> { L(0, 0), L(w, 0), L(w, h), L(0, h) };
 
-        // The knocked-out glyphs (TrueType only; a stroke inverted box just stays solid).
-        var knockouts = new List<IReadOnlyList<Vec2>>();
+        // Lay each glyph out within the frame per the frame justification.
+        var glyphRegions = new List<(List<Vec2> Outer, List<List<Vec2>> Holes)>();
         if (text.IsTrueType || text.TextKind == PcbTextKind.TrueType)
         {
             var lines = text.Text.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n');
             int n = lines.Length;
-            double margin = Math.Min(w, h) * 0.12;
-            double glyphH = Math.Min(text.Height.ToMm(), Math.Max(0.1, ((h - (2 * margin)) / n) * 0.82));
-            double lineH = glyphH * 1.25;
+            // The box is sized by Altium to bound the text, so fill most of it: the em is the Height-derived
+            // size (TtEmScale), clamped to the box height so multi-line / tight boxes still fit.
+            double margin = Math.Min(w, h) * 0.07;
+            double glyphH = Math.Min(text.Height.ToMm() * TtEmScale, Math.Max(0.1, ((h - (2 * margin)) / n) * 0.92));
+            double lineH = glyphH * 1.2;
             double blockH = lineH * n;
             (int ha, int va) = MapInvertedJustification(text.InvertedRectJustification);
             double blockTop = va == 0 ? h - margin : va == 2 ? margin + blockH : (h + blockH) / 2.0; // top edge of the text block
@@ -588,17 +600,28 @@ internal sealed class GltfSceneBuilder
                 double offX = ha == 2 ? w - margin - advance : ha == 0 ? margin : (w - advance) / 2.0;
                 double baselineY = blockTop - (lineH * (li + 1)) + ((lineH - glyphH) / 2.0);
                 foreach (var glyph in glyphs)
-                {
-                    knockouts.Add(glyph.Outer.ConvertAll(p => L(p.X + offX, p.Y + baselineY)));
-                    foreach (var bowl in glyph.Holes) knockouts.Add(bowl.ConvertAll(p => L(p.X + offX, p.Y + baselineY)));
-                }
+                    glyphRegions.Add((
+                        glyph.Outer.ConvertAll(p => L(p.X + offX, p.Y + baselineY)),
+                        glyph.Holes.ConvertAll(bowl => bowl.ConvertAll(p => L(p.X + offX, p.Y + baselineY)))));
             }
         }
 
-        // Preserve input winding: each glyph contributes its outer (CCW) and counters/bowls (CW), and the
-        // opposite winding is what keeps a letter's counter filled (the box shows through only the strokes).
-        foreach (var (outer, holes) in SkiaPolyTools.Difference(rect, knockouts, normalizeWinding: false))
-            mesh.AddFlatPolygon(outer, holes.Count > 0 ? holes.ConvertAll(x => (IReadOnlyList<Vec2>)x) : null, z, faceUp);
+        if (text.UseInvertedRectangle)
+        {
+            // Inverted: fill the box and knock the glyphs out of it. Preserve input winding so each glyph's
+            // outer (CCW) and counters/bowls (CW) net winding 0 inside the counter, keeping it filled.
+            var rect = new List<Vec2> { L(0, 0), L(w, 0), L(w, h), L(0, h) };
+            var knockouts = new List<IReadOnlyList<Vec2>>();
+            foreach (var (outer, holes) in glyphRegions) { knockouts.Add(outer); knockouts.AddRange(holes); }
+            foreach (var (outer, holes) in SkiaPolyTools.Difference(rect, knockouts, normalizeWinding: false))
+                mesh.AddFlatPolygon(outer, holes.Count > 0 ? holes.ConvertAll(x => (IReadOnlyList<Vec2>)x) : null, z, faceUp);
+        }
+        else
+        {
+            // Plain frame: just draw the glyphs (filled, with their counters as holes).
+            foreach (var (outer, holes) in glyphRegions)
+                mesh.AddFlatPolygon(outer, holes.Count > 0 ? holes.ConvertAll(x => (IReadOnlyList<Vec2>)x) : null, z, faceUp);
+        }
     }
 
     // Altium inverted-rect justification is column-major 1..9 (Manual=0). Returns (h: 0=Left,1=Center,2=Right;
@@ -608,6 +631,18 @@ internal sealed class GltfSceneBuilder
         int v = (int)j;
         if (v is < 1 or > 9) return (1, 1);
         return ((v - 1) / 3, (v - 1) % 3);
+    }
+
+    // The legacy Location justification of a PCB text (the anchor point's meaning). For non-framed free
+    // strings this — NOT the inverted-rect justification — is what Altium positions by; the inverted-rect
+    // justification only aligns text WITHIN a frame. Returns (h: 0=Left,1=Center,2=Right; v: 0=Top,1=Middle,
+    // 2=Bottom).
+    private static (int H, int V) LegacyJustification(PcbText text)
+    {
+        string s = text.Justification.ToString();
+        int h = s.Contains("Right") ? 2 : s.Contains("Left") ? 0 : 1;
+        int v = s.Contains("Top") ? 0 : s.Contains("Bottom") ? 2 : 1;
+        return (h, v);
     }
 
     // Builds the stroke geometry for a PCB text using Altium's stroke font: normalized glyph segments
@@ -623,11 +658,12 @@ internal sealed class GltfSceneBuilder
         var segments = AltiumStrokeFont.Layout(text.Text, AltiumStrokeFont.FromStrokeFont(text.StrokeFont), out float advance);
         if (segments.Count == 0) return;
 
-        // Anchor per the text justification (Altium text is bottom-left by default). Glyph space is
-        // normalized (height 1, baseline y=0, +x right, +y up), so the offsets are in those units.
-        string just = text.Justification.ToString();
-        double offX = just.Contains("Right") ? -advance : just.Contains("Left") ? 0.0 : -advance / 2.0;
-        double offY = just.Contains("Top") ? -1.0 : just.Contains("Bottom") ? 0.0 : -0.5;
+        // Anchor per the legacy Location justification (the inverted-rect justification drives only FRAMED
+        // text). Glyph space is normalized (height 1, baseline y=0, +x right, +y up); mirrored text is
+        // reflected about the anchor below, so the alignment is not swapped.
+        var (ha, va) = LegacyJustification(text);
+        double offX = ha == 2 ? -advance : ha == 0 ? 0.0 : -advance / 2.0;
+        double offY = va == 0 ? -1.0 : va == 2 ? 0.0 : -0.5;
 
         double rad = text.Rotation * Math.PI / 180.0;
         double cos = Math.Cos(rad), sin = Math.Sin(rad);

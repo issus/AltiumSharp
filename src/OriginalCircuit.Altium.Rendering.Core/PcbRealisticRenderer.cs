@@ -34,6 +34,8 @@ public sealed class PcbRealisticRenderer
     // Per-corner samples when tessellating rounded shapes into fill contours.
     private const int ArcSteps = 8;
     private const int CircleSteps = 40;
+    // A TrueType PCB string's Height is the font CELL height; Altium renders the em (point size) a bit smaller.
+    private const double TtEmScale = 0.8;
 
     /// <summary>
     /// Creates a renderer that maps world coordinates with <paramref name="transform"/> and paints with
@@ -574,6 +576,10 @@ public sealed class PcbRealisticRenderer
 
         var (x, y) = _transform.WorldToScreen(text.Location.X, text.Location.Y);
         var height = Math.Max(1, _transform.ScaleValue(text.Height));
+        // Altium's TrueType strings render at an em a bit smaller than the Height cell; stroke text fills the
+        // Height exactly. (Match the inverted-rect box Altium sizes to the text.)
+        bool isTrueType = text.IsTrueType || text.TextKind != PcbTextKind.Stroke;
+        double glyphEm = isTrueType ? height * TtEmScale : height;
         double rotation = Finite(text.Rotation);
 
         bool inverted = text.UseInvertedRectangle && text.InvertedRectWidth > Coord.Zero && text.InvertedRectHeight > Coord.Zero;
@@ -595,9 +601,10 @@ public sealed class PcbRealisticRenderer
                 if (inverted) context.FillRectangle(0, -h, w, h, color); // ink box; glyphs are knocked out
                 var glyphColor = inverted ? knockoutColor : color;
                 var (ha, va) = MapPcbJustification(text.InvertedRectJustification);
-                double margin = Math.Min(w, h) * 0.08;
-                double lineH = Math.Max(1, Math.Min(height * 1.15, (h - 2 * margin) / lines.Length));
-                double glyphH = Math.Max(1, Math.Min(height, lineH * 0.82));
+                // The box is sized by Altium to bound the text, so fill most of it.
+                double margin = Math.Min(w, h) * 0.07;
+                double glyphH = Math.Max(1, Math.Min(height * TtEmScale, (h - 2 * margin) / lines.Length * 0.92));
+                double lineH = glyphH * 1.2;
                 double blockH = lineH * lines.Length;
                 double ax = ha == TextHAlign.Right ? w - margin : ha == TextHAlign.Center ? w / 2.0 : margin;
                 double blockTop = va == TextVAlign.Top ? -h + margin
@@ -609,16 +616,19 @@ public sealed class PcbRealisticRenderer
         }
         else
         {
+            // Non-framed free strings are positioned by their legacy Location anchor — Altium does not apply
+            // the inverted-rect justification to them (that drives only framed text). The mirror Scale(-1,1)
+            // above already reflects the glyphs about the anchor.
             var (ha, va) = MapJustification(text.Justification.ToString());
-            double lineH = height * 1.2;
+            double lineH = glyphEm * 1.2;
             int n = lines.Length;
             for (int i = 0; i < n; i++)
             {
                 // i=0 is the top line. Bottom-justified text puts the bottom line's baseline at Location.
                 double baseline = va == TextVAlign.Bottom ? -(n - 1 - i) * lineH
-                                : va == TextVAlign.Top ? height + i * lineH
-                                : (i - (n - 1) / 2.0) * lineH + height / 2.0;
-                DrawTextLine(context, lines[i], text, 0, baseline, height, color, ha);
+                                : va == TextVAlign.Top ? glyphEm + i * lineH
+                                : (i - (n - 1) / 2.0) * lineH + glyphEm / 2.0;
+                DrawTextLine(context, lines[i], text, 0, baseline, glyphEm, color, ha);
             }
         }
         context.RestoreState();
