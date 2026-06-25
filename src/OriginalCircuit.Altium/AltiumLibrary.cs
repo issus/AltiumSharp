@@ -1,5 +1,6 @@
 using OriginalCircuit.Altium.Models;
 using OriginalCircuit.Altium.Models.Pcb;
+using OriginalCircuit.Altium.Models.Project;
 using OriginalCircuit.Altium.Models.Sch;
 using OriginalCircuit.Altium.Serialization.Readers;
 
@@ -27,9 +28,12 @@ public static class AltiumLibrary
         {
             ".pcblib" => await OpenPcbLibAsync(path, cancellationToken).ConfigureAwait(false),
             ".schlib" => await OpenSchLibAsync(path, cancellationToken).ConfigureAwait(false),
+            ".prjpcb" => throw new NotSupportedException(
+                "A .PrjPcb project is not a library; use OpenProjectAsync()."),
             _ => throw new NotSupportedException(
                 $"Unsupported file type: {extension}. " +
-                $"For .SchDoc use OpenSchDocAsync(), for .PcbDoc use OpenPcbDocAsync().")
+                $"For .SchDoc use OpenSchDocAsync(), for .PcbDoc use OpenPcbDocAsync(), " +
+                $"for .PrjPcb use OpenProjectAsync().")
         };
     }
 
@@ -122,6 +126,40 @@ public static class AltiumLibrary
     {
         var reader = new PcbDocReader();
         return new ValueTask<IPcbDocument>(reader.Read(stream));
+    }
+
+    /// <summary>
+    /// Opens an Altium project (.PrjPcb) file, also loading its sibling .PrjPcbStructure
+    /// (the compiled logical sheet hierarchy) when present.
+    /// </summary>
+    public static async ValueTask<AltiumProject> OpenProjectAsync(
+        string path,
+        CancellationToken cancellationToken = default)
+    {
+        var reader = new PrjPcbReader();
+        return await reader.ReadAsync(path, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Opens an Altium project from a stream of .PrjPcb text. The sibling .PrjPcbStructure
+    /// hierarchy file cannot be located from a stream, so it is not loaded.
+    /// </summary>
+    public static ValueTask<AltiumProject> OpenProjectAsync(
+        Stream stream,
+        CancellationToken cancellationToken = default)
+    {
+        var reader = new PrjPcbReader();
+        return new ValueTask<AltiumProject>(reader.Read(stream));
+    }
+
+    /// <summary>
+    /// Creates a new empty PCB project with a default <c>[Design]</c> section.
+    /// </summary>
+    public static AltiumProject CreateProject()
+    {
+        var project = new AltiumProject();
+        project.Design.Version = "1.0";
+        return project;
     }
 
     /// <summary>

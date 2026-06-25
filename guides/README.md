@@ -30,6 +30,7 @@ For installation, the quick-start, and the coordinate system, see the top-level
 | [Loading & inspecting files](../examples/LoadFiles/) | Open all four file types and walk their contents | `LoadFiles` |
 | [Inspecting a PCB](../examples/InspectBoard/) | Board size, layer stack, primitive/net counts, rule summary | `InspectBoard` |
 | [Nets & connectivity](../examples/NetReport/) | Per-net copper membership, and what the model does/doesn't track | `NetReport` |
+| [Inspecting a whole project](../examples/InspectProject/) | Documents, variants, configurations and the sheet hierarchy from a `.PrjPcb` | `InspectProject` |
 
 ### Extracting
 

@@ -168,6 +168,16 @@ See [WalkHierarchy/README.md](WalkHierarchy/README.md).
 dotnet run --project examples/WalkHierarchy
 ```
 
+### InspectProject
+
+Loads a whole project (`.PrjPcb`) and reports its documents (grouped by kind),
+configurations, assembly variants, output jobs and compiled sheet hierarchy, then opens
+the source documents through the project. See [InspectProject/README.md](InspectProject/README.md).
+
+```
+dotnet run --project examples/InspectProject -- "MyBoard.PrjPcb"
+```
+
 ### DiffLibraries
 
 Reports added/removed/changed components between two libraries of the same type.
