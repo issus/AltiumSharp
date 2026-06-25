@@ -19,10 +19,11 @@ let renderer, scene, camera, controls, current, canvasEl, headlight;
 
 export function init(canvas) {
     canvasEl = canvas;
-    // A logarithmic depth buffer spreads precision across the whole near..far range instead of crowding it
-    // near the camera, so the thin, near-coplanar PCB layers (copper / mask / silkscreen, microns apart on a
-    // board that may be hundreds of mm across) don't z-fight — the mask bleeding through the silk.
-    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, logarithmicDepthBuffer: true });
+    // The thin PCB layers (copper / mask / silkscreen) sit microns apart and z-fight on a large board. They
+    // are kept apart with a per-layer POLYGON OFFSET (applied in loadModel) rather than a logarithmic depth
+    // buffer — polygon offset is a fixed-function depth bias that a log-depth buffer would silently ignore
+    // (the log depth is written in the fragment shader, after the offset stage).
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.0;
@@ -73,9 +74,29 @@ export async function loadModel(url) {
     const gltf = await new GLTFLoader().loadAsync(url);
     if (current) { scene.remove(current); dispose(current); }
     current = gltf.scene;
+    applyLayerDepthBias(current);
     scene.add(current);
     frame(current);
     return featureGroups();
+}
+
+// Bias each stacked board layer towards the camera in depth-buffer space so the near-coplanar layers paint
+// in a fixed order — substrate < copper < mask < silk/v-cut — without z-fighting and without floating the
+// geometry. Negative polygonOffset pulls a polygon nearer in depth; it scales with the local depth-buffer
+// resolution, so it stays robust at any board size or viewing distance. (Drills/components are real 3D
+// bodies, not coplanar sheets, so they are left alone.)
+const LAYER_BIAS = { substrate: 0, copper: 1, soldermask: 2, vcut: 3, silkscreen: 3 };
+function applyLayerDepthBias(root) {
+    root.traverse(o => {
+        if (!o.isMesh || !o.material) return;
+        const rank = LAYER_BIAS[o.userData && o.userData.role];
+        if (!rank) return;
+        for (const m of (Array.isArray(o.material) ? o.material : [o.material])) {
+            m.polygonOffset = true;
+            m.polygonOffsetFactor = -rank;
+            m.polygonOffsetUnits = -2 * rank;
+        }
+    });
 }
 
 export function setLayerVisible(group, visible) {

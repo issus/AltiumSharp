@@ -48,6 +48,8 @@
 <div class="hint">drag = rotate · scroll = zoom · right-drag = pan</div>
 
 @code {
+    // A token fixed for the lifetime of the process; bumps the board-viewer.js URL on each app restart.
+    private static readonly string AssetVersion = DateTime.UtcNow.Ticks.ToString("x");
     private ElementReference _canvas;
     private IJSObjectReference? _module;
     private string _selected = "";
@@ -61,7 +63,9 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender || Library.Names.Count == 0) return;
-        _module = await JS.InvokeAsync<IJSObjectReference>("import", "./board-viewer.js");
+        // Version the module URL with a per-process token so a browser always loads the current script after
+        // the app restarts, rather than a stale cached copy of board-viewer.js.
+        _module = await JS.InvokeAsync<IJSObjectReference>("import", $"./board-viewer.js?v={AssetVersion}");
         await _module.InvokeVoidAsync("init", _canvas);
         await LoadAsync();
     }
