@@ -262,6 +262,14 @@ internal sealed class GltfSceneBuilder
             var holes = inner > 0 ? new List<IReadOnlyList<Vec2>> { Shapes.Circle(center, inner, Seg(inner)) } : null;
             mesh.AddSheet(ring, holes, z);
         }
+
+        // Text etched in copper — board IDs, logos, and fab barcodes (Code 128 / QR / Data Matrix). Drawn a
+        // hair above the plane so it does not z-fight a pour beneath; it reads as copper (and shows bright
+        // where the solder mask is open over it, tinted where the mask covers it).
+        double textZ = z + (layerId == 32 ? -0.012 : 0.012);
+        foreach (var text in Texts)
+            if (text.Layer == layerId && !string.IsNullOrEmpty(text.Text) && IsTextVisible(text))
+                AddText(mesh, text, textZ, faceUp: layerId != 32);
     }
 
     // Adds a copper sheet (a track, arc, fill, or pour region) with any pad drill holes that fall
