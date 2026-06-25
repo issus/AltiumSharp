@@ -30,6 +30,15 @@ public sealed class PcbRenderSettings
     public bool ShowInternalCopper { get; set; } = true;
 
     /// <summary>
+    /// Trim everything outside the physical board outline. When set, primitives that overhang the board
+    /// edge — silkscreen text, notes, copper, etc. — are clipped to the board-outline polygon, so the
+    /// render shows only what falls within the manufactured board area. Requires a Board6 outline
+    /// (<see cref="OriginalCircuit.Altium.Models.Pcb.PcbDocument.GetBoardOutline"/>); a document with no
+    /// outline is left unclipped. Default <see langword="false"/>.
+    /// </summary>
+    public bool ClipToBoardOutline { get; set; }
+
+    /// <summary>
     /// Resolves whether a layer should be drawn, applying <see cref="LayerFilter"/> when present,
     /// otherwise the convenience toggles. View-side culling is handled separately by the renderer.
     /// </summary>

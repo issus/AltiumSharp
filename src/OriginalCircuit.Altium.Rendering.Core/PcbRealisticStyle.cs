@@ -82,6 +82,16 @@ public sealed class PcbRealisticStyle
     public bool ShowDrillHoles { get; set; } = true;
 
     /// <summary>
+    /// Trim everything outside the physical board outline. When set, the whole composited stack —
+    /// substrate, copper, solder mask, silkscreen and drills — is clipped to the board-outline polygon,
+    /// so silk/copper/text overhanging the board edge is removed and the image shows only the
+    /// manufactured board area. Requires a Board6 outline; a board with none is left unclipped.
+    /// Independent of <see cref="CropToBoardBounds"/> (which only frames the image to the board's
+    /// bounding box). Default <see langword="false"/>.
+    /// </summary>
+    public bool ClipToBoardOutline { get; set; }
+
+    /// <summary>
     /// Solder-mask opening expansion applied to a pad/via copper shape when the object's expansion is
     /// rule-driven (<c>SolderMaskExpansionMode == 1</c>) and no matching design rule is found. A small
     /// positive value (a few mils) leaves the realistic ring of bare laminate around each opening.

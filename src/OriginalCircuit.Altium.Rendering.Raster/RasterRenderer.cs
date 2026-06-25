@@ -269,6 +269,7 @@ public sealed class RasterRenderer : IRenderer, IPcbLibRenderer
         {
             renderer.ViewSide = settings.ViewSide;
             renderer.LayerFilter = settings.IsLayerAllowed;
+            renderer.ClipToBoardOutline = settings.ClipToBoardOutline;
         }
         return renderer;
     }

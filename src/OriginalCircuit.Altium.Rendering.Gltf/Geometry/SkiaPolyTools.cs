@@ -52,6 +52,48 @@ internal static class SkiaPolyTools
         return ToGroups(result);
     }
 
+    /// <summary>
+    /// Intersects a holed feature — <paramref name="subjectOuter"/> minus <paramref name="subjectHoles"/>
+    /// — with <paramref name="clip"/>, returning the part inside <paramref name="clip"/> as outer/hole
+    /// contour groups (millimetres). Used to clip a copper sheet or pour (with its drill holes /
+    /// clearances) to the board outline while keeping the holes. Falls back to the holeless overload when
+    /// there are no holes.
+    /// </summary>
+    public static List<(List<Vec2> Outer, List<List<Vec2>> Holes)> Intersect(
+        IReadOnlyList<Vec2> subjectOuter, IReadOnlyList<IReadOnlyList<Vec2>>? subjectHoles, IReadOnlyList<Vec2> clip)
+    {
+        if (subjectHoles is null || subjectHoles.Count == 0) return Intersect(subjectOuter, clip);
+        if (subjectOuter.Count < 3 || clip.Count < 3) return [];
+
+        // Subject = outer (CCW) minus holes (CW) under the Winding rule; intersect that region with the clip.
+        using var a = FromOuterWithHoles(subjectOuter, subjectHoles);
+        using var b = FromPolygons([clip], normalizeWinding: true);
+        using var result = a.Op(b, SKPathOp.Intersect);
+        return ToGroups(result);
+    }
+
+    // Builds an outer-with-holes region: the outer ring forced CCW and every hole forced CW, so under the
+    // non-zero Winding rule the holes are punched out of the outer (a hole inside the outer nets winding 0).
+    private static SKPath FromOuterWithHoles(IReadOnlyList<Vec2> outer, IReadOnlyList<IReadOnlyList<Vec2>> holes)
+    {
+        var path = new SKPath { FillType = SKPathFillType.Winding };
+        static float Snap(double v) => (float)(Math.Round(v * Scale / Grid) * Grid);
+        void Emit(IReadOnlyList<Vec2> poly, bool wantCcw)
+        {
+            if (poly.Count < 3) return;
+            bool reverse = (SignedArea(poly) > 0) != wantCcw;
+            path.MoveTo(Snap(poly[0].X), Snap(poly[0].Y));
+            if (!reverse)
+                for (int i = 1; i < poly.Count; i++) path.LineTo(Snap(poly[i].X), Snap(poly[i].Y));
+            else
+                for (int i = poly.Count - 1; i >= 1; i--) path.LineTo(Snap(poly[i].X), Snap(poly[i].Y));
+            path.Close();
+        }
+        Emit(outer, wantCcw: true);
+        foreach (var h in holes) Emit(h, wantCcw: false);
+        return path;
+    }
+
     private static SKPath FromPolygons(IReadOnlyList<IReadOnlyList<Vec2>> polys, bool normalizeWinding)
     {
         // Non-zero winding so overlapping contours union rather than cancel. When normalizeWinding is set,

@@ -41,6 +41,14 @@ public sealed class PcbComponentRenderer
     public Func<int, bool>? LayerFilter { get; set; }
 
     /// <summary>
+    /// Trim everything outside the physical board outline. When set, document primitives (and the panel
+    /// placement outlines) are clipped to the board-outline polygon so overhanging silk/copper/text
+    /// outside the manufactured board area is removed. Only applies to the whole-document render and only
+    /// when the document has a Board6 outline. Default <see langword="false"/>.
+    /// </summary>
+    public bool ClipToBoardOutline { get; set; }
+
+    /// <summary>
     /// Initializes a new instance of <see cref="PcbComponentRenderer"/> with the specified coordinate transform.
     /// </summary>
     /// <param name="transform">The coordinate transform used to map world coordinates to screen coordinates.</param>
@@ -124,8 +132,20 @@ public sealed class PcbComponentRenderer
         if (flipped) { context.SaveState(); ApplyHorizontalFlip(context); }
 
         // Substrate: fill the physical board outline first so the board area reads clearly against
-        // the canvas; every layer then draws on top of it.
-        RenderBoardFill(context, document.GetBoardOutline());
+        // the canvas; every layer then draws on top of it. The fill IS the outline, so it is drawn
+        // before any clip is applied (clipping it would be a no-op anyway).
+        var outline = document.GetBoardOutline();
+        RenderBoardFill(context, outline);
+
+        // Optionally clip the board content to the outline so silk/copper/text overhanging the board
+        // edge is trimmed to the manufactured area. Needs a real outline; a board with none is left
+        // unclipped. The clip is set in the current (post-flip) frame so it tracks a bottom view.
+        bool clip = ClipToBoardOutline && outline.Count >= 3;
+        if (clip)
+        {
+            context.SaveState();
+            context.SetClipPath(new[] { MapContour(outline) });
+        }
 
         var primitives = new List<(int layer, int priority, Action render)>();
         Collect(context, primitives,
@@ -144,6 +164,7 @@ public sealed class PcbComponentRenderer
         foreach (var board in document.EmbeddedBoards)
             RenderEmbeddedBoard(context, board);
 
+        if (clip) context.RestoreState();
         if (flipped) context.RestoreState();
     }
 

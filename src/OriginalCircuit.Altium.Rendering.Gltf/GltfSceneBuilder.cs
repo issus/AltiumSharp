@@ -33,6 +33,11 @@ internal sealed class GltfSceneBuilder
     private readonly List<IReadOnlyList<Vec2>> _placedBoardHoles = [];
     // Pad drill holes with their bounding box, for punching copper that runs over a barrel.
     private List<(IReadOnlyList<Vec2> Contour, double MinX, double MinY, double MaxX, double MaxY)> _drillBounds = [];
+    // Board-outline clip ring (panel-centred mm) when GltfRenderSettings.ClipToBoardOutline is set, with its
+    // bounding box. Copper and silkscreen features are intersected with it so overhanging geometry is trimmed
+    // to the manufactured board area. Null when clipping is off or the board carries no outline.
+    private List<Vec2>? _clip;
+    private double _clipMinX, _clipMinY, _clipMaxX, _clipMaxY;
     // When set, feature meshes are collected here (for an embedded sub-board) instead of becoming
     // top-level nodes, so a panel can instance them at each array position.
     private List<(int Mesh, string Name, JsonObject Extras)>? _capture;
@@ -93,6 +98,7 @@ internal sealed class GltfSceneBuilder
         if (composites) CollectFramePlacements(); else CollectOwnCuts();
 
         PrepareBoardHoles(bounds);
+        ResolveClipRing(bounds);
         if (_settings.IncludeSubstrate) BuildSubstrate(bounds);
         if (_settings.IncludeSubstrate) BuildVCuts();
         if (_settings.IncludeCopper) BuildCopperLayers();
@@ -251,7 +257,7 @@ internal sealed class GltfSceneBuilder
         {
             if (IsUnplatedHole(pad)) continue; // NPTH / mounting hole carries no copper
             var contour = PadContourForLayer(pad, layerId);
-            if (contour is not null) mesh.AddSheet(contour, PadHole(pad), z);
+            if (contour is not null) MeshSheet(mesh, contour, PadHole(pad), z);
         }
 
         foreach (var via in Vias)
@@ -262,7 +268,7 @@ internal sealed class GltfSceneBuilder
             var center = P(via.Location);
             var ring = Shapes.Circle(center, outer, Seg(outer));
             var holes = inner > 0 ? new List<IReadOnlyList<Vec2>> { Shapes.Circle(center, inner, Seg(inner)) } : null;
-            mesh.AddSheet(ring, holes, z);
+            MeshSheet(mesh, ring, holes, z);
         }
 
         // Text etched in copper — board IDs, logos, and fab barcodes (Code 128 / QR / Data Matrix). Drawn a
@@ -293,7 +299,7 @@ internal sealed class GltfSceneBuilder
 
         if (drills is null)
         {
-            mesh.AddSheet(outer, extraHoles, z); // no drill overlaps this sheet — unchanged fast path
+            MeshSheet(mesh, outer, extraHoles, z); // no drill overlaps this sheet — unchanged fast path
             return;
         }
 
@@ -301,7 +307,7 @@ internal sealed class GltfSceneBuilder
         if (extraHoles is not null) holes.AddRange(extraHoles);
         holes.AddRange(drills);
         foreach (var (o, h) in SkiaPolyTools.Difference(outer, holes))
-            mesh.AddSheet(o, h.Count > 0 ? h.ConvertAll(x => (IReadOnlyList<Vec2>)x) : null, z);
+            MeshSheet(mesh, o, h.Count > 0 ? h.ConvertAll(x => (IReadOnlyList<Vec2>)x) : null, z);
     }
 
     // ── Solder mask (an INVERSE layer) ──────────────────────────────────────────────────────────
@@ -470,13 +476,13 @@ internal sealed class GltfSceneBuilder
         var mesh = new MeshBuffer();
         foreach (var t in Tracks)
             if (t.Layer == layerId && t.Width.ToMm() > 0)
-                mesh.AddSheet(Shapes.Capsule(P(t.Start), P(t.End), t.Width.ToMm(), Caps(t.Width.ToMm() / 2)), null, z);
+                MeshSheet(mesh, Shapes.Capsule(P(t.Start), P(t.End), t.Width.ToMm(), Caps(t.Width.ToMm() / 2)), null, z);
         foreach (var a in Arcs)
             if (a.Layer == layerId && a.Radius.ToMm() > 0 && a.Width.ToMm() > 0)
-                mesh.AddSheet(ArcBand(a), null, z);
+                MeshSheet(mesh, ArcBand(a), null, z);
         foreach (var f in Fills)
             if (f.Layer == layerId)
-                mesh.AddSheet(FillRect(f), null, z);
+                MeshSheet(mesh, FillRect(f), null, z);
         foreach (var text in Texts)
             if (text.Layer == layerId && !string.IsNullOrEmpty(text.Text) && IsTextVisible(text))
                 AddText(mesh, text, z, faceUp: layerId != 34);
@@ -519,7 +525,7 @@ internal sealed class GltfSceneBuilder
         var barcode = PcbBarcodeGeometry.TryBuild(text);
         if (barcode is null) return;
         foreach (var quad in barcode.Foreground)
-            mesh.AddFlatPolygon(Array.ConvertAll(quad, P), null, z, faceUp);
+            MeshFlat(mesh, Array.ConvertAll(quad, P), null, z, faceUp);
     }
 
     // Renders TrueType text as filled glyph geometry (its real font shapes) at the silk plane.
@@ -565,7 +571,7 @@ internal sealed class GltfSceneBuilder
                 List<IReadOnlyList<Vec2>>? holes = glyph.Holes.Count > 0
                     ? glyph.Holes.ConvertAll(hh => (IReadOnlyList<Vec2>)hh.ConvertAll(Map))
                     : null;
-                mesh.AddFlatPolygon(outer, holes, z, faceUp);
+                MeshFlat(mesh, outer, holes, z, faceUp);
                 any = true;
             }
         }
@@ -629,13 +635,13 @@ internal sealed class GltfSceneBuilder
             var knockouts = new List<IReadOnlyList<Vec2>>();
             foreach (var (outer, holes) in glyphRegions) { knockouts.Add(outer); knockouts.AddRange(holes); }
             foreach (var (outer, holes) in SkiaPolyTools.Difference(rect, knockouts, normalizeWinding: false))
-                mesh.AddFlatPolygon(outer, holes.Count > 0 ? holes.ConvertAll(x => (IReadOnlyList<Vec2>)x) : null, z, faceUp);
+                MeshFlat(mesh, outer, holes.Count > 0 ? holes.ConvertAll(x => (IReadOnlyList<Vec2>)x) : null, z, faceUp);
         }
         else
         {
             // Plain frame: just draw the glyphs (filled, with their counters as holes).
             foreach (var (outer, holes) in glyphRegions)
-                mesh.AddFlatPolygon(outer, holes.Count > 0 ? holes.ConvertAll(x => (IReadOnlyList<Vec2>)x) : null, z, faceUp);
+                MeshFlat(mesh, outer, holes.Count > 0 ? holes.ConvertAll(x => (IReadOnlyList<Vec2>)x) : null, z, faceUp);
         }
     }
 
@@ -700,7 +706,7 @@ internal sealed class GltfSceneBuilder
             var d = b - a;
             if (d.Length < 1e-9) continue;
             var perp = new Vec2(-d.Y, d.X).Normalized() * half;
-            mesh.AddFlatPolygon([a + perp, b + perp, b - perp, a - perp], null, z, faceUp);
+            MeshFlat(mesh, [a + perp, b + perp, b - perp, a - perp], null, z, faceUp);
         }
     }
 
@@ -748,6 +754,59 @@ internal sealed class GltfSceneBuilder
             foreach (var p in h) { if (p.X < minX) minX = p.X; if (p.X > maxX) maxX = p.X; if (p.Y < minY) minY = p.Y; if (p.Y > maxY) maxY = p.Y; }
             return (h, minX, minY, maxX, maxY);
         });
+    }
+
+    // ── Board-outline clipping (opt-in) ─────────────────────────────────────────────────────────
+    // Computes the clip ring once when ClipToBoardOutline is set and the board has a real outline; copper
+    // and silkscreen features are then intersected with it so overhang outside the board is trimmed. The
+    // substrate/mask/drills are already outline-bounded and components are deliberately left unclipped.
+    private void ResolveClipRing((double minX, double minY, double maxX, double maxY) bounds)
+    {
+        _clip = null;
+        if (!_settings.ClipToBoardOutline) return;
+        if (_src.GetBoardOutline().Count < 3) return; // no real outline → nothing to clip to
+        var ring = OutlineRing(bounds);
+        if (ring.Count < 3) return;
+        _clip = ring;
+        _clipMinX = _clipMinY = double.MaxValue;
+        _clipMaxX = _clipMaxY = double.MinValue;
+        foreach (var p in ring)
+        {
+            if (p.X < _clipMinX) _clipMinX = p.X; if (p.X > _clipMaxX) _clipMaxX = p.X;
+            if (p.Y < _clipMinY) _clipMinY = p.Y; if (p.Y > _clipMaxY) _clipMaxY = p.Y;
+        }
+    }
+
+    // Adds a double-sided sheet, clipped to the board outline when clipping is on.
+    private void MeshSheet(MeshBuffer mesh, IReadOnlyList<Vec2> outer, IReadOnlyList<IReadOnlyList<Vec2>>? holes, double z)
+    {
+        if (_clip is null) { mesh.AddSheet(outer, holes, z); return; }
+        foreach (var (o, h) in ClipFeature(outer, holes))
+            mesh.AddSheet(o, h, z);
+    }
+
+    // Adds a flat (single-sided) polygon, clipped to the board outline when clipping is on.
+    private void MeshFlat(MeshBuffer mesh, IReadOnlyList<Vec2> outer, IReadOnlyList<IReadOnlyList<Vec2>>? holes, double z, bool faceUp)
+    {
+        if (_clip is null) { mesh.AddFlatPolygon(outer, holes, z, faceUp); return; }
+        foreach (var (o, h) in ClipFeature(outer, holes))
+            mesh.AddFlatPolygon(o, h, z, faceUp);
+    }
+
+    // Intersects a feature polygon (with holes) against the board-outline clip ring, yielding the inside
+    // parts. A cheap bounding-box reject drops features wholly outside the board without a boolean op.
+    private IEnumerable<(List<Vec2> Outer, List<IReadOnlyList<Vec2>>? Holes)> ClipFeature(
+        IReadOnlyList<Vec2> outer, IReadOnlyList<IReadOnlyList<Vec2>>? holes)
+    {
+        if (_clip is null || outer.Count < 3) yield break;
+
+        double minX = double.MaxValue, minY = double.MaxValue, maxX = double.MinValue, maxY = double.MinValue;
+        foreach (var p in outer) { if (p.X < minX) minX = p.X; if (p.X > maxX) maxX = p.X; if (p.Y < minY) minY = p.Y; if (p.Y > maxY) maxY = p.Y; }
+        if (maxX < _clipMinX || minX > _clipMaxX || maxY < _clipMinY || minY > _clipMaxY)
+            yield break; // wholly outside the board's bounding box — trimmed away
+
+        foreach (var (o, h) in SkiaPolyTools.Intersect(outer, holes, _clip))
+            yield return (o, h.Count > 0 ? h.ConvertAll(x => (IReadOnlyList<Vec2>)x) : null);
     }
 
     // ── Milled cut-outs ─────────────────────────────────────────────────────────────────────────
@@ -989,6 +1048,7 @@ internal sealed class GltfSceneBuilder
         var bounds = ComputeBoundsMm();
         AddMaterials();
         PrepareBoardHoles(bounds);
+        ResolveClipRing(bounds);
 
         // No substrate here: a panelised sub-board is part of the panel's one continuous laminate, which is
         // built once at panel scope. The sub-board contributes only its thin layers and components.

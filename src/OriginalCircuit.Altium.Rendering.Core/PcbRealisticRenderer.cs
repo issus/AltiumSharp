@@ -144,6 +144,16 @@ public sealed class PcbRealisticRenderer
         // disabled). The whole copper layer is drawn in this colour; the mask then tints whatever it covers.
         uint copperShownArgb = _style.ShowSurfaceFinish ? finishArgb : copperArgb;
 
+        // Optionally clip the whole stack to the board outline so overhanging silk/copper/text outside the
+        // manufactured board area is trimmed. Needs a real outline; a board with none is left unclipped.
+        // The substrate already fills only the outline, so clipping mainly trims the silk/copper overhang.
+        bool clip = _style.ClipToBoardOutline && outline is not null;
+        if (clip)
+        {
+            context.SaveState();
+            context.SetClipPath(new[] { outline.Value });
+        }
+
         // The renderer composites by physical layer, each emitted as a named group ("substrate", "copper",
         // "soldermask", "silkscreen", "drills") so a vector (SVG) export can toggle/style them individually.
 
@@ -218,6 +228,7 @@ public sealed class PcbRealisticRenderer
             context.EndGroup();
         }
 
+        if (clip) context.RestoreState();
         if (bottom) context.RestoreState();
     }
 

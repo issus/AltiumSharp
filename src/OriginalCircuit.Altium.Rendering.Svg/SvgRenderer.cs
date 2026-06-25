@@ -131,6 +131,7 @@ public sealed class SvgRenderer : IRenderer
         {
             renderer.ViewSide = settings.ViewSide;
             renderer.LayerFilter = settings.IsLayerAllowed;
+            renderer.ClipToBoardOutline = settings.ClipToBoardOutline;
         }
         return renderer;
     }

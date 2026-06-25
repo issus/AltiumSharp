@@ -59,6 +59,16 @@ public sealed class GltfRenderSettings
     public bool IncludeComponents { get; set; } = true;
 
     /// <summary>
+    /// Trim the flat board layers — copper and silkscreen, including their text and barcodes — to the
+    /// physical board outline, so geometry overhanging the board edge is removed and the model shows
+    /// only what falls within the manufactured board area. The substrate, solder mask and drills are
+    /// already bounded by the outline; placed component 3D bodies are <em>not</em> clipped, since a part
+    /// (e.g. a connector or card-edge) may legitimately overhang the edge. Requires a board outline;
+    /// a board with none is left unclipped. Default <see langword="false"/>.
+    /// </summary>
+    public bool ClipToBoardOutline { get; set; }
+
+    /// <summary>
     /// Optional explicit set of copper layer IDs (1-32) to include. When <see langword="null"/>,
     /// every copper layer present in the board's layer stack is included.
     /// </summary>
