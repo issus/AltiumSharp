@@ -366,7 +366,10 @@ public sealed class PcbLibWriter
         // Altium serializes HEIGHT as a mil-suffixed coordinate string (e.g. "0mil"),
         // not a raw integer, with trailing zeros trimmed.
         parameters["HEIGHT"] = FormatMilCoord(component.Height);
-        if (!string.IsNullOrEmpty(component.Description))
+        // Emit DESCRIPTION whenever it was present — Altium keeps an empty "DESCRIPTION=" entry, and
+        // the reader leaves Description null only when the key was absent (empty string = present but
+        // blank). Writing only on non-empty would drop a blank DESCRIPTION and break byte fidelity.
+        if (component.Description != null)
             parameters["DESCRIPTION"] = component.Description;
         // Altium always emits ITEMGUID and REVISIONGUID, even when empty.
         parameters["ITEMGUID"] = component.ItemGUID ?? "";

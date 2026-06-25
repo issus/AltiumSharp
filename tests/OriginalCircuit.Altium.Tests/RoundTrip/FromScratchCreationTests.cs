@@ -159,6 +159,48 @@ public sealed class FromScratchCreationTests
     }
 
     [Fact]
+    public void PcbLib_ComponentDescription_PresentButEmpty_RoundTrips()
+    {
+        // Altium keeps a blank "DESCRIPTION=" entry in a footprint's Parameters stream. An empty but
+        // present Description must survive the round-trip as "" rather than being dropped — otherwise
+        // the stream shrinks and byte fidelity breaks. Description is null only when the key was absent.
+        var library = new PcbLibrary();
+        var withEmpty = PcbComponent.Create("HasEmptyDesc").Build();
+        withEmpty.Description = "";
+        withEmpty.AddPad(new PcbPad
+        {
+            Designator = "1",
+            Location = new CoordPoint(Coord.FromMils(0), Coord.FromMils(0)),
+            SizeTop = new CoordPoint(Coord.FromMils(50), Coord.FromMils(50)),
+            Layer = 1,
+        });
+        library.Add(withEmpty);
+
+        // A second component with no Description at all stays absent (no spurious DESCRIPTION=).
+        var withNull = PcbComponent.Create("NoDesc").Build();
+        Assert.Null(withNull.Description);
+        withNull.AddPad(new PcbPad
+        {
+            Designator = "1",
+            Location = new CoordPoint(Coord.FromMils(0), Coord.FromMils(0)),
+            SizeTop = new CoordPoint(Coord.FromMils(50), Coord.FromMils(50)),
+            Layer = 1,
+        });
+        library.Add(withNull);
+
+        using var ms = new MemoryStream();
+        new PcbLibWriter().Write(library, ms);
+        ms.Position = 0;
+        var readBack = (PcbLibrary)new PcbLibReader().Read(ms);
+
+        var roundTrippedEmpty = (PcbComponent)readBack.Components.First(c => c.Name == "HasEmptyDesc");
+        Assert.Equal("", roundTrippedEmpty.Description);
+
+        var roundTrippedNull = (PcbComponent)readBack.Components.First(c => c.Name == "NoDesc");
+        Assert.Null(roundTrippedNull.Description);
+    }
+
+    [Fact]
     public void PcbLib_FromScratch_EmptyLibrary()
     {
         var library = new PcbLibrary();
