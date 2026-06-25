@@ -1083,6 +1083,13 @@ public sealed class PcbLibReader
         pad.HasRoundedRectByte = hasRoundedRectByte;
         Array.Copy(perLayerShapes, pad.PerLayerShapes, Math.Min(perLayerShapes.Length, pad.PerLayerShapes.Length));
         Array.Copy(perLayerCornerRadii, pad.PerLayerCornerRadii, Math.Min(perLayerCornerRadii.Length, pad.PerLayerCornerRadii.Length));
+        // The real rounded-rectangle corner radius lives per-layer in the size/shape block; the legacy
+        // single CornerRadiusPercentage is not stored separately. When the per-layer overrides are
+        // authoritative, surface the top-copper entry (index 0) as CornerRadiusPercentage — mirroring
+        // how ShapeTop is taken from PerLayerShapes[0]. Without this the property always reports its 50%
+        // default regardless of the pad's actual radius.
+        if (hasRoundedRectByte != 0)
+            pad.CornerRadiusPercentage = perLayerCornerRadii[0];
         pad.HasSizeShapeBlock = hasSizeShapeBlock;
         pad.FullStackEntries.AddRange(fullStackEntries);
         if (rawExtendedTail.Length > 0)

@@ -105,6 +105,60 @@ public sealed class FromScratchCreationTests
     }
 
     [Fact]
+    public void PcbLib_RoundedRectanglePad_CornerRadiusReflectsPerLayerValue()
+    {
+        // A rounded-rectangle pad stores its real corner radius per-layer in the size/shape block,
+        // not in the single legacy CornerRadiusPercentage field. Reading must surface that value so
+        // distinct copper/paste radii (e.g. 25% vs 40%) aren't both reported as the 50% default.
+        var library = new PcbLibrary();
+        var component = PcbComponent.Create("RESC").Build();
+        component.AddPad(MakeRoundedRectPad("1", layer: 1, cornerPercent: 25));  // copper
+        component.AddPad(MakeRoundedRectPad("2", layer: 35, cornerPercent: 40)); // paste
+        library.Add(component);
+
+        using var ms = new MemoryStream();
+        new PcbLibWriter().Write(library, ms);
+        ms.Position = 0;
+        var readBack = (PcbLibrary)new PcbLibReader().Read(ms);
+
+        var pads = ((PcbComponent)readBack.Components.First()).Pads.Cast<PcbPad>().ToList();
+        Assert.Equal(2, pads.Count);
+
+        var copper = pads.Single(p => p.Designator == "1");
+        Assert.Equal(25, copper.CornerRadiusPercentage);
+        Assert.Equal((byte)25, copper.PerLayerCornerRadii[0]);
+
+        var paste = pads.Single(p => p.Designator == "2");
+        Assert.Equal(40, paste.CornerRadiusPercentage);
+        Assert.Equal((byte)40, paste.PerLayerCornerRadii[0]);
+    }
+
+    // Builds a rounded-rectangle pad whose corner radius lives in the per-layer size/shape block,
+    // matching how Altium serializes a rounded-rect SMD pad.
+    private static PcbPad MakeRoundedRectPad(string designator, int layer, byte cornerPercent)
+    {
+        var pad = new PcbPad
+        {
+            Designator = designator,
+            Location = new CoordPoint(Coord.FromMils(0), Coord.FromMils(0)),
+            SizeTop = new CoordPoint(Coord.FromMils(20), Coord.FromMils(26)),
+            SizeMiddle = new CoordPoint(Coord.FromMils(20), Coord.FromMils(26)),
+            SizeBottom = new CoordPoint(Coord.FromMils(20), Coord.FromMils(26)),
+            ShapeTop = PadShape.RoundedRectangle,
+            ShapeMiddle = PadShape.RoundedRectangle,
+            ShapeBottom = PadShape.RoundedRectangle,
+            Layer = layer,
+            HasSizeShapeBlock = true,
+            HasRoundedRectByte = 1,
+        };
+        for (var i = 0; i < pad.PerLayerShapes.Length; i++)
+            pad.PerLayerShapes[i] = (byte)PadShape.RoundedRectangle;
+        for (var i = 0; i < pad.PerLayerCornerRadii.Length; i++)
+            pad.PerLayerCornerRadii[i] = cornerPercent;
+        return pad;
+    }
+
+    [Fact]
     public void PcbLib_FromScratch_EmptyLibrary()
     {
         var library = new PcbLibrary();
