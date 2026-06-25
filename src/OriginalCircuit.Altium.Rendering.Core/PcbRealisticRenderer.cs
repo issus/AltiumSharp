@@ -34,6 +34,8 @@ public sealed class PcbRealisticRenderer
     // Per-corner samples when tessellating rounded shapes into fill contours.
     private const int ArcSteps = 8;
     private const int CircleSteps = 40;
+    // Segments per 180° round end cap when stroking a solder-mask-layer track/arc into an opening contour.
+    private const int CapSteps = 16;
     // A TrueType PCB string's Height is the font CELL height; Altium renders the em (point size) a bit smaller.
     private const double TtEmScale = 0.8;
 
@@ -794,20 +796,31 @@ public sealed class PcbRealisticRenderer
         return (xs, ys);
     }
 
-    // Outlines a polyline of half-width `halfW` into a closed contour (left side forward, right side back;
-    // square ends). Used to turn solder-mask-layer tracks/arcs into fillable opening shapes.
+    // Outlines a polyline of half-width `halfW` into a closed contour with ROUND end caps (left side
+    // forward, a semicircular cap, right side back, a semicircular cap), matching how Altium renders a
+    // track's rounded ends. Used to turn solder-mask-layer tracks/arcs into fillable opening shapes — the
+    // copper beneath is drawn round-capped too, so the opening must be as well or the gold reads square.
     private static (double[] X, double[] Y) StrokePolyline(IReadOnlyList<(double X, double Y)> pts, double halfW)
     {
         int n = pts.Count;
         if (n == 1)
         {
+            // A zero-length track is a round dot.
             var (px, py) = pts[0];
-            return (new[] { px - halfW, px + halfW, px + halfW, px - halfW },
-                    new[] { py - halfW, py - halfW, py + halfW, py + halfW });
+            var dx = new double[CircleSteps];
+            var dy = new double[CircleSteps];
+            for (int i = 0; i < CircleSteps; i++)
+            {
+                double a = 2.0 * Math.PI * i / CircleSteps;
+                dx[i] = px + halfW * Math.Cos(a);
+                dy[i] = py + halfW * Math.Sin(a);
+            }
+            return (dx, dy);
         }
 
         var left = new (double X, double Y)[n];
         var right = new (double X, double Y)[n];
+        (double X, double Y) tStart = (1, 0), tEnd = (1, 0);
         for (int i = 0; i < n; i++)
         {
             double tx, ty;
@@ -816,16 +829,39 @@ public sealed class PcbRealisticRenderer
             else { tx = pts[i + 1].X - pts[i - 1].X; ty = pts[i + 1].Y - pts[i - 1].Y; }
             double len = Math.Sqrt(tx * tx + ty * ty);
             if (len < 1e-9) { tx = 1; ty = 0; len = 1; }
-            double nx = -ty / len * halfW, ny = tx / len * halfW;
+            tx /= len; ty /= len;
+            if (i == 0) tStart = (tx, ty);
+            if (i == n - 1) tEnd = (tx, ty);
+            double nx = -ty * halfW, ny = tx * halfW;
             left[i] = (pts[i].X + nx, pts[i].Y + ny);
             right[i] = (pts[i].X - nx, pts[i].Y - ny);
         }
 
-        var xs = new double[2 * n];
-        var ys = new double[2 * n];
-        for (int i = 0; i < n; i++) { xs[i] = left[i].X; ys[i] = left[i].Y; }
-        for (int i = 0; i < n; i++) { xs[n + i] = right[n - 1 - i].X; ys[n + i] = right[n - 1 - i].Y; }
+        var contour = new List<(double X, double Y)>(2 * n + 2 * CapSteps);
+        for (int i = 0; i < n; i++) contour.Add(left[i]);                 // left rail, forward
+        AppendRoundCap(contour, pts[n - 1], halfW, tEnd, forward: true);  // round cap at the far end
+        for (int i = n - 1; i >= 0; i--) contour.Add(right[i]);           // right rail, back
+        AppendRoundCap(contour, pts[0], halfW, tStart, forward: false);   // round cap at the near end
+
+        var xs = new double[contour.Count];
+        var ys = new double[contour.Count];
+        for (int i = 0; i < contour.Count; i++) { xs[i] = contour[i].X; ys[i] = contour[i].Y; }
         return (xs, ys);
+    }
+
+    // Appends the intermediate points of a 180° round end cap (radius halfW) at `end`, bulging past the
+    // endpoint along the tangent (the far end) or against it (the near end). The two rail points bounding
+    // the cap are already in the contour, so only the in-between arc points are added.
+    private static void AppendRoundCap(List<(double X, double Y)> contour, (double X, double Y) end,
+        double halfW, (double X, double Y) tangent, bool forward)
+    {
+        double normalAngle = Math.Atan2(tangent.X, -tangent.Y); // angle of the +normal (the left rail)
+        double start = forward ? normalAngle : normalAngle + Math.PI;
+        for (int s = 1; s < CapSteps; s++)
+        {
+            double a = start - Math.PI * s / CapSteps; // 180° clockwise sweep through the cap
+            contour.Add((end.X + halfW * Math.Cos(a), end.Y + halfW * Math.Sin(a)));
+        }
     }
 
     // ── Geometry helpers ────────────────────────────────────────────
