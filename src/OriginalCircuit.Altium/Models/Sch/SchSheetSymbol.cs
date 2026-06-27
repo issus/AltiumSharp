@@ -198,4 +198,69 @@ public sealed class SchSheetSymbol : ISchSheet
     public CoordRect Bounds => new(
         new CoordPoint(Location.X, Location.Y - YSize),
         new CoordPoint(Location.X + XSize, Location.Y));
+
+    /// <summary>
+    /// The multi-channel <c>Repeat(...)</c> directive on this sheet symbol's designator, when present.
+    /// A repeated sheet symbol instantiates its referenced sheet <see cref="RepeatInfo.InstanceCount"/>
+    /// times (one channel per instance). Parsed from the designator <see cref="NameLabel"/> text
+    /// (falling back to <see cref="SheetName"/>); <see cref="RepeatInfo.IsRepeated"/> is <c>false</c>
+    /// when there is no <c>Repeat(...)</c>.
+    /// </summary>
+    public RepeatInfo Repeat => RepeatInfo.Parse(NameLabel?.Text ?? SheetName);
+}
+
+/// <summary>
+/// A parsed Altium <c>Repeat(ChannelName, FirstInstance, LastInstance)</c> channel directive from a
+/// sheet symbol's designator. When the designator has no <c>Repeat(...)</c>, <see cref="IsRepeated"/> is
+/// <c>false</c>, <see cref="InstanceCount"/> is 1, and <see cref="ChannelName"/> is the plain designator.
+/// </summary>
+public readonly partial struct RepeatInfo
+{
+    private RepeatInfo(bool isRepeated, string? channelName, int firstInstance, int lastInstance)
+    {
+        IsRepeated = isRepeated;
+        ChannelName = channelName;
+        FirstInstance = firstInstance;
+        LastInstance = lastInstance;
+    }
+
+    /// <summary>Whether the designator carries a <c>Repeat(...)</c> directive.</summary>
+    public bool IsRepeated { get; }
+
+    /// <summary>The channel name (the <c>Repeat</c> first argument, or the plain designator).</summary>
+    public string? ChannelName { get; }
+
+    /// <summary>The first channel index (1 when not repeated).</summary>
+    public int FirstInstance { get; }
+
+    /// <summary>The last channel index (1 when not repeated).</summary>
+    public int LastInstance { get; }
+
+    /// <summary>The number of channel instances (<c>Last - First + 1</c>; 1 when not repeated).</summary>
+    public int InstanceCount => Math.Max(1, LastInstance - FirstInstance + 1);
+
+    [System.Text.RegularExpressions.GeneratedRegex(
+        @"Repeat\s*\(\s*([^,()]+?)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)",
+        System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.CultureInvariant)]
+    private static partial System.Text.RegularExpressions.Regex RepeatRegex();
+
+    /// <summary>Parses a sheet-symbol designator, tolerating any non-<c>Repeat</c> text.</summary>
+    public static RepeatInfo Parse(string? designator)
+    {
+        if (string.IsNullOrWhiteSpace(designator))
+            return new RepeatInfo(false, designator, 1, 1);
+
+        var m = RepeatRegex().Match(designator);
+        if (!m.Success)
+            return new RepeatInfo(false, designator.Trim(), 1, 1);
+
+        var first = int.Parse(m.Groups[2].Value, System.Globalization.CultureInfo.InvariantCulture);
+        var last = int.Parse(m.Groups[3].Value, System.Globalization.CultureInfo.InvariantCulture);
+        if (last < first)
+            (first, last) = (last, first);
+        // Guard against absurd counts.
+        if (last - first > 100_000)
+            return new RepeatInfo(false, designator.Trim(), 1, 1);
+        return new RepeatInfo(true, m.Groups[1].Value.Trim(), first, last);
+    }
 }
