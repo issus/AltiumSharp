@@ -71,7 +71,17 @@ public sealed class SchematicNet
 
     internal void AddPin(NetPin pin) => _pins.Add(pin);
     internal void AddSource(object primitive) => _sourcePrimitives.Add(primitive);
-    internal void AddIntent(NetIntent intent) => _intents.Add(intent);
+
+    internal void AddIntent(NetIntent intent)
+    {
+        // The same directive can reach a net from several merged sheets/instances; keep one copy.
+        foreach (var existing in _intents)
+            if (existing.Source == intent.Source
+                && string.Equals(existing.RawName, intent.RawName, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(existing.RawValue, intent.RawValue, StringComparison.Ordinal))
+                return;
+        _intents.Add(intent);
+    }
     internal List<NetPin> PinsMutable => _pins;
     internal List<object> SourcesMutable => _sourcePrimitives;
 

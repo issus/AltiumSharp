@@ -334,6 +334,58 @@ public class SchematicNetlistTests
         Assert.Equal(na, nb); // BUS.SIG reconnected across the two breakouts
     }
 
+    // ---- net intents (directives) ---------------------------------------------------------------
+
+    [Fact]
+    public void ParameterSet_Binds_NetClass_And_Impedance_To_Coincident_Net()
+    {
+        var w = Wire((0, 0), (100, 0));
+        var a = Comp("U1", ("1", 0, 0));
+        var b = Comp("U2", ("1", 100, 0));
+
+        var ps = new SchParameterSet { Location = new CoordPoint(Coord.FromMils(50), Coord.FromMils(0)) };
+        ps.AddParameter(new SchParameter { Name = "ClassName", Value = "RGMII" });
+        ps.AddParameter(new SchParameter { Name = "Impedance", Value = "50ohm" });
+
+        var nl = Solve(w, a, b, ps);
+        var net = nl.NetForPin("U1", "1");
+        Assert.NotNull(net);
+
+        var cls = net!.Intents.FirstOrDefault(i => i.Kind == NetIntentKind.NetClass);
+        Assert.NotNull(cls);
+        Assert.Equal("RGMII", cls!.NetClass);
+
+        var imp = net.Intents.FirstOrDefault(i => i.Kind == NetIntentKind.Impedance);
+        Assert.NotNull(imp);
+        Assert.Equal(50.0, imp!.Ohms);
+    }
+
+    [Fact]
+    public void Blanket_Binds_Directive_To_All_Enclosed_Nets()
+    {
+        // Two separate nets both inside the blanket polygon both receive the directive.
+        var w1 = Wire((100, 100), (300, 100));
+        var a = Comp("U1", ("1", 100, 100));
+        var a2 = Comp("U1b", ("1", 300, 100));
+        var w2 = Wire((100, 300), (300, 300));
+        var b = Comp("U2", ("1", 100, 300));
+        var b2 = Comp("U2b", ("1", 300, 300));
+
+        var blanket = new SchBlanket();
+        foreach (var (x, y) in new[] { (0, 0), (400, 0), (400, 400), (0, 400) })
+            blanket.AddVertex(new CoordPoint(Coord.FromMils(x), Coord.FromMils(y)));
+        blanket.AddParameter(new SchParameter { Name = "ClassName", Value = "DDR" });
+
+        var nl = Solve(w1, a, a2, w2, b, b2, blanket);
+
+        var n1 = nl.NetForPin("U1", "1");
+        var n2 = nl.NetForPin("U2", "1");
+        Assert.NotNull(n1);
+        Assert.NotNull(n2);
+        Assert.Contains(n1!.Intents, i => i.Kind == NetIntentKind.NetClass && i.NetClass == "DDR");
+        Assert.Contains(n2!.Intents, i => i.Kind == NetIntentKind.NetClass && i.NetClass == "DDR");
+    }
+
     // ---- multi-part component -------------------------------------------------------------------
 
     [Fact]

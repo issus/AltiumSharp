@@ -14,7 +14,9 @@ internal static partial class NetIntentClassifier
 
     public static NetIntent Classify(string name, string value, NetIntentSource source, object? primitive)
     {
-        var n = name.ToLowerInvariant();
+        // Normalise the directive name for matching: lower-case, strip spaces/underscores/hyphens so
+        // "Net Class", "net_class" and "NetClass" all match. The raw name is preserved on the intent.
+        var n = new string(name.ToLowerInvariant().Where(c => c is not (' ' or '_' or '-')).ToArray());
         value ??= string.Empty;
 
         if (Contains(n, "impedance"))
@@ -29,7 +31,7 @@ internal static partial class NetIntentClassifier
         if (Contains(n, "differentialpair") || Contains(n, "diffpair") || Contains(n, "differential"))
             return new NetIntent(NetIntentKind.DiffPair, name, value, source, primitive) { Pair = ParsePair(value) };
 
-        if (Contains(n, "netclass") || n == "class")
+        if (Contains(n, "netclass") || Contains(n, "classname") || n == "class")
             return new NetIntent(NetIntentKind.NetClass, name, value, source, primitive)
             { NetClass = string.IsNullOrWhiteSpace(value) ? null : value };
 
