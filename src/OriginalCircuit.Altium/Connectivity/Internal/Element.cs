@@ -14,6 +14,7 @@ internal enum ElementKind
     SheetEntry,
     SignalHarness,
     HarnessConnector,
+    HarnessEntry,
 }
 
 /// <summary>

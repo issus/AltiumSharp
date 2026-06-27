@@ -100,6 +100,9 @@ public static class ProjectNetlistBuilder
 
         MergeBoundaries(walker.Boundaries, uf, repByNameSheet);              // ports ↔ sheet entries
 
+        if (options.ResolveHarnesses)
+            HarnessResolver.Resolve(graphs, uf, tolRaw);                     // harness-bundle members
+
         var labelsGlobal = scope is NetIdentifierScope.Flat or NetIdentifierScope.Global;
         var portsGlobal = scope is NetIdentifierScope.Flat or NetIdentifierScope.Global;
         SchematicNetlistBuilder.MergeIdentifiers(graphs, labelReps, uf, labelsGlobal, portsGlobal);

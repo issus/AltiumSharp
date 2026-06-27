@@ -34,6 +34,9 @@ internal sealed class SheetGraph
     public List<(SchSheetSymbol Symbol, SchSheetEntry Entry, Element Elem)> SheetEntries { get; } = new();
     public List<(SchBus Bus, Element Elem)> Buses { get; } = new();
     public List<(SchBusEntry Entry, Element Elem)> BusEntries { get; } = new();
+    public List<HarnessConnectorInfo> HarnessConnectors { get; } = new();
+    public List<CoordPoint> SignalHarnessPoints { get; } = new();
+    public List<(CoordPoint A, CoordPoint B)> SignalHarnessSegments { get; } = new();
 
     public PointIndex Points { get; private set; } = null!;
     public SegmentIndex Segments { get; private set; } = null!;
@@ -150,6 +153,34 @@ internal sealed class SheetGraph
                 e.IntrinsicScope = NetScope.CrossSheetPort;
                 SheetEntries.Add((sym, entry, e));
             }
+        }
+
+        // --- Signal harnesses (bundle conductors; resolved in the harness layer, not the net layer) ---
+        foreach (var sh in Doc.SignalHarnesses)
+        {
+            var v = sh.Vertices;
+            for (var i = 0; i < v.Count; i++)
+            {
+                SignalHarnessPoints.Add(v[i]);
+                if (i + 1 < v.Count)
+                    SignalHarnessSegments.Add((v[i], v[i + 1]));
+            }
+        }
+
+        // --- Harness connectors: bundle point + per-member entry connection points ---
+        foreach (var hc in Doc.HarnessConnectors)
+        {
+            var bundlePoint = new CoordPoint(hc.Location.X, hc.Location.Y - hc.PrimaryConnectionPosition);
+            var info = new HarnessConnectorInfo(hc, bundlePoint, SheetId);
+            foreach (var entry in hc.Entries)
+            {
+                var ex = entry.Side == 1 ? hc.Location.X + hc.XSize : hc.Location.X;
+                var ey = hc.Location.Y - entry.DistanceFromTop;
+                var elem = NewElement(ElementKind.HarnessEntry, entry, global);
+                elem.Points.Add(new CoordPoint(ex, ey));
+                info.Entries.Add((entry.Text ?? string.Empty, elem));
+            }
+            HarnessConnectors.Add(info);
         }
 
         // --- Namers / forcers ---

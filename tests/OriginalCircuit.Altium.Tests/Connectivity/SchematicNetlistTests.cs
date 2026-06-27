@@ -282,6 +282,58 @@ public class SchematicNetlistTests
         Assert.DoesNotContain(nl.Nets, n => n.Name.Contains('[')); // ranged label is not a net name
     }
 
+    // ---- harness bundles ------------------------------------------------------------------------
+
+    private static (SchHarnessConnector Conn, SchSignalHarness Sh, SchPort Port, SchWire Wire) HarnessBreakout(
+        int connX, int connTop, string bundle, string member, int memberPinX, int memberPinY)
+    {
+        // Connector anchored top-left; bundle point on the left edge; one member entry on the right edge.
+        var conn = new SchHarnessConnector
+        {
+            Location = new CoordPoint(Coord.FromMils(connX), Coord.FromMils(connTop)),
+            XSize = Coord.FromMils(500),
+            YSize = Coord.FromMils(600),
+            PrimaryConnectionPosition = Coord.FromMils(300),
+        };
+        conn.Entries.Add(new SchHarnessEntry { Text = member, Side = 1, DistanceFromTop = Coord.FromMils(100) });
+
+        // Bundle point = (connX, connTop-300). Port left end wired to it via a signal harness.
+        var sh = new SchSignalHarness();
+        sh.Vertices.Add(new CoordPoint(Coord.FromMils(connX - 500), Coord.FromMils(connTop - 300)));
+        sh.Vertices.Add(new CoordPoint(Coord.FromMils(connX), Coord.FromMils(connTop - 300)));
+
+        var port = new SchPort
+        {
+            Name = bundle,
+            HarnessType = bundle,
+            Location = new CoordPoint(Coord.FromMils(connX - 500), Coord.FromMils(connTop - 300)),
+            Width = Coord.FromMils(200),
+            ConnectedEnd = 1, // left end = Location coincides with the signal harness end
+        };
+
+        // Member entry at (connX+500, connTop-100) -> wire -> member pin.
+        var wire = Wire((connX + 500, connTop - 100), (memberPinX, memberPinY));
+        return (conn, sh, port, wire);
+    }
+
+    [Fact]
+    public void Harness_Members_Reconnect_By_Qualified_Bundle_Name()
+    {
+        // Two connectors breaking out the same bundle "BUS" member "SIG": the members reconnect.
+        var (c1, sh1, p1, w1) = HarnessBreakout(2000, 3000, "BUS", "SIG", 2700, 2900);
+        var a = Comp("A", ("1", 2700, 2900));
+        var (c2, sh2, p2, w2) = HarnessBreakout(6000, 3000, "BUS", "SIG", 6700, 2900);
+        var b = Comp("B", ("1", 6700, 2900));
+
+        var nl = Solve(c1, sh1, p1, w1, a, c2, sh2, p2, w2, b);
+
+        var na = nl.NetForPin("A", "1");
+        var nb = nl.NetForPin("B", "1");
+        Assert.NotNull(na);
+        Assert.NotNull(nb);
+        Assert.Equal(na, nb); // BUS.SIG reconnected across the two breakouts
+    }
+
     // ---- multi-part component -------------------------------------------------------------------
 
     [Fact]

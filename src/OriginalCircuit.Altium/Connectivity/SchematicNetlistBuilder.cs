@@ -38,6 +38,9 @@ public static class SchematicNetlistBuilder
         var labelReps = ComputeLabelReps(sheet, uf, diagnostics);
         MergeIdentifiers(sheets, labelReps, uf, labelsGlobal: false, portsGlobal: false);
 
+        if (options.ResolveHarnesses)
+            HarnessResolver.Resolve(sheets, uf, tolRaw);
+
         var labelsByRoot = BindLabelsToRoots(labelReps, uf);
 
         var assembler = new NetlistAssembler(elements, uf, sheets, labelsByRoot, options, diagnostics);
