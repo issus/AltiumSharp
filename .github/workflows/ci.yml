@@ -51,6 +51,7 @@ jobs:
           dotnet run --project examples/ExtractEmbeddedAssets --configuration Release --no-build
           dotnet run --project examples/InspectBoard --configuration Release --no-build
           dotnet run --project examples/NetReport --configuration Release --no-build
+          dotnet run --project examples/SchematicNetlist --configuration Release --no-build
           dotnet run --project examples/BuildFootprintGenerator --configuration Release --no-build
           dotnet run --project examples/BuildMultiPartComponent --configuration Release --no-build
           dotnet run --project examples/WalkHierarchy --configuration Release --no-build
