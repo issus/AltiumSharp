@@ -62,10 +62,13 @@ under Altium's implicit rules:
   bundle and never shorts its members.
 - **Harnesses** — bundle members reconnect by their qualified `bundle.member`
   name across the project.
+- **Multi-channel** — a sheet reused by several sheet symbols (or a `Repeat()`
+  directive) becomes one channel instance each, with its own net scope. A
+  sheet-local net is distinct per channel; power inside a channel is
+  channel-private and escapes only through the port/sheet-entry boundary (so
+  `GND` stays global). Each `ProjectSheetInstance` exposes its channel identity
+  (`SymbolUidPath`, matching a PCB component's `SourceUniqueId`), and
+  `ProjectNetlist.NetForPin(sheetInstanceId, …)` selects a specific channel's net.
 
 A pin's electrical tip is computed as `Location + Length` along its orientation;
 for a placed multi-part component only the displayed part's pins are used.
-
-> **Note:** repeated multi-channel sheets (`Repeat()`) are scoped per instance so
-> channels stay separate, but cross-channel physical net remapping is not yet
-> resolved — those nets remain split per channel.
