@@ -67,12 +67,11 @@ public static class ProjectNetlistBuilder
                 Array.Empty<ProjectSheetInstance>(), scope, diagnostics);
         }
 
-        // Flag repeated (multi-channel) sheets: their channels are scoped separately, but Altium's
-        // cross-channel physical net remapping (Repeat()) is not resolved, so some channel nets remain
-        // split per instance. Surface this so callers can trust the rest.
+        // Surface multi-channel (repeated) sheets: each channel instance is solved with its own net
+        // scope so a sheet-local net is distinct per channel; channel-aware lookups disambiguate them.
         foreach (var grp in instances.GroupBy(i => i.FileName, StringComparer.OrdinalIgnoreCase).Where(g => g.Count() > 1))
             diagnostics.Add(new AltiumDiagnostic(DiagnosticSeverity.Info,
-                $"Sheet '{grp.Key}' is instantiated {grp.Count()} times (multi-channel); cross-channel net remapping is not resolved."));
+                $"Sheet '{grp.Key}' is instantiated {grp.Count()} times (multi-channel); each channel is a separate net scope."));
 
         // --- Build all sheet graphs (global element id space) ---
         var elements = new List<Element>();
@@ -93,7 +92,10 @@ public static class ProjectNetlistBuilder
         var graphs = instances.Select(i => i.Graph!).ToList();
 
         // --- Cross-sheet merging ---
-        SchematicNetlistBuilder.UnifyPower(graphs, uf);                       // power: always global
+        // Power is global by name, except inside repeated (multi-channel) instances where it is
+        // channel-private and escapes only through the boundary.
+        var repeatedInstanceIds = instances.Where(i => i.IsRepeated).Select(i => i.Id).ToHashSet();
+        SchematicNetlistBuilder.UnifyPower(graphs, uf, repeatedInstanceIds);
 
         var labelReps = new List<(SchNetLabel Label, int Rep, int SheetId)>();
         foreach (var g in graphs)
@@ -132,7 +134,8 @@ public static class ProjectNetlistBuilder
             NetIntentExtractor.Extract(graphs, uf, result.RootToNet, assembleOptions);
 
         var publicSheets = instances
-            .Select(i => new ProjectSheetInstance(i.Id, i.FileName, i.Designator, i.Path, i.ParentId))
+            .Select(i => new ProjectSheetInstance(i.Id, i.FileName, i.Designator, i.Path, i.ParentId,
+                i.SymbolUidPath, i.ChannelName, i.ChannelIndex, i.IsRepeated))
             .ToList();
 
         return new ProjectNetlist(result.Nets, result.Unconnected, publicSheets, scope, diagnostics);

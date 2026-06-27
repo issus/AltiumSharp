@@ -108,7 +108,8 @@ internal sealed class SheetGraph
                     pin.OwnerPartId,
                     pin.IsHidden,
                     pin,
-                    sc);
+                    sc,
+                    SheetId);
 
                 // Hidden pins with an explicit net name join that named net globally (implicit power pins).
                 if (pin.IsHidden && !string.IsNullOrEmpty(pin.HiddenNetName))

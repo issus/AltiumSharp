@@ -179,4 +179,44 @@ public class ProjectNetlistTests : IDisposable
         Assert.NotNull(hier.NetForPin("P1", "1"));
         Assert.NotEqual(hier.NetForPin("P1", "1"), hier.NetForPin("C1", "1")); // sheet-local labels stay apart
     }
+
+    [Fact]
+    public async Task Repeat_Sheet_Symbol_Instantiates_Distinct_Channels()
+    {
+        // Child sheet with one component pin on a sheet-local net "SIG".
+        await WriteDoc("rchild.SchDoc", doc =>
+        {
+            doc.AddPrimitive(Wire(0, 0, 100, 0));
+            doc.AddComponent(Comp("X1", "1", 0, 0));
+            doc.AddPrimitive(new SchNetLabel { Text = "SIG", Location = new CoordPoint(Coord.FromMils(0), Coord.FromMils(0)) });
+        });
+
+        // Parent instantiates the child three times via a Repeat() directive on the sheet symbol.
+        await WriteDoc("rparent.SchDoc", doc =>
+        {
+            doc.AddPrimitive(new SchSheetSymbol
+            {
+                Location = new CoordPoint(Coord.FromMils(1000), Coord.FromMils(2000)),
+                XSize = Coord.FromMils(500),
+                YSize = Coord.FromMils(400),
+                FileName = "rchild.SchDoc",
+                SheetName = "Repeat(CH,1,3)",
+                NameLabel = new SchLabel { Text = "Repeat(CH,1,3)" },
+            });
+        });
+
+        var project = await Project("rparent.SchDoc", "rchild.SchDoc");
+        var pnl = await ProjectNetlistBuilder.BuildAsync(project);
+
+        var channels = pnl.Sheets.Where(s => s.FileName == "rchild.SchDoc").ToList();
+        Assert.Equal(3, channels.Count);
+        Assert.All(channels, c => Assert.True(c.IsRepeated));
+        Assert.Equal(new[] { 1, 2, 3 }, channels.Select(c => c.ChannelIndex!.Value).OrderBy(i => i).ToArray());
+        Assert.All(channels, c => Assert.Equal("CH", c.ChannelName));
+
+        // Each channel's "SIG" is a distinct net (X1.1 resolves to a different net per channel).
+        var nets = channels.Select(c => pnl.NetForPin(c.Id, "X1", "1")).ToList();
+        Assert.All(nets, n => Assert.NotNull(n));
+        Assert.Equal(3, nets.Distinct().Count());
+    }
 }

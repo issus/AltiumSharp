@@ -18,7 +18,8 @@ public sealed class NetPin : IEquatable<NetPin>
         int ownerPartId,
         bool isHidden,
         SchPin pin,
-        SchComponent component)
+        SchComponent component,
+        int sheetInstanceId = 0)
     {
         ComponentDesignator = componentDesignator;
         PinDesignator = pinDesignator;
@@ -29,6 +30,7 @@ public sealed class NetPin : IEquatable<NetPin>
         IsHidden = isHidden;
         Pin = pin;
         Component = component;
+        SheetInstanceId = sheetInstanceId;
     }
 
     /// <summary>The owning component's reference designator (e.g. <c>"U1"</c>).</summary>
@@ -48,6 +50,12 @@ public sealed class NetPin : IEquatable<NetPin>
 
     /// <summary>The part id (unit) this pin belongs to within a multi-part component (1-based).</summary>
     public int OwnerPartId { get; }
+
+    /// <summary>
+    /// The sheet-instance id this pin belongs to. For a multi-channel design the same component
+    /// designator appears on several channel instances; this distinguishes them. 0 for a single sheet.
+    /// </summary>
+    public int SheetInstanceId { get; }
 
     /// <summary>Whether the pin is hidden (e.g. an implicit power pin).</summary>
     public bool IsHidden { get; }

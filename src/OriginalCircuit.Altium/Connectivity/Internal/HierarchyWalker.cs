@@ -7,7 +7,9 @@ namespace OriginalCircuit.Altium.Connectivity.Internal;
 /// <summary>One instantiated sheet in the hierarchy walk (carries its solved graph).</summary>
 internal sealed class SheetInstanceInternal
 {
-    public SheetInstanceInternal(int id, SchDocument doc, string fileName, string? designator, string path, int? parentId)
+    public SheetInstanceInternal(
+        int id, SchDocument doc, string fileName, string? designator, string path, int? parentId,
+        IReadOnlyList<string> symbolUidPath, string? channelName, int? channelIndex, bool isRepeated)
     {
         Id = id;
         Doc = doc;
@@ -15,6 +17,10 @@ internal sealed class SheetInstanceInternal
         Designator = designator;
         Path = path;
         ParentId = parentId;
+        SymbolUidPath = symbolUidPath;
+        ChannelName = channelName;
+        ChannelIndex = channelIndex;
+        IsRepeated = isRepeated;
     }
 
     public int Id { get; }
@@ -23,6 +29,20 @@ internal sealed class SheetInstanceInternal
     public string? Designator { get; }
     public string Path { get; }
     public int? ParentId { get; }
+
+    /// <summary>The chain of ancestor sheet-symbol UniqueIds from the root to this instance — the
+    /// channel discriminator. Matches a PCB component's <c>SourceUniqueId</c> prefix.</summary>
+    public IReadOnlyList<string> SymbolUidPath { get; }
+
+    /// <summary>The channel name (Repeat channel name, or the repeated sheet symbol's designation).</summary>
+    public string? ChannelName { get; }
+
+    /// <summary>The 1-based channel index within a repeated group, or <c>null</c> when not a channel.</summary>
+    public int? ChannelIndex { get; }
+
+    /// <summary>Whether this instance is one of several channels of the same sheet under its parent.</summary>
+    public bool IsRepeated { get; }
+
     public SheetGraph? Graph { get; set; }
 }
 
@@ -53,15 +73,31 @@ internal sealed class HierarchyWalker
         foreach (var (rootName, rootDoc) in DetermineRoots(project))
         {
             var ancestors = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { rootName };
-            WalkNode(rootDoc, rootName, designator: null, parent: null, path: StripExt(rootName), ancestors);
+            WalkNode(rootDoc, rootName, designator: null, parent: null, path: StripExt(rootName),
+                symbolUidPath: Array.Empty<string>(), channelName: null, channelIndex: null,
+                isRepeated: false, ancestors);
         }
     }
 
     private void WalkNode(SchDocument doc, string fileName, string? designator,
-        SheetInstanceInternal? parent, string path, HashSet<string> ancestors)
+        SheetInstanceInternal? parent, string path, IReadOnlyList<string> symbolUidPath,
+        string? channelName, int? channelIndex, bool isRepeated, HashSet<string> ancestors)
     {
-        var inst = new SheetInstanceInternal(Instances.Count, doc, fileName, designator, path, parent?.Id);
+        var inst = new SheetInstanceInternal(Instances.Count, doc, fileName, designator, path, parent?.Id,
+            symbolUidPath, channelName, channelIndex, isRepeated);
         Instances.Add(inst);
+
+        // Count how many instances each child file produces under this sheet (duplicate symbols and
+        // Repeat() both contribute) so each channel can be flagged as repeated.
+        var childInstanceCounts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        foreach (var s in doc.SheetSymbols)
+        {
+            var cn = NormalizeFileName(s.FileName);
+            if (cn is not null)
+                childInstanceCounts[cn] = childInstanceCounts.GetValueOrDefault(cn) + s.Repeat.InstanceCount;
+        }
+
+        var channelOrdinal = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var sym in doc.SheetSymbols)
         {
@@ -75,9 +111,6 @@ internal sealed class HierarchyWalker
                 continue;
             }
 
-            var childDesignator = string.IsNullOrEmpty(sym.SheetName) ? StripExt(childName) : sym.SheetName;
-            var childPath = $"{path}/{childDesignator}";
-
             if (ancestors.Contains(childName))
             {
                 _diagnostics.Add(new AltiumDiagnostic(DiagnosticSeverity.Info,
@@ -85,13 +118,47 @@ internal sealed class HierarchyWalker
                 continue;
             }
 
-            var childId = Instances.Count; // the id WalkNode will assign first
-            ancestors.Add(childName);
-            WalkNode(childDoc, childName, childDesignator, inst, childPath, ancestors);
-            ancestors.Remove(childName);
+            var repeat = sym.Repeat;
+            var repeatedChild = childInstanceCounts.GetValueOrDefault(childName) > 1;
+            var symbolName = string.IsNullOrEmpty(sym.SheetName) ? StripExt(childName) : sym.SheetName;
+            var symUid = sym.UniqueId ?? symbolName;
 
-            Boundaries.Add(new Boundary(inst, sym, Instances[childId]));
+            // One channel per Repeat instance; a non-repeated symbol is a single instance. Duplicate
+            // symbols of the same child are separate iterations of this loop (already distinct).
+            for (var k = repeat.FirstInstance; k <= repeat.LastInstance; k++)
+            {
+                var ordinal = channelOrdinal.GetValueOrDefault(childName) + 1;
+                channelOrdinal[childName] = ordinal;
+
+                // The channel name: a Repeat names the channel; duplicate symbols share the symbol name.
+                var chanName = repeat.IsRepeated ? repeat.ChannelName : symbolName;
+                var chanIndex = repeatedChild ? (repeat.IsRepeated ? k : ordinal) : (int?)null;
+
+                // The UID path entry. Duplicate symbols carry distinct UniqueIds (matches the PCB
+                // SourceUniqueId chain). Repeat channels share one UniqueId, so disambiguate by index.
+                var uidEntry = repeat.IsRepeated && repeat.InstanceCount > 1 ? $"{symUid}~{k}" : symUid;
+                var childUidPath = Append(symbolUidPath, uidEntry);
+
+                var indexSuffix = repeatedChild ? ordinal.ToString(System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
+                var childPath = $"{path}/{symbolName}{indexSuffix}";
+
+                var childId = Instances.Count; // the id the recursive WalkNode assigns first
+                ancestors.Add(childName);
+                WalkNode(childDoc, childName, symbolName, inst, childPath, childUidPath,
+                    chanName, chanIndex, repeatedChild, ancestors);
+                ancestors.Remove(childName);
+
+                Boundaries.Add(new Boundary(inst, sym, Instances[childId]));
+            }
         }
+    }
+
+    private static IReadOnlyList<string> Append(IReadOnlyList<string> path, string entry)
+    {
+        var list = new List<string>(path.Count + 1);
+        list.AddRange(path);
+        list.Add(entry);
+        return list;
     }
 
     private IEnumerable<(string Name, SchDocument Doc)> DetermineRoots(AltiumProject project)

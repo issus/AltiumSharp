@@ -83,14 +83,37 @@ public static class SchematicNetlistBuilder
         return reps;
     }
 
-    /// <summary>Unifies power objects / hidden power pins that share a name — always global across sheets.</summary>
-    internal static void UnifyPower(IReadOnlyList<SheetGraph> sheets, UnionFind uf)
+    /// <summary>
+    /// Unifies power objects / hidden power pins that share a name. Power on a non-repeated sheet is
+    /// global by name. Power inside a repeated (multi-channel) instance is channel-private — keyed by
+    /// the instance — so a channel-local rail (e.g. a per-channel <c>5V</c>) does not merge with the same
+    /// name in another channel or at board level; it escapes only through the port↔sheet-entry boundary,
+    /// which carries a truly-global rail (e.g. <c>GND</c>) up to its global power object.
+    /// </summary>
+    internal static void UnifyPower(IReadOnlyList<SheetGraph> sheets, UnionFind uf, IReadOnlySet<int>? repeatedInstanceIds = null)
     {
-        var byName = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        var byGlobalName = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        var byChannelName = new Dictionary<(int Sheet, string Name), int>();
         foreach (var sheet in sheets)
+        {
+            var channelScoped = repeatedInstanceIds?.Contains(sheet.SheetId) == true;
             foreach (var e in sheet.Elements)
-                if (e.IntrinsicScope == NetScope.Power && !string.IsNullOrEmpty(e.IntrinsicName))
-                    Link(byName, e.IntrinsicName, e.Id, uf);
+            {
+                if (e.IntrinsicScope != NetScope.Power || string.IsNullOrEmpty(e.IntrinsicName))
+                    continue;
+                if (channelScoped)
+                {
+                    if (byChannelName.TryGetValue((sheet.SheetId, e.IntrinsicName), out var first))
+                        uf.Union(first, e.Id);
+                    else
+                        byChannelName[(sheet.SheetId, e.IntrinsicName)] = e.Id;
+                }
+                else
+                {
+                    Link(byGlobalName, e.IntrinsicName, e.Id, uf);
+                }
+            }
+        }
     }
 
     /// <summary>
