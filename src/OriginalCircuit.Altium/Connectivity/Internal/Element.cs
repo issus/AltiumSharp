@@ -58,6 +58,13 @@ internal sealed class Element
     public string? PinDesignator { get; set; }
     public NetPin? NetPin { get; set; }
 
-    /// <summary>Whether the element is a drawn conductor (its segments connect things along their length).</summary>
-    public bool IsConductor => Kind is ElementKind.Wire or ElementKind.Bus or ElementKind.BusEntry;
+    /// <summary>
+    /// Whether the element is a plain wire conductor that connects things along its length. Buses and
+    /// bus entries are deliberately excluded: a bus is a visual bundle, and its members connect by their
+    /// individual net labels — treating the bus as a conductor would short every member together.
+    /// </summary>
+    public bool IsConductor => Kind is ElementKind.Wire;
+
+    /// <summary>Whether the element participates in geometric coincidence/T/junction merging.</summary>
+    public bool ParticipatesInGeometry => Kind is not (ElementKind.Bus or ElementKind.BusEntry);
 }

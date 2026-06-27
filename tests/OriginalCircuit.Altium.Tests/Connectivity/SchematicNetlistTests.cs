@@ -231,6 +231,57 @@ public class SchematicNetlistTests
         Assert.Equal(NetScope.Auto, net.Scope);
     }
 
+    // ---- buses ----------------------------------------------------------------------------------
+
+    private static SchBus Bus(params (int x, int y)[] pts)
+    {
+        var b = new SchBus();
+        foreach (var (x, y) in pts)
+            b.AddVertex(new CoordPoint(Coord.FromMils(x), Coord.FromMils(y)));
+        return b;
+    }
+
+    private static SchBusEntry BusEntry(int x1, int y1, int x2, int y2) =>
+        new()
+        {
+            Location = new CoordPoint(Coord.FromMils(x1), Coord.FromMils(y1)),
+            Corner = new CoordPoint(Coord.FromMils(x2), Coord.FromMils(y2)),
+        };
+
+    [Fact]
+    public void Bus_Members_Form_By_Label_And_Do_Not_Short_Through_Bus()
+    {
+        // A vertical bus carrying D0/D1, each member appearing twice (joined by its label), with bus
+        // entries touching the bus. The bus must NOT short D0 to D1.
+        var prims = new List<object>
+        {
+            Bus((0, -100), (0, 700)),
+            new SchNetLabel { Text = "D[0..7]", Location = new CoordPoint(Coord.FromMils(0), Coord.FromMils(300)) },
+
+            // D0 instance 1
+            Wire((100, 0), (300, 0)), Label("D0", 100, 0), BusEntry(100, 0, 0, 0), Comp("A", ("1", 300, 0)),
+            // D0 instance 2
+            Wire((100, 500), (300, 500)), Label("D0", 100, 500), BusEntry(100, 500, 0, 500), Comp("B", ("1", 300, 500)),
+            // D1 instance 1
+            Wire((100, 100), (300, 100)), Label("D1", 100, 100), BusEntry(100, 100, 0, 100), Comp("A", ("2", 300, 100)),
+            // D1 instance 2
+            Wire((100, 600), (300, 600)), Label("D1", 100, 600), BusEntry(100, 600, 0, 600), Comp("B", ("2", 300, 600)),
+        };
+
+        var nl = Solve(prims.ToArray());
+
+        var d0 = nl.NetForPin("A", "1");
+        var d1 = nl.NetForPin("A", "2");
+        Assert.NotNull(d0);
+        Assert.NotNull(d1);
+        Assert.Equal("D0", d0!.Name);
+        Assert.Equal("D1", d1!.Name);
+        Assert.NotEqual(d0, d1); // not shorted through the bus
+        Assert.Equal(d0, nl.NetForPin("B", "1")); // D0 joins its two instances by label
+        Assert.Equal(d1, nl.NetForPin("B", "2"));
+        Assert.DoesNotContain(nl.Nets, n => n.Name.Contains('[')); // ranged label is not a net name
+    }
+
     // ---- multi-part component -------------------------------------------------------------------
 
     [Fact]

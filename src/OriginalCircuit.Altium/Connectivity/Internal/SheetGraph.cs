@@ -213,6 +213,9 @@ internal sealed class SheetGraph
         Segments = new SegmentIndex(_tolRaw);
         foreach (var e in Elements)
         {
+            // Buses and bus entries are inert: they must not merge member nets geometrically.
+            if (!e.ParticipatesInGeometry)
+                continue;
             foreach (var p in e.Points)
                 Points.Add(p, e.Id);
             foreach (var (a, b) in e.Segments)
@@ -230,6 +233,8 @@ internal sealed class SheetGraph
         // Applies to any element's points landing on a different conductor's interior.
         foreach (var e in Elements)
         {
+            if (!e.ParticipatesInGeometry)
+                continue;
             foreach (var p in e.Points)
             {
                 foreach (var other in Segments.ElementsAt(p, interiorOnly: true))

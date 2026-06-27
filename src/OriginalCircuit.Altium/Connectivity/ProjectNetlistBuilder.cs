@@ -87,11 +87,18 @@ public static class ProjectNetlistBuilder
 
         // --- Cross-sheet merging ---
         SchematicNetlistBuilder.UnifyPower(graphs, uf);                       // power: always global
-        MergeBoundaries(walker.Boundaries, uf);                              // ports ↔ sheet entries
 
-        var labelReps = new List<(SchNetLabel, int, int)>();
+        var labelReps = new List<(SchNetLabel Label, int Rep, int SheetId)>();
         foreach (var g in graphs)
             labelReps.AddRange(SchematicNetlistBuilder.ComputeLabelReps(g, uf, diagnostics));
+
+        // Map (sheet, net-label name) -> representative element, used to bridge bus members across a
+        // ranged bus port / sheet entry.
+        var repByNameSheet = new Dictionary<(int, string), int>();
+        foreach (var (label, rep, sheetId) in labelReps)
+            repByNameSheet[(sheetId, label.Text)] = rep;
+
+        MergeBoundaries(walker.Boundaries, uf, repByNameSheet);              // ports ↔ sheet entries
 
         var labelsGlobal = scope is NetIdentifierScope.Flat or NetIdentifierScope.Global;
         var portsGlobal = scope is NetIdentifierScope.Flat or NetIdentifierScope.Global;
@@ -121,7 +128,8 @@ public static class ProjectNetlistBuilder
         return new ProjectNetlist(result.Nets, result.Unconnected, publicSheets, scope, diagnostics);
     }
 
-    private static void MergeBoundaries(IReadOnlyList<Boundary> boundaries, UnionFind uf)
+    private static void MergeBoundaries(
+        IReadOnlyList<Boundary> boundaries, UnionFind uf, Dictionary<(int, string), int> repByNameSheet)
     {
         foreach (var b in boundaries)
         {
@@ -130,6 +138,19 @@ public static class ProjectNetlistBuilder
             {
                 if (!ReferenceEquals(sym, b.Symbol))
                     continue;
+
+                // A ranged entry (e.g. "D[0..7]") carries a bus bundle: bridge each member net (D0..D7)
+                // between the parent and child sheets by name.
+                if (BusRange.TryExpand(entry.Name, out var members))
+                {
+                    foreach (var member in members)
+                    {
+                        if (repByNameSheet.TryGetValue((b.Parent.Id, member), out var pRep) &&
+                            repByNameSheet.TryGetValue((b.Child.Id, member), out var cRep))
+                            uf.Union(pRep, cRep);
+                    }
+                }
+
                 foreach (var (port, portElem) in b.Child.Graph!.Ports)
                 {
                     if (NameEq(port.Name, entry.Name))

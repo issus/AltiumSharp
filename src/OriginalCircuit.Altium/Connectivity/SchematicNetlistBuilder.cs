@@ -59,6 +59,11 @@ public static class SchematicNetlistBuilder
         var reps = new List<(SchNetLabel, int, int)>();
         foreach (var label in sheet.NetLabels)
         {
+            // A ranged label (e.g. "D[0..7]") declares a bus; it is not itself a net name. Its members
+            // are the individually-labelled wires (D0..D7), which bind normally.
+            if (BusRange.IsRanged(label.Text))
+                continue;
+
             int? rep = null;
             foreach (var elem in sheet.Points.Query(label.Location)) { rep = elem; break; }
             if (rep is null)
