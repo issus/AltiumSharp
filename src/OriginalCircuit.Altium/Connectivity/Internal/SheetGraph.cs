@@ -83,6 +83,14 @@ internal sealed class SheetGraph
             {
                 if (ip is not SchPin pin)
                     continue;
+
+                // A multi-part component record carries pins from every part, but only the displayed
+                // part (CurrentPartId) is actually placed on this sheet — the other parts' pins keep
+                // stale positions. Include only the current part's pins (plus part-shared pins).
+                if (sc.PartCount > 1 && sc.CurrentPartId > 0
+                    && pin.OwnerPartId > 0 && pin.OwnerPartId != sc.CurrentPartId)
+                    continue;
+
                 var tip = SchDesignators.PinTip(pin);
                 var e = NewElement(ElementKind.Pin, pin, global);
                 e.Points.Add(tip);
@@ -165,10 +173,10 @@ internal sealed class SheetGraph
 
     private static IEnumerable<CoordPoint> PortConnectionPoints(SchPort port)
     {
-        // The wire attaches at one of the port's horizontal ends, at the body's vertical centre.
-        var midY = port.Location.Y + port.Height / 2.0;
-        var left = new CoordPoint(port.Location.X, midY);
-        var right = new CoordPoint(port.Location.X + port.Width, midY);
+        // Per the renderer, Location IS the wire connection point at the body's vertical centre; the
+        // body extends right by Width on the same centre line. ConnectedEnd selects the wired end.
+        var left = port.Location;
+        var right = new CoordPoint(port.Location.X + port.Width, port.Location.Y);
         switch (port.ConnectedEnd)
         {
             case 1: yield return left; break;
@@ -188,22 +196,14 @@ internal sealed class SheetGraph
         var top = sym.Location.Y;
         var bottom = sym.Location.Y - sym.YSize;
 
-        // Mirrored symbols swap the left/right sides.
-        var side = entry.Side;
+        // The renderer anchors every entry to the LEFT edge except Side==1 (Right); the connection
+        // point sits at y = top - DistanceFromTop. Mirroring swaps which edge is the "right" one.
+        var isRight = entry.Side == 1;
         if (sym.IsMirrored)
-        {
-            if (side == 0) side = 1;
-            else if (side == 1) side = 0;
-        }
-
-        return side switch
-        {
-            0 => new CoordPoint(left, top - entry.DistanceFromTop),            // Left edge
-            1 => new CoordPoint(right, top - entry.DistanceFromTop),           // Right edge
-            2 => new CoordPoint(left + entry.DistanceFromTop, top),            // Top edge (distance from left)
-            3 => new CoordPoint(left + entry.DistanceFromTop, bottom),         // Bottom edge
-            _ => new CoordPoint(left, top - entry.DistanceFromTop),
-        };
+            isRight = !isRight;
+        var x = isRight ? right : left;
+        _ = bottom;
+        return new CoordPoint(x, top - entry.DistanceFromTop);
     }
 
     /// <summary>Builds the point and segment indexes over this sheet's elements.</summary>

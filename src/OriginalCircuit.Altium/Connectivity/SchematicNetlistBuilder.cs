@@ -1,7 +1,6 @@
 using OriginalCircuit.Altium.Connectivity.Internal;
 using OriginalCircuit.Altium.Diagnostics;
 using OriginalCircuit.Altium.Models.Sch;
-using OriginalCircuit.Eda.Enums;
 
 namespace OriginalCircuit.Altium.Connectivity;
 
@@ -32,18 +31,20 @@ public static class SchematicNetlistBuilder
         var uf = new UnionFind(elements.Count);
         sheet.ApplyRules(uf);
 
-        // Net identifiers (net labels, power objects, ports) unify nets that share a name, even with no
-        // geometric contact. On a single sheet every identifier is in scope.
+        var sheets = new[] { sheet };
+
+        // Power nets unify globally by name. Net labels and ports unify within the single sheet.
+        UnifyPower(sheets, uf);
         var labelReps = ComputeLabelReps(sheet, uf, diagnostics);
-        MergeNamedIdentifiers(new[] { sheet }, labelReps, uf, mergeLabels: true, mergePorts: true);
+        MergeIdentifiers(sheets, labelReps, uf, labelsGlobal: false, portsGlobal: false);
 
         var labelsByRoot = BindLabelsToRoots(labelReps, uf);
 
-        var assembler = new NetlistAssembler(elements, uf, new[] { sheet }, labelsByRoot, options, diagnostics);
+        var assembler = new NetlistAssembler(elements, uf, sheets, labelsByRoot, options, diagnostics);
         var result = assembler.Assemble();
 
         if (options.ExtractIntents)
-            NetIntentExtractor.Extract(new[] { sheet }, uf, result.RootToNet, options);
+            NetIntentExtractor.Extract(sheets, uf, result.RootToNet, options);
 
         return new SchematicNetlist(result.Nets, result.Unconnected, diagnostics, document.FileName);
     }
@@ -66,7 +67,7 @@ public static class SchematicNetlistBuilder
             if (rep is null)
             {
                 diagnostics.Add(new AltiumDiagnostic(DiagnosticSeverity.Info,
-                    $"Net label '{label.Text}' at {label.Location} is not on any wire."));
+                    $"Net label '{label.Text}' on {sheet.FileName} is not on any wire."));
                 continue;
             }
             reps.Add((label, rep.Value, sheet.SheetId));
@@ -74,44 +75,52 @@ public static class SchematicNetlistBuilder
         return reps;
     }
 
+    /// <summary>Unifies power objects / hidden power pins that share a name — always global across sheets.</summary>
+    internal static void UnifyPower(IReadOnlyList<SheetGraph> sheets, UnionFind uf)
+    {
+        var byName = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        foreach (var sheet in sheets)
+            foreach (var e in sheet.Elements)
+                if (e.IntrinsicScope == NetScope.Power && !string.IsNullOrEmpty(e.IntrinsicName))
+                    Link(byName, e.IntrinsicName, e.Id, uf);
+    }
+
     /// <summary>
-    /// Unifies elements that carry the same net identifier within each sheet: power objects (and hidden
-    /// power pins), optionally ports, and optionally net labels. Names are compared case-insensitively.
+    /// Unifies net labels and ports that share a name. Each is merged globally across all sheets or
+    /// per-sheet depending on the active net-identifier scope.
     /// </summary>
-    internal static void MergeNamedIdentifiers(
+    internal static void MergeIdentifiers(
         IReadOnlyList<SheetGraph> sheets,
         IReadOnlyList<(SchNetLabel Label, int Rep, int SheetId)> labelReps,
         UnionFind uf,
-        bool mergeLabels,
-        bool mergePorts)
+        bool labelsGlobal,
+        bool portsGlobal)
     {
+        var globalLabels = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        var globalPorts = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
         foreach (var sheet in sheets)
         {
-            var nameToRep = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-
-            void Link(string? name, int elemId)
-            {
-                if (string.IsNullOrEmpty(name))
-                    return;
-                if (nameToRep.TryGetValue(name, out var first))
-                    uf.Union(first, elemId);
-                else
-                    nameToRep[name] = elemId;
-            }
-
+            var ports = portsGlobal ? globalPorts : new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
             foreach (var e in sheet.Elements)
-            {
-                if (e.IntrinsicScope == NetScope.Power && !string.IsNullOrEmpty(e.IntrinsicName))
-                    Link(e.IntrinsicName, e.Id);
-                else if (mergePorts && e.Kind == ElementKind.Port && !string.IsNullOrEmpty(e.IntrinsicName))
-                    Link(e.IntrinsicName, e.Id);
-            }
+                if (e.Kind == ElementKind.Port && !string.IsNullOrEmpty(e.IntrinsicName))
+                    Link(ports, e.IntrinsicName, e.Id, uf);
 
-            if (mergeLabels)
-                foreach (var (label, rep, sheetId) in labelReps)
-                    if (sheetId == sheet.SheetId)
-                        Link(label.Text, rep);
+            var labels = labelsGlobal ? globalLabels : new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            foreach (var (label, rep, sheetId) in labelReps)
+                if (sheetId == sheet.SheetId)
+                    Link(labels, label.Text, rep, uf);
         }
+    }
+
+    private static void Link(Dictionary<string, int> nameToRep, string? name, int elemId, UnionFind uf)
+    {
+        if (string.IsNullOrEmpty(name))
+            return;
+        if (nameToRep.TryGetValue(name, out var first))
+            uf.Union(first, elemId);
+        else
+            nameToRep[name] = elemId;
     }
 
     /// <summary>Maps each net label to its net root after all merging, for naming.</summary>
