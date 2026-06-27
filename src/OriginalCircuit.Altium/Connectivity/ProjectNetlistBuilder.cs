@@ -67,6 +67,13 @@ public static class ProjectNetlistBuilder
                 Array.Empty<ProjectSheetInstance>(), scope, diagnostics);
         }
 
+        // Flag repeated (multi-channel) sheets: their channels are scoped separately, but Altium's
+        // cross-channel physical net remapping (Repeat()) is not resolved, so some channel nets remain
+        // split per instance. Surface this so callers can trust the rest.
+        foreach (var grp in instances.GroupBy(i => i.FileName, StringComparer.OrdinalIgnoreCase).Where(g => g.Count() > 1))
+            diagnostics.Add(new AltiumDiagnostic(DiagnosticSeverity.Info,
+                $"Sheet '{grp.Key}' is instantiated {grp.Count()} times (multi-channel); cross-channel net remapping is not resolved."));
+
         // --- Build all sheet graphs (global element id space) ---
         var elements = new List<Element>();
         foreach (var inst in instances)
