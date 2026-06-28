@@ -469,6 +469,17 @@ public sealed class PcbLibWriter
         Add("MODEL.3D.ROTY", F3(body.Model3DRotY));
         Add("MODEL.3D.ROTZ", F3(body.Model3DRotZ));
         Add("MODEL.3D.DZ", FormatMilCoord(body.Model3DDz));
+        if (body.SnapCount is { } snapCount)
+        {
+            Add("MODEL.SNAPCOUNT", snapCount.ToString(ci));
+            for (var i = 0; i < body.SnapPoints.Count; i++)
+            {
+                var sp = body.SnapPoints[i];
+                Add($"MODEL.S{i}X", sp.X.ToString(ci));
+                Add($"MODEL.S{i}Y", sp.Y.ToString(ci));
+                Add($"MODEL.S{i}Z", sp.Z.ToString(ci));
+            }
+        }
         Add("MODEL.MODELTYPE", body.ModelType.ToString(ci));
         if (body.ModelSource is { } ms) Add("MODEL.MODELSOURCE", ms);
         if (body.ModelExtrudedMinZ is { } minZ) Add("MODEL.EXTRUDED.MINZ", FormatMilCoord(minZ));
@@ -938,8 +949,8 @@ public sealed class PcbLibWriter
     {
         writer.WriteBlock(w =>
         {
-            var flags = EncodeFlags(track.IsLocked, track.IsTentingTop,
-                track.IsTentingBottom, track.IsKeepout);
+            var flags = PcbBinaryConstants.MergeFlags(track.RawFlags, EncodeFlags(track.IsLocked, track.IsTentingTop,
+                track.IsTentingBottom, track.IsKeepout));
             WriteCommonPrimitiveData(w, track.Layer, flags, track.NetIndex, track.ComponentIndex); // 0-12
             w.WriteCoordPoint(track.Start);                  // 13-20
             w.WriteCoordPoint(track.End);                    // 21-28

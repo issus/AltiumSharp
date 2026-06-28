@@ -74,14 +74,16 @@ public sealed class PcbComponent : IPcbComponent
     public bool Enabled { get; set; } = true;
 
     /// <summary>
-    /// Whether pin swapping is enabled.
+    /// Whether pin swapping is enabled. <see langword="null"/> when the source file omitted the
+    /// parameter; the writer then omits it (written immediately after <c>UNIONINDEX</c>).
     /// </summary>
-    public bool EnablePinSwapping { get; set; }
+    public bool? EnablePinSwapping { get; set; }
 
     /// <summary>
-    /// Whether part swapping is enabled.
+    /// Whether part swapping is enabled. <see langword="null"/> when the source file omitted the
+    /// parameter; the writer then omits it (written immediately after <c>ENABLEPINSWAPPING</c>).
     /// </summary>
-    public bool EnablePartSwapping { get; set; }
+    public bool? EnablePartSwapping { get; set; }
 
     /// <summary>
     /// Whether the component is flipped on layer.

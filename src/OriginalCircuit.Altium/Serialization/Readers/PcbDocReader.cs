@@ -1161,13 +1161,15 @@ public sealed class PcbDocReader
             PourOverStyle = I("POUROVERSTYLE"),
             PourIndex = I("POURINDEX"),
             IgnoreViolations = B("IGNOREVIOLATIONS"),
-            OptimalVoidRotation = B("OPTIMALVOIDROTATION"),
-            ObeyPolygonCutout = B("OBEYPOLYGONCUTOUT"),
             Net = p.GetValueOrDefault("NET", string.Empty),
             UniqueId = p.GetValueOrDefault("UNIQUEID"),
         };
         if (p.TryGetValue("AREATHRESHOLD", out var at) && decimal.TryParse(at, NumberStyles.Float, CultureInfo.InvariantCulture, out var area))
             poly.AreaThreshold = area;
+        if (p.ContainsKey("OPTIMALVOIDROTATION"))
+            poly.OptimalVoidRotation = B("OPTIMALVOIDROTATION");
+        if (p.ContainsKey("OBEYPOLYGONCUTOUT"))
+            poly.ObeyPolygonCutout = B("OBEYPOLYGONCUTOUT");
         if (p.ContainsKey("NECKWIDTHFROMRULE"))
             poly.NeckWidthFromRule = B("NECKWIDTHFROMRULE");
         if (p.ContainsKey("COPPERINVALIDATE"))
@@ -1390,6 +1392,8 @@ public sealed class PcbDocReader
         c.NameAutoPosition = NI("NAMEAUTOPOSITION");
         c.CommentAutoPosition = NI("COMMENTAUTOPOSITION");
         if (NI("UNIONINDEX") is { } ui) c.UnionIndex = ui;
+        if (p.ContainsKey("ENABLEPINSWAPPING")) c.EnablePinSwapping = Bv("ENABLEPINSWAPPING");
+        if (p.ContainsKey("ENABLEPARTSWAPPING")) c.EnablePartSwapping = Bv("ENABLEPARTSWAPPING");
         if (p.ContainsKey("ENABLED")) c.Enabled = Bv("ENABLED");
         c.FlippedOnLayer = Bv("FLIPPEDONLAYER");
         c.IsBGA = Bv("ISBGA");
@@ -1431,7 +1435,7 @@ public sealed class PcbDocReader
         "SELECTION", "LAYER", "LOCKED", "POLYGONOUTLINE", "USERROUTED", "KEEPOUT", "PRIMITIVELOCK",
         "X", "Y", "PATTERN", "DESCRIPTION", "NAMEON", "COMMENTON", "COMMENT", "LOCKSTRINGS",
         "GROUPNUM", "COUNT", "ROTATION", "HEIGHT", "NAMEAUTOPOSITION", "COMMENTAUTOPOSITION",
-        "UNIONINDEX", "ENABLED", "FLIPPEDONLAYER", "ISBGA", "COMPONENTKIND", "COMPONENTKINDVERSION2",
+        "UNIONINDEX", "ENABLEPINSWAPPING", "ENABLEPARTSWAPPING", "ENABLED", "FLIPPEDONLAYER", "ISBGA", "COMPONENTKIND", "COMPONENTKINDVERSION2",
         "CHANNELOFFSET", "SOURCEDESIGNATOR", "SOURCEUNIQUEID", "SOURCEHIERARCHICALPATH",
         "SOURCEFOOTPRINTLIBRARY", "SOURCECOMPONENTLIBRARY", "SOURCELIBREFERENCE", "SOURCEDESCRIPTION",
         "FOOTPRINTDESCRIPTION", "SOURCECOMPDESIGNITEMID", "SOURCECOMPLIBIDENTIFIERKIND",

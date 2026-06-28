@@ -307,14 +307,16 @@ public sealed class PcbPolygon
     public Coord NeckWidthThreshold { get; set; }
 
     /// <summary>
-    /// Whether to obey polygon cutout.
+    /// Whether to obey polygon cutout. <see langword="null"/> when the source file omitted the
+    /// parameter (older Altium versions did not write it); the writer then omits it too.
     /// </summary>
-    public bool ObeyPolygonCutout { get; set; }
+    public bool? ObeyPolygonCutout { get; set; }
 
     /// <summary>
-    /// Whether to use optimal void rotation.
+    /// Whether to use optimal void rotation. <see langword="null"/> when the source file omitted the
+    /// parameter (older Altium versions did not write it); the writer then omits it too.
     /// </summary>
-    public bool OptimalVoidRotation { get; set; }
+    public bool? OptimalVoidRotation { get; set; }
 
     /// <summary>
     /// Number of outline points.

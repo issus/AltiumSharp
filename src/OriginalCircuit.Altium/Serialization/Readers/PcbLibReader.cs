@@ -1373,6 +1373,7 @@ public sealed class PcbLibReader
 
         track.SolderMaskExpansion = Coord.FromRaw(I32(35)); // 35-38
         track.KeepoutRestrictions = B(45);                  // 45
+        track.RawFlags = flags;
 
         // Decode flags
         PcbBinaryConstants.DecodeFlags(flags, out var isLocked, out var isTentingTop, out var isTentingBottom, out var isKeepout);
@@ -1842,9 +1843,8 @@ public sealed class PcbLibReader
         if (parameters.ContainsKey("MODEL.EXTRUDED.MINZ")) result.ModelExtrudedMinZ = Mil("MODEL.EXTRUDED.MINZ");
         if (parameters.ContainsKey("MODEL.EXTRUDED.MAXZ")) result.ModelExtrudedMaxZ = Mil("MODEL.EXTRUDED.MAXZ");
 
-        // Preserve any additional parameters not modeled as typed properties (trailing indexed keys).
-        result.AdditionalParameters = ExtractAdditionalParameters(parameters,
-        [
+        var bodyKnownKeys = new List<string>
+        {
             "V7_LAYER", "NAME", "KIND", "SUBPOLYINDEX", "UNIONINDEX", "ARCRESOLUTION",
             "ISSHAPEBASED", "CAVITYHEIGHT", "STANDOFFHEIGHT", "OVERALLHEIGHT",
             "BODYPROJECTION", "BODYCOLOR3D", "BODYOPACITY3D", "IDENTIFIER", "TEXTURE",
@@ -1853,7 +1853,27 @@ public sealed class PcbLibReader
             "MODEL.2D.X", "MODEL.2D.Y", "MODEL.2D.ROTATION",
             "MODEL.3D.ROTX", "MODEL.3D.ROTY", "MODEL.3D.ROTZ", "MODEL.3D.DZ",
             "MODEL.MODELTYPE", "MODEL.MODELSOURCE", "MODEL.EXTRUDED.MINZ", "MODEL.EXTRUDED.MAXZ"
-        ]);
+        };
+
+        // Snap points: MODEL.SNAPCOUNT followed by MODEL.S{i}X/Y/Z raw coordinate triples.
+        if (parameters.TryGetValue("MODEL.SNAPCOUNT", out var snapCountStr)
+            && int.TryParse(snapCountStr, NumberStyles.Integer, CultureInfo.InvariantCulture, out var snapCount))
+        {
+            result.SnapCount = snapCount;
+            bodyKnownKeys.Add("MODEL.SNAPCOUNT");
+            int RawInt(string key) => parameters.TryGetValue(key, out var v)
+                && int.TryParse(v, NumberStyles.Integer, CultureInfo.InvariantCulture, out var n) ? n : 0;
+            for (var i = 0; i < snapCount; i++)
+            {
+                result.SnapPoints.Add((RawInt($"MODEL.S{i}X"), RawInt($"MODEL.S{i}Y"), RawInt($"MODEL.S{i}Z")));
+                bodyKnownKeys.Add($"MODEL.S{i}X");
+                bodyKnownKeys.Add($"MODEL.S{i}Y");
+                bodyKnownKeys.Add($"MODEL.S{i}Z");
+            }
+        }
+
+        // Preserve any additional parameters not modeled as typed properties (trailing indexed keys).
+        result.AdditionalParameters = ExtractAdditionalParameters(parameters, bodyKnownKeys);
 
         return result;
     }

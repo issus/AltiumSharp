@@ -351,6 +351,16 @@ public sealed class PcbComponentBody : IPcbComponentBody
     public Coord? ModelExtrudedMaxZ { get; set; }
 
     /// <summary>
+    /// The snap-point count (<c>MODEL.SNAPCOUNT</c>); <see langword="null"/> when the parameter is absent.
+    /// When set, the writer emits <c>MODEL.SNAPCOUNT</c> followed by the <see cref="SnapPoints"/> raw
+    /// coordinate triples, positioned immediately before <c>MODEL.MODELTYPE</c> (matching Altium).
+    /// </summary>
+    public int? SnapCount { get; set; }
+
+    /// <summary>The snap points (<c>MODEL.S{i}X/Y/Z</c>) as raw coordinate triples.</summary>
+    public List<(int X, int Y, int Z)> SnapPoints { get; } = new();
+
+    /// <summary>
     /// Additional parameters from the nested C-string block that are not modeled as typed properties
     /// (e.g. the trailing indexed <c>FPARTDRCDISABLED.N.n</c> keys). Preserved for round-trip fidelity.
     /// </summary>

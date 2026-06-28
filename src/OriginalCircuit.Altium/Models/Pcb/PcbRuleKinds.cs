@@ -443,11 +443,15 @@ public sealed class PcbWidthRule : PcbRule
     public Coord PreferredWidth { get; set; }
     /// <summary>Per-layer width keys (e.g. <c>TOPLAYER_MINWIDTH</c>) in source order.</summary>
     public List<KeyValuePair<string, Coord>> LayerWidths { get; } = new();
-    /// <summary>Whether the impedance-profile block is present (optional).</summary>
+    /// <summary>Whether the impedance-profile block (<c>IMPEDANCEPROFILEDRIVEN/ID/VALUE</c>) is present (optional).</summary>
     public bool HasImpedanceProfile { get; set; }
     public bool ImpedanceProfileDriven { get; set; }
     public string ImpedanceProfileId { get; set; } = string.Empty;
     public double ImpedanceProfileValue { get; set; }
+    /// <summary>Whether the impedance min/max/favored block (<c>MINIMP/MAXIMP/FAVIMP</c>) is present.
+    /// Altium writes this independently of the impedance-profile block — a rule can carry these three
+    /// without the profile keys, so presence is tracked separately for byte-exact round-trip.</summary>
+    public bool HasImpedance { get; set; }
     public double MinImpedance { get; set; }
     public double MaxImpedance { get; set; }
     public double FavoredImpedance { get; set; }
@@ -457,7 +461,9 @@ public sealed class PcbWidthRule : PcbRule
         MaxLimit = MilV(p, "MAXLIMIT"); MinLimit = MilV(p, "MINLIMIT"); PreferredWidth = MilV(p, "PREFEREDWIDTH");
         HasImpedanceProfile = p.ContainsKey("IMPEDANCEPROFILEDRIVEN");
         ImpedanceProfileDriven = Bv(p, "IMPEDANCEPROFILEDRIVEN"); ImpedanceProfileId = Sv(p, "IMPEDANCEPROFILEID") ?? string.Empty;
-        ImpedanceProfileValue = Dv(p, "IMPEDANCEPROFILEVALUE"); MinImpedance = Dv(p, "MINIMP"); MaxImpedance = Dv(p, "MAXIMP"); FavoredImpedance = Dv(p, "FAVIMP");
+        ImpedanceProfileValue = Dv(p, "IMPEDANCEPROFILEVALUE");
+        HasImpedance = p.ContainsKey("MINIMP");
+        MinImpedance = Dv(p, "MINIMP"); MaxImpedance = Dv(p, "MAXIMP"); FavoredImpedance = Dv(p, "FAVIMP");
     }
     internal override void ReadOrdered(List<KeyValuePair<string, string>> ordered)
     {
@@ -468,11 +474,16 @@ public sealed class PcbWidthRule : PcbRule
     {
         add("MAXLIMIT", Mil(MaxLimit)); add("MINLIMIT", Mil(MinLimit)); add("PREFEREDWIDTH", Mil(PreferredWidth));
         foreach (var (k, v) in LayerWidths) add(k, Mil(v));
-        if (!HasImpedanceProfile) return;
-        add("IMPEDANCEPROFILEDRIVEN", Bool(ImpedanceProfileDriven));
-        add("IMPEDANCEPROFILEID", ImpedanceProfileId);
-        add("IMPEDANCEPROFILEVALUE", F6(ImpedanceProfileValue));
-        add("MINIMP", F6(MinImpedance)); add("MAXIMP", F6(MaxImpedance)); add("FAVIMP", F6(FavoredImpedance));
+        if (HasImpedanceProfile)
+        {
+            add("IMPEDANCEPROFILEDRIVEN", Bool(ImpedanceProfileDriven));
+            add("IMPEDANCEPROFILEID", ImpedanceProfileId);
+            add("IMPEDANCEPROFILEVALUE", F6(ImpedanceProfileValue));
+        }
+        if (HasImpedance)
+        {
+            add("MINIMP", F6(MinImpedance)); add("MAXIMP", F6(MaxImpedance)); add("FAVIMP", F6(FavoredImpedance));
+        }
     }
 }
 

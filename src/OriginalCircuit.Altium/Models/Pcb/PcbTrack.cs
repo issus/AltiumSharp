@@ -167,6 +167,12 @@ public sealed class PcbTrack : IPcbTrack
     public byte KeepoutRestrictions { get; set; }
 
     /// <summary>
+    /// The raw 16-bit primitive flags word as read from the source, so unmodelled flag bits round-trip
+    /// verbatim. Null for tracks built from scratch. See PcbBinaryConstants.MergeFlags.
+    /// </summary>
+    internal ushort? RawFlags { get; set; }
+
+    /// <summary>
     /// Whether this track is hidden from view.
     /// </summary>
     public bool IsHidden { get; set; }

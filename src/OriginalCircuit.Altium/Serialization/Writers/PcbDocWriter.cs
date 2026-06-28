@@ -276,7 +276,11 @@ public sealed class PcbDocWriter
     }
 
     // 15 significant digits matches Delphi's FloatToStr (e.g. 1.8542496354265E-10, 0.819995004733263).
-    private static string D(double v) => v.ToString("G15", CultureInfo.InvariantCulture);
+    // .NET pads the exponent to two digits (1.856…E-09); Delphi uses a minimal exponent (E-9), so strip
+    // a single leading zero from a one-digit exponent.
+    private static string D(double v) =>
+        System.Text.RegularExpressions.Regex.Replace(
+            v.ToString("G15", CultureInfo.InvariantCulture), @"E([+-])0(\d)$", "E$1$2");
 
     // Formats internal coordinate units (1 mil = 10000) as Altium's mil text, e.g. 118110 -> "11.811mil".
     private static string FormatMilUnits(int units) =>
@@ -901,8 +905,8 @@ public sealed class PcbDocWriter
         Add("IGNOREVIOLATIONS", B(polygon.IgnoreViolations));
         if (polygon.CopperInvalidate is { } copperInval) Add("COPPERINVALIDATE", B(copperInval));
         if (polygon.AutoGenerateName is { } autoName) Add("AUTONAME", B(autoName));
-        Add("OPTIMALVOIDROTATION", B(polygon.OptimalVoidRotation));
-        Add("OBEYPOLYGONCUTOUT", B(polygon.ObeyPolygonCutout));
+        if (polygon.OptimalVoidRotation is { } ovr) Add("OPTIMALVOIDROTATION", B(ovr));
+        if (polygon.ObeyPolygonCutout is { } opc) Add("OBEYPOLYGONCUTOUT", B(opc));
         Add("NET", polygon.Net ?? string.Empty);
         if (polygon.AdditionalParameters != null)
             foreach (var kvp in polygon.AdditionalParameters) Add(kvp.Key, kvp.Value);
@@ -975,6 +979,8 @@ public sealed class PcbDocWriter
         if (c.NameAutoPosition is { } nap) Add("NAMEAUTOPOSITION", I(nap));
         if (c.CommentAutoPosition is { } cap) Add("COMMENTAUTOPOSITION", I(cap));
         Add("UNIONINDEX", I(c.UnionIndex));
+        if (c.EnablePinSwapping is { } eps) Add("ENABLEPINSWAPPING", B(eps));
+        if (c.EnablePartSwapping is { } eparts) Add("ENABLEPARTSWAPPING", B(eparts));
         if (!c.Enabled) Add("ENABLED", "FALSE");
         if (c.FlippedOnLayer) Add("FLIPPEDONLAYER", "TRUE");
         if (c.IsBGA) Add("ISBGA", "TRUE");
