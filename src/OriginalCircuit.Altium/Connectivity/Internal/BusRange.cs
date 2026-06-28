@@ -9,7 +9,7 @@ namespace OriginalCircuit.Altium.Connectivity.Internal;
 /// </summary>
 internal static partial class BusRange
 {
-    [GeneratedRegex(@"^(?<prefix>.*?)\[(?<from>\d+)\.\.(?<to>\d+)\](?<suffix>.*)$", RegexOptions.CultureInvariant)]
+    [GeneratedRegex(@"^(?<prefix>.*?)\[\s*(?<from>\d+)\s*\.\.\s*(?<to>\d+)\s*\](?<suffix>.*)$", RegexOptions.CultureInvariant)]
     private static partial Regex RangeRegex();
 
     /// <summary>

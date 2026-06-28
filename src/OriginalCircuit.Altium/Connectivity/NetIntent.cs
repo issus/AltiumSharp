@@ -92,8 +92,11 @@ public sealed class NetIntent
     /// <summary>Parsed voltage in volts, when <see cref="Kind"/> is <see cref="NetIntentKind.Voltage"/> and parseable.</summary>
     public double? Volts { get; internal init; }
 
-    /// <summary>Parsed length in millimetres, when <see cref="Kind"/> is <see cref="NetIntentKind.LengthMatch"/> and parseable.</summary>
+    /// <summary>Parsed length in millimetres, when <see cref="Kind"/> is <see cref="NetIntentKind.LengthMatch"/> and the value is a physical length.</summary>
     public double? LengthMm { get; internal init; }
+
+    /// <summary>Parsed propagation delay in seconds, when <see cref="Kind"/> is <see cref="NetIntentKind.LengthMatch"/> and the value is a time (e.g. "250ps").</summary>
+    public double? DelaySeconds { get; internal init; }
 
     /// <summary>The differential-pair member net names, when <see cref="Kind"/> is <see cref="NetIntentKind.DiffPair"/>.</summary>
     public (string Positive, string Negative)? Pair { get; internal init; }

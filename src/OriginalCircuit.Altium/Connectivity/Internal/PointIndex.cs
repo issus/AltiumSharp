@@ -57,6 +57,17 @@ internal sealed class PointIndex
     /// <summary>Unions every pair of distinct elements whose indexed points coincide.</summary>
     public void UnionCoincident(UnionFind uf)
     {
+        // Exact-coincidence fast path (the default): with cell size 1 a cell holds only identical
+        // points, so unioning each cell's members directly is O(n) — the per-point neighbourhood scan
+        // below is O(n^2) on a cell shared by many points (a dense net hub).
+        if (_tolRaw <= 0)
+        {
+            foreach (var list in _map.Values)
+                for (var i = 1; i < list.Count; i++)
+                    uf.Union(list[0].Elem, list[i].Elem);
+            return;
+        }
+
         foreach (var list in _map.Values)
         {
             foreach (var (pt, elem) in list)

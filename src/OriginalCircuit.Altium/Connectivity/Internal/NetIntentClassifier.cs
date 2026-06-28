@@ -9,7 +9,7 @@ namespace OriginalCircuit.Altium.Connectivity.Internal;
 /// </summary>
 internal static partial class NetIntentClassifier
 {
-    [GeneratedRegex(@"(?<num>[-+]?\d*\.?\d+)\s*(?<unit>[a-zA-ZµΩ]*)", RegexOptions.CultureInvariant)]
+    [GeneratedRegex(@"(?<num>[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)\s*(?<unit>[a-zA-ZµΩ]*)", RegexOptions.CultureInvariant)]
     private static partial Regex NumberRegex();
 
     public static NetIntent Classify(string name, string value, NetIntentSource source, object? primitive)
@@ -37,7 +37,11 @@ internal static partial class NetIntentClassifier
 
         if (Contains(n, "matchlength") || Contains(n, "matchedlength") || Contains(n, "lengthmatch")
             || Contains(n, "length") || Contains(n, "delay"))
-            return new NetIntent(NetIntentKind.LengthMatch, name, value, source, primitive) { LengthMm = ParseLengthMm(value) };
+        {
+            var (mm, seconds) = ParseLengthOrDelay(value);
+            return new NetIntent(NetIntentKind.LengthMatch, name, value, source, primitive)
+            { LengthMm = mm, DelaySeconds = seconds };
+        }
 
         if (Contains(n, "rule") || Contains(n, "directive"))
             return new NetIntent(NetIntentKind.PcbRule, name, value, source, primitive);
@@ -92,22 +96,35 @@ internal static partial class NetIntentClassifier
         var p = ParseNumberUnit(value);
         if (p is null) return null;
         var (num, unit) = p.Value;
-        if (unit.StartsWith('m') && unit != baseUnit) return num / 1000.0; // mV
-        if (unit.StartsWith('k')) return num * 1000.0;
+        // Exact SI-prefix suffixes only (e.g. "mV"/"kV"/"uV"); a bare unit or the base unit is taken
+        // as-is, so a stray "m" is never silently treated as milli.
+        if (unit == "m" + baseUnit) return num / 1_000.0;
+        if (unit == "u" + baseUnit || unit == "µ" + baseUnit) return num / 1_000_000.0;
+        if (unit == "k" + baseUnit) return num * 1_000.0;
         return num;
     }
 
-    private static double? ParseLengthMm(string value)
+    /// <summary>
+    /// Parses a length-match value as either a physical length (mm) or a propagation delay (seconds).
+    /// At most one component is non-null: time units (s/ms/us/ns/ps) yield a delay, everything else a
+    /// length. Prevents a delay such as "250ps" being silently stored as 250 mm.
+    /// </summary>
+    private static (double? Mm, double? Seconds) ParseLengthOrDelay(string value)
     {
         var p = ParseNumberUnit(value);
-        if (p is null) return null;
+        if (p is null) return (null, null);
         var (num, unit) = p.Value;
         return unit switch
         {
-            "mil" or "mils" => num * 0.0254,
-            "in" or "inch" => num * 25.4,
-            "um" or "µm" => num / 1000.0,
-            _ => num, // mm or bare
+            "s" => (null, num),
+            "ms" => (null, num * 1e-3),
+            "us" or "µs" => (null, num * 1e-6),
+            "ns" => (null, num * 1e-9),
+            "ps" => (null, num * 1e-12),
+            "mil" or "mils" => (num * 0.0254, (double?)null),
+            "in" or "inch" => (num * 25.4, null),
+            "um" or "µm" => (num / 1000.0, null),
+            _ => (num, null), // mm or bare
         };
     }
 
