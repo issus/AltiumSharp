@@ -217,6 +217,20 @@ public sealed class PcbArc : IPcbArc
     public void Translate(Coord dx, Coord dy) => Center = Center.Offset(dx, dy);
 
     /// <summary>
+    /// Rotates this arc counter-clockwise by <paramref name="degrees"/> about <paramref name="pivot"/>:
+    /// moves its <see cref="Center"/> and adds <paramref name="degrees"/> to both
+    /// <see cref="StartAngle"/> and <see cref="EndAngle"/> (preserving the swept span and full-circle arcs).
+    /// </summary>
+    /// <param name="degrees">The rotation angle in degrees (counter-clockwise).</param>
+    /// <param name="pivot">The point to rotate about.</param>
+    public void Rotate(double degrees, CoordPoint pivot)
+    {
+        Center = Center.RotateAround(pivot, degrees);
+        StartAngle += degrees;
+        EndAngle += degrees;
+    }
+
+    /// <summary>
     /// Creates a fluent builder for a new arc.
     /// </summary>
     public static ArcBuilder Create() => new();

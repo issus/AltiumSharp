@@ -704,6 +704,21 @@ public sealed class PcbText : IPcbText
     }
 
     /// <summary>
+    /// Rotates this text counter-clockwise by <paramref name="degrees"/> about <paramref name="pivot"/>,
+    /// moving its <see cref="Location"/> and snap point and spinning its own <see cref="Rotation"/>.
+    /// </summary>
+    /// <param name="degrees">The rotation angle in degrees (counter-clockwise).</param>
+    /// <param name="pivot">The point to rotate about.</param>
+    public void Rotate(double degrees, CoordPoint pivot)
+    {
+        Location = Location.RotateAround(pivot, degrees);
+        var snap = new CoordPoint(SnapPointX, SnapPointY).RotateAround(pivot, degrees);
+        SnapPointX = snap.X;
+        SnapPointY = snap.Y;
+        Rotation = PcbRotation.Normalize360(Rotation + degrees);
+    }
+
+    /// <summary>
     /// Creates a fluent builder for new text.
     /// </summary>
     public static TextBuilder Create(string text) => new(text);

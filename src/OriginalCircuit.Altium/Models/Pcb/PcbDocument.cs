@@ -570,6 +570,20 @@ public sealed class PcbDocument : IPcbDocument
         component.MoveTo(origin);
     }
 
+    /// <summary>
+    /// Rotates a placed component and every primitive it owns counter-clockwise by
+    /// <paramref name="degrees"/> about <paramref name="center"/> (the component reference point by
+    /// default), keeping geometry and metadata consistent. Equivalent to <see cref="PcbComponent.RotateBy"/>.
+    /// </summary>
+    /// <param name="component">The component to rotate (must belong to this document).</param>
+    /// <param name="degrees">The rotation angle in degrees (counter-clockwise).</param>
+    /// <param name="center">The pivot to rotate about; defaults to the component reference point.</param>
+    public void RotateComponent(PcbComponent component, double degrees, CoordPoint? center = null)
+    {
+        ArgumentNullException.ThrowIfNull(component);
+        component.RotateBy(degrees, center);
+    }
+
     /// <summary>The zero-based index of a component, matching the <c>ComponentIndex</c> stored on its
     /// owned primitives; -1 when the component is not in this document.</summary>
     internal int IndexOfComponent(PcbComponent component) => _components.IndexOf(component);

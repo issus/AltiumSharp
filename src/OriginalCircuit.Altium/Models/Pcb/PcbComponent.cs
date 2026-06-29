@@ -275,9 +275,13 @@ public sealed class PcbComponent : IPcbComponent
     public int ReliefEntries { get; set; }
 
     /// <summary>
-    /// Rotation angle in degrees.
+    /// Rotation angle in degrees (counter-clockwise). This is metadata describing the footprint's
+    /// orientation; the owned primitives are stored in absolute coordinates, so the setter is
+    /// <see langword="internal"/> (used by the reader) to prevent silently desyncing the value from the
+    /// geometry. Use <see cref="RotateBy"/> / <see cref="SetRotation"/> to change orientation — they rotate
+    /// the geometry and update this together.
     /// </summary>
-    public double Rotation { get; set; }
+    public double Rotation { get; internal set; }
 
     /// <summary>
     /// Solder mask expansion.
@@ -614,6 +618,35 @@ public sealed class PcbComponent : IPcbComponent
     /// <param name="origin">The new component reference point.</param>
     public void MoveTo(CoordPoint origin) => TranslateBy(origin.X - X, origin.Y - Y);
 
+    /// <summary>
+    /// Rotates the whole footprint counter-clockwise by <paramref name="degrees"/> about
+    /// <paramref name="center"/> (the component reference point <see cref="X"/>/<see cref="Y"/> by default):
+    /// turns every primitive in <see cref="Children"/> — positions <em>and</em> per-primitive orientation
+    /// (pad/text/fill spin, arc angles, 3D-model 2D/Z rotation) — and updates <see cref="Rotation"/>, so the
+    /// geometry and the metadata stay consistent. Net and component assignments are preserved.
+    /// </summary>
+    /// <param name="degrees">The rotation angle in degrees (counter-clockwise).</param>
+    /// <param name="center">The pivot to rotate about; defaults to the component reference point.</param>
+    public void RotateBy(double degrees, CoordPoint? center = null)
+    {
+        var pivot = center ?? new CoordPoint(X, Y);
+        foreach (var primitive in Children)
+            ApplyRotate(primitive, degrees, pivot);
+
+        // Rotate the reference point about the pivot too (a no-op for the default pivot = (X, Y)).
+        var origin = new CoordPoint(X, Y).RotateAround(pivot, degrees);
+        X = origin.X;
+        Y = origin.Y;
+        Rotation = PcbRotation.Normalize360(Rotation + degrees);
+    }
+
+    /// <summary>
+    /// Sets the footprint's absolute orientation to <paramref name="degrees"/> by rotating it about the
+    /// reference point by the delta from its current <see cref="Rotation"/>. See <see cref="RotateBy"/>.
+    /// </summary>
+    /// <param name="degrees">The target rotation in degrees (counter-clockwise).</param>
+    public void SetRotation(double degrees) => RotateBy(degrees - Rotation);
+
     private static void ApplyTranslate(IPrimitive primitive, Coord dx, Coord dy)
     {
         switch (primitive)
@@ -627,6 +660,22 @@ public sealed class PcbComponent : IPcbComponent
             case PcbRegion region: region.Translate(dx, dy); break;
             case PcbComponentBody body: body.Translate(dx, dy); break;
             case PcbShapeBasedRegion shape: shape.Translate(dx, dy); break;
+        }
+    }
+
+    private static void ApplyRotate(IPrimitive primitive, double degrees, CoordPoint pivot)
+    {
+        switch (primitive)
+        {
+            case PcbPad pad: pad.Rotate(degrees, pivot); break;
+            case PcbVia via: via.Rotate(degrees, pivot); break;
+            case PcbTrack track: track.Rotate(degrees, pivot); break;
+            case PcbArc arc: arc.Rotate(degrees, pivot); break;
+            case PcbText text: text.Rotate(degrees, pivot); break;
+            case PcbFill fill: fill.Rotate(degrees, pivot); break;
+            case PcbRegion region: region.Rotate(degrees, pivot); break;
+            case PcbComponentBody body: body.Rotate(degrees, pivot); break;
+            case PcbShapeBasedRegion shape: shape.Rotate(degrees, pivot); break;
         }
     }
 

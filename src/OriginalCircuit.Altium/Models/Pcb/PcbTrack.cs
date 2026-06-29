@@ -229,6 +229,18 @@ public sealed class PcbTrack : IPcbTrack
     }
 
     /// <summary>
+    /// Rotates this track counter-clockwise by <paramref name="degrees"/> about <paramref name="pivot"/>,
+    /// moving both <see cref="Start"/> and <see cref="End"/> (which encode its orientation).
+    /// </summary>
+    /// <param name="degrees">The rotation angle in degrees (counter-clockwise).</param>
+    /// <param name="pivot">The point to rotate about.</param>
+    public void Rotate(double degrees, CoordPoint pivot)
+    {
+        Start = Start.RotateAround(pivot, degrees);
+        End = End.RotateAround(pivot, degrees);
+    }
+
+    /// <summary>
     /// Creates a fluent builder for a new track.
     /// </summary>
     public static TrackBuilder Create() => new();

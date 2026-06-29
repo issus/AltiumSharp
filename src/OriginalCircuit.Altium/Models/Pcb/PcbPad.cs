@@ -712,6 +712,18 @@ public sealed class PcbPad : IPcbPad
     public void Translate(Coord dx, Coord dy) => Location = Location.Offset(dx, dy);
 
     /// <summary>
+    /// Rotates this pad counter-clockwise by <paramref name="degrees"/> about <paramref name="pivot"/>,
+    /// moving its <see cref="Location"/> and spinning its own <see cref="Rotation"/>.
+    /// </summary>
+    /// <param name="degrees">The rotation angle in degrees (counter-clockwise).</param>
+    /// <param name="pivot">The point to rotate about.</param>
+    public void Rotate(double degrees, CoordPoint pivot)
+    {
+        Location = Location.RotateAround(pivot, degrees);
+        Rotation = PcbRotation.Normalize360(Rotation + degrees);
+    }
+
+    /// <summary>
     /// Creates a fluent builder for a new pad.
     /// </summary>
     public static PadBuilder Create(string? designator = null) => new(designator);

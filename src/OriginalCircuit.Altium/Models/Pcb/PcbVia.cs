@@ -313,6 +313,14 @@ public sealed class PcbVia : IPcbVia
     public void Translate(Coord dx, Coord dy) => Location = Location.Offset(dx, dy);
 
     /// <summary>
+    /// Rotates this via counter-clockwise by <paramref name="degrees"/> about <paramref name="pivot"/>,
+    /// moving its <see cref="Location"/>. A via is rotationally symmetric, so it has no orientation field.
+    /// </summary>
+    /// <param name="degrees">The rotation angle in degrees (counter-clockwise).</param>
+    /// <param name="pivot">The point to rotate about.</param>
+    public void Rotate(double degrees, CoordPoint pivot) => Location = Location.RotateAround(pivot, degrees);
+
+    /// <summary>
     /// Creates a fluent builder for a new via.
     /// </summary>
     public static ViaBuilder Create() => new();

@@ -219,6 +219,25 @@ public sealed class PcbFill : IPcbFill
     }
 
     /// <summary>
+    /// Rotates this fill counter-clockwise by <paramref name="degrees"/> about <paramref name="pivot"/>.
+    /// A fill is an axis-aligned rectangle plus a separate <see cref="Rotation"/> spin, so the centre is
+    /// rotated about the pivot, the width/height (corner span) are preserved, and <paramref name="degrees"/>
+    /// is added to <see cref="Rotation"/> — keeping non-cardinal angles representable.
+    /// </summary>
+    /// <param name="degrees">The rotation angle in degrees (counter-clockwise).</param>
+    /// <param name="pivot">The point to rotate about.</param>
+    public void Rotate(double degrees, CoordPoint pivot)
+    {
+        var halfW = Coord.Abs(Corner2.X - Corner1.X) / 2.0;
+        var halfH = Coord.Abs(Corner2.Y - Corner1.Y) / 2.0;
+        var center = new CoordPoint((Corner1.X + Corner2.X) / 2.0, (Corner1.Y + Corner2.Y) / 2.0)
+            .RotateAround(pivot, degrees);
+        Corner1 = new CoordPoint(center.X - halfW, center.Y - halfH);
+        Corner2 = new CoordPoint(center.X + halfW, center.Y + halfH);
+        Rotation = PcbRotation.Normalize360(Rotation + degrees);
+    }
+
+    /// <summary>
     /// Creates a fluent builder for a new fill.
     /// </summary>
     public static FillBuilder Create() => new();

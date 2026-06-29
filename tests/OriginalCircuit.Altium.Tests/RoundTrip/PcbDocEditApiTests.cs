@@ -305,6 +305,103 @@ public sealed class PcbDocEditApiTests
         Assert.All(children, c => Assert.NotNull(c));
     }
 
+    // --- 5. Component rotation (RotateBy / SetRotation) -----------------------------------------
+
+    [Fact]
+    public void RotateBy_RotatesFromScratchFootprint_AboutOrigin_CounterClockwise()
+    {
+        var comp = PcbComponent.Create("R1").Build();
+        comp.X = Coord.FromMils(1000);
+        comp.Y = Coord.FromMils(2000);
+        var pad = PcbPad.Create("1").At(Coord.FromMils(1100), Coord.FromMils(2000)).Build();  // 100 mil east of origin
+        var silk = new PcbText { Location = new CoordPoint(Coord.FromMils(1000), Coord.FromMils(2050)) }; // 50 mil north
+        comp.AddPad(pad);
+        comp.AddText(silk);
+
+        comp.RotateBy(90); // CCW about (1000,2000): east -> north, north -> west
+
+        // pad (100,0) -> (0,100) => (1000, 2100); orientation spun to 90.
+        Assert.Equal(Coord.FromMils(1000).ToRaw(), pad.Location.X.ToRaw());
+        Assert.Equal(Coord.FromMils(2100).ToRaw(), pad.Location.Y.ToRaw());
+        Assert.Equal(90.0, pad.Rotation);
+        // silk (0,50) -> (-50,0) => (950, 2000); orientation spun to 90.
+        Assert.Equal(Coord.FromMils(950).ToRaw(), silk.Location.X.ToRaw());
+        Assert.Equal(Coord.FromMils(2000).ToRaw(), silk.Location.Y.ToRaw());
+        Assert.Equal(90.0, silk.Rotation);
+        // component metadata updated; reference point unchanged (rotated about itself).
+        Assert.Equal(90.0, comp.Rotation);
+        Assert.Equal(Coord.FromMils(1000).ToRaw(), comp.X.ToRaw());
+        Assert.Equal(Coord.FromMils(2000).ToRaw(), comp.Y.ToRaw());
+    }
+
+    [Fact]
+    public void SetRotation_RotatesGeometryByDelta_NotJustMetadata()
+    {
+        // Mirrors the bug report: changing rotation must move the geometry, not only the field.
+        var comp = PcbComponent.Create("U1").Build();
+        var pad = PcbPad.Create("1").At(Coord.FromMils(50), Coord.FromMils(0)).Build();        // 50 mil east of origin
+        comp.AddPad(pad);
+        comp.RotateBy(90);                          // now at 90; pad at (0, 50)
+        Assert.Equal(90.0, comp.Rotation);
+        Assert.Equal(Coord.FromMils(0).ToRaw(), pad.Location.X.ToRaw());
+        Assert.Equal(Coord.FromMils(50).ToRaw(), pad.Location.Y.ToRaw());
+
+        comp.SetRotation(0);                         // back to 0; geometry must return to (50, 0)
+        Assert.Equal(0.0, comp.Rotation);
+        Assert.Equal(Coord.FromMils(50).ToRaw(), pad.Location.X.ToRaw());
+        Assert.Equal(Coord.FromMils(0).ToRaw(), pad.Location.Y.ToRaw());
+    }
+
+    [SkippableFact]
+    public void RotateComponent_RotatesWholeFootprint_AndRoundTrips()
+    {
+        var path = Path.Combine(GetTestDataPath(), "SPI Isolator.PcbDoc");
+        if (!File.Exists(path)) { Skip.If(true, "Test data not available"); return; }
+
+        var doc = new PcbDocReader().Read(File.OpenRead(path));
+        var ci = Enumerable.Range(0, doc.Components.Count)
+            .OrderByDescending(i => OwnedAnchors(doc, i).Count)
+            .First();
+        var comp = (PcbComponent)doc.Components[ci];
+        var pivot = new CoordPoint(comp.X, comp.Y);
+        var origRotation = comp.Rotation;
+
+        var before = OwnedAnchors(doc, ci);
+        Assert.True(before.Count > comp.Pads.Count); // exercises doc-level silk/copper/body, not just pads
+
+        const double angle = 90.0;
+        comp.RotateBy(angle);
+
+        var expectedRotation = ((origRotation + angle) % 360 + 360) % 360;
+        Assert.Equal(expectedRotation, comp.Rotation, 3);
+
+        // In-memory: every owned primitive turned about the pivot.
+        var afterMem = OwnedAnchors(doc, ci);
+        Assert.Equal(before.Count, afterMem.Count);
+        for (var i = 0; i < before.Count; i++)
+            AssertClose(before[i].RotateAround(pivot, angle), afterMem[i], 64);
+
+        // Round-trip: orientation and geometry persist consistently.
+        using var ms = new MemoryStream();
+        new PcbDocWriter().Write(doc, ms);
+        ms.Position = 0;
+        var rt = new PcbDocReader().Read(ms);
+        var rtComp = (PcbComponent)rt.Components[ci];
+
+        Assert.Equal(expectedRotation, rtComp.Rotation, 3);
+        var afterRt = OwnedAnchors(rt, ci);
+        Assert.Equal(before.Count, afterRt.Count);
+        for (var i = 0; i < before.Count; i++)
+            AssertClose(before[i].RotateAround(pivot, angle), afterRt[i], 64);
+    }
+
+    private static void AssertClose(CoordPoint expected, CoordPoint actual, int toleranceRaw)
+    {
+        Assert.True(Math.Abs(expected.X.ToRaw() - actual.X.ToRaw()) <= toleranceRaw
+                 && Math.Abs(expected.Y.ToRaw() - actual.Y.ToRaw()) <= toleranceRaw,
+            $"expected ~{expected} but was {actual} (tolerance {toleranceRaw} raw)");
+    }
+
     /// <summary>
     /// A deterministic, order-stable list of one representative anchor point per primitive owned by the
     /// component at <paramref name="componentIndex"/>. Storages are written and read back in list order,

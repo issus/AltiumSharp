@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using OriginalCircuit.Eda.Primitives;
 
@@ -138,22 +139,90 @@ public sealed class PcbShapeBasedRegion : IPrimitive
     }
 
     /// <summary>
+    /// Rotates this shape-based region/body counter-clockwise by <paramref name="degrees"/> about
+    /// <paramref name="pivot"/>: turns every outline and hole vertex (arc centres included) and the linked
+    /// 3D-model placement — the <c>MODEL.2D.X</c>/<c>MODEL.2D.Y</c> point is rotated and the
+    /// <c>MODEL.2D.ROTATION</c>/<c>MODEL.3D.ROTZ</c> angles are spun (when present).
+    /// </summary>
+    /// <param name="degrees">The rotation angle in degrees (counter-clockwise).</param>
+    /// <param name="pivot">The point to rotate about.</param>
+    public void Rotate(double degrees, CoordPoint pivot)
+    {
+        var (cos, sin) = PcbRotation.CosSin(degrees);
+        double cx = pivot.X.ToRaw(), cy = pivot.Y.ToRaw();
+
+        foreach (var v in Outline)
+        {
+            var (nx, ny) = PcbRotation.RotateRaw(v.X, v.Y, cx, cy, cos, sin);
+            v.X = checked((int)Math.Round(nx));
+            v.Y = checked((int)Math.Round(ny));
+            if (v.IsRoundRaw != 0) // arc vertex: rotate its centre too
+            {
+                var (ncx, ncy) = PcbRotation.RotateRaw(v.CenterX, v.CenterY, cx, cy, cos, sin);
+                v.CenterX = checked((int)Math.Round(ncx));
+                v.CenterY = checked((int)Math.Round(ncy));
+            }
+        }
+
+        foreach (var hole in Holes)
+            for (var i = 0; i < hole.Count; i++)
+                hole[i] = PcbRotation.RotateRaw(hole[i].X, hole[i].Y, cx, cy, cos, sin);
+
+        RotateMilPointProperty("MODEL.2D.X", "MODEL.2D.Y", cx, cy, cos, sin);
+        AddAngleProperty("MODEL.2D.ROTATION", degrees);
+        AddAngleProperty("MODEL.3D.ROTZ", degrees);
+    }
+
+    private int FindProperty(string key)
+    {
+        for (var i = 0; i < Properties.Count; i++)
+            if (string.Equals(Properties[i].Key, key, StringComparison.OrdinalIgnoreCase))
+                return i;
+        return -1;
+    }
+
+    private static string FormatMil(Coord c)
+        => c.ToMils().ToString("0.######", CultureInfo.InvariantCulture) + "mil";
+
+    /// <summary>
     /// Shifts a mil-encoded coordinate property (e.g. <c>MODEL.2D.X</c>) by <paramref name="delta"/>,
     /// reformatting in Altium's <c>0.######mil</c> form. No-op when the key is absent or unparseable
     /// (so a property that isn't a coordinate is never corrupted).
     /// </summary>
     private void TranslateMilProperty(string key, Coord delta)
     {
-        for (var i = 0; i < Properties.Count; i++)
-        {
-            if (!string.Equals(Properties[i].Key, key, StringComparison.OrdinalIgnoreCase))
-                continue;
-            var value = Properties[i].Value;
-            if (value is null || !Coord.TryParse(value, out var coord))
-                return;
-            var moved = (coord + delta).ToMils().ToString("0.######", CultureInfo.InvariantCulture) + "mil";
-            Properties[i] = new KeyValuePair<string, string?>(Properties[i].Key, moved);
+        var i = FindProperty(key);
+        if (i < 0 || Properties[i].Value is not { } value || !Coord.TryParse(value, out var coord))
             return;
-        }
+        Properties[i] = new KeyValuePair<string, string?>(Properties[i].Key, FormatMil(coord + delta));
+    }
+
+    /// <summary>
+    /// Rotates a mil-encoded point stored as two properties (X and Y keys) about (<paramref name="cx"/>,
+    /// <paramref name="cy"/>). No-op when either key is absent or unparseable.
+    /// </summary>
+    private void RotateMilPointProperty(string keyX, string keyY, double cx, double cy, double cos, double sin)
+    {
+        int ix = FindProperty(keyX), iy = FindProperty(keyY);
+        if (ix < 0 || iy < 0) return;
+        if (Properties[ix].Value is not { } vx || !Coord.TryParse(vx, out var px)) return;
+        if (Properties[iy].Value is not { } vy || !Coord.TryParse(vy, out var py)) return;
+        var (nx, ny) = PcbRotation.RotateRaw(px.ToRaw(), py.ToRaw(), cx, cy, cos, sin);
+        Properties[ix] = new KeyValuePair<string, string?>(Properties[ix].Key, FormatMil(Coord.FromRaw(checked((int)Math.Round(nx)))));
+        Properties[iy] = new KeyValuePair<string, string?>(Properties[iy].Key, FormatMil(Coord.FromRaw(checked((int)Math.Round(ny)))));
+    }
+
+    /// <summary>
+    /// Adds <paramref name="degrees"/> to a degrees-encoded angle property (normalized to [0, 360)).
+    /// No-op when the key is absent or unparseable.
+    /// </summary>
+    private void AddAngleProperty(string key, double degrees)
+    {
+        var i = FindProperty(key);
+        if (i < 0 || Properties[i].Value is not { } value
+            || !double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var current))
+            return;
+        var rotated = PcbRotation.Normalize360(current + degrees);
+        Properties[i] = new KeyValuePair<string, string?>(Properties[i].Key, rotated.ToString("0.######", CultureInfo.InvariantCulture));
     }
 }

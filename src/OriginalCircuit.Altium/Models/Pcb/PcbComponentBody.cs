@@ -423,6 +423,23 @@ public sealed class PcbComponentBody : IPcbComponentBody
     }
 
     /// <summary>
+    /// Rotates this body counter-clockwise by <paramref name="degrees"/> about <paramref name="pivot"/>:
+    /// turns every outline vertex, moves the linked 3D-model placement (<see cref="Model2DLocation"/>) and
+    /// spins its in-plane orientation (<see cref="Model2DRotation"/> and <see cref="Model3DRotZ"/>), so the
+    /// 2D courtyard and the 3D model stay aligned.
+    /// </summary>
+    /// <param name="degrees">The rotation angle in degrees (counter-clockwise).</param>
+    /// <param name="pivot">The point to rotate about.</param>
+    public void Rotate(double degrees, CoordPoint pivot)
+    {
+        for (var i = 0; i < _outline.Count; i++)
+            _outline[i] = _outline[i].RotateAround(pivot, degrees);
+        Model2DLocation = Model2DLocation.RotateAround(pivot, degrees);
+        Model2DRotation = PcbRotation.Normalize360(Model2DRotation + degrees);
+        Model3DRotZ = PcbRotation.Normalize360(Model3DRotZ + degrees);
+    }
+
+    /// <summary>
     /// Creates a fluent builder for a new component body.
     /// </summary>
     public static ComponentBodyBuilder Create() => new();

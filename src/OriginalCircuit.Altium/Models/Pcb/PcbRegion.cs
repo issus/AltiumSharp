@@ -368,6 +368,36 @@ public sealed class PcbRegion : IPcbRegion
     }
 
     /// <summary>
+    /// Rotates this region counter-clockwise by <paramref name="degrees"/> about <paramref name="pivot"/>,
+    /// turning every outline and hole vertex (including the captured sub-coordinate
+    /// <see cref="OutlineExact"/>/<see cref="HolesExact"/> shadows the writer emits). The region has no
+    /// orientation field; its shape is defined entirely by the vertices.
+    /// </summary>
+    /// <param name="degrees">The rotation angle in degrees (counter-clockwise).</param>
+    /// <param name="pivot">The point to rotate about.</param>
+    public void Rotate(double degrees, CoordPoint pivot)
+    {
+        for (var i = 0; i < _outline.Count; i++)
+            _outline[i] = _outline[i].RotateAround(pivot, degrees);
+
+        foreach (var hole in Holes)
+            for (var i = 0; i < hole.Count; i++)
+                hole[i] = hole[i].RotateAround(pivot, degrees);
+
+        var (cos, sin) = PcbRotation.CosSin(degrees);
+        double cx = pivot.X.ToRaw(), cy = pivot.Y.ToRaw();
+
+        if (OutlineExact is { } oe)
+            for (var i = 0; i < oe.Count; i++)
+                oe[i] = PcbRotation.RotateRaw(oe[i].X, oe[i].Y, cx, cy, cos, sin);
+
+        if (HolesExact is { } he)
+            foreach (var hole in he)
+                for (var i = 0; i < hole.Count; i++)
+                    hole[i] = PcbRotation.RotateRaw(hole[i].X, hole[i].Y, cx, cy, cos, sin);
+    }
+
+    /// <summary>
     /// Creates a fluent builder for a new region.
     /// </summary>
     public static RegionBuilder Create() => new();
