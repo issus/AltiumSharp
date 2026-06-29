@@ -79,9 +79,18 @@ public sealed class PcbPolygon
     public bool IsElectricalPrim { get; set; }
 
     /// <summary>
-    /// Whether this is a free primitive.
+    /// Component index into the board's component list (-1 = not part of a component). Copper pours are
+    /// board-level, so this is normally -1; it exists to give polygons the same ownership signal the
+    /// other primitive types carry (see <see cref="IsFreePrimitive"/>).
     /// </summary>
-    public bool IsFreePrimitive { get; set; }
+    public int ComponentIndex { get; set; } = -1;
+
+    /// <summary>
+    /// Whether this is a free primitive (not owned by a component). Derived from
+    /// <see cref="ComponentIndex"/> (&lt; 0 means free); copper pours are board-level, so this is
+    /// normally <see langword="true"/>.
+    /// </summary>
+    public bool IsFreePrimitive => ComponentIndex < 0;
 
     /// <summary>
     /// Whether this is a pre-route.
@@ -398,4 +407,30 @@ public sealed class PcbPolygon
     /// Adds a vertex to the polygon outline.
     /// </summary>
     public void AddVertex(CoordPoint point) => _vertices.Add(point);
+
+    /// <summary>
+    /// Moves this polygon by the given offset, shifting its location and every outline vertex (both the
+    /// simple <see cref="Vertices"/> and the full <see cref="OutlineVertices"/>, including arc centers).
+    /// </summary>
+    /// <param name="dx">The X offset.</param>
+    /// <param name="dy">The Y offset.</param>
+    public void Translate(Coord dx, Coord dy)
+    {
+        X += dx;
+        Y += dy;
+
+        for (var i = 0; i < _vertices.Count; i++)
+            _vertices[i] = _vertices[i].Offset(dx, dy);
+
+        foreach (var v in OutlineVertices)
+        {
+            v.X += dx;
+            v.Y += dy;
+            if (v.Kind != 0) // arc vertex: shift its center too
+            {
+                v.CenterX += dx;
+                v.CenterY += dy;
+            }
+        }
+    }
 }

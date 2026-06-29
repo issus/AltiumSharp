@@ -144,9 +144,10 @@ public sealed class PcbComponentBody : IPcbComponentBody
     public int UnionIndex { get; set; }
 
     /// <summary>
-    /// Whether this is a free primitive.
+    /// Whether this is a free primitive (not owned by a component). Derived from
+    /// <see cref="ComponentIndex"/> (&lt; 0 means free), which is the authoritative ownership signal.
     /// </summary>
-    public bool IsFreePrimitive { get; set; }
+    public bool IsFreePrimitive => ComponentIndex < 0;
 
     /// <summary>
     /// Whether this is an electrical primitive.
@@ -396,6 +397,30 @@ public sealed class PcbComponentBody : IPcbComponentBody
     /// Adds a point to the body outline.
     /// </summary>
     internal void AddPoint(CoordPoint point) => _outline.Add(point);
+
+    /// <summary>
+    /// Replaces the body outline (courtyard / 3D-body footprint) with the given vertices.
+    /// </summary>
+    /// <param name="points">The new outline vertices, in order.</param>
+    public void SetOutline(IEnumerable<CoordPoint> points)
+    {
+        ArgumentNullException.ThrowIfNull(points);
+        _outline.Clear();
+        _outline.AddRange(points);
+    }
+
+    /// <summary>
+    /// Moves this body by the given offset, shifting every outline vertex and the linked 3D-model
+    /// placement (<see cref="Model2DLocation"/>) so the 2D courtyard and the 3D model stay aligned.
+    /// </summary>
+    /// <param name="dx">The X offset.</param>
+    /// <param name="dy">The Y offset.</param>
+    public void Translate(Coord dx, Coord dy)
+    {
+        for (var i = 0; i < _outline.Count; i++)
+            _outline[i] = _outline[i].Offset(dx, dy);
+        Model2DLocation = Model2DLocation.Offset(dx, dy);
+    }
 
     /// <summary>
     /// Creates a fluent builder for a new component body.

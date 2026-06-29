@@ -1,3 +1,6 @@
+using System.Globalization;
+using OriginalCircuit.Eda.Primitives;
+
 namespace OriginalCircuit.Altium.Models.Pcb;
 
 /// <summary>
@@ -73,4 +76,56 @@ public sealed class PcbShapeBasedRegion
     public List<PcbExtendedVertex> Outline { get; } = new();
     /// <summary>Hole contours (simple x/y double vertices).</summary>
     public List<List<(double X, double Y)>> Holes { get; } = new();
+
+    /// <summary>
+    /// Moves this shape-based region/body by the given offset, shifting every outline and hole vertex
+    /// (arc centers included) and the linked 3D-model placement (the <c>MODEL.2D.X</c>/<c>MODEL.2D.Y</c>
+    /// properties, when present) so the 2D shape and the 3D model stay aligned.
+    /// </summary>
+    /// <param name="dx">The X offset.</param>
+    /// <param name="dy">The Y offset.</param>
+    public void Translate(Coord dx, Coord dy)
+    {
+        var rdx = dx.ToRaw();
+        var rdy = dy.ToRaw();
+
+        foreach (var v in Outline)
+        {
+            v.X += rdx;
+            v.Y += rdy;
+            if (v.IsRoundRaw != 0) // arc vertex: shift its center too
+            {
+                v.CenterX += rdx;
+                v.CenterY += rdy;
+            }
+        }
+
+        double ddx = rdx, ddy = rdy;
+        foreach (var hole in Holes)
+            for (var i = 0; i < hole.Count; i++)
+                hole[i] = (hole[i].X + ddx, hole[i].Y + ddy);
+
+        TranslateMilProperty("MODEL.2D.X", dx);
+        TranslateMilProperty("MODEL.2D.Y", dy);
+    }
+
+    /// <summary>
+    /// Shifts a mil-encoded coordinate property (e.g. <c>MODEL.2D.X</c>) by <paramref name="delta"/>,
+    /// reformatting in Altium's <c>0.######mil</c> form. No-op when the key is absent or unparseable
+    /// (so a property that isn't a coordinate is never corrupted).
+    /// </summary>
+    private void TranslateMilProperty(string key, Coord delta)
+    {
+        for (var i = 0; i < Properties.Count; i++)
+        {
+            if (!string.Equals(Properties[i].Key, key, StringComparison.OrdinalIgnoreCase))
+                continue;
+            var value = Properties[i].Value;
+            if (value is null || !Coord.TryParse(value, out var coord))
+                return;
+            var moved = (coord + delta).ToMils().ToString("0.######", CultureInfo.InvariantCulture) + "mil";
+            Properties[i] = new KeyValuePair<string, string?>(Properties[i].Key, moved);
+            return;
+        }
+    }
 }

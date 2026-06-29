@@ -67,9 +67,10 @@ public sealed class PcbTrack : IPcbTrack
     public bool PolygonOutline { get; set; }
 
     /// <summary>
-    /// Whether this is a free primitive (not owned by a component).
+    /// Whether this is a free primitive (not owned by a component). Derived from
+    /// <see cref="ComponentIndex"/> (&lt; 0 means free), which is the authoritative ownership signal.
     /// </summary>
-    public bool IsFreePrimitive { get; set; }
+    public bool IsFreePrimitive => ComponentIndex < 0;
 
     /// <summary>
     /// Whether this track is an electrical primitive.
@@ -215,6 +216,17 @@ public sealed class PcbTrack : IPcbTrack
     /// Gets the length of this track in mils.
     /// </summary>
     public double LengthMils => Start.DistanceTo(End);
+
+    /// <summary>
+    /// Moves this track by the given offset, shifting both <see cref="Start"/> and <see cref="End"/>.
+    /// </summary>
+    /// <param name="dx">The X offset.</param>
+    /// <param name="dy">The Y offset.</param>
+    public void Translate(Coord dx, Coord dy)
+    {
+        Start = Start.Offset(dx, dy);
+        End = End.Offset(dx, dy);
+    }
 
     /// <summary>
     /// Creates a fluent builder for a new track.

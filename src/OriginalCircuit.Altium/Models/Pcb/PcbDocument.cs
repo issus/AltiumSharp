@@ -338,15 +338,100 @@ public sealed class PcbDocument : IPcbDocument
     /// <summary>
     /// Adds a component to the document.
     /// </summary>
-    public void AddComponent(PcbComponent component) => _components.Add(component);
+    public void AddComponent(PcbComponent component)
+    {
+        component.OwnerDocument = this;
+        _components.Add(component);
+    }
+
+    /// <summary>Removes a component from the document.</summary>
+    /// <returns><see langword="true"/> if the component was found and removed; otherwise <see langword="false"/>.</returns>
+    public bool RemoveComponent(IPcbComponent component)
+    {
+        if (component is PcbComponent c && _components.Remove(c))
+        {
+            c.OwnerDocument = null;
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>Removes a pad from the document.</summary>
+    /// <returns><see langword="true"/> if the pad was found and removed; otherwise <see langword="false"/>.</returns>
+    public bool RemovePad(IPcbPad pad) => pad is PcbPad p && _pads.Remove(p);
+
+    /// <summary>Removes a via from the document.</summary>
+    /// <returns><see langword="true"/> if the via was found and removed; otherwise <see langword="false"/>.</returns>
+    public bool RemoveVia(IPcbVia via) => via is PcbVia v && _vias.Remove(v);
+
+    /// <summary>Removes a track from the document.</summary>
+    /// <returns><see langword="true"/> if the track was found and removed; otherwise <see langword="false"/>.</returns>
+    public bool RemoveTrack(IPcbTrack track) => track is PcbTrack t && _tracks.Remove(t);
+
+    /// <summary>Removes an arc from the document.</summary>
+    /// <returns><see langword="true"/> if the arc was found and removed; otherwise <see langword="false"/>.</returns>
+    public bool RemoveArc(IPcbArc arc) => arc is PcbArc a && _arcs.Remove(a);
+
+    /// <summary>Removes a text object from the document.</summary>
+    /// <returns><see langword="true"/> if the text was found and removed; otherwise <see langword="false"/>.</returns>
+    public bool RemoveText(IPcbText text) => text is PcbText t && _texts.Remove(t);
+
+    /// <summary>Removes a region from the document.</summary>
+    /// <returns><see langword="true"/> if the region was found and removed; otherwise <see langword="false"/>.</returns>
+    public bool RemoveRegion(IPcbRegion region) => region is PcbRegion r && _regions.Remove(r);
+
+    /// <summary>Removes a fill from the document.</summary>
+    /// <returns><see langword="true"/> if the fill was found and removed; otherwise <see langword="false"/>.</returns>
+    public bool RemoveFill(IPcbFill fill) => fill is PcbFill f && _fills.Remove(f);
+
+    /// <summary>Removes a component body from the document.</summary>
+    /// <returns><see langword="true"/> if the body was found and removed; otherwise <see langword="false"/>.</returns>
+    public bool RemoveComponentBody(IPcbComponentBody body) => body is PcbComponentBody b && _componentBodies.Remove(b);
+
+    /// <summary>Removes a polygon (copper pour) from the document.</summary>
+    /// <returns><see langword="true"/> if the polygon was found and removed; otherwise <see langword="false"/>.</returns>
+    public bool RemovePolygon(PcbPolygon polygon) => _polygons.Remove(polygon);
+
+    /// <summary>
+    /// Removes every primitive of type <typeparamref name="T"/> matching <paramref name="predicate"/>
+    /// from the document's primitive list and returns the number removed. This is the bulk form of the
+    /// per-primitive <c>Remove*</c> methods — e.g. <c>doc.RemoveAll&lt;PcbTrack&gt;(t =&gt; t.IsFreePrimitive)</c>
+    /// to unroute every free track in one call.
+    /// </summary>
+    /// <typeparam name="T">The primitive type. Supported: <see cref="PcbComponent"/>, <see cref="PcbPad"/>,
+    /// <see cref="PcbVia"/>, <see cref="PcbTrack"/>, <see cref="PcbArc"/>, <see cref="PcbText"/>,
+    /// <see cref="PcbFill"/>, <see cref="PcbRegion"/>, <see cref="PcbComponentBody"/>, <see cref="PcbPolygon"/>.</typeparam>
+    /// <param name="predicate">Selects which primitives to remove.</param>
+    /// <returns>The number of primitives removed.</returns>
+    /// <exception cref="NotSupportedException"><typeparamref name="T"/> is not a supported primitive type.</exception>
+    public int RemoveAll<T>(Func<T, bool> predicate) where T : class
+    {
+        ArgumentNullException.ThrowIfNull(predicate);
+        return GetPrimitiveBackingList<T>().RemoveAll(x => predicate(x));
+    }
+
+    private List<T> GetPrimitiveBackingList<T>() where T : class
+    {
+        if (typeof(T) == typeof(PcbComponent)) return (List<T>)(object)_components;
+        if (typeof(T) == typeof(PcbPad)) return (List<T>)(object)_pads;
+        if (typeof(T) == typeof(PcbVia)) return (List<T>)(object)_vias;
+        if (typeof(T) == typeof(PcbTrack)) return (List<T>)(object)_tracks;
+        if (typeof(T) == typeof(PcbArc)) return (List<T>)(object)_arcs;
+        if (typeof(T) == typeof(PcbText)) return (List<T>)(object)_texts;
+        if (typeof(T) == typeof(PcbFill)) return (List<T>)(object)_fills;
+        if (typeof(T) == typeof(PcbRegion)) return (List<T>)(object)_regions;
+        if (typeof(T) == typeof(PcbComponentBody)) return (List<T>)(object)_componentBodies;
+        if (typeof(T) == typeof(PcbPolygon)) return (List<T>)(object)_polygons;
+        throw new NotSupportedException(
+            $"RemoveAll<{typeof(T).Name}> is not supported. Supported primitive types: PcbComponent, " +
+            "PcbPad, PcbVia, PcbTrack, PcbArc, PcbText, PcbFill, PcbRegion, PcbComponentBody, PcbPolygon.");
+    }
 
     void IPcbDocument.AddComponent(IPcbComponent component)
     {
         if (component is not PcbComponent c) throw new ArgumentException($"Expected {nameof(PcbComponent)}", nameof(component));
-        _components.Add(c);
+        AddComponent(c);
     }
-
-    bool IPcbDocument.RemoveComponent(IPcbComponent component) => component is PcbComponent c && _components.Remove(c);
 
     void IPcbDocument.AddPad(IPcbPad pad)
     {
@@ -354,15 +439,11 @@ public sealed class PcbDocument : IPcbDocument
         _pads.Add(p);
     }
 
-    bool IPcbDocument.RemovePad(IPcbPad pad) => pad is PcbPad p && _pads.Remove(p);
-
     void IPcbDocument.AddVia(IPcbVia via)
     {
         if (via is not PcbVia v) throw new ArgumentException($"Expected {nameof(PcbVia)}", nameof(via));
         _vias.Add(v);
     }
-
-    bool IPcbDocument.RemoveVia(IPcbVia via) => via is PcbVia v && _vias.Remove(v);
 
     void IPcbDocument.AddTrack(IPcbTrack track)
     {
@@ -370,15 +451,11 @@ public sealed class PcbDocument : IPcbDocument
         _tracks.Add(t);
     }
 
-    bool IPcbDocument.RemoveTrack(IPcbTrack track) => track is PcbTrack t && _tracks.Remove(t);
-
     void IPcbDocument.AddArc(IPcbArc arc)
     {
         if (arc is not PcbArc a) throw new ArgumentException($"Expected {nameof(PcbArc)}", nameof(arc));
         _arcs.Add(a);
     }
-
-    bool IPcbDocument.RemoveArc(IPcbArc arc) => arc is PcbArc a && _arcs.Remove(a);
 
     void IPcbDocument.AddText(IPcbText text)
     {
@@ -386,15 +463,11 @@ public sealed class PcbDocument : IPcbDocument
         _texts.Add(t);
     }
 
-    bool IPcbDocument.RemoveText(IPcbText text) => text is PcbText t && _texts.Remove(t);
-
     void IPcbDocument.AddRegion(IPcbRegion region)
     {
         if (region is not PcbRegion r) throw new ArgumentException($"Expected {nameof(PcbRegion)}", nameof(region));
         _regions.Add(r);
     }
-
-    bool IPcbDocument.RemoveRegion(IPcbRegion region) => region is PcbRegion r && _regions.Remove(r);
 
     /// <summary>
     /// Adds a pad to the document.
@@ -470,6 +543,57 @@ public sealed class PcbDocument : IPcbDocument
     /// Adds a room to the document.
     /// </summary>
     public void AddRoom(PcbRoom room) => _rooms.Add(room);
+
+    /// <summary>
+    /// Moves a placed component and every primitive it owns by the given offset, keeping the footprint
+    /// internally consistent. Equivalent to <see cref="PcbComponent.TranslateBy"/>; provided on the
+    /// document for discoverability.
+    /// </summary>
+    /// <param name="component">The component to move (must belong to this document).</param>
+    /// <param name="dx">The X offset.</param>
+    /// <param name="dy">The Y offset.</param>
+    public void TranslateComponent(PcbComponent component, Coord dx, Coord dy)
+    {
+        ArgumentNullException.ThrowIfNull(component);
+        component.TranslateBy(dx, dy);
+    }
+
+    /// <summary>
+    /// Moves a placed component so its reference point sits at <paramref name="origin"/>, shifting every
+    /// primitive it owns by the same offset. Equivalent to <see cref="PcbComponent.MoveTo"/>.
+    /// </summary>
+    /// <param name="component">The component to move (must belong to this document).</param>
+    /// <param name="origin">The new component reference point.</param>
+    public void MoveComponentTo(PcbComponent component, CoordPoint origin)
+    {
+        ArgumentNullException.ThrowIfNull(component);
+        component.MoveTo(origin);
+    }
+
+    /// <summary>The zero-based index of a component, matching the <c>ComponentIndex</c> stored on its
+    /// owned primitives; -1 when the component is not in this document.</summary>
+    internal int IndexOfComponent(PcbComponent component) => _components.IndexOf(component);
+
+    /// <summary>
+    /// Translates every document-level primitive whose <c>ComponentIndex</c> equals
+    /// <paramref name="componentIndex"/> by (<paramref name="dx"/>, <paramref name="dy"/>), skipping any
+    /// primitive already in <paramref name="alreadyMoved"/> (so component pads, which are shared between
+    /// the document list and the component's own <see cref="PcbComponent.Pads"/> view, are not moved
+    /// twice). Covers the flat primitive storages plus the shape-based region/body storages.
+    /// </summary>
+    internal void TranslateOwnedPrimitives(int componentIndex, Coord dx, Coord dy, HashSet<object> alreadyMoved)
+    {
+        foreach (var p in _pads) if (p.ComponentIndex == componentIndex && alreadyMoved.Add(p)) p.Translate(dx, dy);
+        foreach (var v in _vias) if (v.ComponentIndex == componentIndex && alreadyMoved.Add(v)) v.Translate(dx, dy);
+        foreach (var t in _tracks) if (t.ComponentIndex == componentIndex && alreadyMoved.Add(t)) t.Translate(dx, dy);
+        foreach (var a in _arcs) if (a.ComponentIndex == componentIndex && alreadyMoved.Add(a)) a.Translate(dx, dy);
+        foreach (var t in _texts) if (t.ComponentIndex == componentIndex && alreadyMoved.Add(t)) t.Translate(dx, dy);
+        foreach (var f in _fills) if (f.ComponentIndex == componentIndex && alreadyMoved.Add(f)) f.Translate(dx, dy);
+        foreach (var r in _regions) if (r.ComponentIndex == componentIndex && alreadyMoved.Add(r)) r.Translate(dx, dy);
+        foreach (var b in _componentBodies) if (b.ComponentIndex == componentIndex && alreadyMoved.Add(b)) b.Translate(dx, dy);
+        foreach (var r in ShapeBasedRegions) if (r.ComponentIndex == componentIndex && alreadyMoved.Add(r)) r.Translate(dx, dy);
+        foreach (var r in ShapeBasedComponentBodies) if (r.ComponentIndex == componentIndex && alreadyMoved.Add(r)) r.Translate(dx, dy);
+    }
 
     /// <inheritdoc />
     public async ValueTask SaveAsync(string path, OriginalCircuit.Eda.Models.SaveOptions? options = null, CancellationToken cancellationToken = default)

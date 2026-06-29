@@ -380,9 +380,10 @@ public sealed class PcbText : IPcbText
     public int UnionIndex { get; set; }
 
     /// <summary>
-    /// Whether this is a free primitive.
+    /// Whether this is a free primitive (not owned by a component). Derived from
+    /// <see cref="ComponentIndex"/> (&lt; 0 means free), which is the authoritative ownership signal.
     /// </summary>
-    public bool IsFreePrimitive { get; set; }
+    public bool IsFreePrimitive => ComponentIndex < 0;
 
     /// <summary>
     /// Whether this is an electrical primitive.
@@ -688,6 +689,18 @@ public sealed class PcbText : IPcbText
                 Location.X + Coord.FromRaw(minX), Location.Y + Coord.FromRaw(minY),
                 Location.X + Coord.FromRaw(maxX), Location.Y + Coord.FromRaw(maxY));
         }
+    }
+
+    /// <summary>
+    /// Moves this text by the given offset, shifting its <see cref="Location"/> and snap point.
+    /// </summary>
+    /// <param name="dx">The X offset.</param>
+    /// <param name="dy">The Y offset.</param>
+    public void Translate(Coord dx, Coord dy)
+    {
+        Location = Location.Offset(dx, dy);
+        SnapPointX += dx;
+        SnapPointY += dy;
     }
 
     /// <summary>

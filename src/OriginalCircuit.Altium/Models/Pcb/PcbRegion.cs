@@ -77,9 +77,10 @@ public sealed class PcbRegion : IPcbRegion
     public int UnionIndex { get; set; }
 
     /// <summary>
-    /// Whether this is a free primitive.
+    /// Whether this is a free primitive (not owned by a component). Derived from
+    /// <see cref="ComponentIndex"/> (&lt; 0 means free), which is the authoritative ownership signal.
     /// </summary>
-    public bool IsFreePrimitive { get; set; }
+    public bool IsFreePrimitive => ComponentIndex < 0;
 
     /// <summary>
     /// Whether this is an electrical primitive.
@@ -322,6 +323,49 @@ public sealed class PcbRegion : IPcbRegion
     /// Adds a point to the region outline.
     /// </summary>
     internal void AddPoint(CoordPoint point) => _outline.Add(point);
+
+    /// <summary>
+    /// Replaces the region outline with the given vertices. Clears any captured sub-coordinate
+    /// (<see cref="OutlineExact"/>) shadow so the new integer outline is authoritative on write.
+    /// Hole contours are left unchanged.
+    /// </summary>
+    /// <param name="points">The new outline vertices, in order.</param>
+    public void SetOutline(IEnumerable<CoordPoint> points)
+    {
+        ArgumentNullException.ThrowIfNull(points);
+        _outline.Clear();
+        _outline.AddRange(points);
+        OutlineExact = null; // the integer outline now defines the region; drop the stale exact shadow
+    }
+
+    /// <summary>
+    /// Moves this region by the given offset, shifting every outline and hole vertex (including the
+    /// captured sub-coordinate <see cref="OutlineExact"/>/<see cref="HolesExact"/> shadows the writer
+    /// emits, so the move survives a byte-faithful round-trip).
+    /// </summary>
+    /// <param name="dx">The X offset.</param>
+    /// <param name="dy">The Y offset.</param>
+    public void Translate(Coord dx, Coord dy)
+    {
+        for (var i = 0; i < _outline.Count; i++)
+            _outline[i] = _outline[i].Offset(dx, dy);
+
+        var rx = (double)dx.ToRaw();
+        var ry = (double)dy.ToRaw();
+
+        if (OutlineExact is { } oe)
+            for (var i = 0; i < oe.Count; i++)
+                oe[i] = (oe[i].X + rx, oe[i].Y + ry);
+
+        foreach (var hole in Holes)
+            for (var i = 0; i < hole.Count; i++)
+                hole[i] = hole[i].Offset(dx, dy);
+
+        if (HolesExact is { } he)
+            foreach (var hole in he)
+                for (var i = 0; i < hole.Count; i++)
+                    hole[i] = (hole[i].X + rx, hole[i].Y + ry);
+    }
 
     /// <summary>
     /// Creates a fluent builder for a new region.

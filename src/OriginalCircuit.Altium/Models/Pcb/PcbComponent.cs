@@ -16,6 +16,15 @@ public sealed class PcbComponent : IPcbComponent
     private readonly List<PcbRegion> _regions = new();
     private readonly List<PcbComponentBody> _componentBodies = new();
 
+    /// <summary>
+    /// The document this component belongs to, set when it is added via
+    /// <see cref="PcbDocument.AddComponent(PcbComponent)"/>. Lets <see cref="TranslateBy"/> reach the
+    /// component's document-level owned primitives (in a PcbDoc, only pads live in the component's own
+    /// child collections; silk/copper/courtyard/3D-body primitives live in the document's flat lists,
+    /// linked back by <c>ComponentIndex</c>). Null for a standalone footprint (e.g. a PcbLib component).
+    /// </summary>
+    internal PcbDocument? OwnerDocument { get; set; }
+
     /// <inheritdoc />
     public string Name { get; set; } = string.Empty;
 
@@ -538,6 +547,54 @@ public sealed class PcbComponent : IPcbComponent
     }
 
     bool IPcbComponent.RemoveRegion(IPcbRegion region) => region is PcbRegion r && _regions.Remove(r);
+
+    /// <summary>
+    /// Moves the whole footprint by the given offset: shifts the component reference point
+    /// (<see cref="X"/>/<see cref="Y"/>) and every primitive it owns — pads, tracks, vias, arcs, text,
+    /// fills, courtyard regions and 3D bodies — so the footprint stays internally consistent. Net and
+    /// component assignments are preserved.
+    /// </summary>
+    /// <remarks>
+    /// Owned primitives are gathered from this component's own child collections <em>and</em>, when the
+    /// component belongs to a <see cref="PcbDocument"/>, from the document's flat primitive lists by
+    /// <c>ComponentIndex</c> (where a PcbDoc keeps everything but pads). Each primitive is moved once,
+    /// even when it appears in both views.
+    /// </remarks>
+    /// <param name="dx">The X offset.</param>
+    /// <param name="dy">The Y offset.</param>
+    public void TranslateBy(Coord dx, Coord dy)
+    {
+        X += dx;
+        Y += dy;
+
+        // Each primitive is translated at most once. Component pads appear in both the child collection
+        // below and (for a loaded PcbDoc) the document's flat Pads list, so dedupe by reference.
+        var moved = new HashSet<object>(ReferenceEqualityComparer.Instance);
+
+        foreach (var pad in _pads) if (moved.Add(pad)) pad.Translate(dx, dy);
+        foreach (var track in _tracks) if (moved.Add(track)) track.Translate(dx, dy);
+        foreach (var via in _vias) if (moved.Add(via)) via.Translate(dx, dy);
+        foreach (var arc in _arcs) if (moved.Add(arc)) arc.Translate(dx, dy);
+        foreach (var text in _texts) if (moved.Add(text)) text.Translate(dx, dy);
+        foreach (var fill in _fills) if (moved.Add(fill)) fill.Translate(dx, dy);
+        foreach (var region in _regions) if (moved.Add(region)) region.Translate(dx, dy);
+        foreach (var body in _componentBodies) if (moved.Add(body)) body.Translate(dx, dy);
+
+        if (OwnerDocument is { } doc)
+        {
+            var index = doc.IndexOfComponent(this);
+            if (index >= 0)
+                doc.TranslateOwnedPrimitives(index, dx, dy, moved);
+        }
+    }
+
+    /// <summary>
+    /// Moves the whole footprint so its reference point (<see cref="X"/>/<see cref="Y"/>) sits at
+    /// <paramref name="origin"/>, shifting every owned primitive by the same offset. See
+    /// <see cref="TranslateBy"/>.
+    /// </summary>
+    /// <param name="origin">The new component reference point.</param>
+    public void MoveTo(CoordPoint origin) => TranslateBy(origin.X - X, origin.Y - Y);
 
     /// <summary>
     /// Creates a fluent builder for a new component.

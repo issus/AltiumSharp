@@ -59,9 +59,10 @@ public sealed class PcbFill : IPcbFill
     public int UnionIndex { get; set; }
 
     /// <summary>
-    /// Whether this is a free primitive.
+    /// Whether this is a free primitive (not owned by a component). Derived from
+    /// <see cref="ComponentIndex"/> (&lt; 0 means free), which is the authoritative ownership signal.
     /// </summary>
-    public bool IsFreePrimitive { get; set; }
+    public bool IsFreePrimitive => ComponentIndex < 0;
 
     /// <summary>
     /// Whether this is an electrical primitive.
@@ -205,6 +206,17 @@ public sealed class PcbFill : IPcbFill
     /// Height of the fill (distance between corners in Y).
     /// </summary>
     public Coord Height => Coord.Abs(Corner2.Y - Corner1.Y);
+
+    /// <summary>
+    /// Moves this fill by the given offset, shifting both <see cref="Corner1"/> and <see cref="Corner2"/>.
+    /// </summary>
+    /// <param name="dx">The X offset.</param>
+    /// <param name="dy">The Y offset.</param>
+    public void Translate(Coord dx, Coord dy)
+    {
+        Corner1 = Corner1.Offset(dx, dy);
+        Corner2 = Corner2.Offset(dx, dy);
+    }
 
     /// <summary>
     /// Creates a fluent builder for a new fill.

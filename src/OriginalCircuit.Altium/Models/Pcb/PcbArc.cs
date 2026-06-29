@@ -75,9 +75,10 @@ public sealed class PcbArc : IPcbArc
     public bool PolygonOutline { get; set; }
 
     /// <summary>
-    /// Whether this is a free primitive.
+    /// Whether this is a free primitive (not owned by a component). Derived from
+    /// <see cref="ComponentIndex"/> (&lt; 0 means free), which is the authoritative ownership signal.
     /// </summary>
-    public bool IsFreePrimitive { get; set; }
+    public bool IsFreePrimitive => ComponentIndex < 0;
 
     /// <summary>
     /// Whether this is an electrical primitive.
@@ -206,6 +207,14 @@ public sealed class PcbArc : IPcbArc
 
     /// <inheritdoc />
     public CoordRect Bounds => ArcGeometry.Bounds(Center, Radius, StartAngle, EndAngle, Width / 2);
+
+    /// <summary>
+    /// Moves this arc by the given offset, shifting its <see cref="Center"/>. Radius and angles
+    /// are unchanged.
+    /// </summary>
+    /// <param name="dx">The X offset.</param>
+    /// <param name="dy">The Y offset.</param>
+    public void Translate(Coord dx, Coord dy) => Center = Center.Offset(dx, dy);
 
     /// <summary>
     /// Creates a fluent builder for a new arc.

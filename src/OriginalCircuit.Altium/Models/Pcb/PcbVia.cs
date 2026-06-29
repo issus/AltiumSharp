@@ -178,9 +178,10 @@ public sealed class PcbVia : IPcbVia
     public Coord HoleNegativeTolerance { get; set; } = Coord.FromRaw(int.MaxValue);
 
     /// <summary>
-    /// Whether this is a free primitive (not owned by a component).
+    /// Whether this is a free primitive (not owned by a component). Derived from
+    /// <see cref="ComponentIndex"/> (&lt; 0 means free), which is the authoritative ownership signal.
     /// </summary>
-    public bool IsFreePrimitive { get; set; }
+    public bool IsFreePrimitive => ComponentIndex < 0;
 
     /// <summary>
     /// Whether this via is part of a pre-route.
@@ -303,6 +304,13 @@ public sealed class PcbVia : IPcbVia
 
     /// <inheritdoc />
     public CoordRect Bounds => CoordRect.FromCenter(Location, Diameter, Diameter);
+
+    /// <summary>
+    /// Moves this via by the given offset, shifting its <see cref="Location"/>.
+    /// </summary>
+    /// <param name="dx">The X offset.</param>
+    /// <param name="dy">The Y offset.</param>
+    public void Translate(Coord dx, Coord dy) => Location = Location.Offset(dx, dy);
 
     /// <summary>
     /// Creates a fluent builder for a new via.
