@@ -352,6 +352,50 @@ public sealed class PcbDocEditApiTests
         Assert.Equal(Coord.FromMils(0).ToRaw(), pad.Location.Y.ToRaw());
     }
 
+    [Fact]
+    public void RotateBy_3DBodyPlacement_AdvancesOnlyModel2DRotation_NotModel3DRotZ()
+    {
+        // The renderer's in-plane model rotation is the SUM Model3DRotZ + Model2DRotation; advancing both
+        // double-rotates the 3D body off its pads. Only the placement angle (Model2DRotation) must change.
+        var comp = PcbComponent.Create("U1").Build();
+        comp.X = Coord.FromMils(1000);
+        comp.Y = Coord.FromMils(1000);
+        var body = PcbComponentBody.Create().Build();
+        body.Model2DLocation = new CoordPoint(Coord.FromMils(1100), Coord.FromMils(1000)); // 100 mil east of origin
+        body.Model2DRotation = 10;
+        body.Model3DRotZ = 20;   // intrinsic Z mounting
+        body.Model3DRotX = 90;   // intrinsic X mounting
+        comp.AddComponentBody(body);
+
+        comp.RotateBy(90);
+
+        Assert.Equal(100.0, body.Model2DRotation); // 10 + 90 (placement angle advanced once)
+        Assert.Equal(20.0, body.Model3DRotZ);       // intrinsic mounting unchanged (would be 110 if doubled)
+        Assert.Equal(90.0, body.Model3DRotX);       // intrinsic mounting unchanged
+        // Anchor rotates about the origin with the pads: (100,0) -> (0,100) => (1000, 1100).
+        Assert.Equal(Coord.FromMils(1000).ToRaw(), body.Model2DLocation.X.ToRaw());
+        Assert.Equal(Coord.FromMils(1100).ToRaw(), body.Model2DLocation.Y.ToRaw());
+    }
+
+    [Fact]
+    public void RotateBy_ShapeBasedBodyPlacement_AdvancesOnlyModel2DRotation_NotModel3DRotZ()
+    {
+        var doc = new PcbDocument();
+        var comp = PcbComponent.Create("U1").Build(); // X/Y default to (0,0)
+        doc.AddComponent(comp); // index 0
+
+        var shape = new PcbShapeBasedRegion { ComponentIndex = 0 };
+        shape.Outline.Add(new PcbExtendedVertex { X = 0, Y = 0 });
+        shape.Properties.Add(new KeyValuePair<string, string?>("MODEL.2D.ROTATION", "10"));
+        shape.Properties.Add(new KeyValuePair<string, string?>("MODEL.3D.ROTZ", "20"));
+        doc.ShapeBasedComponentBodies.Add(shape);
+
+        comp.RotateBy(90);
+
+        Assert.Equal("100", shape.GetProperty("MODEL.2D.ROTATION")); // 10 + 90
+        Assert.Equal("20", shape.GetProperty("MODEL.3D.ROTZ"));       // intrinsic mounting unchanged
+    }
+
     [SkippableFact]
     public void RotateComponent_RotatesWholeFootprint_AndRoundTrips()
     {

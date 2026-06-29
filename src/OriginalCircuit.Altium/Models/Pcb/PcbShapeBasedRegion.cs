@@ -142,7 +142,9 @@ public sealed class PcbShapeBasedRegion : IPrimitive
     /// Rotates this shape-based region/body counter-clockwise by <paramref name="degrees"/> about
     /// <paramref name="pivot"/>: turns every outline and hole vertex (arc centres included) and the linked
     /// 3D-model placement — the <c>MODEL.2D.X</c>/<c>MODEL.2D.Y</c> point is rotated and the
-    /// <c>MODEL.2D.ROTATION</c>/<c>MODEL.3D.ROTZ</c> angles are spun (when present).
+    /// <c>MODEL.2D.ROTATION</c> placement angle is spun (when present). The intrinsic model mounting
+    /// (<c>MODEL.3D.ROTX/Y/Z</c>) is left untouched — the renderer's in-plane rotation is
+    /// <c>MODEL.3D.ROTZ + MODEL.2D.ROTATION</c>, so advancing both would rotate the body twice.
     /// </summary>
     /// <param name="degrees">The rotation angle in degrees (counter-clockwise).</param>
     /// <param name="pivot">The point to rotate about.</param>
@@ -170,7 +172,6 @@ public sealed class PcbShapeBasedRegion : IPrimitive
 
         RotateMilPointProperty("MODEL.2D.X", "MODEL.2D.Y", cx, cy, cos, sin);
         AddAngleProperty("MODEL.2D.ROTATION", degrees);
-        AddAngleProperty("MODEL.3D.ROTZ", degrees);
     }
 
     private int FindProperty(string key)

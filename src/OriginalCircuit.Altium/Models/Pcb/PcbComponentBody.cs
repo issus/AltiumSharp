@@ -425,9 +425,16 @@ public sealed class PcbComponentBody : IPcbComponentBody
     /// <summary>
     /// Rotates this body counter-clockwise by <paramref name="degrees"/> about <paramref name="pivot"/>:
     /// turns every outline vertex, moves the linked 3D-model placement (<see cref="Model2DLocation"/>) and
-    /// spins its in-plane orientation (<see cref="Model2DRotation"/> and <see cref="Model3DRotZ"/>), so the
-    /// 2D courtyard and the 3D model stay aligned.
+    /// spins its in-plane board-placement angle (<see cref="Model2DRotation"/>), so the 2D courtyard and the
+    /// 3D model stay aligned with the rest of the footprint.
     /// </summary>
+    /// <remarks>
+    /// The renderer's in-plane model rotation is the sum <c>Model3DRotZ + Model2DRotation</c>, so only
+    /// <see cref="Model2DRotation"/> is advanced here. <see cref="Model3DRotX"/>/<see cref="Model3DRotY"/>/
+    /// <see cref="Model3DRotZ"/> are the model's intrinsic mounting orientation (how the raw STEP sits on
+    /// the footprint) and must NOT change when the placed component is rotated — bumping <c>Model3DRotZ</c>
+    /// too would rotate the model twice, throwing the 3D body off its pads.
+    /// </remarks>
     /// <param name="degrees">The rotation angle in degrees (counter-clockwise).</param>
     /// <param name="pivot">The point to rotate about.</param>
     public void Rotate(double degrees, CoordPoint pivot)
@@ -436,7 +443,6 @@ public sealed class PcbComponentBody : IPcbComponentBody
             _outline[i] = _outline[i].RotateAround(pivot, degrees);
         Model2DLocation = Model2DLocation.RotateAround(pivot, degrees);
         Model2DRotation = PcbRotation.Normalize360(Model2DRotation + degrees);
-        Model3DRotZ = PcbRotation.Normalize360(Model3DRotZ + degrees);
     }
 
     /// <summary>
