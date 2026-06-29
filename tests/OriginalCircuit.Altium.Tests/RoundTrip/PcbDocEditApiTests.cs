@@ -241,6 +241,70 @@ public sealed class PcbDocEditApiTests
     private static List<ushort> OwnedPadNets(PcbDocument d, int componentIndex)
         => d.Pads.Cast<PcbPad>().Where(p => p.ComponentIndex == componentIndex).Select(p => p.NetIndex).ToList();
 
+    // --- 4. Component.Children (owned-primitive view, incl. 3D bodies) --------------------------
+
+    [Fact]
+    public void Children_Surfaces3DBodies_TypedAndShapeBased_AndExcludesFreeOnes()
+    {
+        var doc = new PcbDocument();
+        var comp = PcbComponent.Create("U1").Build();
+        doc.AddComponent(comp); // index 0, wires up OwnerDocument
+
+        var ownedPad = PcbPad.Create("1").At(Coord.Zero, Coord.Zero).Build();
+        ownedPad.ComponentIndex = 0;
+        doc.AddPad(ownedPad);
+
+        var typedBody = PcbComponentBody.Create().Build();
+        typedBody.ComponentIndex = 0;
+        doc.AddComponentBody(typedBody);
+
+        var shapeBody = new PcbShapeBasedRegion { ComponentIndex = 0 };
+        shapeBody.Outline.Add(new PcbExtendedVertex { X = 0, Y = 0 });
+        shapeBody.Outline.Add(new PcbExtendedVertex { X = 1000, Y = 1000 });
+        doc.ShapeBasedComponentBodies.Add(shapeBody);
+
+        // A free body (not owned by any component) must not appear in the component's children.
+        var freeBody = PcbComponentBody.Create().Build(); // ComponentIndex defaults to -1
+        doc.AddComponentBody(freeBody);
+
+        var children = comp.Children.ToList();
+
+        // 3D bodies are reachable — both the typed ComponentBodies6 form and the shape-based form.
+        Assert.Contains(typedBody, children);
+        Assert.Contains(shapeBody, children);
+        Assert.Single(children.OfType<PcbComponentBody>());      // only the owned typed body
+        Assert.Single(children.OfType<PcbShapeBasedRegion>());   // the shape-based 3D body
+        Assert.DoesNotContain(freeBody, children);               // free body excluded
+        Assert.Contains(ownedPad, children);
+
+        // The shape-based body is a first-class IPrimitive now (non-empty bounds from its outline).
+        Assert.NotEqual(CoordRect.Empty, shapeBody.Bounds);
+    }
+
+    [SkippableFact]
+    public void Children_IsCompleteAndDeduped_OnRealBoard()
+    {
+        var path = Path.Combine(GetTestDataPath(), "SPI Isolator.PcbDoc");
+        if (!File.Exists(path)) { Skip.If(true, "Test data not available"); return; }
+
+        var doc = new PcbDocReader().Read(File.OpenRead(path));
+        var ci = Enumerable.Range(0, doc.Components.Count)
+            .OrderByDescending(i => OwnedAnchors(doc, i).Count)
+            .First();
+        var comp = (PcbComponent)doc.Components[ci];
+
+        var children = comp.Children.ToList();
+
+        // Pads appear exactly once even though they live in both comp.Pads and document.Pads (shared refs).
+        Assert.Equal(comp.Pads.Count, children.OfType<PcbPad>().Count());
+        Assert.Equal(children.Count, children.Distinct().Count());
+
+        // The view reaches document-level silk/copper/body the component owns by ComponentIndex — not just
+        // the pads in its own child collection.
+        Assert.True(children.Count > comp.Pads.Count);
+        Assert.All(children, c => Assert.NotNull(c));
+    }
+
     /// <summary>
     /// A deterministic, order-stable list of one representative anchor point per primitive owned by the
     /// component at <paramref name="componentIndex"/>. Storages are written and read back in list order,

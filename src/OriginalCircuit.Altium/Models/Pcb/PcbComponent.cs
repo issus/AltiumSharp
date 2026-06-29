@@ -549,43 +549,61 @@ public sealed class PcbComponent : IPcbComponent
     bool IPcbComponent.RemoveRegion(IPcbRegion region) => region is PcbRegion r && _regions.Remove(r);
 
     /// <summary>
-    /// Moves the whole footprint by the given offset: shifts the component reference point
-    /// (<see cref="X"/>/<see cref="Y"/>) and every primitive it owns — pads, tracks, vias, arcs, text,
-    /// fills, courtyard regions and 3D bodies — so the footprint stays internally consistent. Net and
-    /// component assignments are preserved.
+    /// Every primitive this component owns, as a single de-duplicated sequence: pads, tracks, vias, arcs,
+    /// text, fills, courtyard regions and 3D bodies — the typed primitives plus the shape-based
+    /// regions/bodies (where modern boards keep footprint courtyards and 3D bodies).
     /// </summary>
     /// <remarks>
-    /// Owned primitives are gathered from this component's own child collections <em>and</em>, when the
-    /// component belongs to a <see cref="PcbDocument"/>, from the document's flat primitive lists by
-    /// <c>ComponentIndex</c> (where a PcbDoc keeps everything but pads). Each primitive is moved once,
-    /// even when it appears in both views.
+    /// This is a <em>computed view</em>, not stored state: it gathers the component's own child
+    /// collections together with the document-level primitives linked back to it by <c>ComponentIndex</c>.
+    /// A loaded PcbDoc keeps everything but pads in the document's flat lists, so this is the only complete
+    /// way to enumerate a placed footprint's geometry — e.g.
+    /// <c>component.Children.OfType&lt;PcbComponentBody&gt;()</c> for its 3D bodies, or
+    /// <c>CoordRect.Union(component.Children.Select(c =&gt; c.Bounds))</c> for its true extent. Re-evaluated
+    /// on each enumeration, so it always reflects the current document. Each primitive appears once, even
+    /// when it is present in both the child collection and the document's flat list (component pads).
     /// </remarks>
+    public IEnumerable<IPrimitive> Children
+    {
+        get
+        {
+            var seen = new HashSet<object>(ReferenceEqualityComparer.Instance);
+            foreach (var pad in _pads) if (seen.Add(pad)) yield return pad;
+            foreach (var track in _tracks) if (seen.Add(track)) yield return track;
+            foreach (var via in _vias) if (seen.Add(via)) yield return via;
+            foreach (var arc in _arcs) if (seen.Add(arc)) yield return arc;
+            foreach (var text in _texts) if (seen.Add(text)) yield return text;
+            foreach (var fill in _fills) if (seen.Add(fill)) yield return fill;
+            foreach (var region in _regions) if (seen.Add(region)) yield return region;
+            foreach (var body in _componentBodies) if (seen.Add(body)) yield return body;
+
+            if (OwnerDocument is { } doc)
+            {
+                var index = doc.IndexOfComponent(this);
+                if (index >= 0)
+                    foreach (var primitive in doc.EnumerateOwnedPrimitives(index, seen))
+                        yield return primitive;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Moves the whole footprint by the given offset: shifts the component reference point
+    /// (<see cref="X"/>/<see cref="Y"/>) and every primitive in <see cref="Children"/> — pads, tracks,
+    /// vias, arcs, text, fills, courtyard regions and 3D bodies — so the footprint stays internally
+    /// consistent. Net and component assignments are preserved.
+    /// </summary>
     /// <param name="dx">The X offset.</param>
     /// <param name="dy">The Y offset.</param>
     public void TranslateBy(Coord dx, Coord dy)
     {
         X += dx;
         Y += dy;
-
-        // Each primitive is translated at most once. Component pads appear in both the child collection
-        // below and (for a loaded PcbDoc) the document's flat Pads list, so dedupe by reference.
-        var moved = new HashSet<object>(ReferenceEqualityComparer.Instance);
-
-        foreach (var pad in _pads) if (moved.Add(pad)) pad.Translate(dx, dy);
-        foreach (var track in _tracks) if (moved.Add(track)) track.Translate(dx, dy);
-        foreach (var via in _vias) if (moved.Add(via)) via.Translate(dx, dy);
-        foreach (var arc in _arcs) if (moved.Add(arc)) arc.Translate(dx, dy);
-        foreach (var text in _texts) if (moved.Add(text)) text.Translate(dx, dy);
-        foreach (var fill in _fills) if (moved.Add(fill)) fill.Translate(dx, dy);
-        foreach (var region in _regions) if (moved.Add(region)) region.Translate(dx, dy);
-        foreach (var body in _componentBodies) if (moved.Add(body)) body.Translate(dx, dy);
-
-        if (OwnerDocument is { } doc)
-        {
-            var index = doc.IndexOfComponent(this);
-            if (index >= 0)
-                doc.TranslateOwnedPrimitives(index, dx, dy, moved);
-        }
+        // Children is the single, de-duplicated owned set; translating it keeps the move and the view in
+        // lock-step (anything Children exposes, the move shifts). Children doesn't surface Translate on
+        // IPrimitive, so dispatch per concrete type.
+        foreach (var primitive in Children)
+            ApplyTranslate(primitive, dx, dy);
     }
 
     /// <summary>
@@ -595,6 +613,22 @@ public sealed class PcbComponent : IPcbComponent
     /// </summary>
     /// <param name="origin">The new component reference point.</param>
     public void MoveTo(CoordPoint origin) => TranslateBy(origin.X - X, origin.Y - Y);
+
+    private static void ApplyTranslate(IPrimitive primitive, Coord dx, Coord dy)
+    {
+        switch (primitive)
+        {
+            case PcbPad pad: pad.Translate(dx, dy); break;
+            case PcbVia via: via.Translate(dx, dy); break;
+            case PcbTrack track: track.Translate(dx, dy); break;
+            case PcbArc arc: arc.Translate(dx, dy); break;
+            case PcbText text: text.Translate(dx, dy); break;
+            case PcbFill fill: fill.Translate(dx, dy); break;
+            case PcbRegion region: region.Translate(dx, dy); break;
+            case PcbComponentBody body: body.Translate(dx, dy); break;
+            case PcbShapeBasedRegion shape: shape.Translate(dx, dy); break;
+        }
+    }
 
     /// <summary>
     /// Creates a fluent builder for a new component.

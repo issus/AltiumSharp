@@ -575,24 +575,25 @@ public sealed class PcbDocument : IPcbDocument
     internal int IndexOfComponent(PcbComponent component) => _components.IndexOf(component);
 
     /// <summary>
-    /// Translates every document-level primitive whose <c>ComponentIndex</c> equals
-    /// <paramref name="componentIndex"/> by (<paramref name="dx"/>, <paramref name="dy"/>), skipping any
-    /// primitive already in <paramref name="alreadyMoved"/> (so component pads, which are shared between
-    /// the document list and the component's own <see cref="PcbComponent.Pads"/> view, are not moved
-    /// twice). Covers the flat primitive storages plus the shape-based region/body storages.
+    /// Yields every document-level primitive whose <c>ComponentIndex</c> equals
+    /// <paramref name="componentIndex"/>, skipping any already in <paramref name="seen"/> (so component
+    /// pads, which are shared between the document list and the component's own
+    /// <see cref="PcbComponent.Pads"/> view, are reported once). Covers the flat primitive storages plus
+    /// the shape-based region/body storages (where modern boards keep footprint courtyards and 3D bodies).
+    /// Backs <see cref="PcbComponent.Children"/>.
     /// </summary>
-    internal void TranslateOwnedPrimitives(int componentIndex, Coord dx, Coord dy, HashSet<object> alreadyMoved)
+    internal IEnumerable<IPrimitive> EnumerateOwnedPrimitives(int componentIndex, HashSet<object> seen)
     {
-        foreach (var p in _pads) if (p.ComponentIndex == componentIndex && alreadyMoved.Add(p)) p.Translate(dx, dy);
-        foreach (var v in _vias) if (v.ComponentIndex == componentIndex && alreadyMoved.Add(v)) v.Translate(dx, dy);
-        foreach (var t in _tracks) if (t.ComponentIndex == componentIndex && alreadyMoved.Add(t)) t.Translate(dx, dy);
-        foreach (var a in _arcs) if (a.ComponentIndex == componentIndex && alreadyMoved.Add(a)) a.Translate(dx, dy);
-        foreach (var t in _texts) if (t.ComponentIndex == componentIndex && alreadyMoved.Add(t)) t.Translate(dx, dy);
-        foreach (var f in _fills) if (f.ComponentIndex == componentIndex && alreadyMoved.Add(f)) f.Translate(dx, dy);
-        foreach (var r in _regions) if (r.ComponentIndex == componentIndex && alreadyMoved.Add(r)) r.Translate(dx, dy);
-        foreach (var b in _componentBodies) if (b.ComponentIndex == componentIndex && alreadyMoved.Add(b)) b.Translate(dx, dy);
-        foreach (var r in ShapeBasedRegions) if (r.ComponentIndex == componentIndex && alreadyMoved.Add(r)) r.Translate(dx, dy);
-        foreach (var r in ShapeBasedComponentBodies) if (r.ComponentIndex == componentIndex && alreadyMoved.Add(r)) r.Translate(dx, dy);
+        foreach (var p in _pads) if (p.ComponentIndex == componentIndex && seen.Add(p)) yield return p;
+        foreach (var v in _vias) if (v.ComponentIndex == componentIndex && seen.Add(v)) yield return v;
+        foreach (var t in _tracks) if (t.ComponentIndex == componentIndex && seen.Add(t)) yield return t;
+        foreach (var a in _arcs) if (a.ComponentIndex == componentIndex && seen.Add(a)) yield return a;
+        foreach (var t in _texts) if (t.ComponentIndex == componentIndex && seen.Add(t)) yield return t;
+        foreach (var f in _fills) if (f.ComponentIndex == componentIndex && seen.Add(f)) yield return f;
+        foreach (var r in _regions) if (r.ComponentIndex == componentIndex && seen.Add(r)) yield return r;
+        foreach (var b in _componentBodies) if (b.ComponentIndex == componentIndex && seen.Add(b)) yield return b;
+        foreach (var r in ShapeBasedRegions) if (r.ComponentIndex == componentIndex && seen.Add(r)) yield return r;
+        foreach (var r in ShapeBasedComponentBodies) if (r.ComponentIndex == componentIndex && seen.Add(r)) yield return r;
     }
 
     /// <inheritdoc />

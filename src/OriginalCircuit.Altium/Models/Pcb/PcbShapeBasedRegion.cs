@@ -32,8 +32,13 @@ public sealed class PcbExtendedVertex
 /// A shape-based region (ShapeBasedRegions6 storage). Like a region but with arc-capable extended
 /// outline vertices. Modeled byte-exact by preserving the raw header/length bytes and the typed
 /// geometry. See docs/decompile/feature-shapebased-regions.md.
+/// <para>
+/// Implements <see cref="IPrimitive"/> so it is a first-class drawable alongside the other PCB
+/// primitives — in particular so component-owned shape-based courtyards and 3D bodies (the common
+/// home for footprint 3D bodies on modern boards) surface in <see cref="PcbComponent.Children"/>.
+/// </para>
 /// </summary>
-public sealed class PcbShapeBasedRegion
+public sealed class PcbShapeBasedRegion : IPrimitive
 {
     /// <summary>Record type byte (0x0B = shape-based region, 0x0C = shape-based component body).</summary>
     internal byte TypeByte { get; set; } = 0x0B;
@@ -76,6 +81,29 @@ public sealed class PcbShapeBasedRegion
     public List<PcbExtendedVertex> Outline { get; } = new();
     /// <summary>Hole contours (simple x/y double vertices).</summary>
     public List<List<(double X, double Y)>> Holes { get; } = new();
+
+    /// <inheritdoc />
+    public CoordRect Bounds
+    {
+        get
+        {
+            if (Outline.Count == 0)
+                return CoordRect.Empty;
+
+            int minX = Outline[0].X, maxX = minX, minY = Outline[0].Y, maxY = minY;
+            for (var i = 1; i < Outline.Count; i++)
+            {
+                var v = Outline[i];
+                if (v.X < minX) minX = v.X;
+                if (v.X > maxX) maxX = v.X;
+                if (v.Y < minY) minY = v.Y;
+                if (v.Y > maxY) maxY = v.Y;
+            }
+            return new CoordRect(
+                new CoordPoint(Coord.FromRaw(minX), Coord.FromRaw(minY)),
+                new CoordPoint(Coord.FromRaw(maxX), Coord.FromRaw(maxY)));
+        }
+    }
 
     /// <summary>
     /// Moves this shape-based region/body by the given offset, shifting every outline and hole vertex
