@@ -175,8 +175,29 @@ public sealed class PcbPad : IPcbPad
 
     /// <summary>
     /// Power plane connection style (Altium TPlaneConnectStyle: 0=Relief, 1=Direct, 2=No Connect).
+    /// For strongly-typed access use <see cref="PowerPlaneConnection"/>; to test whether thermal
+    /// relief is in effect use <see cref="IsReliefEnabled"/>.
     /// </summary>
     public int PowerPlaneConnectStyle { get; set; }
+
+    /// <summary>
+    /// Strongly-typed view over <see cref="PowerPlaneConnectStyle"/>: how this pad connects to an
+    /// internal power/ground plane (thermal relief, direct/solid, or no connect).
+    /// </summary>
+    public PlaneConnectStyle PowerPlaneConnection
+    {
+        get => (PlaneConnectStyle)PowerPlaneConnectStyle;
+        set => PowerPlaneConnectStyle = (int)value;
+    }
+
+    /// <summary>
+    /// Whether thermal relief is enabled for this pad's plane connection, i.e. whether
+    /// <see cref="PowerPlaneConnection"/> is <see cref="PlaneConnectStyle.Relief"/>. When true, the
+    /// relief geometry (<see cref="ReliefConductorWidth"/>, <see cref="ReliefEntries"/>,
+    /// <see cref="ReliefAirGap"/> and <see cref="PowerPlaneReliefExpansion"/>) applies; when false the
+    /// pad is a direct/solid connection or not connected to the plane.
+    /// </summary>
+    public bool IsReliefEnabled => PowerPlaneConnectStyle == (int)PlaneConnectStyle.Relief;
 
     /// <summary>
     /// Width of thermal relief conductors.
@@ -873,6 +894,15 @@ public sealed class PadBuilder
     public PadBuilder Layer(int layer)
     {
         _pad.Layer = layer;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets how the pad connects to internal power/ground planes (thermal relief, direct or no connect).
+    /// </summary>
+    public PadBuilder PowerPlaneConnection(PlaneConnectStyle style)
+    {
+        _pad.PowerPlaneConnection = style;
         return this;
     }
 

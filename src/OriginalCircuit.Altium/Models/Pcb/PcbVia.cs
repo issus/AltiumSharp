@@ -149,8 +149,29 @@ public sealed class PcbVia : IPcbVia
 
     /// <summary>
     /// Power plane connection style (Altium TPlaneConnectStyle: 0=Relief, 1=Direct, 2=NoConnect).
+    /// For strongly-typed access use <see cref="PowerPlaneConnection"/>; to test whether thermal
+    /// relief is in effect use <see cref="IsReliefEnabled"/>.
     /// </summary>
     public int PowerPlaneConnectStyle { get; set; }
+
+    /// <summary>
+    /// Strongly-typed view over <see cref="PowerPlaneConnectStyle"/>: how this via connects to an
+    /// internal power/ground plane (thermal relief, direct/solid, or no connect).
+    /// </summary>
+    public PlaneConnectStyle PowerPlaneConnection
+    {
+        get => (PlaneConnectStyle)PowerPlaneConnectStyle;
+        set => PowerPlaneConnectStyle = (int)value;
+    }
+
+    /// <summary>
+    /// Whether thermal relief is enabled for this via's plane connection, i.e. whether
+    /// <see cref="PowerPlaneConnection"/> is <see cref="PlaneConnectStyle.Relief"/>. When true, the
+    /// relief geometry (<see cref="ThermalReliefConductorsWidth"/>, <see cref="ThermalReliefConductors"/>,
+    /// <see cref="ThermalReliefAirGap"/> and <see cref="PowerPlaneReliefExpansion"/>) applies; when false
+    /// the via is a direct/solid connection or not connected to the plane.
+    /// </summary>
+    public bool IsReliefEnabled => PowerPlaneConnectStyle == (int)PlaneConnectStyle.Relief;
 
     /// <summary>
     /// Whether solder mask expansion is overridden per-object.
