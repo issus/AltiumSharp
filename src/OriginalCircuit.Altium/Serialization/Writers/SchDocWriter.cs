@@ -73,6 +73,37 @@ public sealed class SchDocWriter
         index++;
     }
 
+    /// <summary>
+    /// Writes a single primitive owned by a sheet template, dispatching on its concrete type and pointing
+    /// its <c>OWNERINDEX</c> at the template record. Covers the graphic/text types a title block uses
+    /// (lines, rectangles, labels, parameters, images, arcs, curves). Types a template never contains are
+    /// ignored so an unexpected primitive can't corrupt the record stream.
+    /// </summary>
+    private static void WriteOwnedPrimitive(BinaryFormatWriter writer, object primitive, int ownerIndex, ref int index)
+    {
+        switch (primitive)
+        {
+            case SchLine line: SchLibWriter.WriteLineRecord(writer, line, ref index, ownerIndex); break;
+            case SchRectangle rect: SchLibWriter.WriteRectangleRecord(writer, rect, ref index, ownerIndex); break;
+            case SchLabel label: SchLibWriter.WriteLabelRecord(writer, label, ref index, ownerIndex); break;
+            case SchArc arc: SchLibWriter.WriteArcRecord(writer, arc, ref index, ownerIndex); break;
+            case SchPolygon polygon: SchLibWriter.WritePolygonRecord(writer, polygon, ref index, ownerIndex, SchLibWriter.CoordToDxpUnits); break;
+            case SchPolyline polyline: SchLibWriter.WritePolylineRecord(writer, polyline, ref index, ownerIndex, SchLibWriter.CoordToDxpUnits); break;
+            case SchBezier bezier: SchLibWriter.WriteBezierRecord(writer, bezier, ref index, ownerIndex, SchLibWriter.CoordToDxpUnits); break;
+            case SchEllipse ellipse: SchLibWriter.WriteEllipseRecord(writer, ellipse, ref index, ownerIndex); break;
+            case SchRoundedRectangle roundedRect: SchLibWriter.WriteRoundedRectangleRecord(writer, roundedRect, ref index, ownerIndex); break;
+            case SchPie pie: SchLibWriter.WritePieRecord(writer, pie, ref index, ownerIndex); break;
+            case SchEllipticalArc ellipticalArc: SchLibWriter.WriteEllipticalArcRecord(writer, ellipticalArc, ref index, ownerIndex); break;
+            case SchParameter param: SchLibWriter.WriteParameterRecord(writer, param, ref index, ownerIndex); break;
+            case SchNetLabel netLabel: SchLibWriter.WriteNetLabelRecord(writer, netLabel, ref index, ownerIndex); break;
+            case SchJunction junction: SchLibWriter.WriteJunctionRecord(writer, junction, ref index, ownerIndex); break;
+            case SchTextFrame textFrame: SchLibWriter.WriteTextFrameRecord(writer, textFrame, ref index, ownerIndex); break;
+            case SchImage image: SchLibWriter.WriteImageRecord(writer, image, ref index, ownerIndex); break;
+            case SchSymbol symbol: SchLibWriter.WriteSymbolRecord(writer, symbol, ref index, ownerIndex); break;
+            case SchPowerObject powerObj: SchLibWriter.WritePowerObjectRecord(writer, powerObj, ref index, ownerIndex); break;
+        }
+    }
+
     private static void WriteSignalHarnessRecord(BinaryFormatWriter writer, SchSignalHarness harness, ref int index)
     {
         var parameters = new Dictionary<string, string>
@@ -539,7 +570,14 @@ public sealed class SchDocWriter
         }
 
         foreach (var template in document.Templates)
+        {
+            var templateIndex = index;
             WriteTemplateRecord(writer, template, ref index);
+            // Emit the template's border/title-block graphics as child records owning back to it, so a
+            // re-read re-attaches them to the template (matching the reader) instead of the document.
+            foreach (var owned in template.OwnedPrimitives)
+                WriteOwnedPrimitive(writer, owned, templateIndex, ref index);
+        }
 
         foreach (var note in document.Notes)
             WriteNoteRecord(writer, note, ref index);
@@ -701,8 +739,18 @@ public sealed class SchDocWriter
 
     private static void WriteStorage(CompoundFileAccessor cf, SchDocument document)
     {
-        // Collect all embedded images from document-level and component-level
+        // Collect all embedded images from template-, document- and component-level, in the SAME order the
+        // reader collects them (templates first) so blobs pair with the right image on the next read.
         var embeddedImages = new List<byte[]>();
+
+        foreach (var template in document.Templates)
+        {
+            foreach (var primitive in template.OwnedPrimitives)
+            {
+                if (primitive is SchImage timg && timg.EmbedImage && timg.ImageData != null)
+                    embeddedImages.Add(timg.ImageData);
+            }
+        }
 
         foreach (var image in document.Images)
         {

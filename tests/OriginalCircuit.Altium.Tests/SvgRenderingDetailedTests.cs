@@ -1590,4 +1590,42 @@ public sealed class SvgRenderingDetailedTests
 
         Assert.Equal("rgb(255,0,0)", line.Attribute("stroke")!.Value);
     }
+
+    // ── Sheet template graphics (record 39 owned primitives) ─────────
+
+    /// <summary>
+    /// A sheet template (record 39) embeds its own border, title-block grid, field labels and logo as
+    /// primitives owned by the template record. They must be drawn from the template exactly once — not
+    /// leaked into the document's content and not doubled by the renderer's built-in title block. This
+    /// guards the reported bug where the template frame rendered a second time over the schematic.
+    /// </summary>
+    [SkippableFact]
+    public async Task SchDocument_SheetTemplateGraphics_RenderOnce_NoDuplicateTitleBlock()
+    {
+        var root = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "..", "..", ".."));
+        var filePath = Path.Combine(root, "TestData", "USB Power.SchDoc");
+        Skip.IfNot(File.Exists(filePath), "Test data not available");
+
+        var document = new OriginalCircuit.Altium.Serialization.Readers.SchDocReader().Read(File.OpenRead(filePath));
+
+        // The template owns its graphics; they must not leak into the document's own collections.
+        var template = Assert.Single(document.Templates);
+        Assert.NotEmpty(template.OwnedPrimitives);
+        Assert.DoesNotContain(document.Labels, l => template.OwnedPrimitives.Contains(l));
+
+        var renderer = new SvgRenderer();
+        using var ms = new MemoryStream();
+        await renderer.RenderAsync(document, ms, new RenderOptions { Width = 1600, Height = 1200 });
+        var svg = System.Text.Encoding.UTF8.GetString(ms.ToArray());
+
+        int Count(string needle) =>
+            System.Text.RegularExpressions.Regex.Matches(svg, System.Text.RegularExpressions.Regex.Escape(needle)).Count;
+
+        // Title-block captions come only from the template and must appear exactly once — a second copy
+        // would mean the built-in title block was drawn on top of the template's.
+        Assert.Equal(1, Count("Number:"));
+        Assert.Equal(1, Count("Revision:"));
+        // The template's embedded logo image renders (with its data), so exactly one <image> element.
+        Assert.Equal(1, Count("<image"));
+    }
 }

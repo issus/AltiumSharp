@@ -110,6 +110,18 @@ public sealed class SchDocReader
     {
         var result = new List<SchImage>();
 
+        // Template-owned images (e.g. the title-block logo) come first: templates sit near the top of the
+        // record stream, so their embedded blobs lead the Storage stream. Must stay in step with the
+        // writer's collection order so each blob pairs with the right image.
+        foreach (var template in document.Templates)
+        {
+            foreach (var primitive in template.OwnedPrimitives)
+            {
+                if (primitive is SchImage timg && timg.EmbedImage)
+                    result.Add(timg);
+            }
+        }
+
         // Collect document-level images
         foreach (var image in document.Images)
         {
@@ -159,6 +171,8 @@ public sealed class SchDocReader
         var parameterSets = new Dictionary<int, SchParameterSet>();
         var blankets = new Dictionary<int, SchBlanket>();
         var sheetSymbols = new Dictionary<int, SchSheetSymbol>();
+        // Sheet-template records (type 39) own their border/title-block graphics via OWNERINDEX.
+        var templates = new Dictionary<int, SchTemplate>();
         // Implementation hierarchy tracking: ImplementationList→component, Implementation→impl, MapDefinerList→impl
         var implementationLists = new Dictionary<int, SchComponent>();  // record 44 index → owning component
         var implementations = new Dictionary<int, SchImplementation>(); // record 45 index → impl object
@@ -220,6 +234,8 @@ public sealed class SchDocReader
                             sheetSymbols[primitiveIndex] = ss;
                         else if (primitive is SchImplementation impl)
                             implementations[primitiveIndex] = impl;
+                        else if (primitive is SchTemplate tmpl)
+                            templates[primitiveIndex] = tmpl;
 
                         // Container markers (record 44/46/48) are returned as interned strings; hold them
                         // so the captured order list keys on a distinct object, not a shared literal.
@@ -305,6 +321,13 @@ public sealed class SchDocReader
                     labelOwnerSymbol.NameLabel = sheetLabel.Label;
                     labelOwnerSymbol.SheetName ??= sheetLabel.Label.Text;
                 }
+            }
+            else if (ownerIndex >= 0 && templates.TryGetValue(ownerIndex, out var ownerTemplate))
+            {
+                // Border/title-block graphics owned by a sheet template (record 39). Attach them to the
+                // template rather than the document so they aren't rendered/netlisted as regular content
+                // (which duplicates the sheet frame). They still round-trip via the template on write.
+                ownerTemplate.AddPrimitive(primitive);
             }
             else if (primitive is not string and not SheetLabelMarker)
             {

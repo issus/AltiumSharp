@@ -459,13 +459,25 @@ public sealed class SchDocRoundTripTests
         var template = Assert.Single(doc.Templates);
         Assert.Contains("A4.SchDot", template.FileName);
 
-        // The template survives a round-trip through the typed model.
+        // The template owns its border/title-block graphics (labels, polylines and a logo image) via
+        // OWNERINDEX. They must be attached to the template, NOT leaked into the document's own top-level
+        // collections — otherwise the renderer draws the template frame a second time over the schematic.
+        Assert.NotEmpty(template.OwnedPrimitives);
+        Assert.Contains(template.OwnedPrimitives, p => p is SchLabel);
+        Assert.Contains(template.OwnedPrimitives, p => p is SchPolyline);
+        // None of the template-owned primitives may appear as document-level primitives.
+        Assert.DoesNotContain(doc.Labels, l => template.OwnedPrimitives.Contains(l));
+        Assert.DoesNotContain(doc.Polylines, l => template.OwnedPrimitives.Contains(l));
+        Assert.DoesNotContain(doc.Images, i => template.OwnedPrimitives.Contains(i));
+
+        // The template and all its owned graphics survive a round-trip through the model.
         using var ms = new MemoryStream();
         new SchDocWriter().Write(doc, ms);
         ms.Position = 0;
         var rt = (SchDocument)new SchDocReader().Read(ms);
         var rtTemplate = Assert.Single(rt.Templates);
         Assert.Equal(template.FileName, rtTemplate.FileName);
+        Assert.Equal(template.OwnedPrimitives.Count, rtTemplate.OwnedPrimitives.Count);
     }
 
     [Fact]
@@ -486,6 +498,38 @@ public sealed class SchDocRoundTripTests
         var template = Assert.Single(rt.Templates);
         Assert.Equal(@"C:\Templates\A4.SchDot", template.FileName);
         Assert.True(template.IsNotAccessible);
+    }
+
+    [Fact]
+    public void FromScratch_Template_WithOwnedPrimitives_RoundTrips()
+    {
+        var doc = new SchDocument();
+        var template = new SchTemplate { FileName = @"C:\Templates\A4.SchDot" };
+        template.AddPrimitive(new SchLabel
+        {
+            Text = "Title Block",
+            Location = new CoordPoint(Coord.FromMils(6750), Coord.FromMils(450)),
+            FontId = 1,
+        });
+        var frame = SchPolyline.Create().From(Coord.FromMils(6700), Coord.FromMils(600)).To(Coord.FromMils(11300), Coord.FromMils(600)).Build();
+        template.AddPrimitive(frame);
+        doc.AddPrimitive(template);
+
+        using var ms = new MemoryStream();
+        new SchDocWriter().Write(doc, ms);
+        ms.Position = 0;
+        var rt = (SchDocument)new SchDocReader().Read(ms);
+
+        // The template's owned graphics round-trip attached to the template...
+        var rtTemplate = Assert.Single(rt.Templates);
+        Assert.Equal(2, rtTemplate.OwnedPrimitives.Count);
+        var rtLabel = Assert.Single(rtTemplate.OwnedPrimitives.OfType<SchLabel>());
+        Assert.Equal("Title Block", rtLabel.Text);
+        Assert.Single(rtTemplate.OwnedPrimitives.OfType<SchPolyline>());
+
+        // ...and are NOT surfaced as document-level primitives (which would double-draw the frame).
+        Assert.Empty(rt.Labels);
+        Assert.Empty(rt.Polylines);
     }
 
     [Fact]

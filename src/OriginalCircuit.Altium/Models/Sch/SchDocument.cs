@@ -484,7 +484,8 @@ public sealed class SchDocument : ISchDocument
          + _components.OfType<SchComponent>().Sum(c => c.CountChildPrimitives())
          + _sheetSymbols.Sum(s => s.Entries.Count)
          + _parameterSets.Sum(p => p.Parameters.Count)
-         + _blankets.Sum(b => b.Parameters.Count);
+         + _blankets.Sum(b => b.Parameters.Count)
+         + _templates.Sum(t => t.OwnedPrimitives.Count);
 
     /// <inheritdoc />
     public async ValueTask SaveAsync(string path, OriginalCircuit.Eda.Models.SaveOptions? options = null, CancellationToken cancellationToken = default)

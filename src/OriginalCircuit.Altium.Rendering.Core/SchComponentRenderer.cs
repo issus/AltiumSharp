@@ -1226,6 +1226,11 @@ public sealed class SchComponentRenderer
         // Sheet page: border frame + title-block grid, drawn behind all content.
         RenderSheetFrame(context, document);
 
+        // The applied sheet template's own graphics (border, title-block grid, field labels, logo) are
+        // owned by the template record — not the document's content collections — so render them here,
+        // behind the schematic, rather than as ordinary top-level primitives.
+        RenderTemplateGraphics(context, document);
+
         // Back: sheet symbols and filled shapes
         foreach (var sheet in document.SheetSymbols) RenderSheetSymbol(context, sheet);
         foreach (var rect in document.Rectangles) RenderRectangle(context, rect);
@@ -1268,6 +1273,40 @@ public sealed class SchComponentRenderer
     }
 
     // ── Sheet frame (border + title block) ──────────────────────────
+
+    /// <summary>
+    /// Renders the graphics embedded in the applied sheet template(s): the frame lines, title-block grid,
+    /// caption/field labels and logo the <c>.SchDot</c> carries as primitives owned by the template record
+    /// (type 39). They are held on <see cref="SchTemplate.OwnedPrimitives"/> — kept out of the document's
+    /// own content collections so they aren't treated as schematic content — and are drawn here behind the
+    /// content, using the same primitive renderers (so <c>=Title</c>-style field labels still resolve).
+    /// </summary>
+    private void RenderTemplateGraphics(IRenderContext context, SchDocument document)
+    {
+        foreach (var template in document.Templates)
+        {
+            foreach (var primitive in template.OwnedPrimitives)
+            {
+                switch (primitive)
+                {
+                    case SchLine line: RenderLine(context, line); break;
+                    case SchPolyline polyline: RenderPolyline(context, polyline); break;
+                    case SchPolygon polygon: RenderPolygon(context, polygon); break;
+                    case SchRectangle rect: RenderRectangle(context, rect); break;
+                    case SchRoundedRectangle roundedRect: RenderRoundedRectangle(context, roundedRect); break;
+                    case SchArc arc: RenderArc(context, arc); break;
+                    case SchEllipticalArc ellipticalArc: RenderEllipticalArc(context, ellipticalArc); break;
+                    case SchEllipse ellipse: RenderEllipse(context, ellipse); break;
+                    case SchPie pie: RenderPie(context, pie); break;
+                    case SchBezier bezier: RenderBezier(context, bezier); break;
+                    case SchImage image: RenderImage(context, image); break;
+                    case SchTextFrame textFrame: RenderTextFrame(context, textFrame); break;
+                    case SchLabel label: RenderLabel(context, label); break;
+                    case SchParameter parameter: RenderParameter(context, parameter); break;
+                }
+            }
+        }
+    }
 
     /// <summary>Builds a case-insensitive Name→Value map from the document's top-level parameters.</summary>
     private static Dictionary<string, string> BuildDocumentParameters(SchDocument document)
@@ -1404,7 +1443,7 @@ public sealed class SchComponentRenderer
         // title-block grid itself (as polylines/lines that render normally) — so we must draw nothing
         // here, or we double every line. We only reconstruct the grid for the built-in title block
         // (TitleBlockOn with no template and no embedded fields), handled below.
-        if (HasEmbeddedTitleBlockLabels(document)) return;
+        if (HasEmbeddedTitleBlock(document)) return;
 
         // Fixed physical size; bottom-right corner sits on the inner-frame corner so it touches the
         // frame exactly like Altium. Local coordinates: origin = block bottom-left, +x right, +y up.
@@ -1453,9 +1492,20 @@ public sealed class SchComponentRenderer
         Cap(Addr + 40, 540, "Organization"); Val(Addr + 40, 450, "=Organization");
     }
 
-    /// <summary>True when the document already carries embedded title-block labels (special strings).</summary>
-    private static bool HasEmbeddedTitleBlockLabels(SchDocument document)
+    /// <summary>
+    /// True when the sheet already carries its own title block, so the built-in one must not be drawn.
+    /// That happens when an applied sheet template embeds its own graphics (its title-block grid, captions,
+    /// field labels and logo live on <see cref="SchTemplate.OwnedPrimitives"/>), or when the document
+    /// itself carries title-block special-string labels (e.g. <c>=Title</c>).
+    /// </summary>
+    private static bool HasEmbeddedTitleBlock(SchDocument document)
     {
+        // A template that embeds graphics supplies the whole title block (grid + captions + fields + logo),
+        // which the built-in reconstruction can't reproduce — so defer to it entirely.
+        foreach (var template in document.Templates)
+            if (template.OwnedPrimitives.Count > 0)
+                return true;
+
         foreach (var l in document.Labels)
             if (l is SchLabel sl && !string.IsNullOrEmpty(sl.Text) && sl.Text.StartsWith('='))
                 return true;

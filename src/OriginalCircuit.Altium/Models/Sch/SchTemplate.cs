@@ -30,4 +30,20 @@ public sealed class SchTemplate
     /// Index of this record within the sheet.
     /// </summary>
     public int IndexInSheet { get; set; }
+
+    private readonly List<object> _ownedPrimitives = new();
+
+    /// <summary>
+    /// Graphical primitives that belong to this sheet template — the border lines, title-block text
+    /// and logo images drawn by the applied <c>.SchDot</c>. Altium stores them as records whose
+    /// <c>OWNERINDEX</c> points at this template record (type 39). They are kept here, separate from the
+    /// document's own top-level primitives, so they are not rendered or netlisted as regular schematic
+    /// content (which would double-draw the sheet frame/title block) while still round-tripping on write.
+    /// </summary>
+    public IReadOnlyList<object> OwnedPrimitives => _ownedPrimitives;
+
+    /// <summary>
+    /// Attaches a primitive owned by this template (its <c>OWNERINDEX</c> points at the template record).
+    /// </summary>
+    public void AddPrimitive(object primitive) => _ownedPrimitives.Add(primitive);
 }
