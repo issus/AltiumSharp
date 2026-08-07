@@ -389,7 +389,10 @@ public sealed class SchLibReader
             if (string.Equals(param.Name, "Designator", StringComparison.OrdinalIgnoreCase))
                 component.DesignatorPrefix = param.Value;
             else if (string.Equals(param.Name, "Comment", StringComparison.OrdinalIgnoreCase))
+            {
                 component.Comment = param.Value;
+                component.CommentAsRead = param.Value;
+            }
         }
 
         // Parse PinSymbolLineWidth auxiliary stream to set per-pin SymbolLineWidth values.
