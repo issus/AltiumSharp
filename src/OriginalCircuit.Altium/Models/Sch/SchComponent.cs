@@ -55,6 +55,15 @@ public sealed class SchComponent : ISchComponent
     /// <inheritdoc />
     public string? Comment { get; set; }
 
+    /// <summary>
+    /// Snapshot of <see cref="Comment"/> as it stood immediately after read (whichever source it was
+    /// derived from). The writer compares the live value against this baseline to tell an explicit edit
+    /// of the convenience property from an untouched load, so it only pushes a change — and only then
+    /// disables the byte-faithful replay path — when the caller actually mutated <see cref="Comment"/>.
+    /// Null for components built from scratch (no baseline to compare against).
+    /// </summary>
+    internal string? CommentAsRead { get; set; }
+
     /// <inheritdoc />
     public string? DesignatorPrefix { get; set; }
 

@@ -6,6 +6,7 @@ using OriginalCircuit.Altium.Serialization.Binary;
 using OriginalCircuit.Altium.Serialization.Compound;
 using OriginalCircuit.Altium.Serialization.Dto.Sch;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using PinElectricalType = OriginalCircuit.Altium.Models.Sch.PinElectricalType;
 
@@ -335,6 +336,23 @@ public sealed class SchDocReader
                 document.AddPrimitive(primitive);
             }
         }
+
+        // Override the placeholder Comment (set from DesignItemId in CreateComponent, before children
+        // were known) with the actual child "Comment" parameter's value, once attached. Mirrors
+        // SchLibReader's post-processing so both readers derive Comment from the same field and it is
+        // writable/round-trippable via the same value SchDocWriter/SchLibWriter sync back to.
+        foreach (var component in document.Components.Cast<SchComponent>())
+        {
+            foreach (var param in component.Parameters)
+            {
+                if (string.Equals(param.Name, "Comment", StringComparison.OrdinalIgnoreCase))
+                {
+                    component.Comment = param.Value;
+                    component.CommentAsRead = param.Value;
+                    break;
+                }
+            }
+        }
     }
 
     private static SchComponent CreateComponent(Dictionary<string, string> parameters)
@@ -347,6 +365,7 @@ public sealed class SchDocReader
             Name = dto.LibReference ?? dto.DesignItemId ?? string.Empty,
             Description = dto.ComponentDescription,
             Comment = dto.DesignItemId,
+            CommentAsRead = dto.DesignItemId,
             PartCount = Math.Max(0, dto.PartCount - 1),
             UniqueId = dto.UniqueId,
             Location = new CoordPoint(CoordFromDxp(dto.LocationX, dto.LocationXFrac), CoordFromDxp(dto.LocationY, dto.LocationYFrac)),

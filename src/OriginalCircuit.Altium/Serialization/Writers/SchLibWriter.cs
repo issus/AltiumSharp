@@ -4,6 +4,7 @@ using OriginalCircuit.Eda.Primitives;
 using OriginalCircuit.Altium.Serialization.Binary;
 using System.Globalization;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 
 namespace OriginalCircuit.Altium.Serialization.Writers;
@@ -239,8 +240,38 @@ public sealed class SchLibWriter
         return sb.ToString();
     }
 
+    /// <summary>
+    /// Pushes <see cref="SchComponent.Comment"/> into the child "Comment" parameter's <c>Value</c>
+    /// (creating the parameter if the component has none), so edits made through the convenience
+    /// property are reflected in the field Altium actually displays and persists. Without this, the
+    /// property is populated on read but has nowhere to go on write. Returns true if a parameter's
+    /// value changed or one was added, so callers with a byte-faithful replay path (SchDocWriter) know
+    /// to fall back to typed serialization instead of echoing stale captured bytes.
+    /// </summary>
+    internal static bool SyncComponentComment(SchComponent component)
+    {
+        if (component.Comment == null || component.Comment == component.CommentAsRead)
+            return false;
+
+        var param = component.Parameters.FirstOrDefault(p =>
+            string.Equals(p.Name, "Comment", StringComparison.OrdinalIgnoreCase)) as SchParameter;
+
+        if (param != null)
+        {
+            if (param.Value == component.Comment)
+                return false;
+            param.Value = component.Comment;
+            return true;
+        }
+
+        component.AddParameter(SchParameter.Create("Comment").WithValue(component.Comment).Build());
+        return true;
+    }
+
     private static void WriteComponent(CompoundFileAccessor cf, SchComponent component, Dictionary<string, string> sectionKeys)
     {
+        SyncComponentComment(component);
+
         var sectionKey = sectionKeys.TryGetValue(component.Name, out var key)
             ? key
             : GetSectionKeyFromName(component.Name);

@@ -689,6 +689,36 @@ public sealed class SchLibRoundTripTests
     }
 
     [Fact]
+    public void Component_Comment_RoundTrips()
+    {
+        // SchComponent.Comment is populated on read from the child "Comment" parameter but, without a
+        // sync step before write, has nowhere to go back to — WithComment() was silently a no-op.
+        var original = new SchLibrary();
+        var component = SchComponent.Create("RESISTOR").WithComment("10k").Build();
+        original.Add(component);
+
+        var readBack = RoundTrip(original);
+
+        Assert.Equal("10k", ((SchComponent)readBack.Components.First()).Comment);
+    }
+
+    [Fact]
+    public void Component_MutatedComment_Persists()
+    {
+        var original = new SchLibrary();
+        var component = SchComponent.Create("RESISTOR").WithComment("10k").Build();
+        original.Add(component);
+
+        var afterFirstRoundTrip = RoundTrip(original);
+        var comp = (SchComponent)afterFirstRoundTrip.Components.First();
+        comp.Comment = "22k";
+
+        var afterSecondRoundTrip = RoundTrip(afterFirstRoundTrip);
+
+        Assert.Equal("22k", ((SchComponent)afterSecondRoundTrip.Components.First()).Comment);
+    }
+
+    [Fact]
     public void MultipleComponents_PreservesAll()
     {
         var original = new SchLibrary();

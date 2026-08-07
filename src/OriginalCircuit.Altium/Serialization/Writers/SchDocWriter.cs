@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Linq;
 using OriginalCircuit.Altium.Models.Sch;
 using OriginalCircuit.Altium.Serialization.Compound;
 using OriginalCircuit.Altium.Serialization.Binary;
@@ -266,12 +267,20 @@ public sealed class SchDocWriter
         using var ms = new MemoryStream();
         using var writer = new BinaryFormatWriter(ms, leaveOpen: true);
 
+        // Push SchComponent.Comment into its backing "Comment" parameter before deciding how to
+        // serialize: the byte-faithful path below replays captured bytes rather than live model state,
+        // so a Comment edit must be detected here to force the typed path, or it would be silently lost.
+        var commentEdited = false;
+        foreach (var component in document.Components.Cast<SchComponent>())
+            commentEdited |= SchLibWriter.SyncComponentComment(component);
+
         // Byte-faithful path: when the document was read from a file and is unedited, walk the captured
         // record order (each entry linked to its model object) and re-emit each record's parameters
         // verbatim — preserving order, duplicate keys and unmodeled parameters. Files built from scratch,
-        // edited (primitive added/removed), or containing binary-pin records fall through to the typed
-        // serialization below.
-        if (document.ReadOrderedRecords is { Count: > 0 } orderedRecords &&
+        // edited (primitive added/removed or Comment changed), or containing binary-pin records fall
+        // through to the typed serialization below.
+        if (!commentEdited &&
+            document.ReadOrderedRecords is { Count: > 0 } orderedRecords &&
             document.HeaderParametersOrdered is { Count: > 0 } headerOrdered &&
             document.LoadedPrimitiveCount == document.CountModeledPrimitives())
         {

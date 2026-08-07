@@ -667,6 +667,42 @@ public sealed class SchDocRoundTripTests
         Assert.Equal(200, rtHarness.Color);
     }
 
+    [Fact]
+    public void WriteThenRead_ComponentComment_RoundTrips()
+    {
+        var doc = new SchDocument();
+        var comp = SchComponent.Create("R1").WithComment("10k").Build();
+        doc.AddComponent(comp);
+
+        var readBack = RoundTrip(doc);
+
+        Assert.Equal("10k", ((SchComponent)readBack.Components[0]).Comment);
+    }
+
+    [SkippableFact]
+    public void WriteThenRead_RealFile_MutatedComment_Persists()
+    {
+        // Regression test for a bug where SchDocWriter's byte-faithful replay path (taken whenever the
+        // primitive count is unchanged) echoed the original captured bytes verbatim, silently dropping
+        // an edit to SchComponent.Comment because the edit doesn't add or remove a primitive.
+        var testDataPath = GetTestDataPath();
+        var filePath = Path.Combine(testDataPath, "DAC.SchDoc");
+        if (!File.Exists(filePath)) { Skip.If(true, "Test data not available"); return; }
+
+        var original = (SchDocument)new SchDocReader().Read(File.OpenRead(filePath));
+        var comp = (SchComponent)original.Components[0];
+        var before = comp.Comment;
+        comp.Comment = "MUTATED_COMMENT_VALUE";
+
+        using var ms = new MemoryStream();
+        new SchDocWriter().Write(original, ms);
+        ms.Position = 0;
+        var rt = (SchDocument)new SchDocReader().Read(ms);
+
+        Assert.NotEqual("MUTATED_COMMENT_VALUE", before);
+        Assert.Equal("MUTATED_COMMENT_VALUE", ((SchComponent)rt.Components[0]).Comment);
+    }
+
     [SkippableFact]
     public void WriteThenRead_RealFiles_PreservesComponentProperties()
     {
