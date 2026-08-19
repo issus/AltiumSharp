@@ -144,6 +144,87 @@ public class SchematicNetlistTests
         Assert.True(net.IsNamedExplicitly);
     }
 
+    [Theory]
+    [InlineData(0, "MODE0")]
+    [InlineData(1, "MODE1")]
+    public void Only_Selected_Display_Mode_Pins_Participate_In_Connectivity(
+        int displayMode, string expectedNet)
+    {
+        var component = new SchComponent
+        {
+            Name = "U1",
+            PartCount = 1,
+            CurrentPartId = 1,
+            DisplayModeCount = 2,
+            DisplayMode = displayMode,
+        };
+        component.AddParameter(new SchParameter { Name = "Designator", Value = "U1" });
+
+        var mode0Pin = SchPin.Create("1")
+            .At(Coord.FromMils(0), Coord.FromMils(0))
+            .Length(Coord.Zero)
+            .Orient(PinOrientation.Right)
+            .Build();
+        mode0Pin.OwnerPartDisplayMode = 0;
+        component.AddPin(mode0Pin);
+
+        var mode1Pin = SchPin.Create("1")
+            .At(Coord.FromMils(0), Coord.FromMils(200))
+            .Length(Coord.Zero)
+            .Orient(PinOrientation.Right)
+            .Build();
+        mode1Pin.OwnerPartDisplayMode = 1;
+        component.AddPin(mode1Pin);
+
+        var netlist = Solve(
+            component,
+            Wire((0, 0), (100, 0)),
+            Wire((0, 200), (100, 200)),
+            Label("MODE0", 50, 0),
+            Label("MODE1", 50, 200));
+
+        Assert.Equal(expectedNet, netlist.NetForPin("U1", "1")?.Name);
+        Assert.Single(
+            netlist.Nets.SelectMany(net => net.Pins),
+            pin => pin.Key == "U1.1");
+    }
+
+    [Fact]
+    public void Duplicate_Pin_Designators_On_Component_Unify_By_Physical_Pad()
+    {
+        var component = new SchComponent
+        {
+            Name = "U1",
+            PartCount = 1,
+            CurrentPartId = 1,
+        };
+        component.AddParameter(new SchParameter { Name = "Designator", Value = "U1" });
+
+        component.AddPin(SchPin.Create("6")
+            .At(Coord.FromMils(100), Coord.FromMils(0))
+            .Length(Coord.Zero)
+            .Orient(PinOrientation.Right)
+            .Build());
+        component.AddPin(SchPin.Create("6")
+            .At(Coord.FromMils(100), Coord.FromMils(200))
+            .Length(Coord.Zero)
+            .Orient(PinOrientation.Right)
+            .Build());
+
+        var netlist = Solve(
+            component,
+            Wire((0, 0), (100, 0)),
+            Wire((0, 200), (100, 200)),
+            Power("GND", 0, 0));
+
+        var padNets = netlist.Nets
+            .Where(net => net.Pins.Any(pin => pin.Key == "U1.6"))
+            .ToList();
+        var padNet = Assert.Single(padNets);
+        Assert.Equal("GND", padNet.Name);
+        Assert.Single(padNet.Pins, pin => pin.Key == "U1.6");
+    }
+
     [Fact]
     public void Power_Objects_Unify_Globally_By_Name()
     {

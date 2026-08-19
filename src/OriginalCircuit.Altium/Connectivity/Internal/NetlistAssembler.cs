@@ -59,9 +59,14 @@ internal sealed class NetlistAssembler
         foreach (var (root, group) in groups)
         {
             var pins = new List<NetPin>();
+            var pinKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var e in group)
                 if (e.Kind == ElementKind.Pin && e.NetPin is not null)
-                    pins.Add(e.NetPin);
+                {
+                    var logicalKey = $"{e.NetPin.SheetInstanceId}\0{e.NetPin.Key}";
+                    if (pinKeys.Add(logicalKey))
+                        pins.Add(e.NetPin);
+                }
 
             var hasLabel = _labelsByRoot.TryGetValue(root, out var labels) && labels.Count > 0;
             var (name, scope, explicitName) = ChooseName(root, group, pins, hasLabel ? labels! : null);
