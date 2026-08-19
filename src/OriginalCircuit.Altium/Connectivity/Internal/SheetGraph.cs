@@ -87,11 +87,14 @@ internal sealed class SheetGraph
                 if (ip is not SchPin pin)
                     continue;
 
-                // A multi-part component record carries pins from every part, but only the displayed
-                // part (CurrentPartId) is actually placed on this sheet — the other parts' pins keep
-                // stale positions. Include only the current part's pins (plus part-shared pins).
+                // A component record carries pins from every part and every alternative display mode,
+                // but only the selected part/mode is actually placed on this sheet. The other pins
+                // retain coordinates for their inactive representation and can otherwise connect to
+                // adjacent wires (notably on dual-row headers).
                 if (sc.PartCount > 1 && sc.CurrentPartId > 0
                     && pin.OwnerPartId > 0 && pin.OwnerPartId != sc.CurrentPartId)
+                    continue;
+                if (pin.OwnerPartDisplayMode != sc.DisplayMode)
                     continue;
 
                 var tip = SchDesignators.PinTip(pin);
@@ -261,6 +264,11 @@ internal sealed class SheetGraph
         // Rule 1 & 3a: coincident connection points connect (shared endpoints, pin-tip on wire vertex).
         Points.UnionCoincident(uf);
 
+        // A symbol may expose the same physical package pad at multiple graphical locations. Altium
+        // identifies that pad by component plus pin designator, so all of those endpoints are one
+        // electrical node even when the drawing locations differ.
+        UnifyDuplicatePhysicalPins(uf);
+
         // Rule 2 & 3b: a connection point on the INTERIOR of a conductor connects (T-junction).
         // Applies to any element's points landing on a different conductor's interior.
         foreach (var e in Elements)
@@ -290,6 +298,31 @@ internal sealed class SheetGraph
 
         // Rule 3d: collinear overlapping conductor segments connect.
         ApplyCollinearOverlap(uf);
+    }
+
+    private void UnifyDuplicatePhysicalPins(UnionFind uf)
+    {
+        var pinsByComponent = new Dictionary<SchComponent, Dictionary<string, int>>(
+            ReferenceEqualityComparer.Instance);
+
+        foreach (var element in Elements)
+        {
+            if (element.Kind != ElementKind.Pin
+                || element.NetPin is null
+                || string.IsNullOrEmpty(element.PinDesignator))
+                continue;
+
+            if (!pinsByComponent.TryGetValue(element.NetPin.Component, out var pinsByDesignator))
+            {
+                pinsByDesignator = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+                pinsByComponent.Add(element.NetPin.Component, pinsByDesignator);
+            }
+
+            if (pinsByDesignator.TryGetValue(element.PinDesignator, out var firstElementId))
+                uf.Union(firstElementId, element.Id);
+            else
+                pinsByDesignator.Add(element.PinDesignator, element.Id);
+        }
     }
 
     private void ApplyCollinearOverlap(UnionFind uf)
