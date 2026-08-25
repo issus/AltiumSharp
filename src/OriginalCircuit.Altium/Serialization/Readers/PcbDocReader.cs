@@ -964,20 +964,31 @@ public sealed class PcbDocReader
         try
         {
             while (pos < data.Length && data[pos] == typeByte)
-                target.Add(ParseShapeBasedRegion(data, ref pos));
+            {
+                target.Add(ParseShapeBasedRegion(data, ref pos, out var consumedExactly));
+                if (!consumedExactly)
+                    _diagnostics.Add(new AltiumDiagnostic(DiagnosticSeverity.Warning,
+                        $"{storageName}: record {target.Count - 1} did not parse to its recorded " +
+                        "length; skipped to the next record.", storageName));
+            }
         }
-        catch (Exception ex) when (ex is IndexOutOfRangeException or ArgumentOutOfRangeException)
+        catch (Exception ex) when (ex is IndexOutOfRangeException or ArgumentException or EndOfStreamException)
         {
+            // BitConverter reports a short buffer as a plain ArgumentException, so the broad
+            // filter is deliberate: a truncated storage degrades to a diagnostic, not a crash.
             _diagnostics.Add(new AltiumDiagnostic(DiagnosticSeverity.Warning,
                 $"Failed to fully parse {storageName}: {ex.Message}", storageName));
         }
     }
 
-    private static PcbShapeBasedRegion ParseShapeBasedRegion(byte[] data, ref int pos)
+    private static PcbShapeBasedRegion ParseShapeBasedRegion(byte[] data, ref int pos, out bool consumedExactly)
     {
         var r = new PcbShapeBasedRegion { TypeByte = data[pos] };
         pos += 1;                                                       // type byte (0x0B / 0x0C)
-        pos += 4;                                                       // SubRecord-1 length (derived on write = body length)
+        var bodyLength = BitConverter.ToInt32(data, pos); pos += 4;     // SubRecord-1 length (derived on write = body length)
+        if (bodyLength < 0 || pos + bodyLength > data.Length)
+            throw new EndOfStreamException("Shape-based record length overruns the storage.");
+        var recordEnd = pos + bodyLength;
         r.Layer = data[pos]; pos += 1;
         r.Flags1 = data[pos]; pos += 1;
         r.Flags2 = data[pos]; pos += 1;
@@ -999,7 +1010,19 @@ public sealed class PcbDocReader
                     ? new KeyValuePair<string, string?>(seg, null)
                     : new KeyValuePair<string, string?>(seg[..eq], seg[(eq + 1)..]));
             }
-        if (pos < data.Length && data[pos] == 0) { r.PropsHasTrailingNull = true; pos += 1; }
+
+        // The properties block may or may not carry a trailing NUL. A lone "next byte is 0"
+        // test misfires when there is no NUL and the outline count's low byte happens to be
+        // zero (count 256, 512, ...), which shifts the rest of the record by one byte. The
+        // recorded body length disambiguates: accept the variant whose outline and holes
+        // land exactly on the record end.
+        if (data[pos] == 0)
+        {
+            var withNull = LandsOnRecordEnd(data, pos + 1, holeCount, recordEnd);
+            var withoutNull = LandsOnRecordEnd(data, pos, holeCount, recordEnd);
+            r.PropsHasTrailingNull = withNull || !withoutNull;
+        }
+        if (r.PropsHasTrailingNull) pos += 1;
         var outlineCount = BitConverter.ToUInt32(data, pos); pos += 4;
         for (var i = 0; i <= outlineCount; i++)   // disk count is N, but N+1 vertices are stored
         {
@@ -1012,15 +1035,44 @@ public sealed class PcbDocReader
             };
             pos += 37;
             r.Outline.Add(v);
+            if (pos > recordEnd)
+                break;
         }
-        for (var h = 0; h < holeCount; h++)
+        for (var h = 0; h < holeCount && pos + 4 <= recordEnd; h++)
         {
             var hv = BitConverter.ToUInt32(data, pos); pos += 4;
+            if (pos + 16L * hv > recordEnd)
+                break;
             var hole = new List<(double, double)>((int)hv);
             for (var i = 0; i < hv; i++) { hole.Add((BitConverter.ToDouble(data, pos), BitConverter.ToDouble(data, pos + 8))); pos += 16; }
             r.Holes.Add(hole);
         }
+        consumedExactly = pos == recordEnd;
+        pos = recordEnd;   // records are length-framed; always resync so one oddity cannot poison the walk
         return r;
+    }
+
+    /// <summary>
+    /// Whether reading an outline count at <paramref name="countPos"/> followed by its
+    /// 37-byte vertices and <paramref name="holeCount"/> length-prefixed holes ends exactly
+    /// at <paramref name="recordEnd"/>.
+    /// </summary>
+    private static bool LandsOnRecordEnd(byte[] data, int countPos, int holeCount, int recordEnd)
+    {
+        if (countPos + 4 > recordEnd)
+            return false;
+        var outlineCount = BitConverter.ToUInt32(data, countPos);
+        var p = countPos + 4 + 37L * (outlineCount + 1);
+        for (var h = 0; h < holeCount; h++)
+        {
+            if (p + 4 > recordEnd)
+                return false;
+            var hv = BitConverter.ToUInt32(data, (int)p);
+            p += 4 + 16L * hv;
+            if (p > recordEnd)
+                return false;
+        }
+        return p == recordEnd;
     }
 
     private void ReadComponentBodies(CompoundFileAccessor accessor, PcbDocument document, CancellationToken cancellationToken)
