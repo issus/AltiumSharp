@@ -68,8 +68,21 @@ internal sealed class HierarchyWalker
     public List<SheetInstanceInternal> Instances { get; } = new();
     public List<Boundary> Boundaries { get; } = new();
 
-    public void Walk(AltiumProject project)
+    private bool _dedupeDuplicateSheetRefs;
+    private readonly HashSet<string> _instantiated = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <param name="project">The project whose hierarchy to walk.</param>
+    /// <param name="dedupeDuplicateSheetRefs">
+    /// When set, a document referenced by several plain sheet symbols is instantiated only
+    /// once and the remaining references are treated as navigation aids. This matches the
+    /// flat/global net-identifier scopes, where block-diagram overview pages routinely
+    /// reference the working sheets a second time and Altium does not clone channels
+    /// (components exist once per document; identifiers merge by name). Repeat() channels
+    /// are unaffected.
+    /// </param>
+    public void Walk(AltiumProject project, bool dedupeDuplicateSheetRefs = false)
     {
+        _dedupeDuplicateSheetRefs = dedupeDuplicateSheetRefs;
         foreach (var (rootName, rootDoc) in DetermineRoots(project))
         {
             var ancestors = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { rootName };
@@ -118,8 +131,18 @@ internal sealed class HierarchyWalker
                 continue;
             }
 
+            if (_dedupeDuplicateSheetRefs && !sym.Repeat.IsRepeated && !_instantiated.Add(childName))
+            {
+                _diagnostics.Add(new AltiumDiagnostic(DiagnosticSeverity.Info,
+                    $"Sheet '{childName}' is referenced again under '{path}'; flat scope keeps a single instance."));
+                continue;
+            }
+
             var repeat = sym.Repeat;
-            var repeatedChild = childInstanceCounts.GetValueOrDefault(childName) > 1;
+            // Under flat-scope dedupe a plain symbol's document is instantiated exactly once,
+            // so it must not count as a repeated (channel-private) sheet.
+            var repeatedChild = childInstanceCounts.GetValueOrDefault(childName) > 1 &&
+                                !(_dedupeDuplicateSheetRefs && !repeat.IsRepeated);
             var symbolName = string.IsNullOrEmpty(sym.SheetName) ? StripExt(childName) : sym.SheetName;
             var symUid = sym.UniqueId ?? symbolName;
 

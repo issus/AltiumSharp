@@ -56,8 +56,12 @@ public static class ProjectNetlistBuilder
         var scope = NetIdentifierScopeReader.Resolve(rawScope, hasSheetSymbols);
 
         // --- Walk the hierarchy into sheet instances ---
+        // In flat/global scope, duplicate plain sheet references (block-diagram overview
+        // pages) do not clone channels: identifiers merge by name and components exist once
+        // per document, so each document is instantiated once.
         var walker = new HierarchyWalker(docsByName, diagnostics);
-        walker.Walk(project);
+        walker.Walk(project,
+            dedupeDuplicateSheetRefs: scope is NetIdentifierScope.Flat or NetIdentifierScope.Global);
 
         var instances = walker.Instances;
         if (instances.Count == 0)
