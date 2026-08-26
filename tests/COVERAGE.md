@@ -1,7 +1,5 @@
 # Property Coverage Report
 
-Generated: 2026-06-19 09:47 UTC
-
 ## PCB Primitive Types
 
 | Type | Files | Primitives | JSON Props | Mapped | Missing | Coverage |

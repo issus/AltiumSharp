@@ -30,8 +30,9 @@ public class RawDataPreservationTest
             model.Checksum = 0;
         }
 
-        // Save to a new file next to the original
-        var outPath = GetDataPath("TestData", "Generated", "Individual", "PCB", "BODY_3D_STEP_CHECKSUM0.PcbLib");
+        // Save outside the repository — writing into TestData would dirty the working
+        // tree on every run (the OLE directory FILETIMEs differ between writes).
+        var outPath = Path.Combine(Path.GetTempPath(), "BODY_3D_STEP_CHECKSUM0.PcbLib");
         await library.SaveAsync(outPath, new OriginalCircuit.Eda.Models.SaveOptions());
         _output.WriteLine($"Saved to: {outPath}");
     }

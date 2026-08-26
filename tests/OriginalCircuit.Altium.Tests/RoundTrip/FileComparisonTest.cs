@@ -1,6 +1,7 @@
 using System.IO.Compression;
 using System.Text;
 using OpenMcdf;
+using OriginalCircuit.Altium.Serialization.Readers;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -16,24 +17,35 @@ public class FileComparisonTest
     }
 
     [SkippableFact]
-    public void CompareOriginalAndWrittenPcbLib()
+    public async Task CompareOriginalAndWrittenPcbLib()
     {
         var origPath = GetDataPath("TestData", "Generated", "Individual", "PCB", "BODY_3D_STEP.PcbLib");
-        var writtenPath = GetDataPath("TestData", "Generated", "Individual", "PCB", "BODY_3D_STEP_CHECKSUM0.PcbLib");
-        if (!File.Exists(origPath) || !File.Exists(writtenPath)) { Skip.If(true, "Test data not available"); return; }
+        if (!File.Exists(origPath)) { Skip.If(true, "Test data not available"); return; }
+
+        // Regenerate the written variant in memory (zeroed model checksums, as
+        // RawDataPreservationTest saves it) instead of depending on a file on disk.
+        await using var origRead = File.OpenRead(origPath);
+        var library = new PcbLibReader().Read(origRead);
+        foreach (var model in library.Models)
+            model.Checksum = 0;
+        using var writtenMs = new MemoryStream();
+        await library.SaveAsync(writtenMs);
 
         _output.WriteLine("=== ORIGINAL ===");
         DumpCompoundFile(origPath);
 
         _output.WriteLine("\n\n=== WRITTEN ===");
-        DumpCompoundFile(writtenPath);
+        _output.WriteLine($"In-memory zero-checksum variant ({writtenMs.Length} bytes)");
+        writtenMs.Position = 0;
+        using (var writtenDump = RootStorage.Open(writtenMs, StorageModeFlags.LeaveOpen))
+            DumpStorage(writtenDump, "");
 
         // Now do a detailed byte comparison of each stream
         _output.WriteLine("\n\n=== STREAM-BY-STREAM COMPARISON ===");
         using var origFs = File.OpenRead(origPath);
         using var origCf = RootStorage.Open(origFs, StorageModeFlags.LeaveOpen);
-        using var writtenFs = File.OpenRead(writtenPath);
-        using var writtenCf = RootStorage.Open(writtenFs, StorageModeFlags.LeaveOpen);
+        writtenMs.Position = 0;
+        using var writtenCf = RootStorage.Open(writtenMs, StorageModeFlags.LeaveOpen);
 
         CompareStorage(origCf, writtenCf, "");
     }
