@@ -751,7 +751,7 @@ public sealed class SchComponentRenderer
 
         if (!string.IsNullOrEmpty(textFrame.Text))
         {
-            var frameText = FixTextEncoding(textFrame.Text);
+            var frameText = textFrame.Text;
             var textColor = ColorHelper.BgrToArgb(textFrame.TextColor);
             var font = GetFont(textFrame.FontId);
             var fontSize = GetFontSize(textFrame.FontId);
@@ -963,7 +963,7 @@ public sealed class SchComponentRenderer
     public void RenderNetLabel(IRenderContext context, SchNetLabel netLabel)
     {
         if (string.IsNullOrEmpty(netLabel.Text)) return;
-        var netText = FixTextEncoding(netLabel.Text);
+        var netText = netLabel.Text;
 
         var (sx, sy) = _transform.WorldToScreen(netLabel.Location.X, netLabel.Location.Y);
         var color = GetArgbColor(netLabel.Color);
@@ -1808,7 +1808,7 @@ public sealed class SchComponentRenderer
             var font = GetFont(tl.FontId);
             // Altium anchors the harness-type label at the RIGHT of the text (the label's Location is
             // its right edge), so the name extends leftward from there.
-            context.DrawText(FixTextEncoding(tl.Text), tx, ty, GetFontSize(tl.FontId), tcolor,
+            context.DrawText(tl.Text, tx, ty, GetFontSize(tl.FontId), tcolor,
                 new TextRenderOptions
                 {
                     FontFamily = font.FontName,
@@ -1844,7 +1844,7 @@ public sealed class SchComponentRenderer
         // members inside the connector box).
         double margin = _transform.ScaleValue(Coord.FromMils(15));
         double textX = right ? boxX + boxW - margin : boxX + margin;
-        context.DrawText(FixTextEncoding(entry.Text), textX, py, fontSize, textColor,
+        context.DrawText(entry.Text, textX, py, fontSize, textColor,
             new TextRenderOptions
             {
                 FontFamily = font.FontName,
@@ -2003,7 +2003,7 @@ public sealed class SchComponentRenderer
     /// parameter value from the current component's parameter list.
     /// For example, "=Value" resolves to the Value parameter's text.
     /// </summary>
-    private string ResolveStringIndirection(string text) => FixTextEncoding(Resolve(text));
+    private string ResolveStringIndirection(string text) => Resolve(text);
 
     private string Resolve(string text)
     {
@@ -2072,9 +2072,10 @@ public sealed class SchComponentRenderer
     }
 
     /// <summary>
-    /// Repairs UTF-8 parameter values that were decoded as Windows-1252 (Altium stores some text,
-    /// e.g. "µF", UTF-8-encoded behind a %UTF8% marker the reader doesn't decode, so "µ" arrives as
-    /// "Âµ"). Re-interprets the Latin-1 bytes as UTF-8 when that yields a valid string.
+    /// Repairs UTF-8 text that was decoded as Windows-1252, so "µ" arrives as "Âµ". Parameter-string
+    /// values are decoded by ParameterCollection.Parse (%UTF8% keys), so this remains only for pin
+    /// names, which come from binary pin records with no encoding marker. Re-interprets the Latin-1
+    /// bytes as UTF-8 when that yields a valid string.
     /// </summary>
     internal static string FixTextEncoding(string text)
     {
