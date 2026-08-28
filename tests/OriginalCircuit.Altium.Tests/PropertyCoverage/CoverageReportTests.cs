@@ -17,8 +17,6 @@ public class CoverageReportTests : CoverageTestBase
         var sb = new StringBuilder();
         sb.AppendLine("# Property Coverage Report");
         sb.AppendLine();
-        sb.AppendLine($"Generated: {DateTime.UtcNow:yyyy-MM-dd HH:mm} UTC");
-        sb.AppendLine();
 
         // PCB types
         sb.AppendLine("## PCB Primitive Types");
@@ -121,10 +119,13 @@ public class CoverageReportTests : CoverageTestBase
             sb.AppendLine();
         }
 
-        // Write the report
+        // Write the report only when its content changed, so a plain test run
+        // leaves the working tree clean.
         var reportPath = Path.Combine(GetTestDataPath(), "..", "tests", "COVERAGE.md");
         reportPath = Path.GetFullPath(reportPath);
-        File.WriteAllText(reportPath, sb.ToString());
+        var report = sb.ToString();
+        if (!File.Exists(reportPath) || File.ReadAllText(reportPath) != report)
+            File.WriteAllText(reportPath, report);
 
         // Also output to test console
         Assert.True(true, sb.ToString());
