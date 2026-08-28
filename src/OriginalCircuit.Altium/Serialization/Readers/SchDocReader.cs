@@ -1054,9 +1054,10 @@ public sealed class SchDocReader
     private static SchParameter CreateParameter(ParameterCollection p, Dictionary<string, string>? rawParameters = null)
     {
         var dto = Dto.Sch.SchParameterDto.FromParameters(p);
+        // ParameterCollection.Parse already decoded a %UTF8%-keyed Text value; the raw dictionary
+        // keeps the prefixed key, so detect it here only to preserve the prefix on write.
         var isUtf8 = rawParameters?.ContainsKey("%UTF8%TEXT") == true;
         var value = dto.Text ?? string.Empty;
-        if (isUtf8) value = AltiumEncoding.DecodeUtf8ParameterValue(value);
         return new SchParameter
         {
             Name = dto.Name ?? string.Empty,

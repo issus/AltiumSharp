@@ -1675,11 +1675,10 @@ public sealed class SchLibReader
         var paramCollection = ToParameterCollection(parameters);
         var dto = SchParameterDto.FromParameters(paramCollection);
 
-        // The Text value is UTF-8 when its key carried the %UTF8% prefix; the dictionary keeps the
-        // raw key, so detect it here and decode the (otherwise Windows-1252-mis-decoded) value.
+        // ParameterCollection.Parse already decoded a %UTF8%-keyed Text value; the dictionary keeps
+        // the raw key, so detect the prefix here only to preserve it on write (TextIsUtf8).
         var isUtf8 = parameters.ContainsKey("%UTF8%Text");
         var value = dto.Text ?? string.Empty;
-        if (isUtf8) value = AltiumEncoding.DecodeUtf8ParameterValue(value);
 
         return new SchParameter
         {

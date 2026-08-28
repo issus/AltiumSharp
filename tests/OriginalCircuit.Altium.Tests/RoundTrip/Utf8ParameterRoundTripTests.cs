@@ -51,4 +51,35 @@ public sealed class Utf8ParameterRoundTripTests
         Assert.Equal(text, param.Value);
         Assert.True(param.TextIsUtf8);
     }
+
+    /// <summary>
+    /// Altium writes non-ASCII values twice: a %UTF8% variant first, then a plain-ANSI twin
+    /// (e.g. <c>|%UTF8%ComponentDescription=KON 4.7ÂµF|ComponentDescription=KON 4.7µF|</c>).
+    /// Both collapse onto one key when the prefix is stripped; the UTF-8 variant must win and be
+    /// decoded, not returned as mojibake (bd-23s).
+    /// </summary>
+    [Fact]
+    public void ParameterCollection_Utf8AndAnsiDuplicate_ReturnsDecodedValue()
+    {
+        var collection = OriginalCircuit.Altium.Primitives.ParameterCollection.Parse(
+            "|RECORD=1|%UTF8%ComponentDescription=KON 4.7ÂµF|ComponentDescription=KON 4.7µF|PartCount=2");
+
+        Assert.Equal("KON 4.7µF", collection["ComponentDescription"].AsStringOrDefault());
+    }
+
+    [Theory]
+    [InlineData("KON 4.7µF ±10%")] // Windows-1252 representable → plain ComponentDescription key
+    [InlineData("Shunt 5mΩ")]      // Ω is not 1252-representable → %UTF8%ComponentDescription key
+    public void SchDoc_NonAsciiComponentDescription_RoundTrips(string description)
+    {
+        var doc = new SchDocument();
+        doc.AddComponent(new SchComponent { Name = "R1", PartCount = 1, Description = description });
+
+        using var ms = new MemoryStream();
+        new SchDocWriter().Write(doc, ms);
+        ms.Position = 0;
+        var readBack = new SchDocReader().Read(ms);
+
+        Assert.Equal(description, readBack.Components.First().Description);
+    }
 }

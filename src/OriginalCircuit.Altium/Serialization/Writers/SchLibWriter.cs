@@ -368,9 +368,14 @@ public sealed class SchLibWriter
         };
         // Altium omits ComponentDescription entirely when a component has no description. Writing an
         // empty value perturbs the byte-faithful record and reads back as "" instead of null, so only
-        // emit it (in its original position) when a description is actually present.
+        // emit it (in its original position) when a description is actually present. A description
+        // Windows-1252 cannot represent is promoted to a %UTF8% parameter, as with SchParameter.Text.
         if (component.Description != null)
-            parameters["ComponentDescription"] = component.Description;
+        {
+            var descUtf8 = RequiresUtf8(component.Description);
+            parameters[descUtf8 ? "%UTF8%ComponentDescription" : "ComponentDescription"] =
+                descUtf8 ? AltiumEncoding.EncodeUtf8ParameterValue(component.Description) : component.Description;
+        }
         parameters["PartCount"] = (component.PartCount + 1).ToString(CultureInfo.InvariantCulture);
         parameters["DisplayModeCount"] = "1";
         parameters["IndexInSheet"] = "-1";

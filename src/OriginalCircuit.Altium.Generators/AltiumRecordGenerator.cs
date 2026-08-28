@@ -293,10 +293,14 @@ namespace OriginalCircuit.Altium.Primitives
                     var key = entry.Substring(0, equalsIndex);
                     var value = equalsIndex < entry.Length - 1 ? entry.Substring(equalsIndex + 1) : """";
 
-                    // Handle UTF-8 prefix
+                    // Handle UTF-8 prefix: the surrounding block was decoded as Windows-1252, so a
+                    // %UTF8%-keyed value arrives one char per raw byte (mojibake). Decode it here so
+                    // the UTF-8 variant — which Altium writes before its plain-ANSI twin, and which
+                    // the first-match indexer therefore returns — carries the correct string.
                     if (key.StartsWith(""%UTF8%"", StringComparison.OrdinalIgnoreCase))
                     {
                         key = key.Substring(6);
+                        value = global::OriginalCircuit.Altium.Serialization.AltiumEncoding.DecodeUtf8ParameterValue(value);
                     }
 
                     result._parameters.Add(new KeyValuePair<string, string>(key, value.TrimEnd('\r', '\n')));
