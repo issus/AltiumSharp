@@ -251,6 +251,13 @@ public sealed class SchLibRoundTripTests
     }
 
     [Fact]
+    public void Polyline_WritesNativeTenMilDxpVertexUnits()
+    {
+        Assert.Equal("10", SchLibWriter.CoordToSchematicUnits(Coord.FromMils(100)));
+        Assert.Equal("-2", SchLibWriter.CoordToSchematicUnits(Coord.FromMils(-20)));
+    }
+
+    [Fact]
     public void Bezier_PreservesAllProperties()
     {
         var original = new SchLibrary();

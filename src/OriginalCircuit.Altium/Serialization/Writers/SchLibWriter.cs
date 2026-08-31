@@ -1672,16 +1672,15 @@ public sealed class SchLibWriter
     }
 
     /// <summary>
-    /// Converts a Coord to schematic units string (raw / 1000, i.e., 10 units per mil).
-    /// Used for vertex coordinates in polygon, polyline, and bezier records
-    /// where the reader's TryParseCoord() expects schematic units.
+    /// Converts a Coord to the DXP units used by SchLib vertex records
+    /// (raw / 100,000, i.e. one stored unit per 10 mils).
     /// </summary>
     internal static string CoordToSchematicUnits(Coord coord) =>
-        (coord.ToRaw() / 1000).ToString(CultureInfo.InvariantCulture);
+        (coord.ToRaw() / 100_000).ToString(CultureInfo.InvariantCulture);
 
     /// <summary>
-    /// Converts a Coord to whole DXP units (raw / 100,000, i.e. 10 mils per unit). SchDoc vertex
-    /// coordinates use this scale — unlike SchLib vertices, which use <see cref="CoordToSchematicUnits"/>.
+    /// Converts a Coord to whole DXP units (raw / 100,000, i.e. 10 mils per unit).
+    /// SchDoc and SchLib vertex records use this same scale.
     /// </summary>
     internal static string CoordToDxpUnits(Coord coord) =>
         (coord.ToRaw() / 100_000).ToString(CultureInfo.InvariantCulture);
@@ -1689,7 +1688,7 @@ public sealed class SchLibWriter
     /// <summary>
     /// Writes a vertex's X{n}/Y{n} parameters, omitting either when its value is 0
     /// (Altium does not emit zero-valued vertex coordinates). The vertex unit converter defaults to
-    /// SchLib schematic units; SchDoc callers pass <see cref="CoordToDxpUnits"/>.
+    /// SchLib DXP units; SchDoc callers pass <see cref="CoordToDxpUnits"/> explicitly.
     /// </summary>
     private static void AddSchVertex(Dictionary<string, string> parameters, int index, Coord x, Coord y,
         Func<Coord, string>? toUnits = null)

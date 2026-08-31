@@ -2317,11 +2317,10 @@ public sealed class SchLibReader
         if (string.IsNullOrEmpty(value))
             return false;
 
-        // Schematic uses 10 units per mil (different from PCB's 10000)
+        // SchLib vertex records use DXP units: one stored unit is 10 mils.
         if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var intValue))
         {
-            // Convert from schematic units to internal units
-            result = Coord.FromRaw(intValue * 1000); // Scale up
+            result = Coord.FromRaw(intValue * 100_000);
             return true;
         }
 
