@@ -681,8 +681,7 @@ public sealed class SchLibWriter
         index++;
     }
 
-    internal static void WritePolygonRecord(BinaryFormatWriter writer, SchPolygon polygon, ref int index, int ownerIndex = -1,
-        Func<Coord, string>? vertexUnits = null)
+    internal static void WritePolygonRecord(BinaryFormatWriter writer, SchPolygon polygon, ref int index, int ownerIndex = -1)
     {
         var parameters = new Dictionary<string, string>
         {
@@ -703,7 +702,7 @@ public sealed class SchLibWriter
         for (var i = 0; i < polygon.Vertices.Count; i++)
         {
             var v = polygon.Vertices[i];
-            AddSchVertex(parameters, i + 1, v.X, v.Y, vertexUnits);
+            AddSchVertex(parameters, i + 1, v.X, v.Y);
         }
         AddUniqueId(parameters, polygon.UniqueId);
 
@@ -711,8 +710,7 @@ public sealed class SchLibWriter
         index++;
     }
 
-    internal static void WritePolylineRecord(BinaryFormatWriter writer, SchPolyline polyline, ref int index, int ownerIndex = -1,
-        Func<Coord, string>? vertexUnits = null)
+    internal static void WritePolylineRecord(BinaryFormatWriter writer, SchPolyline polyline, ref int index, int ownerIndex = -1)
     {
         var parameters = new Dictionary<string, string>
         {
@@ -739,7 +737,7 @@ public sealed class SchLibWriter
         for (var i = 0; i < polyline.Vertices.Count; i++)
         {
             var v = polyline.Vertices[i];
-            AddSchVertex(parameters, i + 1, v.X, v.Y, vertexUnits);
+            AddSchVertex(parameters, i + 1, v.X, v.Y);
         }
         AddNonZero(parameters, "LineStyleExt", (int)polyline.LineStyle); // LineStyleExt follows the vertices
         AddUniqueId(parameters, polyline.UniqueId);
@@ -748,8 +746,7 @@ public sealed class SchLibWriter
         index++;
     }
 
-    internal static void WriteBezierRecord(BinaryFormatWriter writer, SchBezier bezier, ref int index, int ownerIndex = -1,
-        Func<Coord, string>? vertexUnits = null)
+    internal static void WriteBezierRecord(BinaryFormatWriter writer, SchBezier bezier, ref int index, int ownerIndex = -1)
     {
         var parameters = new Dictionary<string, string>
         {
@@ -768,7 +765,7 @@ public sealed class SchLibWriter
         for (var i = 0; i < bezier.ControlPoints.Count; i++)
         {
             var cp = bezier.ControlPoints[i];
-            AddSchVertex(parameters, i + 1, cp.X, cp.Y, vertexUnits);
+            AddSchVertex(parameters, i + 1, cp.X, cp.Y);
         }
         AddUniqueId(parameters, bezier.UniqueId);
 
@@ -962,8 +959,7 @@ public sealed class SchLibWriter
 
         for (var i = 0; i < wire.Vertices.Count; i++)
         {
-            parameters[$"X{i + 1}"] = CoordToSchematicUnits(wire.Vertices[i].X);
-            parameters[$"Y{i + 1}"] = CoordToSchematicUnits(wire.Vertices[i].Y);
+            AddSchVertex(parameters, i + 1, wire.Vertices[i].X, wire.Vertices[i].Y);
         }
 
         AddNonZero(parameters, "Color", wire.Color);
@@ -1184,8 +1180,7 @@ public sealed class SchLibWriter
         index++;
     }
 
-    internal static void WriteBusRecord(BinaryFormatWriter writer, SchBus bus, ref int index, int ownerIndex = -1,
-        Func<Coord, string>? vertexUnits = null)
+    internal static void WriteBusRecord(BinaryFormatWriter writer, SchBus bus, ref int index, int ownerIndex = -1)
     {
         var parameters = new Dictionary<string, string>
         {
@@ -1201,11 +1196,9 @@ public sealed class SchLibWriter
         AddNonZero(parameters, "Color", bus.Color);
         AddNonZero(parameters, "AreaColor", bus.AreaColor);
         parameters["LocationCount"] = bus.Vertices.Count.ToString(CultureInfo.InvariantCulture);
-        var busConv = vertexUnits ?? CoordToSchematicUnits;
         for (var i = 0; i < bus.Vertices.Count; i++)
         {
-            parameters[$"X{i + 1}"] = busConv(bus.Vertices[i].X);
-            parameters[$"Y{i + 1}"] = busConv(bus.Vertices[i].Y);
+            AddSchVertex(parameters, i + 1, bus.Vertices[i].X, bus.Vertices[i].Y);
         }
         AddUniqueId(parameters, bus.UniqueId);
 
@@ -1383,8 +1376,7 @@ public sealed class SchLibWriter
         index++;
     }
 
-    internal static void WriteBlanketRecord(BinaryFormatWriter writer, SchBlanket blanket, ref int index, int ownerIndex = -1,
-        Func<Coord, string>? vertexUnits = null)
+    internal static void WriteBlanketRecord(BinaryFormatWriter writer, SchBlanket blanket, ref int index, int ownerIndex = -1)
     {
         var parameters = new Dictionary<string, string>
         {
@@ -1403,11 +1395,9 @@ public sealed class SchLibWriter
         AddNonZero(parameters, "Color", blanket.Color);
         AddNonZero(parameters, "AreaColor", blanket.AreaColor);
         parameters["LocationCount"] = blanket.Vertices.Count.ToString(CultureInfo.InvariantCulture);
-        var blanketConv = vertexUnits ?? CoordToSchematicUnits;
         for (var i = 0; i < blanket.Vertices.Count; i++)
         {
-            parameters[$"X{i + 1}"] = blanketConv(blanket.Vertices[i].X);
-            parameters[$"Y{i + 1}"] = blanketConv(blanket.Vertices[i].Y);
+            AddSchVertex(parameters, i + 1, blanket.Vertices[i].X, blanket.Vertices[i].Y);
         }
         AddUniqueId(parameters, blanket.UniqueId);
 
@@ -1672,31 +1662,22 @@ public sealed class SchLibWriter
     }
 
     /// <summary>
-    /// Converts a Coord to schematic units string (raw / 1000, i.e., 10 units per mil).
-    /// Used for vertex coordinates in polygon, polyline, and bezier records
-    /// where the reader's TryParseCoord() expects schematic units.
-    /// </summary>
-    internal static string CoordToSchematicUnits(Coord coord) =>
-        (coord.ToRaw() / 1000).ToString(CultureInfo.InvariantCulture);
-
-    /// <summary>
-    /// Converts a Coord to whole DXP units (raw / 100,000, i.e. 10 mils per unit). SchDoc vertex
-    /// coordinates use this scale — unlike SchLib vertices, which use <see cref="CoordToSchematicUnits"/>.
+    /// Converts a Coord to whole DXP units (10 mils per unit) used by SchDoc and SchLib
+    /// vertex records. Coordinates outside the native 10-mil grid are rounded to the nearest
+    /// representable point, with midpoint values rounded away from zero.
     /// </summary>
     internal static string CoordToDxpUnits(Coord coord) =>
-        (coord.ToRaw() / 100_000).ToString(CultureInfo.InvariantCulture);
+        Math.Round(coord.ToRaw() / 100_000d, MidpointRounding.AwayFromZero)
+            .ToString(CultureInfo.InvariantCulture);
 
     /// <summary>
     /// Writes a vertex's X{n}/Y{n} parameters, omitting either when its value is 0
-    /// (Altium does not emit zero-valued vertex coordinates). The vertex unit converter defaults to
-    /// SchLib schematic units; SchDoc callers pass <see cref="CoordToDxpUnits"/>.
+    /// (Altium does not emit zero-valued vertex coordinates).
     /// </summary>
-    private static void AddSchVertex(Dictionary<string, string> parameters, int index, Coord x, Coord y,
-        Func<Coord, string>? toUnits = null)
+    internal static void AddSchVertex(Dictionary<string, string> parameters, int index, Coord x, Coord y)
     {
-        var conv = toUnits ?? CoordToSchematicUnits;
-        var sx = conv(x);
-        var sy = conv(y);
+        var sx = CoordToDxpUnits(x);
+        var sy = CoordToDxpUnits(y);
         if (sx != "0") parameters[$"X{index}"] = sx;
         if (sy != "0") parameters[$"Y{index}"] = sy;
     }

@@ -87,9 +87,9 @@ public sealed class SchDocWriter
             case SchRectangle rect: SchLibWriter.WriteRectangleRecord(writer, rect, ref index, ownerIndex); break;
             case SchLabel label: SchLibWriter.WriteLabelRecord(writer, label, ref index, ownerIndex); break;
             case SchArc arc: SchLibWriter.WriteArcRecord(writer, arc, ref index, ownerIndex); break;
-            case SchPolygon polygon: SchLibWriter.WritePolygonRecord(writer, polygon, ref index, ownerIndex, SchLibWriter.CoordToDxpUnits); break;
-            case SchPolyline polyline: SchLibWriter.WritePolylineRecord(writer, polyline, ref index, ownerIndex, SchLibWriter.CoordToDxpUnits); break;
-            case SchBezier bezier: SchLibWriter.WriteBezierRecord(writer, bezier, ref index, ownerIndex, SchLibWriter.CoordToDxpUnits); break;
+            case SchPolygon polygon: SchLibWriter.WritePolygonRecord(writer, polygon, ref index, ownerIndex); break;
+            case SchPolyline polyline: SchLibWriter.WritePolylineRecord(writer, polyline, ref index, ownerIndex); break;
+            case SchBezier bezier: SchLibWriter.WriteBezierRecord(writer, bezier, ref index, ownerIndex); break;
             case SchEllipse ellipse: SchLibWriter.WriteEllipseRecord(writer, ellipse, ref index, ownerIndex); break;
             case SchRoundedRectangle roundedRect: SchLibWriter.WriteRoundedRectangleRecord(writer, roundedRect, ref index, ownerIndex); break;
             case SchPie pie: SchLibWriter.WritePieRecord(writer, pie, ref index, ownerIndex); break;
@@ -361,13 +361,13 @@ public sealed class SchDocWriter
             SchLibWriter.WriteArcRecord(writer, (SchArc)arc, ref index, ownerIndex);
 
         foreach (var polygon in component.Polygons)
-            SchLibWriter.WritePolygonRecord(writer, (SchPolygon)polygon, ref index, ownerIndex, SchLibWriter.CoordToDxpUnits);
+            SchLibWriter.WritePolygonRecord(writer, (SchPolygon)polygon, ref index, ownerIndex);
 
         foreach (var polyline in component.Polylines)
-            SchLibWriter.WritePolylineRecord(writer, (SchPolyline)polyline, ref index, ownerIndex, SchLibWriter.CoordToDxpUnits);
+            SchLibWriter.WritePolylineRecord(writer, (SchPolyline)polyline, ref index, ownerIndex);
 
         foreach (var bezier in component.Beziers)
-            SchLibWriter.WriteBezierRecord(writer, (SchBezier)bezier, ref index, ownerIndex, SchLibWriter.CoordToDxpUnits);
+            SchLibWriter.WriteBezierRecord(writer, (SchBezier)bezier, ref index, ownerIndex);
 
         foreach (var ellipse in component.Ellipses)
             SchLibWriter.WriteEllipseRecord(writer, (SchEllipse)ellipse, ref index, ownerIndex);
@@ -498,16 +498,16 @@ public sealed class SchDocWriter
             SchLibWriter.WritePowerObjectRecord(writer, (SchPowerObject)powerObj, ref index);
 
         foreach (var polygon in document.Polygons)
-            SchLibWriter.WritePolygonRecord(writer, (SchPolygon)polygon, ref index, vertexUnits: SchLibWriter.CoordToDxpUnits);
+            SchLibWriter.WritePolygonRecord(writer, (SchPolygon)polygon, ref index);
 
         foreach (var polyline in document.Polylines)
-            SchLibWriter.WritePolylineRecord(writer, (SchPolyline)polyline, ref index, vertexUnits: SchLibWriter.CoordToDxpUnits);
+            SchLibWriter.WritePolylineRecord(writer, (SchPolyline)polyline, ref index);
 
         foreach (var arc in document.Arcs)
             SchLibWriter.WriteArcRecord(writer, (SchArc)arc, ref index);
 
         foreach (var bezier in document.Beziers)
-            SchLibWriter.WriteBezierRecord(writer, (SchBezier)bezier, ref index, vertexUnits: SchLibWriter.CoordToDxpUnits);
+            SchLibWriter.WriteBezierRecord(writer, (SchBezier)bezier, ref index);
 
         foreach (var ellipse in document.Ellipses)
             SchLibWriter.WriteEllipseRecord(writer, (SchEllipse)ellipse, ref index);
@@ -534,7 +534,7 @@ public sealed class SchDocWriter
             SchLibWriter.WriteNoErcRecord(writer, noErc, ref index);
 
         foreach (var bus in document.Buses)
-            SchLibWriter.WriteBusRecord(writer, bus, ref index, vertexUnits: SchLibWriter.CoordToDxpUnits);
+            SchLibWriter.WriteBusRecord(writer, bus, ref index);
 
         foreach (var busEntry in document.BusEntries)
             SchLibWriter.WriteBusEntryRecord(writer, busEntry, ref index);
@@ -564,7 +564,7 @@ public sealed class SchDocWriter
         foreach (var blanket in document.Blankets)
         {
             var blanketIndex = index;
-            SchLibWriter.WriteBlanketRecord(writer, blanket, ref index, vertexUnits: SchLibWriter.CoordToDxpUnits);
+            SchLibWriter.WriteBlanketRecord(writer, blanket, ref index);
             foreach (var param in blanket.Parameters)
                 SchLibWriter.WriteParameterRecord(writer, param, ref index, blanketIndex);
         }
@@ -710,8 +710,7 @@ public sealed class SchDocWriter
 
         for (var i = 0; i < wire.Vertices.Count; i++)
         {
-            parameters[$"X{i + 1}"] = SchLibWriter.CoordToDxpUnits(wire.Vertices[i].X);
-            parameters[$"Y{i + 1}"] = SchLibWriter.CoordToDxpUnits(wire.Vertices[i].Y);
+            SchLibWriter.AddSchVertex(parameters, i + 1, wire.Vertices[i].X, wire.Vertices[i].Y);
         }
 
         AddNonZero(parameters, "LINEWIDTH", wire.LineWidth);

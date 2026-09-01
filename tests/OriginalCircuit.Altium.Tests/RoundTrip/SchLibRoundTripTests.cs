@@ -251,6 +251,36 @@ public sealed class SchLibRoundTripTests
     }
 
     [Fact]
+    public void Polyline_RoundTripUsesNativeTenMilDxpVertexUnits()
+    {
+        var original = new SchLibrary();
+        var component = new SchComponent { Name = "DXP_GRID", PartCount = 1 };
+        component.AddPolyline(SchPolyline.Create()
+            .AddVertex(Coord.FromMils(-20), Coord.FromMils(50))
+            .AddVertex(Coord.FromMils(100), Coord.FromMils(-100))
+            .Build());
+        original.Add(component);
+
+        var readBack = RoundTrip(original);
+        var vertices = readBack.Components.Single().Polylines.Single().Vertices;
+
+        Assert.Equal(-20, vertices[0].X.ToMils(), 6);
+        Assert.Equal(50, vertices[0].Y.ToMils(), 6);
+        Assert.Equal(100, vertices[1].X.ToMils(), 6);
+        Assert.Equal(-100, vertices[1].Y.ToMils(), 6);
+    }
+
+    [Theory]
+    [InlineData(104, "10")]
+    [InlineData(105, "11")]
+    [InlineData(-104, "-10")]
+    [InlineData(-105, "-11")]
+    public void VertexCoordinatesOutsideTenMilGridRoundToNearestNativeUnit(double mils, string expected)
+    {
+        Assert.Equal(expected, SchLibWriter.CoordToDxpUnits(Coord.FromMils(mils)));
+    }
+
+    [Fact]
     public void Bezier_PreservesAllProperties()
     {
         var original = new SchLibrary();
